@@ -15,6 +15,9 @@
 
 package com.paypal.selion.platform.grid;
 
+import io.selendroid.SelendroidCapabilities;
+import io.selendroid.SelendroidDriver;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,6 +33,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
@@ -39,6 +44,9 @@ import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.grid.BrowserFlavors;
+import com.paypal.selion.platform.grid.browsercapabilities.DesiredCapabilitiesFactory;
+import com.paypal.selion.platform.remote.SeLionDriverAugmenter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -73,7 +81,12 @@ public final class Grid {
     public static RemoteIOSDriver iOSDriver() {
         return IOSDriverAugmenter.getIOSDriver((RemoteWebDriver)threadLocalWebDriver.get().getWrappedDriver());
     }
-
+    
+    public static SelendroidDriver selendroidDriver() throws Exception {
+        RemoteWebDriver driver = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
+        return SeLionDriverAugmenter.selendroidDriver(driver, DesiredCapabilitiesFactory.getCapabilities(BrowserFlavors.GENERIC));
+    }
+    
     public static long getNewTimeOut() {
         logger.entering();
         String stringTimeOut = ConfigManager.getConfig(getTestSession().getXmlTestName()).getConfigProperty(

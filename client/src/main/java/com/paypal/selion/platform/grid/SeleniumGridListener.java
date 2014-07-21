@@ -115,14 +115,19 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting();
             return;
         }
+
+        if (testSession.handleSessions()) {
+            testSession.initializeTestSession(methodInfo, sessionMap);
+        } else {
+            testSession.initializeTestSession(methodInfo);
+        }
+
         LocalGridManager.spawnLocalHub(testSession.getPlatform());
 
         try {
             if (testSession.handleSessions()) {
-                testSession.initializeTestSession(methodInfo, sessionMap);
                 testSession.startSession(sessionMap);
             } else {
-                testSession.initializeTestSession(methodInfo);
                 testSession.startSesion();
             }
 

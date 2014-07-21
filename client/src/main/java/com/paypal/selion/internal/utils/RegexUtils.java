@@ -15,7 +15,7 @@
 
 package com.paypal.selion.internal.utils;
 
-import io.selendroid.util.Preconditions;
+import com.google.common.base.Preconditions;
 
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;

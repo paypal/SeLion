@@ -73,8 +73,8 @@ class LocalNode implements StandaloneServerCapabilities {
             return;
         }
         // TODO: Figure out if this is still a valid statement
-        // We shouldn't spawn a local node when user wants an ios-driver node
-        if (platform == WebDriverPlatform.IOS) {
+        // We shouldn't spawn a local node when user wants an ios-driver node or android node
+        if (((platform == WebDriverPlatform.IOS) || (platform == WebDriverPlatform.ANDROID)) || (platform != WebDriverPlatform.WEB)) {
             logger.exiting();
             return;
         }
