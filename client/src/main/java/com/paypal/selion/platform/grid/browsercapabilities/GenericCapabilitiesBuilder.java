@@ -15,16 +15,17 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import io.selendroid.SelendroidCapabilities;
+
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.uiautomation.ios.IOSCapabilities;
-import org.uiautomation.ios.communication.device.DeviceType;
 
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.MobileTestSession;
 
 class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private String appName = null;
-    private DeviceType deviceType = null;
+    private String deviceType = null;
     private String language = null;
     private String locale = null;
 
@@ -34,11 +35,26 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             return capabilities;
         }
         initCapabilities();
-        IOSCapabilities caps = new IOSCapabilities();
-        caps.setCapability(IOSCapabilities.DEVICE, this.deviceType);
-        caps.setCapability(IOSCapabilities.LANGUAGE, this.language);
-        caps.setCapability(IOSCapabilities.LOCALE, this.locale);
-        caps.setCapability(IOSCapabilities.BUNDLE_NAME, appName);
+        DesiredCapabilities caps = null;
+        if (this.deviceType.equalsIgnoreCase("ipad") || this.deviceType.equalsIgnoreCase("iphone")) {
+            caps = new IOSCapabilities();
+            caps.setCapability(IOSCapabilities.DEVICE, this.deviceType);
+            caps.setCapability(IOSCapabilities.LANGUAGE, this.language);
+            caps.setCapability(IOSCapabilities.LOCALE, this.locale);
+            caps.setCapability(IOSCapabilities.BUNDLE_NAME, appName);
+        } else if (this.deviceType.contains("android")) {
+            caps = SelendroidCapabilities.android();
+            caps.setBrowserName("selendroid");
+            caps.setCapability(SelendroidCapabilities.AUT, appName);
+            String platformVersion = deviceType.toLowerCase().replace("android", "");
+            caps.setCapability(SelendroidCapabilities.PLATFORM_VERSION, platformVersion);
+            caps.setCapability(SelendroidCapabilities.LOCALE, this.locale);
+            
+            // caps = SelendroidCapabilities.android(DeviceTargetPlatform.ANDROID19);
+            // caps.setPlatform(Platform.ANDROID);
+            // caps.setVersion("19");
+            
+        }
         return caps;
     }
 

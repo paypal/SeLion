@@ -18,7 +18,6 @@ package com.paypal.selion.platform.grid;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.uiautomation.ios.communication.device.DeviceType;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
@@ -71,22 +70,19 @@ public class MobileTestSession extends AbstractTestSession {
 
     public WebDriverPlatform getPlatform() {
         WebDriverPlatform platform = WebDriverPlatform.ANDROID;
-        if (getDevice() == DeviceType.iphone || getDevice() == DeviceType.ipad) {
+        if (getDevice().equalsIgnoreCase("iphone") || getDevice().equalsIgnoreCase("ipad")) {
             platform = WebDriverPlatform.IOS;
         }
         return platform;
     }
 
-    public DeviceType getDevice() {
-        DeviceType whatDevice = DeviceType.iphone;
-        if (device.equalsIgnoreCase("ipad")) {
-            whatDevice = DeviceType.ipad;
-            return whatDevice;
+    public String getDevice() {
+        if (device.contains("android") || device.equalsIgnoreCase("iphone") || device.equalsIgnoreCase("ipad")) {
+            return device;
+        } else {
+            throw new IllegalArgumentException("The device should either be provided as 'iphone', 'ipad', 'android16',"
+                    + " 'android17', 'android18', or 'android19'.");
         }
-        if (!device.equalsIgnoreCase("iphone")) {
-            throw new IllegalArgumentException("The iOS Device should either be provided as iphone or ipad.");
-        }
-        return whatDevice;
     }
 
     @Override

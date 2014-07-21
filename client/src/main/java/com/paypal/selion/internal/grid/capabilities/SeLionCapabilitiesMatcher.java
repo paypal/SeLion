@@ -34,7 +34,7 @@ public class SeLionCapabilitiesMatcher extends DefaultCapabilityMatcher {
         }
         boolean android = isAndroid(requestedCapability);
         if (android) {
-            return new SelendroidCapabilityMatcher().matches(nodeCapability, requestedCapability);
+//            return new SelendroidCapabilityMatcher().matches(nodeCapability, requestedCapability);
         }
         return super.matches(nodeCapability, requestedCapability);
     }

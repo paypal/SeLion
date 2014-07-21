@@ -170,6 +170,7 @@ class LocalIOSNode implements StandaloneServerCapabilities {
 
         IOSServerConfiguration config = IOSServerConfiguration.create(args.toArray(new String[args.size()]));
         server = new IOSServer(config);
+        
         // HACK :: put the RootLogger back into the original state
         // remove all handlers first
         for (Handler handler : Logger.getLogger("").getHandlers()) {

@@ -19,6 +19,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.uiautomation.ios.IOSCapabilities;
 import org.uiautomation.ios.communication.device.DeviceType;
 
+/**
+ * @deprecated dead code. todo - refactor GenericCapabilitiesBuilder so this is used
+ */
 class IOSCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private DeviceType deviceType;
 
