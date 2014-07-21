@@ -17,10 +17,11 @@ package com.paypal.selion.platform.remote;
 
 import io.selendroid.SelendroidDriver;
 import io.selendroid.SelendroidCapabilities;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.HttpCommandExecutor;
-
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
 
 /**
  * 
@@ -37,17 +38,17 @@ public class SeLionRemoteSelendroidDriver extends SelendroidDriver {
      * @param driver
      *            {@link RemoteWebDriver} with its command executer and session the new {@link SelendroidDriver} will
      *            function
-     * @param seledroidCapabilities
-     *            driver capabilities of type {@link SelendroidCapabilities}
+     * @param capabilities
+     *            driver capabilities of type {@link Capabilities}
      * @throws Exception
      */
-    public SeLionRemoteSelendroidDriver(RemoteWebDriver driver, SelendroidCapabilities seledroidCapabilities)
+    public SeLionRemoteSelendroidDriver(RemoteWebDriver driver, Capabilities capabilities)
             throws Exception {
-        super(((HttpCommandExecutor) driver.getCommandExecutor()).getAddressOfRemoteServer().toExternalForm(), null);
+        super(((HttpCommandExecutor) driver.getCommandExecutor()).getAddressOfRemoteServer(), null);
         setCommandExecutor(new HttpCommandExecutor(
                 ((HttpCommandExecutor) driver.getCommandExecutor()).getAddressOfRemoteServer()));
         setSessionId(driver.getSessionId().toString());
-        this.selendroidCapabilitiles = seledroidCapabilities;
+        this.selendroidCapabilitiles = new SelendroidCapabilities(capabilities.asMap());
     }
 
     /**
@@ -55,6 +56,17 @@ public class SeLionRemoteSelendroidDriver extends SelendroidDriver {
      */
     @Override
     public SelendroidCapabilities getCapabilities() {
+        if (selendroidCapabilitiles == null) {
+            selendroidCapabilitiles = new SelendroidCapabilities();
+        }
         return selendroidCapabilitiles;
+    }
+    
+    @Override
+    protected void startClient() {
+    }
+
+    @Override
+    protected void startSession(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     }
 }

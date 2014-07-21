@@ -195,7 +195,7 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
             driver.manage().window().setSize(new Dimension(width, height));
         } else if (config.getBrowserHeight() < 0 || config.getBrowserWidth() < 0) {
             throw (new IllegalArgumentException(
-                    "Both the height and the width of the browser window should be greater than  zero"));
+                    "Both the height and the width of the browser window should be greater than zero"));
         }
     }
 

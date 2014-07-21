@@ -15,8 +15,9 @@
 
 package com.paypal.selion.platform.remote;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
 import io.selendroid.SelendroidDriver;
@@ -25,9 +26,7 @@ import io.selendroid.SelendroidCapabilities;
 import org.openqa.selenium.Beta;
 
 /**
- * 
  * This class transforms a normal {@link RemoteWebDriver} with Selendroid capabilities to a {@link SelendroidDriver}
- * 
  */
 @Beta
 public final class SeLionDriverAugmenter {
@@ -41,19 +40,20 @@ public final class SeLionDriverAugmenter {
      * @param driver
      *            {@link RemoteWebDriver} with {@link SelendroidCapabilities} to be transformed
      * @param capability
-     *            {@link DesiredCapabilities} to be used by the {@link SelendroidDriver}, should be of type
+     *            {@link Capabilities} to be used by the {@link SelendroidDriver}, should be of type
      *            {@link SelendroidCapabilities}
      * @return a transformed {@link SelendroidDriver} to be used in the automation
-     * @throws Exception
+     * @throws Exception 
      */
-    public static SelendroidDriver selendroidDriver(RemoteWebDriver driver, DesiredCapabilities capability)
-            throws Exception {
-        if ((driver instanceof RemoteWebDriver) && (capability instanceof SelendroidCapabilities)) {
-            return new SeLionRemoteSelendroidDriver((RemoteWebDriver) driver, (SelendroidCapabilities) capability);
-        } else {
+    public static SelendroidDriver selendroidDriver(RemoteWebDriver driver, Capabilities capability) throws Exception {
+        if (!(driver.getCommandExecutor() instanceof HttpCommandExecutor)) {
+            throw new WebDriverException("selendroid only supports http communication.");
+        }
+        if (!(driver instanceof RemoteWebDriver)) {
             throw new WebDriverException(
                     "SelendoidDriver needs a RemoteWebDriver with http command executor and SelendroidCapabilities to function.");
         }
+        return new SeLionRemoteSelendroidDriver((RemoteWebDriver) driver, capability);
     }
 
 }
