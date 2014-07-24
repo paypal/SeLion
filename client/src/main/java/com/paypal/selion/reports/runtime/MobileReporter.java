@@ -35,7 +35,11 @@ public class MobileReporter extends AbstractReporter {
      */
     public static void log(String message, boolean takeScreenshot) {
         MobileReporter reporter = new MobileReporter();
-        reporter.driver = Grid.iOSDriver();
+        try {
+            reporter.driver = Grid.genericDriver();
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO Handle exception better
+        }
         AppLog currentLog = new AppLog();
         currentLog.setMsg(message);
         // TODO: Point to ponder.
@@ -43,7 +47,8 @@ public class MobileReporter extends AbstractReporter {
         // What should the report be tweaked for type as WEB ?
         currentLog.setType("WEB");
         reporter.setLog(currentLog);
-        reporter.generateLog(takeScreenshot, false);
+        // reporter.generateLog(takeScreenshot, false);
+        reporter.generateLog(takeScreenshot, true); // enabling screenshots during reporting
     }
 
     @Override
