@@ -15,7 +15,6 @@
 
 package com.paypal.selion.platform.grid;
 
-import io.selendroid.SelendroidCapabilities;
 import io.selendroid.SelendroidDriver;
 
 import java.io.BufferedReader;
@@ -31,12 +30,13 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
+
 import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 import org.uiautomation.ios.client.uiamodels.impl.augmenter.IOSDriverAugmenter;
 
@@ -79,14 +79,28 @@ public final class Grid {
     }
 
     public static RemoteIOSDriver iOSDriver() {
-        return IOSDriverAugmenter.getIOSDriver((RemoteWebDriver)threadLocalWebDriver.get().getWrappedDriver());
+        return IOSDriverAugmenter.getIOSDriver((RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver());
     }
-    
+
     public static SelendroidDriver selendroidDriver() throws Exception {
         RemoteWebDriver driver = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
-        return SeLionDriverAugmenter.selendroidDriver(driver, DesiredCapabilitiesFactory.getCapabilities(BrowserFlavors.GENERIC));
+        return SeLionDriverAugmenter.selendroidDriver(driver,
+                DesiredCapabilitiesFactory.getCapabilities(BrowserFlavors.GENERIC));
     }
-    
+
+    public static RemoteWebDriver genericDriver() throws Exception {
+        String deviceType = Grid.getMobileTestSession().getDevice();
+        if (deviceType.contains("android")) {
+            RemoteWebDriver driver = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
+            return SeLionDriverAugmenter.selendroidDriver(driver,
+                    DesiredCapabilitiesFactory.getCapabilities(BrowserFlavors.GENERIC));
+        } else if (deviceType.equalsIgnoreCase("iphone") || deviceType.equalsIgnoreCase("ipad")) {
+            return IOSDriverAugmenter.getIOSDriver((RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver());
+        } else {
+            throw new RuntimeException("Only 'android', 'ipad', and 'iphone' devices supported.");
+        }
+    }
+
     public static long getNewTimeOut() {
         logger.entering();
         String stringTimeOut = ConfigManager.getConfig(getTestSession().getXmlTestName()).getConfigProperty(
