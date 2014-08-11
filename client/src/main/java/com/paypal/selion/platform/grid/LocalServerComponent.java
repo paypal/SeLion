@@ -16,20 +16,19 @@
 package com.paypal.selion.platform.grid;
 
 /**
- * This interface represents the capabilities possessed by a Hub/Node/iOSDriver node.
- * 
+ * This interface represents the common functionality possessed by a hub or node.
  */
-interface StandaloneServerCapabilities {
+interface LocalServerComponent {
     /**
-     * Brings up the node/hub/ios-driver node based on the platform.
+     * Brings up the node/hub based on the platform.
      * 
      * @param platform
-     *            - A {@link WebDriverPlatform} that represents the platform.
+     *            A {@link WebDriverPlatform} that represents the platform.
      */
     public void startUp(WebDriverPlatform platform);
 
     /**
-     * Shuts down the node/hub/ios-driver node running locally.
+     * Shuts down the node/hub running locally.
      */
     public void shutdown();
 }

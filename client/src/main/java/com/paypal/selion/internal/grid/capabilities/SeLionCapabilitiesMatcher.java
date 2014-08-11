@@ -15,8 +15,10 @@
 
 package com.paypal.selion.internal.grid.capabilities;
 
+import io.selendroid.SelendroidCapabilities;
 import io.selendroid.grid.SelendroidCapabilityMatcher;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
@@ -34,7 +36,13 @@ public class SeLionCapabilitiesMatcher extends DefaultCapabilityMatcher {
         }
         boolean android = isAndroid(requestedCapability);
         if (android) {
-//            return new SelendroidCapabilityMatcher().matches(nodeCapability, requestedCapability);
+            //TODO Hack Selendroid does not register node capabilities with AUT, so we are removing it from the
+            // requested capabilities before sending to the matcher. 
+            // See io.selendroid.server.grid.SelfRegisteringRemote#getNodeConfig() for more on this problem
+            Map<String, Object> augmentedRequestedCapabilities = new HashMap<String, Object>();
+            augmentedRequestedCapabilities.putAll(requestedCapability);
+            augmentedRequestedCapabilities.remove(SelendroidCapabilities.AUT);
+            return new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities);
         }
         return super.matches(nodeCapability, requestedCapability);
     }

@@ -45,9 +45,8 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local ios driver node.
- * 
  */
-class LocalIOSNode implements StandaloneServerCapabilities {
+class LocalIOSNode implements LocalServerComponent {
     protected boolean isRunning = false;
     private IOSServer server = null;
     private SimpleLogger logger = SeLionLogger.getLogger();

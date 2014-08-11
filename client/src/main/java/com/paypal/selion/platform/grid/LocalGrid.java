@@ -33,7 +33,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local Hub.
  * 
  */
-class LocalGrid implements StandaloneServerCapabilities {
+class LocalGrid implements LocalServerComponent {
     private boolean isRunning = false;
     private Hub localHub = null;
     private SimpleLogger logger = SeLionLogger.getLogger();
