@@ -38,7 +38,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * node.
  * 
  */
-public class LocalSelendroidNode implements StandaloneServerCapabilities {
+public class LocalSelendroidNode implements LocalServerComponent {
 
     protected boolean isRunning = false;
     private SelendroidLauncher server = null;

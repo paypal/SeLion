@@ -42,7 +42,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local node.
  * 
  */
-class LocalNode implements StandaloneServerCapabilities {
+class LocalNode implements LocalServerComponent {
     private boolean isRunning = false, isRegistered = false;
     private final SimpleLogger logger = SeLionLogger.getLogger();
     private SeleniumServer node;

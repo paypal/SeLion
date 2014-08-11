@@ -37,7 +37,7 @@ final class LocalGridManager {
     }
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
-    private static List<StandaloneServerCapabilities> toBoot = new ArrayList<>();
+    private static List<LocalServerComponent> toBoot = new ArrayList<>();
 
     private static void initializeServerList() {
         if (!toBoot.isEmpty()) {
@@ -73,7 +73,7 @@ final class LocalGridManager {
             return;
         }
         initializeServerList();
-        for (StandaloneServerCapabilities eachItem : toBoot) {
+        for (LocalServerComponent eachItem : toBoot) {
             try {
                 eachItem.startUp(platform);
             } catch (GridException e) {
@@ -98,7 +98,7 @@ final class LocalGridManager {
             return;
         }
 
-        for (StandaloneServerCapabilities eachItem : toBoot) {
+        for (LocalServerComponent eachItem : toBoot) {
             eachItem.shutdown();
         }
         resetServerList();

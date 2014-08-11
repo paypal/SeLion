@@ -49,11 +49,10 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             String platformVersion = deviceType.toLowerCase().replace("android", "");
             caps.setCapability(SelendroidCapabilities.PLATFORM_VERSION, platformVersion);
             caps.setCapability(SelendroidCapabilities.LOCALE, this.locale);
-            
+
             // caps = SelendroidCapabilities.android(DeviceTargetPlatform.ANDROID19);
             // caps.setPlatform(Platform.ANDROID);
             // caps.setVersion("19");
-            
         }
         return caps;
     }
