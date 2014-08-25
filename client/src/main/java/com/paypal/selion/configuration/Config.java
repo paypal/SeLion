@@ -54,6 +54,10 @@ import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBu
  * &lt;parameter name="seleniumhost" value="" /&gt;
  * &lt;!-- optional, defaults to 4444 (GLOBAL) --&gt;
  * &lt;parameter name="seleniumport" value="" /&gt;
+ * &lt;!-- optional, defaults to 8080 (GLOBAL) --&gt
+ * &lt;parameter name="selendroidServerPort" value="" /&gt;
+ * &lt;!-- optional, defaults to Selendroid's emulator/device (GLOBAL)--&gt
+ * &lt;parameter name="selendroidDeviceSerial" value="" /&gt;
  * &lt;!-- optional, defaults to *firefox  --&gt;
  * &lt;parameter name="browser" value="*firefox" /&gt;
  * &lt;!-- optional, defaults to false  (GLOBAL) --&gt;
@@ -570,7 +574,19 @@ public final class Config {
          * Default is set to <b>true</b><br>
          * <br>
          */
-        LOG_PAGES("logPages", "true", true);
+        LOG_PAGES("logPages", "true", true),
+
+        /**
+         * Selendroid Server port to use.<br>
+         * Defaults to the value used by Selendroid (<b>8080</b>)
+         */
+        SELENDROID_SERVER_PORT("selendroidServerPort", "8080", true), 
+
+        /**
+         * Device Serial to use.<br>
+         * Default is selected automatically by Selendroid
+         */
+        SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial" , "", true);
 
         private String name = null;
         private String defaultValue = null;

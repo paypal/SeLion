@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <selenium.version>2.41.0</selenium.version>
         <iosdriver.version>0.6.6-SNAPSHOT</iosdriver.version>
-        <selendroid.version>0.8.0</selendroid.version>
+        <selendroid.version>0.10.0</selendroid.version>
         <testng.version>6.8.7</testng.version>
         <project.bom.version>${project.version}</project.bom.version>
     </properties>

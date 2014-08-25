@@ -60,4 +60,9 @@ public @interface MobileTest {
      */
     String locale() default "en_US";
 
+    /**
+     * Device Serial to be used. Defaults to device/emulator chosen by Selendroid
+     */
+    String deviceSerial() default "";
+
 }
