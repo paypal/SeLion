@@ -149,6 +149,10 @@
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-grid-plugin</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.selendroid</groupId>
+            <artifactId>selendroid-standalone</artifactId>
+        </dependency>
 
         <!-- IOS Driver dependencies. -->
         <dependency>

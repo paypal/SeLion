@@ -28,6 +28,7 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private String deviceType = null;
     private String language = null;
     private String locale = null;
+    private String deviceSerial = null;
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
@@ -49,10 +50,9 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             String platformVersion = deviceType.toLowerCase().replace("android", "");
             caps.setCapability(SelendroidCapabilities.PLATFORM_VERSION, platformVersion);
             caps.setCapability(SelendroidCapabilities.LOCALE, this.locale);
-
-            // caps = SelendroidCapabilities.android(DeviceTargetPlatform.ANDROID19);
-            // caps.setPlatform(Platform.ANDROID);
-            // caps.setVersion("19");
+            if(!this.deviceSerial.isEmpty()) {
+                caps.setCapability(SelendroidCapabilities.SERIAL, this.deviceSerial);
+            }
         }
         return caps;
     }
@@ -64,6 +64,7 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             this.deviceType = config.getDevice();
             this.language = config.getAppLanguage();
             this.locale = config.getAppLocale();
+            this.deviceSerial = config.getdeviceSerial();
         }
     }
 }

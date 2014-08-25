@@ -38,6 +38,7 @@ public class MobileTestSession extends AbstractTestSession {
     private String device = "iphone";
     private String appLanguage;
     private String appLocale;
+    private String deviceSerial;
 
     MobileTestSession() {
         super();
@@ -61,7 +62,10 @@ public class MobileTestSession extends AbstractTestSession {
         }
         logger.exiting(appName);
         return appName;
+    }
 
+    public String getdeviceSerial() {
+        return deviceSerial;
     }
 
     public String getAppLocation() {
@@ -126,6 +130,7 @@ public class MobileTestSession extends AbstractTestSession {
         appLocale = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_LOCALE);
         appLanguage = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_LANGUAGE);
         appName = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_NAME);
+        deviceSerial = getLocalConfigProperty(ConfigProperty.SELENDROID_DEVICE_SERIAL);
 
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
@@ -140,6 +145,9 @@ public class MobileTestSession extends AbstractTestSession {
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.device())) {
                 this.device = deviceTestAnnotation.device();
+            }
+            if (StringUtils.isNotBlank(deviceTestAnnotation.deviceSerial())) {
+                this.deviceSerial = deviceTestAnnotation.deviceSerial();
             }
         }
         logger.exiting();
