@@ -125,6 +125,17 @@
                 <artifactId>selendroid-grid-plugin</artifactId>
                 <version>${selendroid.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.selendroid</groupId>
+                <artifactId>selendroid-standalone</artifactId>
+                <version>${selendroid.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>httpclient</artifactId>
+                        <groupId>org.apache.httpcomponents</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <!-- IOS Driver dependencies. -->
             <dependency>
