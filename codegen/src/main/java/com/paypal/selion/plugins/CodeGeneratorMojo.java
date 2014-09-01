@@ -52,14 +52,6 @@ public class CodeGeneratorMojo extends AbstractMojo {
     private String basePackage;
 
     /**
-     * By default, methods from a corresponding {PageObject}Ext.java file are included in the created {PageObject}.java
-     * file.
-     * 
-     * @parameter expression="${selion-code-generator.excludeCustomMethods}" default-value="false"
-     */
-    private Boolean excludeCustomMethods;
-
-    /**
      * List of "domains" to exclude during code generation.
      * 
      * @parameter expression="${selion-code-generator.excludeDomains}"
@@ -159,17 +151,6 @@ public class CodeGeneratorMojo extends AbstractMojo {
                     String tempPackage = basePackage + "." + folder;
                     helper.generateNewCode(eachDataFile, relativePath, tempPackage, domain);
 
-                    if (excludeCustomMethods.booleanValue()) {
-                        logger.info("Excluding Custom Methods Injection for [" + eachDataFile.getName() + "]");
-                        continue;
-                    }
-
-                    if (extendedFile.exists()) {
-                        logger.debug("Injecting custom methods and variables from [" + extendedFile.getName()
-                                + "] into [" + eachDataFile.getName() + "]");
-                        JavaCodeInjector injector = new JavaCodeInjector(extendedFile, baseFile);
-                        injector.insertCode();
-                    }
                 }
 
             } catch (Exception e) {
