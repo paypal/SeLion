@@ -1,0 +1,16 @@
+<pluginRepositories>
+  <pluginRepository>
+    <id>central</id>
+    <name>Example Plugin Repository</name>
+    <url>http://example.plugin.repo/public-all/</url>
+    <layout>default</layout>
+    <snapshots>
+      <!-- Flipping this to true would let you work with SNAPSHOT versions of
+        plugins -->
+      <enabled>true</enabled>
+    </snapshots>
+    <releases>
+      <updatePolicy>never</updatePolicy>
+    </releases>
+  </pluginRepository>
+</pluginRepositories>

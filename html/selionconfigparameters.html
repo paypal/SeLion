@@ -1,0 +1,375 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Configuration Parameters</h1>
+  <!-- Docs page layout Starts-->
+  <p>SeLion provides rich set of config parameters for configuring its various features. All the SeLion config parameters can be configured via TestNG
+    formatted testng-suite.xml file or via JVM Command line arguments. Configuring these parameters via <code>Testng-suite.xml</code> file or JVM Command Line
+      arguments will override the default values, so only the parameters you want to modify from default values should be specified in
+      the suite configuration file or passed via JVM Command line arguments. Any config parameter not found in the testng-suite.xml file
+      (and) JVM Command line arguments, will use the built-in defaults. Some config parameters are global-only in scope which means any value set for these applies to all tests
+    executed from suite.</p>
+  <h2>Config Parameters Scope</h2>
+    <p>Config parameters scope can be applicable to all the test cases that are running from the TestNG Suite file or can applicable
+      specific to a particular TestNG test <code>&lt;test&gt;</code> in suite.
+  <ul>
+    <li>Config parameters defined at suite level are called as global or suite scope parameters
+    <li>Config parameters defined at <code>&lt;test&gt;</code> level are called local or per <code>&lt;test&gt;</code> scope parameters.
+  </ul>
+  <p>All the config parameters specified for <code>&lt;test&gt;</code> are effective to all test methods of that <code>&lt;test&gt;</code>
+    alone and will override the global suite config parameters defined.</p>
+
+  <p>Following are the config parameters for SeLion. Parameters that can be applicable to GLOBAL or suite level scope are defined as
+    <b>GLOBAL</b> and parameters which can be configured to both global and local are defined as <b>GLOBAL, LOCAL</b>.</p>
+  <br>
+  <div style="overflow: auto; height: 500px; width: 95%; border: 1px solid #ccc; FONT-SIZE: 0.8em; FONT-FAMILY: Verdana, Arial, sans serif;">
+    <table class="table table-striped table-condensed">
+      <tbody>
+        <tr>
+          <th>TestNG Suite file config value</th>
+          <th>JVM argument config value</th>
+          <th>Default Value</th>
+          <th>Scope</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>autoScreenShot</td>
+          <td>SELION_AUTO_SCREEN_SHOT</td>
+          <td>true</td>
+          <td class="warning">GLOBAL</td>
+          <td>Automatically take screen shots.</td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">seleniumhost</td>
+          <td class="confluenceTd"><span>SELION_</span>SELENIUM_HOST</td>
+          <td colspan="1">IP Address of the machine wherein a Grid is running.</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>Selenium host might be localhost or other where server is running.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">seleniumport</td>
+          <td class="confluenceTd"><span>SELION_</span>SELENIUM_PORT</td>
+          <td colspan="1">4444</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>Selenium port, any port where Selenium is running. Default is set to 4444</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">firefoxProfile</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_FIREFOX_PROFILE</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td class="confluenceTd">
+            <p>The firefox profile that is to be used for local/remote runs. Use this when you would like to have firefox work with
+              your custom firefox profile. You can either specify the name of the profile or you can specify the directory location
+              of your firefox<br> profile. The framework internally first assumes it to be a profile name. If that assumption
+              fails we fail-over to assuming it to be the firefox profile directory. If that also fails we will work with an
+              anonymous firefox profile. Please be aware that if your firefox profile  directory is very huge (above ~10 MB)
+              then there are chances that it can crash your local JVM.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">localGridConfigFile</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_LOCAL_GRID_CONFIG_FILE</span></td>
+          <td colspan="1"><span>localnode.json</span></td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>The name of the JSON file that can be used, in case for a local run the end user wants to create their own
+              customization for the local grid.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd"><span>saucelabGridConfigFile</span></td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_SAUCELAB_GRID_CONFIG_FILE</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>The name of the JSON file that contains the configuration customization info needed for saucelabs.
+              By default, the configurations specified at
+              <a href="https://saucelabs.com/docs/additional-config">Sauce labs Configurations</a> are applicable.
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">chromeDriverPath</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_CHROMEDRIVER_PATH</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>The path to the chromedriver executable on the local machine. This parameter is taken into
+              consideration for local runs involving googlechrome browser alone.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd"><span>phantomjsPath</span></td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_PHANTOMJS_PATH</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>The path to the PhantomJS executable on the local machine. This parameter is taken into
+              consideration for local runs involving PhantomJS browser alone. The binary can be downloaded
+              from <a href="http://phantomjs.org/download.html" class="external-link" rel="nofollow">http://phantomjs.org/download.html</a>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">userAgent</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_USERAGENT</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td class="confluenceTd">
+            <p>Use this parameter to set the user agent for firefox when working with Mobile version.
+              This parameter should be set in conjunction with the parameter BROWSER.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">proxyServerHost</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_PROXY_HOST</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">Use this parameter to set the Proxy server name to be used.</td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">proxyServerPort</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_PROXY_PORT</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">Use this parameter to set the Proxy server port to be used.</td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">useSauceLabGrid</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_USE_SAUCELAB_GRID</span></td>
+          <td colspan="1">false</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td class="confluenceTd">
+            <p>Use this parameter to indicate if your remote runs are to be run against the sauce lab grid or
+              against the QI owned grid/your own grid. This flag is required because when running against Sauce
+              lab furnished grid, we are to ensure that fetching of WebDriver node IP and Port is to be disabled.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">customCapabilities</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>Use this parameter to provide SeLion with a custom listener which can be plugged into EventFiringWebDriver.
+              If the fully qualified class implements WebDriverEventListener then SeLion will invoke the custom
+              implementation provided by you via your implementation as and when the relevant events happen. If more
+              than one custom listeners are to be provided please separate the fully qualified class names with commas.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">webDriverEventListener</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_WEBDRIVER_EVENT_LISTENER</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>Use this parameter to provide SeLion with a custom listener which can be plugged into EventFiringWebDriver.
+              If the fully qualified class implements WebDriverEventListener then SeLion will invoke the custom
+              implementation provided by you via your implementation as and when the relevant events happen.
+              If more than one custom listeners are to be provided please separate the fully qualified class names with commas.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">runLocally</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_RUN_LOCALLY</span></td>
+          <td colspan="1">false</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>Flip this parameter to true if you would like a browser to be spawned locally on your machine
+              and run automation tests there. Default is set to false which means your tests are always going
+              to be run against a Remote Grid environment as pointed to by Config Parameter SELENIUM_HOST.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">appFolder</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_NATIVE_APP_FOLDER</span></td>
+          <td colspan="1">"Applications" folder in working directory</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td class="confluenceTd">
+            <p>This parameter represents the folder which would contain the IOS app. This parameter is currently
+              only useful for local runs. This is the folder from which applications would be searched for by
+              SeLion when it comes to iOS automation in local runs. So please ensure that all the built applications
+              reside in this folder. This is a mandatory value without which iOS native automation would not work.
+              If no value is provided, SeLion assumes that the application is available under a directory
+              named "Applications" in the current working directory.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">appName</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_NATIVE_APP_NAME</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td class="confluenceTd">
+            <p>This parameter represents the name of the app that is to be spawned. Merely specifying the name of
+              the native app should suffice.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">appLanguage</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_NATIVE_APP_LANGUAGE</span></td>
+          <td colspan="1">en</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td class="confluenceTd">
+            <p>This parameter represents the language to be used. By default it is always <code>English</code>
+              represented as <code>en</code></p>
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">appLocale</td>
+          <td class="confluenceTd"><span>SELION_SELENIUM_NATIVE_APP_LOCALE</span></td>
+          <td colspan="1">en_US</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td class="confluenceTd">
+            <p>This parameter represents the locale to be used. By default it is always <code>US English</code>
+              represented as <code>en_US</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">sauceUserName</td>
+          <td colspan="1"><span>SELION_SAUCELAB_USER_NAME</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1">This parameter is used to pass SauceLabs user name</td>
+        </tr>
+        <tr>
+          <td colspan="1">sauceApiKey</td>
+          <td colspan="1"><span>SELION_SAUCELAB_API_KEY</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1">This parameter is used to pass SauceLabs api key</td>
+        </tr>
+        <tr>
+          <td colspan="1">GUIDataDir</td>
+          <td colspan="1"><span>SELION_GUI_DATA_DIR</span></td>
+          <td colspan="1">GUIData</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1">
+            <p>Represents the directory from wherein resource files which houses locators for generating SeLion
+              PageObjects.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">siteLocale</td>
+          <td colspan="1"><span>SELION_SITE_LOCALE</span></td>
+          <td colspan="1">US</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">
+            <p>Site will show country used for tests.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">browser</td>
+          <td colspan="1"><span>SELION_BROWSER</span></td>
+          <td colspan="1">*firefox</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">Browser specified by user.</td>
+        </tr>
+        <tr>
+          <td colspan="1">version</td>
+          <td colspan="1"><span>SELION_BROWSER_CAPABILITY_VERSION</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">version specified by user when working with custom browser needs.</td>
+        </tr>
+        <tr>
+          <td colspan="1">enableGUILogging</td>
+          <td colspan="1"><span>SELION_ENABLE_GUI_LOGGING</span></td>
+          <td colspan="1">false</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1">
+            <p>Turn this flag ON to see GUI actions such as loading a URL, click/setting text etc., being
+              logged into the test reports that get generated by SeLion.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">baseDir</td>
+          <td colspan="1"><span>SELION_BASE_DIR</span></td>
+          <td colspan="1">selionFiles</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1">The base directory for SeLion files.</td>
+        </tr>
+        <tr>
+          <td colspan="1">workDir</td>
+          <td colspan="1"><span>SELION_WORK_DIR</span></td>
+          <td colspan="1">BASE_DIR.defaultValue + "/selionWorkDir"</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1">The work directory of SeLion</td>
+        </tr>
+        <tr>
+          <td colspan="1">platform</td>
+          <td colspan="1"><span>SELION_BROWSER_CAPABILITY_PLATFORM</span></td>
+          <td colspan="1">ANY</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">platform is specified by user. Supporting values are: ANDROID, ANY, LINUX, MAC, UNIX,
+            VISTA, WINDOWS, XP.</td>
+        </tr>
+        <tr>
+          <td colspan="1">enableJavaScript</td>
+          <td colspan="1"><span>SELION_BROWSER_CAPABILITY_SUPPORT_JAVASCRIPT</span></td>
+          <td colspan="1">true</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">
+            <p>Should javascript capability be enabled on the browser for the AUT. By default javascript will be
+              enabled on<br> * the client browser, but this flag can be used to toggle this setting.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">browserHeight</td>
+          <td colspan="1"><span>SELION_BROWSER_HEIGHT</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">
+            <p>Set the Height of the Browser Window Should be a whole number.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">browserWidth</td>
+          <td colspan="1"><span>SELION_BROWSER_WIDTH</span></td>
+          <td colspan="1">&nbsp;</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">
+            <p>Set the Width of the Browser Window Should be a whole number.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">executionTimeout</td>
+          <td colspan="1"><span>SELION_EXECUTION_TIMEOUT</span></td>
+          <td colspan="1">120000 milli seconds</td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
+          <td colspan="1">
+            <p>Timeout for an execution command, in milliseconds. Used in SeLion to configure Selenium timeouts</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">logPages</td>
+          <td colspan="1"><span>SELION_</span>LOG_PAGES</td>
+          <td colspan="1">true</td>
+          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1">
+            <p>Automatically log pages source code. Used in conjunction with ConfigProperty <span>autoScreenShot</span></p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="SeLionConfigParameters-ConfiguringParametersviaTestNGsuitefiles">Configuring Parameters in TestNG Suite Files</h2>
+  <p>Config parameters can be configured via TestNG suite files. An example TestNG suite file is as follows.</p>
+
+  <pre data-src="../sample-files/selionconfigparameters-sample1.xml"></pre>
+
+  <p>In the above example suite file, <code>runLocally</code> parameter can be configure in global (GLOBAL) for all test cases in suite
+    and can not be configured to specific <code>&lt;test&gt;</code>  section where as <code>browser</code> parameter can be configured
+    to specific <code>&lt;test&gt;</code> section(<span>GLOBAL, LOCAL</span>).</p>
+
+  <h2>Configuring Parameters as JVM Command Line Arguments</h2>
+  <p>Config parameters can be configured via JVM command line arguments and you can configure
+    GLOBAL scope config parameters via this way. An example of passing the SeLion config parameters
+    is as follows.</p>
+  <code>-DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_BROWSER="*firefox"</code>.
+  <p>Config parameters configured from JVM command line arguments will override the parameters
+    defined in the TestNG suite.</p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

@@ -1,0 +1,85 @@
+<div class="selion-content-div">
+  <h1 id="getting-started-with-seLion" class="page-header">Excel Data Provider</h1>
+  <p class="lead">ExcelDataProvider is a utility class within SeLion that helps in reading test data from Excel spreadsheets so
+    they may be used in data driven tests.</p>
+  <p>Lets look at a basic example to see how to use the ExcelDataProvider</p>
+  <p>First create an Excel sheet similar to the following sample:</p>
+
+  <div class="container">
+    <img src="../images/exceldataprovider-sample1.jpg" alt="View of the Excelsheet">
+  </div>
+
+  <p>Here the row 1 includes the variable names. The following rows contain the values for those variable names.</p>
+  <p>The first column, containing the keys, is compulsary but does not contain actual test data. It is used to get
+    specific rows from the sheet. The title can be anything we choose</p>
+  <p>To read from the Excel sheet you need to define a <code>@DataProvider</code>.</p>
+
+  <p>The <code>@DataProvider</code> looks like the following:</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample1.java"></pre>
+
+  <p>Lets go through it.</p>
+  <p>We first instantiate the ExcelDataProvider with the location of the Excel file that we want to use. There is also
+    an alternative constructor available that allows us to specify the directory and filename separately.</p>
+  <p>The next step is to define the class into which we want to read the data from the Excel sheet. In this case we want
+    to read the data into objects of the class <samp>MyDataSheet</samp>. We will show you the class in the next step. An
+    object of this class is passed to the <code>getAllExcelRows()</code> method.</p>
+  <p>The response from the <code>getAllExelRows()</code> method is an <code>Object[][]</code> that is returned by the
+    data provider and consumed by the test method.</p>
+  <p>The <samp>MyDataSheet</samp> class looks the following:</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample2.java"></pre>
+
+  <p>Keep in mind that the variables need to be defined with the exact same names and in the exact same order as the Excel
+    sheet.</p>
+  <p>The test method looks like the following:</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample3.java"></pre>
+
+  <p>So now that we can read all the rows, lets look at the methods that allow us to read specific rows</p>
+  <p>Lets start with <code>getSingleExcelRow()</code>. This method takes two parameters, one of which is the key</p>
+  <p>Lets also assume the Excel sheet is slightly different:</p>
+
+  <div class="container">
+    <img src="../images/exceldataprovider-sample1.jpg" alt="View of the Excelsheet">
+  </div>
+
+  <p>Here we have changed the first column to use keys to specify particular rows</p>
+  <p>The <code>@DataProvider</code> method will look as follows:</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample4.java"></pre>
+
+  <p>In this case we asked for the row with the key 'c' and stored its values in the object myData. We then created the
+    <code>Object[][]</code> that is the return type of the method.</p>
+  <p>The test method does not change at all.</p>
+  <p>We can change a single line and ask for the row by the order in which it appears instead of specifying the key. For
+    example the <code>getSingleExcelRow()</code> could have been invoked as follows:</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample5.java"></pre>
+
+  <p>This would return the second row in the Excel sheet. This is specified as 1 because it is the first data row.
+    Remeber that the very first row of the Excel sheet contains the variable names and not actual test data and
+    therefore we start counting from below it.</p>
+  <p>ExcelDataProvider provides two <code>getExcelRows()</code> variants that can be used to get multiple rows depending
+    on the conditions we set.</p>
+  <p>The first of these methods allows us to specify the indexes of the Excel rows that we want. It is used as
+    follows:</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample6.java"></pre>
+
+  <p>Observe that we have specified a range of rows to be used. in this case rows 1 through 3. We could also have
+    specified the specific rows as "1, 2, 3". ExcelDataProvider even lets you specify the rows as a combination of the
+    two methods. Our example Excel sheet is not long enough but we could have specified the rows as follows
+    "1-3,4,6,8,10-12", getting the rows 1,2,3,4,6,8,10,11,12</p>
+  <p>The second method allows us to specify a String array containing the keys that we want to be included.</p>
+  <p>The <code>@DataProvider</code> will change as follows:</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample7.java"></pre>
+
+  <p>In this case the ExcelDataprovider will go through all the rows and return only the ones which have keys in the
+    array of keys that we have provided i.e. rows 'a', 'c' and 'd'</p>
+
+  <pre data-src="../sample-files/excelDataProvider-sample8.java"></pre>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

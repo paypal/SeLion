@@ -1,0 +1,48 @@
+<suite thread-count="100" verbose="1" name="Parallel Test Suite"
+  skipfailedinvocationcounts="false" junit="false" parallel="tests"
+  data-provider-thread-count="50" annotations="JDK">
+
+  <!-- configure to run in firefox -->
+  <parameter name="browser" value="*firefox"/>
+  <!-- configure to run the test cases locally -->
+  <parameter name="runLocally" value="true"/>
+
+  <test verbose="2" name="Parallel1" annotations="JDK">
+    <!-- these test cases will run in chrome browser-->
+    <parameter name="browser" value="*chrome"/>
+    <groups>
+      <run>
+        <include name="parallelBrowserTest1"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.automation.Test1"/>
+      <class name="com.automation.Test2"/>
+    </classes>
+  </test>
+  <test verbose="2" name="Parallel2" annotations="JDK">
+    <!-- these test cases will run in iexplore browser-->
+    <parameter name="browser" value="*iexplore"/>
+    <groups>
+      <run>
+        <include name="parallelBrowserTest2"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.automation.Test1"/>
+      <class name="com.automation.Test2"/>
+    </classes>
+  </test>
+  <test verbose="2" name="Parallel3" annotations="JDK">
+    <!-- browser inherited from suite param and will run in firefox-->
+    <groups>
+      <run>
+        <include name="parallelBrowserTest3"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.automation.Test1"/>
+      <class name="com.automation.Test2"/>
+    </classes>
+  </test>
+</suite>

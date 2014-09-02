@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Default suite">
+  <!-- optional, defaults to false. This can also be set via the JVM argument
+    -DSELION_SELENIUM_RUN_LOCALLY=true -->
+  <parameter name="runLocally" value="true"/>
+
+  <test verbose="2" name="Default test" thread-count="5" parallel="classes">
+    <groups>
+      <run>
+        <include name="sessionSharingWebTests"/>
+      </run>
+    </groups>
+    <classes>
+      <!-- we have 5 classes which has test cases sharing sessions -->
+      <class name="com.automation.WebSessionSharingTest1"/>
+      <class name="com.automation.WebSessionSharingTest2"/>
+      <class name="com.automation.WebSessionSharingTest3"/>
+      <class name="com.automation.WebSessionSharingTest4"/>
+      <class name="com.automation.WebSessionSharingTest5"/>
+    </classes>
+  </test>
+</suite>

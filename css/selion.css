@@ -1,0 +1,107 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  color: #5a5a5a;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 22px;
+}
+
+a {
+  color: rgb(42,168,162);
+}
+a:hover {
+  color: rgb(25,126,122);
+}
+
+.nav-list > .active > a,
+.nav-list > .active > a:hover {
+  background-color: rgba(0, 93, 97, 0.75);
+  border-radius: 4px;
+}
+
+.nav-list > li > a:active {
+  background-color: transparent;
+}
+
+.nav-list > li > a:hover {
+  background-color: rgba(0, 93, 97, 0.25);
+  border-radius: 4px;
+}
+
+:not(pre) > code[class*="language-"], pre[class*="language-"] {
+  background-color: #f5f5f5;
+}
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 300px) {
+  .logo {
+    width: 50%;
+    height: 50%;
+    min-width: 300px;
+  }
+  .logo-background {
+    background-image: url('../images/selion-background.png');
+    background-repeat: no-repeat;
+    background-size: 100% 110%;
+  }
+
+  .selion-graphic img {
+    min-width: 300px;
+    padding-left: 20px;
+    width: 100%;
+  }
+
+  .selion-header {
+    padding-top: 20px;
+  }
+
+  .footer {
+    position: absolute !important;
+    bottom: 0 !important;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 100px;
+    background-color: rgba(74, 139, 133, 0.10);
+    font-size: smaller;
+    padding-top: 25px;
+    padding-bottom: 15px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .selion-side-menu {
+    padding-top: 50px;
+    font-size: smaller;
+  }
+
+  .selion-content-div {
+    position: relative;
+    padding: 0px 0px 50px 0px  !important;
+    margin: 0px 0px 200px 0px !important;
+    min-height: 100%;
+    min-width: 100%;
+  }
+}
+
+
+@media (min-width: 200px) {
+  .selion-graphic img {
+    min-width: 200px;
+  }
+}
+

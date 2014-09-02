@@ -1,0 +1,42 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Building SeLion from Soure Code</h1>
+      <!-- Docs page layout Starts-->
+  <h2 id="prerequisites">Prerequisites</h2>
+              <p>Make sure the following software is installed on your machine before you start using SeLion:</p>
+              <ul>
+                <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java JDK 1.7</a></li>
+                <li><a href="http://maven.apache.org/download.html">Maven 3</a></li>
+                <li><a href="https://github.com/ios-driver/ios-driver/blob/dev/README.md">ios-driver 0.6.6-SNAPSHOT installed into your local Maven Repository</a></li>
+              </ul>
+  <h2>Cloning the Repository</h2>
+      <p>To build SeLion you first need to clone the code from the git repository:</p>
+  <pre data-src="../sample-files/gitCloneSelion.sh"></pre>
+  <p>The entire Maven project will be cloned for you. The project is
+    organized as a multi module maven project. The folder will contain a POM file as
+    well as separate folders for each of the sub modules. The good thing is
+    that the sub modules
+    can be run and built as independent Maven projects themselves.</p>
+  <h2>Building the Jar</h2>
+  <p>The build process kicks off all unit tests. If the tests run successfully, the artifacts get published to the local Maven repository (<code>~/.m2</code>).<p>
+  <p>The below command will run the test cases against the Selenium grid that you have specified.</p>
+  <pre data-src="../sample-files/runUnitTests.txt"></pre>
+  <br>
+  <p>The below command will spawn a Selenium Grid on your local machine and spawn the browsers there itself, for the tests to be run.</p>
+  <pre data-src="../sample-files/runLocallyCommand.txt"></pre>
+
+  <h2>Building Specific Maven Modules</h2>
+  <p>Sometimes you might choose to only build/run tests for a single module. For example, the "client" module.
+    To do this just switch to the folder of the corresponding module and use the above mentioned Maven commands.</p>
+  <h2>Project Organization</h2>
+  <p>All the Maven projects are organized as follows:</p>
+  <ul>
+    <li><b>src/main/java</b> - Contains the code and logic of the application.</li>
+    <li><b>src/test/java</b> - Contains the unit and functional tests used to check the application.</li>
+    <li><b>src/main/resources</b> - Contains the non-code files required
+      for the application to work.</li>
+    <li><b>src/test/resources</b> - Contains all the files that are required to run the unit and functional tests. Also contains the suite
+      files in addition to the data.</li>
+  </ul>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

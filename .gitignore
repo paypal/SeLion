@@ -1,0 +1,8 @@
+archetype/
+server/
+client/
+codegen/
+.project
+.settings/
+.DS_Store
+.idea/

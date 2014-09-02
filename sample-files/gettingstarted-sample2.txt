@@ -1,0 +1,6 @@
+Sample/
+├── pom.xml
+├── src/main/com/mycompany/test
+│                            ├── App.java
+├── src/test/com/mycompany/test
+│                            ├── AppTest.java

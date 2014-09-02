@@ -1,0 +1,34 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+  US: "API Page"
+elements:
+  addOrEditAPIPermissionsLink:
+    locators:
+      US: "//div[@id='apiOption1']/p[3]/a"
+  viewAPICertificateLink:
+    locators:
+      US: "//div[@id='apiOption2']/p[3]/a"
+  enableExpressCheckoutLink:
+    locators:
+      US: "//div[@id='main']/div/form/p[3]/a"
+  requestAPICredentialsLink:
+    locators:
+      US: "//a[contains(@href, 'cmd=_profile-api-add-direct-access')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dadd%2ddirect%2daccess')]"
+      FR: "foo"
+  grantAPIPermissionLink:
+    locators:
+      US: "//a[contains(@href, 'cmd=_profile-api-add-authorization')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dadd%2dauthorization')]"
+  viewAPISignatureLink:
+    locators:
+      US: "//a[contains(@href, 'cmd=_profile-api-signature')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dsignature')]"
+  headerContainer:
+    locators:
+      US: "css=header"
+    containerElements:
+      someLink:
+        locators:
+          US: "css=a"
+pageValidators: [
+  grantAPIPermissionLink.isVisible,
+  viewAPISignatureLink
+  ]

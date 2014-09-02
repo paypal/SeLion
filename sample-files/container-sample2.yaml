@@ -1,0 +1,23 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+    english: "PayPal: Wallet"
+elements:
+    bankHeaderLabel:
+        locators:
+            english: "//*[contains(text(),'Bank Accounts')]"
+    bankContainer:
+        locators:
+            english: "css=.fundingSources.banks .fundingSource:not(.ghost)"
+        containerElements:
+            bankNameLabel:
+                locators:
+                    "english": "css=[class*=cardName]"
+            bankTypeLabel:
+                locators:
+                    "english": "css=[class*=type]"
+            bankLast4DigitsLabel:
+                locators:
+                    "english": "css=[class*=lastDigits]"
+            bankLink:
+                locators:
+                    "english": "css=a"

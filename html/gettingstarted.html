@@ -1,0 +1,70 @@
+<div class="selion-content-div">
+  <h1 id="getting-started-with-seLion" class="page-header">Getting
+    Started with Web Automation</h1>
+
+  <p class="lead">How to create a web-based test using SeLion.</p>
+
+  <h2 id="prerequisites">Prerequisites</h2>
+  <p>Make sure the following software is installed on your machine before you start using SeLion:</p>
+  <ol>
+    <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java JDK 1.7</a></li>
+    <li><a href="http://maven.apache.org/download.html">Maven 3</a></li>
+    <li><a href="#buildingSelion">SeLion installed into your local Maven Repository</a></li>
+  </ol>
+
+  <h2 id="project-creation">Create a Sample Project</h2>
+  <p class="alert-info">Note: this step is optional and does not need to be completed if you already have a maven project.</p>
+  <p>Once you have satisfied all of the prerequisites, open a command prompt and navigate to the directory where you
+      want your project to be located, and run:</p>
+
+  <pre data-src="../sample-files/gettingstarted-sample1.sh"></pre>
+  <br>
+  <p>The sample project will automatically be generated from the Maven archetype. You will see something like this:</p>
+
+  <pre data-src="../sample-files/gettingstarted-sample2.txt"></pre>
+  <h2>Update the POM File</h2>
+  <p>Update the pom.xml file as below:</p>
+  <ol>
+      <li>Add SeLion in the dependency section</li>
+      <li>Add Maven surefire plugin in the build section</li>
+      <li>Remove the JUnit dependency (it is not needed at this point).</li>
+  </ol>
+
+  <p>Here is how your POM file would look like after all the above mentioned updates have been done.</p>
+
+  <pre data-src="../sample-files/gettingstarted-sample3.xml"></pre>
+  <p>Now run the following command in the project directory path from a command prompt.</p>
+  <pre><code class="language-sh">mvn dependency:resolve</code></pre>
+  <p>This command causes Maven to start downloading all of the required jar files.</p>
+
+  <h2>Creating a @WebTest</h2>
+  <p>Create the file <samp>Demo.java</samp> under the folder <code>{project}/src/test/java/com/mycompany/test/</code> and copy
+      the below contents:</p>
+
+  <pre data-src="../sample-files/gettingstarted-sample4.java"></pre>
+
+  <h2>Create a TestNG Suitefile</h2>
+  <p>
+    Currently, SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. To execute a test suite you should create
+    a TestNG Suite file. Create the file <samp>SampleSuite.xml</samp> under the folder <code>{project}/src/test/resources</code>
+    and copy the below contents:
+  </p>
+
+  <pre data-src="../sample-files/gettingstarted-sample5.xml"></pre>
+  <h2>Execute the Test</h2>
+  <p> To execute the test, run the following command in the project directory path from a command prompt.</p>
+  <pre><code class="language-sh">mvn clean test -DsuiteXmlFile=src/test/resources/SampleSuite.xml</code></pre>
+  <p><b>What does the test do? </b></p>
+  <p>Sit back and watch the test do the following on your machine:</p>
+  <ol>
+      <li>Launch the browser.</li>
+      <li>Open the Google URL. </li>
+      <li>Wait until the search field element is present.</li>
+      <li>Type the text 'SeLion' into the search field and hit enter.</li>
+  </ol>
+
+  <br>
+  <p><b>Congratulations! You just implemented your first automated web test using SeLion!</b></p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

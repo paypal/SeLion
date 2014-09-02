@@ -1,0 +1,54 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Sharing WebDriver Sessions</h1>
+
+  <p class="lead">
+    How to share local and remote (on a Grid) web sessions in SeLion.
+  </p>
+    <p>
+    Session sharing is a mechanism built into SeLion that allows a session to be shared between two or more tests
+    running sequentially. When requested, a WebDriver session that is created in one test can be kept open and
+    reused in a following test.</p>
+
+  <h2>How to Share WebDriver Sessions Between Tests</h2>
+  <ol>
+    <li>Annotate the test case with <code>@WebTest</code>. Give it a unique <code>sessionName</code> and set
+        <code>keepSessionOpen = true</code>.
+        This method is now the master test where it initiates the WebDriver session. You can now use the <code>sessionName</code>
+        in other tests within the class.
+
+      <pre data-src="../sample-files/webdriversessionsharing-sample1.java"></pre>
+     </li>
+
+    <li>To pick up the same test session in a different test, annotate the test with <code>@WebTest</code>
+        and use the same <code>sessionName</code> defined in the master test. Then, set  <code>keepSessionOpen = false</code>.
+        This will reuse the same session in this test instead of creating a new session. Since these tests depend on each
+        other, we can use TestNG's <code>dependsOnMethods</code> setting to make it run in
+        sequence. <p class="alert-info">Note: It's good practice to keep these tests in the same group.</p>
+
+
+      <pre data-src="../sample-files/webdriversessionsharing-sample2.java"></pre>
+      Here is a complete example that shows how a typical test would look:
+
+      <pre data-src="../sample-files/webdriversessionsharing-sample3.java"></pre>
+      Web sessions can be shared to <var>n</var> <code>@Test</code> methods as long as test cases are running sequentially.
+      Here is an example where the session is shared across three <code>@Test</code> methods.
+
+      <pre data-src="../sample-files/webdriversessionsharing-sample4.java"></pre></li>
+  </ol>
+
+  <h2>Tips for Using Web Session Sharing Effectively</h2>
+  <ol>
+      <li>Don't mix non-shared web tests or other isolated tests in the same class.</li>
+      <li>Only use one shared web session per class.</li>
+      <li>Don't run web sharing tests in parallel. It can cause time gaps between test case executions.</li>
+      <li>Don't use <code>@BeforeMethod</code> or <code>@AfterMethod</code>. It has the same issue as the previous line.</li>
+      <li>Execute your shared tests in sequence within each class (Test B depends on A, Test C depends on B, etc..)
+      Avoid having all your tests dependent on the one master test method.</li>
+      <li>Group your shared tests in one test suite. Configure them to run in parallel at the class level by
+      setting the property <code>parallel = "classes"</code>. Also, set your thread count to the number of
+      classes defined in your suite.</li>
+  </ol>
+  <pre data-src="../sample-files/webdriversessionsharing-sample5.xml"></pre>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

@@ -1,0 +1,16 @@
+<plugin>
+  <groupId>com.paypal.selion</groupId>
+  <artifactId>SeLion-Code-Generator</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <executions>
+    <execution>
+      <phase>generate-sources</phase>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+    </execution>
+  </executions>
+  <configuration>
+    <basePackage>com.mycompany</basePackage>
+  </configuration>
+</plugin>

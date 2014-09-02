@@ -1,0 +1,1 @@
+mvn clean install -DSELION_SELENIUM_HOST=<location of your currently running selenium grid>

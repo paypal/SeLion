@@ -1,0 +1,15 @@
+# Normalize all text files with LF when stored but 
+# convert to the OS's native line endings on checkout
+* text
+*.gif binary
+*.xls binary
+*.xlsx binary
+*.png binary
+*.ico binary
+*.psd binary
+*.key binary
+*.svg binary
+*.eot binary
+*.ttf binary
+*.woff binary
+*.jpg binary

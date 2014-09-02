@@ -1,0 +1,53 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Introducing the Container Element in
+    SeLion</h1>
+  <p class="lead">A Container element is used to hold one or more of the other html elements. Some of
+    the examples of containers are the <code>span</code>, <code>div</code>, or
+    <code>tr</code> elements</p>
+  <!--<h2>Why Container Elements?</h2>-->
+  <!--<p>Container elements are useful when the same set of html elements are encompassed in different containers-->
+    <!--and iterating over them does not need one to change the entire XPATH but merely by switching containers the elements-->
+    <!--can be accessed.</p>-->
+  <h2>Container Element Format</h2>
+  <p>The YAML declaration for a typical container element would look like the sample below. To learn more about YAML and
+      SeLion, refer to the section -- <a href="#pageyaml">What is a YAML page in the SeLion world</a>.</p>
+  <pre data-src="../sample-files/container-sample1.yaml" class="language-markup"></pre>
+  <p>Here we are stating :</p>
+    <ul>
+    <li>We would like to define a Container element in SeLion and we would like to be calling it as
+      <code>bankContainer</code>.</li>
+    <li>This container element can be identified using the css locator
+      <code>css=.fundingSources.banks .fundingSource:not(.ghost)</code> for the locale <code>english</code>.
+      You can add more locales if there is a need.</li>
+    <li>This container element has the below elements contained in it:
+      <ol>
+        <li>A label which we would like to name as <code>bankNameLabel</code> and which can be located using the
+          css locator  <code>css=[class*=cardName]</code> for the locale <code>english</code></li>
+        <li>A label which we would like to name as <code>bankTypeLabel</code> and which can be located using
+          the css locator <code>css=[class*=type]</code> for the locale <code>english</code></li>
+        <li>A label which we would like to name as <code>bankLast4DigitsLabel</code> and which can be located
+          using the css locator <code>css=[class*=lastDigits]</code> for the locale <code>english</code></li>
+        <li>A link which we would like to name as <code>bankLink</code> and which can be located using the css
+          locator <code>css=a</code> for the locale <code>english</code></li>
+      </ol>
+    </li>
+    </ul>
+    <p>When we generate the actual Page class using the <a href="whatIsCodeGenerator.html">SeLion Code generator
+        Maven plugin</a> the generated code would look like the sample below:</p>
+      <p style="text-decoration: underline">A Sample YAML page:</p>
+      <pre data-src="../sample-files/container-sample2.yaml" class="language-markup"></pre>
+      <p style="text-decoration: underline">The SeLion Code Generator will create the following:</p>
+      <pre data-src="../sample-files/container-sample3.java"></pre>
+      <p>As you can see, the SeLion Code Generator Maven plugin constructed a sub class
+        named <code>BankContainer</code> for the SeLion element <code>Container</code> and also added all the required
+        code that is now going to help us interact with the elements that are contained within.</p></li>
+
+    <h2>Rules for Using Containers</h2>
+    <ul>
+      <li>The name of the container element should end with the text <code>Container</code>. This
+        is how SeLion identifies the type of an element when it resorts to generating actual java classes in Runtime.</li>
+      <li>Nesting of containers is <b>NOT</b> allowed. You cannot embed one container within the other.</li>
+    </ul>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

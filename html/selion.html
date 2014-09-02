@@ -1,0 +1,44 @@
+<div class="selion-content-div">
+  <h1 class="page-header">What is SeLion?</h1>
+  <p>
+      In 2010 we embarked on a journey to replace our old "record and playback" test software with a
+      Java native test framework that promoted best practices and could scale across complex flows and multiple
+      languages. The result? A <b>Selenium WebDriver-based</b> framework that slowly evolved into what we're introducing as
+      <b>SeLion</b> (pronounced "sea lion"). We've spent years making improvements, fixing bugs, and generally
+      learning from our mistakes. In fact we've re-architected the code at least twice. We're at the point now where
+      we're pretty happy with the results and we're taking it to the Selenium community by request.
+  </p>
+  <h2>Why use SeLion?</h2>
+  <p>
+      Let's say you have a complicated website with all sorts of pages and flows, and it is changed CONSTANTLY by an army
+      of developers in multiple locations AND your website is rendered in about three dozen languages. Your boss
+      comes to  you and says "Hey, we need to test all this stuff, but the automated test cases need to be easily
+      maintainable and the people writing the tests shouldn't have to do a ton of coding. By the way, it
+      needs to be in Java."
+  </p>
+  <p>
+      Enter <b>SeLion</b>. Front-end automation made less difficult. We don't like the word "easy" because the most powerful tools
+      are not push-button easy. In fact, if you're looking for a tool to do all your automation for you in five
+      easy steps with no programming experience necessary, we can direct you to a myriad of "record and playback"
+      test frameworks that are easy to set up and impress your friends and colleagues. It's been our experience
+      that these "easy" solutions are cumbersome to maintain once you reach about 800 test cases or so. When you hit
+      5,000 test cases, then you really start to feel the burn.
+  </p>
+  <h2>What's in SeLion?</h2>
+  <p>
+      SeLion uses <b>WebDriver</b>, <b><a href="http://ios-driver.github.io/ios-driver/">IOS-Driver</a></b>, <b><a href="http://selendroid.io/">Selendroid</a></b>, <b>Maven</b> and <b>TestNG</b> underneath the
+      hood (we have plans to make it JUnit compatible too.)
+  </p>
+  <h2>How SeLion works and the philosophy behind it.</h2>
+  <p>
+      SeLion uses Page Objects as a base methodology, which is commonly recommended by the Selenium community.
+      In essence, don't hard-code your page element identifiers in your test cases. Build them in a way that you can
+      make one change in one location, and suddenly all your test cases change with it. SeLion does this by taking a YAML
+      page definition file and turning it into a Java class you can refer to in your test cases. If your page element
+      changes, the classes get regenerated. If you have multiple teams accessing the same classes, they don't have
+      to change anything in their test case code. It has certainly worked for us at a large scale, and we don't have
+      to re-write or maintain the base page classes.
+  </p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

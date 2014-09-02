@@ -1,0 +1,35 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Understanding WebDriverSessionHandler</h1>
+  <p class="lead">
+    WebDriverSessionHandler is a utility to manage a particular WebDriver session when a test mixes <em>web</em> and <em>non-web</em>
+    operations.</p>
+  <p>By default, the WebDriver session will timeout based on the <code>timeout</code> value specified
+    in the grid configuration. WebDriverSessionHandler is useful in cases where you are performing a non-web operation in
+    your test case (i.e. an API call, a SQL operation, or other) that may cause your WebDriver session to timeout -- often
+    throwing a RuntimeException with the message "Session timed out." WebDriverSessionHandler helps to overcome this problem
+    by keeping the WebDriver session alive.
+  </p>
+
+  <h2>How WebDriverSessionHandler Works</h2>
+
+  <p>WebDriverSessionHandler has two methods:</p>
+  <ul>
+    <li><code>start()</code> - Begins polling the current WebDriver session to prevent it from timing out.
+    <li><code>stop()</code> - Stops the polling.
+  </ul>
+  <p>The steps look something like this:</p>
+  <ul>
+    <li> Create an instance of <code>WebDriverSessionHandler</code> by passing it a reference of the current
+      test's <code>WebDriver</code> instance.
+    <li>Invoke the <code>start()</code> method on it. This causes the WebDriver session to not expire</li>
+    <li>Include all your <em>non-web</em> operations.</li>
+    <li>Invoke the <code>stop()</code> method to instruct <code>WebDriverSessionHandler</code> to stop polling the web
+      browser.
+  </ul>
+
+  <h2>Sample Code</h2>
+
+  <pre data-src="../sample-files/webdriversessionhandler-sample1.java"></pre>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

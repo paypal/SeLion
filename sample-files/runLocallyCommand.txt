@@ -1,0 +1,1 @@
+mvn clean install -DSELION_SELENIUM_RUN_LOCALLY=true

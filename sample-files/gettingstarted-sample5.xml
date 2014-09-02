@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="1" name="Selion Test"
+       skipfailedinvocationcounts="false" junit="false" parallel="classes"
+       data-provider-thread-count="1" annotations="JDK">
+
+  <!-- optional (defaults to firefox). Firefox browser will be used for
+    web test -->
+  <parameter name="browser" value="*firefox"/>
+
+  <parameter name="runLocally" value="true"/>
+
+  <test name="SampleTest">
+    <classes>
+      <class name="com.mycompany.test.Demo"></class>
+    </classes>
+  </test>
+</suite>

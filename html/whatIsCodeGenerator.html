@@ -1,0 +1,77 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Code Generator Maven Plugin</h1>
+  <p class="lead">SeLion's Code Generator Maven Plugin will auto-generate Java PageObject class files from YAML
+    during the Maven <code>generate-sources</code> phase.</p>
+  <h2 id="benefits">Benefits of Using the SeLion Code Generator Maven Plugin</h2>
+  <p>
+      If you have web pages that change frequently, this is your secret sauce to scaling your test efforts!
+    </p>
+  <p>
+      The YAML page object file contains all the information it needs to map out a page. A change in your
+      web page only requires a small change to YAML text.
+      In addition, the YAML page object file allows you to define different identifiers based on locale. </p>
+  <p>
+    Automating in different languages just got much easier!
+  </p>
+  <p>
+      If you're working across multiple teams, you can share the generated page classes as a packaged artifact.
+      This allows other teams stay updated and does not impact test cases for every minor change.
+    </p>
+  <p>
+    Generated page classes can even extend other page classes for maximum reuse.
+  </p>
+
+  <h2 id="howTo">Include the Code Generator Plugin in Your Maven Project</h2>
+  <p>To add the SeLion Code Generator plugin to your existing project:
+  <ol>
+    <li>Add/update the <code>&lt;pluginRepositories /&gt;</code> section of the POM file (if required)
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample1.xml"></pre>
+    </li>
+    <li>Add the following into the <code>&lt;build&gt;&lt;plugins&gt;.....&lt;/plugins&gt;&lt;/build&gt;</code>
+      section in pom.xml file
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample2.xml"></pre>
+    </li>
+    <li>Add the build helper plugin as shown below. This tells Maven to add the generated code to your build path.
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample3.xml"></pre>
+    </li>
+    <li>After adding this plugin, if you get the error <b>"Plugin execution not covered by lifecycle configuration"</b>,
+      please refer to the document
+      <a href="#fix-plugin-execution">Fixing Plugin execution not covered by lifecycle configuration error with Maven 3
+        plug-in</a>.
+    </li>
+  </ol>
+  </p>
+  <h2 id="configurePlugin">Configuration Parameters for Customizing the Code Generator Maven Plugin</h2>
+  <p>
+  <ul>
+    <li><code>&lt;basePackage /&gt;</code> - This configuration parameter represents the root package name for the
+      project.
+      It defaults to  <samp>com.paypal.selion.testcomponents</samp>. For example, if your YAML file for the page
+      declarations is placed in <code>src/main/resources/GUIData/mycompany</code> then the corresponding generated
+      java file will be placed in the package <samp>com.paypal.selion.testcomponents.mycompany</samp>. We can modify
+      the <code>&lt;basePackage /&gt;</code> name by including the details in in the <code>&lt;configuration /&gt;</code>
+      section. Doing so, would result in something like this:
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample4.xml"></pre>
+    </li>
+    <li><code>&lt;excludeDomains /&gt;</code> - This configuration parameter represents the set of folders that may need to be
+      excluded. The folders to be excluded should reside under <code>src/main/resources/GUIData</code>. For example:
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample5.xml"></pre>
+    </li>
+  </ul>
+  <h2>Put the SeLion Code Generator in Action</h2>
+  <ol>
+    <li>First, create a YAML file that represents the actual page. Refer to <a href="#pageyaml">the SeLion PageYAML documentation</a></li>
+    <li>Once created, move the file into the directory
+      <code>src/main/resources/GUIData</code></li>
+    <li>If you prefer to use the Maven command prompt, simply run the
+      command <kbd>mvn clean generate-sources</kbd></li>
+    <li>If you would like to do this from Eclipse, right click your project
+      and choose <b>Maven > Update Project configuration</b></li>
+  </ol>
+
+  <p>That's it! You now have the code generated and available to you as part of your build path, and
+    you can start using the page object Java class.</p>
+  </p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

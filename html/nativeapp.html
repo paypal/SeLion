@@ -1,0 +1,66 @@
+<div class="selion-content-div">
+  <h1 class="page-header">iOS Native App Automation using SeLion</h1>
+
+  <p>SeLion provides support for creating automation tests that are targetted against Native apps running on iOS. In order to get started with running tests against Native iOS apps, the following would need to be done.</p>
+  <ul>
+    <li>First the <code>@Test</code> annotated test method needs to be annotated additionally with the annotation <code>@MobileTest</code>. This basically indicates to SeLion that an iOS simulator needs to be spawned before hand and kept ready.</li>
+    <li>A typical test would look like below
+      <pre data-src="../sample-files/nativeapp-sample1.java"></pre>
+    </li>
+    <li>As seen from the above sample, a test can specify the App that it is trying to automate.
+      <p>There are a couple of things that can be specified via the <code>@MobileTest</code> annotation viz., </p>
+      <ol>
+        <li><code>appName</code> - The native application against which the automation test needs to be run.</li>
+        <li><code>device</code> - The device type to be used. For e.g., an iPhone (or) an iPad.</li>
+        <li><code>language</code> - The application's language that is to be used.</li>
+        <li><code>locale</code> - The application's locale that is to be used.</li>
+      </ol>
+    </li>
+    <li>All the above mentioned attributes of the <code>@MobileTest</code> annotation can also be provided via either JVM arguments (or) via TestNG suite parameters. Please refer to the below table :
+      <table class="table table-bordered table-hover table-condensed">
+        <thead>
+          <tr>
+            <th>
+              TestNG Suite parameter
+            </th>
+            <th>
+              JVM argument
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;parameter name="appFolder" value="" /&gt;</code></td>
+            <td><code>SELION_SELENIUM_NATIVE_APP_FOLDER</code></td>
+            <td>Represents the location of the folder which contains the Native App. <b>This is applicable only for local runs</b>.</td>
+          </tr>
+          <tr>
+            <td><code>&lt;parameter name="appName" value="" /&gt;</code></td>
+            <td><code>SELION_SELENIUM_NATIVE_APP_NAME</code></td>
+            <td>Represents the name of the application that is to be used for running the tests against.</td>
+          </tr>
+          <tr>
+            <td><code>&lt;parameter name="appLanguage" value="" /&gt;</code></td>
+            <td><code>SELION_SELENIUM_NATIVE_APP_LANGUAGE</code></td>
+            <td>Represents the language to be used for running the tests against. If nothing is specified it defaults to <code>en</code> (English) </td>
+          </tr>
+          <tr>
+            <td><code>&lt;parameter name="appLocale" value="" /&gt;</code></td>
+            <td><code>SELION_SELENIUM_NATIVE_APP_LOCALE</code></td>
+            <td>Represents the locale to be used for running the tests against. If nothing is specified it defaults to <code>en_US</code> (US English)</td>
+          </tr>
+        </tbody>
+      </table>
+    </li>
+  </ul>
+  <h2>Pre-requisites for Native App automation</h2>
+  <ol>
+    <li>You would need to be using JDK 1.7</li>
+    <li>If you are running tests against the iOS platform please refer to <a href="http://ios-driver.github.io/ios-driver/?page=setup">Setup for iOS automation</a> to understand the pre-requistes.</li>
+  </ol>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

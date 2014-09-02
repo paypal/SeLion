@@ -1,0 +1,124 @@
+<div class="selion-content-div">
+  <h1 id="getting-started-with-seLion" class="page-header">Getting Started with Mobile Automation</h1>
+
+  <p class="lead">How to create a mobile test using SeLion.</p>
+
+  <h2 id="prerequisites">Prerequisites</h2>
+  <p>Make sure the following software is installed before you start:</p>
+  <ol>
+      <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java JDK 1.7</a></li>
+      <li><a href="http://maven.apache.org/download.html">Maven 3</a></li>
+      <li>Xcode (Mac installs only, required for iOS tests)</li>
+      <li><a href="#buildingSelion">SeLion installed into your local Maven Repository</a></li>
+  </ol>
+
+  <p>
+      For full details on how to setup your Mac to work with ios-driver refer to the
+      <a href="http://ios-driver.github.io/ios-driver/?page=setup#tech">ios-driver
+          project site.</a>
+  </p>
+
+  <h2 id="project-creation">Create a Sample Project</h2>
+  <p class="alert-info">Note: this step is optional and does not need to be completed if you already have a Maven project.</p>
+  <p>Once you have satisfied all of the prerequisites, open a command prompt and navigate to the directory where you
+    want your project to be located, and run:</p>
+
+  <pre data-src="../sample-files/gettingstarted-sample1.sh"></pre>
+  <br>
+  <p>The sample project will automatically be generated from the Maven archetype. You will see something like this:</p>
+
+  <pre data-src="../sample-files/gettingstarted-sample2.txt"></pre>
+  <h2>Update the POM File</h2>
+  <p>Update the pom.xml file as below:</p>
+  <ol>
+    <li>Add SeLion in the dependency section</li>
+    <li>Add Maven surefire plugin in the build section</li>
+    <li>Remove the JUnit dependency (it's not needed at this point).</li>
+  </ol>
+
+  <p>Here is how your POM file would look like after all the above mentioned updates have been done.</p>
+
+  <pre data-src="../sample-files/gettingstarted-sample3.xml"></pre>
+  <p>Now run the following command in the project directory path from a command prompt.</p>
+  <pre><code class="language-sh">mvn dependency:resolve</code></pre>
+  <p>This command causes Maven to start downloading all of the required jar files.</p>
+
+
+  <h2>Creating a @MobileTest</h2>
+  <p>Executing an iOS @MobileTest locally can only be done on a Mac. Create the file <samp>MobileDemo.java</samp> under
+      the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
+
+  <pre data-src="../sample-files/gettingstartedmobile-sample2.java"></pre>
+
+  <h2>Download the Sample iOS Native App</h2>
+  <p>For the purpose of demonstration, we are going to use a sample iOS native application from Apple called
+      <a href="http://ios-driver.github.io/ios-driver/files/InternationalMountains.app.zip">International Mountains</a>.
+      Once you have downloaded the zip archive, extract the contents into <samp>{project}/Applications</samp></p>
+
+  <h2>Create a TestNG Suite file</h2>
+  <p>
+    Currently, SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. To execute a test suite you should create
+    a TestNG Suite file. Create the file <samp>SampleSuite.xml</samp> under the folder <code>{project}/src/test/resources</code>
+    and copy the below contents:
+  </p>
+
+  <pre data-src="../sample-files/gettingstartedmobile-sample1.xml"></pre>
+  <h2>Execute the Test</h2>
+  <p>To execute the test, run the following command in the project directory path from a command prompt.</p>
+  <pre><code class="language-sh">mvn clean test -DsuiteXmlFile=src/test/resources/SampleSuite.xml</code></pre>
+
+  <br>
+  <p><b>Congratulations! You just implemented your first automated mobile test using SeLion !</b></p>
+
+  <h2>Additional Considerations for a @MobileTest</h2>
+  <p>As seen from the above sample, a test can specify the application that it is trying to automate.
+    There are a couple of things that can be specified via the <code>@MobileTest</code> annotation. They are:</p>
+    <ol>
+      <li><code>appName</code> - The native application against which the automation test needs to be run.</li>
+      <li><code>device</code> - The device type to be used. For e.g., an iPhone (or) an iPad.</li>
+      <li><code>language</code> - The application's language that is to be used.</li>
+      <li><code>locale</code> - The application's locale that is to be used.</li>
+    </ol>
+
+  <p>All the above mentioned attributes of the <code>@MobileTest</code> annotation can also be provided via either JVM
+    arguments (or) via TestNG suite parameters. Please refer to the below table:</p>
+    <table class="table table-bordered table-hover table-condensed">
+      <thead>
+      <tr>
+        <th>
+          TestNG Suite parameter
+        </th>
+        <th>
+          JVM argument
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><code>&lt;parameter name="appFolder" value="" /&gt;</code></td>
+        <td><code>SELION_SELENIUM_NATIVE_APP_FOLDER</code></td>
+        <td>Represents the location of the folder which contains the Native App. <b>This is applicable only for local runs</b>.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;parameter name="appName" value="" /&gt;</code></td>
+        <td><code>SELION_SELENIUM_NATIVE_APP_NAME</code></td>
+        <td>Represents the name of the application that is to be used for running the tests against.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;parameter name="appLanguage" value="" /&gt;</code></td>
+        <td><code>SELION_SELENIUM_NATIVE_APP_LANGUAGE</code></td>
+        <td>Represents the language to be used for running the tests against. If nothing is specified it defaults to <code>en</code> (English) </td>
+      </tr>
+      <tr>
+        <td><code>&lt;parameter name="appLocale" value="" /&gt;</code></td>
+        <td><code>SELION_SELENIUM_NATIVE_APP_LOCALE</code></td>
+        <td>Represents the locale to be used for running the tests against. If nothing is specified it defaults to <code>en_US</code> (US English)</td>
+      </tr>
+      </tbody>
+    </table>
+</div>
+
+<script src="../js/prismjs-min.js"></script>
