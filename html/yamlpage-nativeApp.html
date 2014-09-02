@@ -1,0 +1,66 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Customizing Yaml Page for iOS Native App automation</h1>
+
+  <p>The section on <a href="#pageyaml">SeLion PageYaml</a> outlines details 
+   on using Yaml for automating Web Flow. This section is focused on customizing SeLion Page Yaml to facilitate automation for
+   iOS Native Apps.</p>
+   
+  <h2>Customized contents of a Yaml Page  </h2>
+
+  <p>A Yaml page that represents page related information, would essentially have the below mentioned contents in
+    it:</p>
+  <ul>
+    <li><code>baseClass</code> - The value for this key represents the fully qualified package name of a class that will
+      serve as the base class from which
+      all common abilities that any page in the SeLion world for a Native App would possess. If your page is totally new and is not
+      customizing an existing page (for e.g., you may have a login page which perhaps extends a header page ), then you
+      should be specifying the value for this key as <code>com.paypal.selion.testcomponents.IOSPage</code> because
+      by default this is the class within SeLion that provides for all the basic operations that are associated with a
+      given page, including logic pertaining to instantiation of the page as well.
+    </li>
+    <li><code>platform</code> - The value for this key represents the platform to which the data in the yaml file works for.
+     By default, if nothing is specified it is taken as "web". For platforms like iOS it must be specified as "ios".
+     </li>
+    <li><code>elements</code> - The value for this key is a set of key/value pairs that represents the below information
+      pertaining to html elements in the page.
+    </li>
+    <ul>
+      <li> The name to be given to identifying the locator. This name would end up serving as the data member in the
+        generated class which represents this element. The rules for naming the locator are as below :
+        <ul>
+          <li> &lt;prefix&gt;UIAButton Is a Button UI element.
+          <li> &lt;prefix&gt;UIALink Is a Link UI element.
+          <li> &lt;prefix&gt;UIANavigationBar Is a Navigation Bar UI element.
+          <li> &lt;prefix&gt;UIASlider Is a Slider UI element.
+          <li> &lt;prefix&gt;UIAImage Is a Image UI element.
+          <li> &lt;prefix&gt;UIATextField Is a TextField UI element.
+          <li> &lt;prefix&gt;UIAStaticText Is a Text UI element.   
+        </ul>
+        <p>Here <strong>prefix</strong> is a meaningful name that you
+          would give to your element mapping it to the html element on
+          your page.</p></li>
+        <p><strong>Note:</strong> The UI element names are different for platforms.
+         Ex: On a web platform its Button where as on a iOS Platform its UIAButton.The &lt;prefix&gt; must be followed by the element
+         name as appropriate to the platform.</p>
+        <p> The list of supported IOSeLionElement can be found here <a href="java-docs/codegen-apis/com/paypal/selion/elements/IOSSeLionElement.html">List of elements</a></p>  
+      <li><code>locators:</code> - This key represents the set of values that map to the element name.</li>
+      <li> values for the locators which represents a key/value pair of locale and the actual locator for the
+        html element.
+      </li>
+    </ul>
+  </ul>
+  
+  <h2>Here's how a sample yaml page for a native app can look like </h2>
+  <pre data-src="../sample-files/yamlpage-nativeapp.yaml" class="language-markup"></pre>
+  <p>Some important things to note here :</p>
+  <ul>
+   <li> <code>baseClass</code> value for the IOS Native app automation must be <code>com.paypal.selion.testcomponents.IOSPage</code></li>
+   <li> <code>platform</code> value must be specified as <strong>ios</strong>. This value is mandatory, when not specified the default
+   platform web is assumed.</li>
+   <li> The suffix of all the elements must be a valid element name as per the platform. In the above yaml file a text area is represented
+   using <code>UIAStaticText</code> and the element name is given as <code>sampleUIAStaticText</code> which is a valid one.
+  </ul> 
+  
+</div>
+
+<script src="../js/prismjs-min.js"></script>  
