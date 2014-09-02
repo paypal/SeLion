@@ -1,0 +1,10 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+  US: "Sample Unit Test Page"
+elements:
+  personalLink:
+    locators:
+      US: "//a[text()='Personal']"
+  testButton:
+    locators:
+      US: "id=doesNotExist"

@@ -1,0 +1,110 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.paypal.selion</groupId>
+        <artifactId>SeLion-Parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>SeLion-Archetype</artifactId>
+    <packaging>jar</packaging>
+    <name>SeLion Archetype</name>
+    <description>Archetype for new SeLion projects</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-archetype-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <target>${compileSource}</target>
+                    <source>${compileSource}</source>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>generate-projects</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <cloneProjectsTo>${project.build.directory}/test/projects</cloneProjectsTo>
+                            <goals>
+                                <goal>org.apache.maven.plugins:maven-archetype-plugin:generate</goal>
+                            </goals>
+                            <pomIncludes>
+                                <pomInclude>*</pomInclude>
+                            </pomIncludes>
+                            <projectsDirectory>${basedir}/src/test/projects</projectsDirectory>
+                            <properties>
+                                <archetypeArtifactId>${project.artifactId}</archetypeArtifactId>
+                                <archetypeGroupId>${project.groupId}</archetypeGroupId>
+                                <archetypeRepository>local</archetypeRepository>
+                                <archetypeVersion>${project.version}</archetypeVersion>
+                                <interactiveMode>false</interactiveMode>
+                            </properties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>verify-projects</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <goals>
+                                <goal>verify</goal>
+                            </goals>
+                            <pomIncludes>
+                                <pomInclude>*/*/pom.xml</pomInclude>
+                            </pomIncludes>
+                            <projectsDirectory>${project.build.directory}/test/projects</projectsDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        
+        <pluginManagement>
+            <plugins>
+                <!-- this plugin is a maven plugin designed to hold meta data to communicate with eclipse m2e plugin 
+                when it processes a maven pom.xml. Without this, this pom file will get the warning "maven-
+                invoker-plugin (goal enforce) is ignored by m2e" because there is no connector that tells m2e how to 
+                integrate the maven plugin into eclipse. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-invoker-plugin</artifactId>
+                                        <versionRange>[1.8,)</versionRange>
+                                        <goals>
+                                            <goal>install</goal>
+                                            <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

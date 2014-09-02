@@ -1,0 +1,13 @@
+*.class
+*.jar
+.settings/
+.project
+.classpath
+test-output/
+target/
+*.swp
+bin/
+selionFiles/
+logs/
+*.DS_Store
+client/ios-driver.log

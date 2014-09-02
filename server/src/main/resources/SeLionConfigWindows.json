@@ -1,0 +1,5 @@
+{
+    "defaultInterval": 60000,
+    "uniqueSessionCount": 25,
+    "customProcessHandler": "com.paypal.selion.utils.process.WindowsProcessHandler"
+}

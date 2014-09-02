@@ -1,0 +1,25 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="100" verbose="1" name="SeLion Core Master Test Suite" skipfailedinvocationcounts="false"
+    junit="false" parallel="false" data-provider-thread-count="50" annotations="JDK">
+
+    <listeners>
+        <listener class-name="com.paypal.selion.reports.runtime.DebugListener" />
+    </listeners>
+
+    <suite-files>
+        <suite-file path="Basic-Unit-Tests.xml"></suite-file>
+        <suite-file path="WebTestThreaded-Suite.xml"></suite-file>
+        <suite-file path="Functional-Suite.xml"></suite-file>
+        <suite-file path="SeLionGui-Suite.xml" />
+        <suite-file path="SeLionConfig-Suite.xml"></suite-file>
+        <suite-file path="SeLionConfig-Parallel-Tests-Suite.xml"></suite-file>
+        <suite-file path="SeLionConfig-Parallel-Classes-Suite.xml"></suite-file>
+        <suite-file path="Local-Grid-Tests.xml"></suite-file>
+        <suite-file path="Firefox-UnitTest-Suite.xml"></suite-file>
+        <suite-file path="Chrome-UnitTest-Suite.xml"></suite-file>
+        <suite-file path="IE-UnitTest-Suite.xml"></suite-file>
+        <suite-file path="ExcelReport-Test.xml"></suite-file>
+        <suite-file path="EventFiringCapabilitiesTests.xml"/>
+    </suite-files>
+</suite>
+

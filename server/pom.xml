@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.paypal.selion</groupId>
+        <artifactId>SeLion-Parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>SeLion-Grid</artifactId>
+    <packaging>jar</packaging>
+    <description>A customized Grid for SeLion</description>
+    <name>SeLion Grid</name>
+    <url>${siteUrl}</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.paypal.selion.grid.SeLionGridLauncher</mainClass>
+                            <packageName>com.paypal.selion.grid</packageName>
+                        </manifest>
+                    </archive>
+                    <descriptors>
+                        <descriptor>src/main/resources/assembly.xml</descriptor>
+                        <descriptor>src/main/resources/zip.xml</descriptor>
+                    </descriptors>
+                    <finalName>SeLion-Grid</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.paypal.selion</groupId>
+                <artifactId>SeLion-Project-BOM</artifactId>
+                <version>${project.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Apache commons exec is needed by JarSpawner functionality -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <!-- This dependency brings in the SelendroidCapabilitiesMatcher -->
+        <dependency>
+            <groupId>io.selendroid</groupId>
+            <artifactId>selendroid-grid-plugin</artifactId>
+        </dependency>
+        <!-- This dependency brings in IOSCapabilitiesMatcher -->
+        <dependency>
+            <groupId>org.uiautomation</groupId>
+            <artifactId>ios-grid</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,7 @@
+--- # Inline list of strings
+[string1, string2, string3]
+--- # Block list of strings
+- string1
+- string2
+- string3
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Parallel classes suite" parallel="classes" verbose="2">
+    <parameter name="browser" value="*firefox" />
+
+    <test name="TestPC1">
+        <parameter name="browser" value="*chrome" />
+        <groups>
+            <run>
+                <!-- P1 used chrome -->
+                <include name="parallelBrowserTest1" />
+                <include name="unit" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.configuration.LocalConfigTest" />
+            <class name="com.paypal.selion.configuration.ConfigManagerTest" />
+        </classes>
+    </test>
+
+    <test name="TestPC2">
+        <parameter name="browser" value="*iexplore" />
+        <groups>
+            <run>
+                <!-- P2 used iexplore -->
+                <include name="parallelBrowserTest2" />
+                <include name="unit" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.configuration.LocalConfigTest" />
+            <class name="com.paypal.selion.configuration.ConfigManagerTest" />
+        </classes>
+    </test>
+
+    <test name="TestPC3">
+        <groups>
+            <run>
+                <include name="parallelBrowserTest3" />
+                <include name="unit" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.configuration.LocalConfigTest" />
+            <class name="com.paypal.selion.configuration.ConfigManagerTest" />
+        </classes>
+    </test>
+
+</suite>

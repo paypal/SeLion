@@ -1,0 +1,19 @@
+# Block list of associative arrays (showing examples of both inline and blocked associative arrays)
+
+# Lists can be itemized by a single hypen-space
+- {name: 1, email: user1@paypal.com, txId: 10686626}
+- {name: 2, email: user2@paypal.com, txId: 10686627}
+
+# Lists can be prefixed with a name for easier viewing
+- test1: {name: 1, email: user1@paypal.com, txId: 10686626}
+- test2: {name: 2, email: user2@paypal.com, txId: 10686627}
+
+# Lists of associative arrays defined in block form
+- test1:
+   name: 1
+   email: user1@paypal.com
+   txId: 10686626
+- test2:
+   name: 2
+   email: user2@paypal.com
+   txId: 10686627

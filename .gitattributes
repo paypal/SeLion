@@ -1,0 +1,16 @@
+# Normalize all text files with LF when stored but 
+# convert to the OS's native line endings on checkout
+* text
+*.gif binary
+*.xls binary
+*.xlsx binary
+*.png binary
+*.ico binary
+*.psd binary
+*.key binary
+# The below files are all specific to the test ios native app that is part of the archetype
+*.plist binary
+*.nib binary
+*.strings binary
+
+

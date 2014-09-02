@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="1" name="SeLion Test" skipfailedinvocationcounts="false" junit="false" parallel="false"
+    data-provider-thread-count="1" annotations="JDK">
+
+    <!-- IMPORTANT Use this file as your global TestNG Template XML file for Eclipse when running TestNG tests. 
+         See src/test/resources/README.html for further information. -->
+
+    <listeners>
+        <!-- Any of your project specific TestNG listeners can be added here -->
+    </listeners>
+
+    <!-- KEY CONCEPT Place only your SeLion global configuration settings in this file. -->
+    
+    <!-- optional, defaults to *firefox -->
+    <parameter name="browser" value="*firefox" />
+    <!-- optional, defaults to false. This can also be specified via the JVM argument -DSELION_SELENIUM_RUN_LOCALLY=true -->
+    <parameter name="runLocally" value="false" />
+</suite>
+

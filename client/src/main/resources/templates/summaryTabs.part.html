@@ -1,0 +1,34 @@
+<div id="summaryContainer">
+	<div class="yuk_tab_panel suitePanel">
+		<div class="yuk_goldgrad_tl">
+			<div class="yuk_goldgrad_tr">
+				<div class="yuk_goldgrad_m"></div>
+			</div>
+		</div>
+
+		<div class="yuk_tabbed_nav">
+			<h2 id="grp_demowin32" class="yuk_tab_title">Report details </h2>
+
+			<ul id="grp_demowin32">
+			
+				#set ($first=1)
+				#foreach( $view in $views )
+					
+					<li id="$view.getId()" class="tab	#if ($first==1)	active	#set ($first=0) #end">
+					<a href="#"><span>$view.getTitle()</span></a>
+					</li>
+				#end
+				
+			</ul>
+		</div>
+		<div class="clear_both"></div>
+
+		
+		#foreach( $view in $views )
+			<div id="container_$view.getId()" class="tabContentContainer">
+			$view.getContent();
+			</div>
+		#end
+		
+	</div>
+<div>

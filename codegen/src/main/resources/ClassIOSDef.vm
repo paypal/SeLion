@@ -1,0 +1,82 @@
+package $package;
+
+import $baseclasspackage;
+import com.paypal.selion.platform.html.support.HtmlElementUtils;
+import com.paypal.selion.platform.grid.Grid;
+#foreach ($data in $control)
+import org.uiautomation.ios.UIAModels.$data;
+#end
+
+public class $class extends $baseclass {
+
+#foreach ($member in $members)
+    private $member.memberType            $member.memberName;
+#end
+
+    private String initialSession = null;
+
+    private static String CLASS_NAME = "$class";
+    private static String PAGE_DOMAIN = "$domain";
+
+
+    /**
+     * Creates a new $class object
+     */
+    public $class() {
+        super.initPage(PAGE_DOMAIN, CLASS_NAME);
+    }
+    
+    /**
+     * Creates a new $class object
+     * @param siteLocale
+     *         The Country locale for the site you are accessing
+     */
+    public $class(String siteLocale) {
+        super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
+    }
+
+    public $class getPage() {
+        if (!isInitialized()) {
+            loadObjectMap();
+            initializeHtmlObjects(this, this.objectMap);
+        }
+        return this;
+    }
+
+#foreach ($member in $members)
+
+    /**
+     * Used to get $member.memberName in the page $class
+     * @return $member.memberName
+     */
+    public $member.memberType get$member.firstToUpperCase($member.memberName)() {
+        if (Grid.iOSDriver().getSessionId().toString().equals(initialSession)) {
+            if ($member.memberName != null) {
+                return $member.memberName;
+            }
+
+        } else {
+            resetAll();
+            initialSession = Grid.iOSDriver().getSessionId().toString();
+        }
+        $member.memberName = ($member.memberType) Grid.iOSDriver().findElement(
+                HtmlElementUtils.resolveByType(getPage().fieldsMap.get("$member.memberName")));
+        return $member.memberName;
+    }
+
+#end
+
+    /**
+     * Used to set all elements in the page $class to null
+     */
+     private void resetAll(){
+#foreach ($member in $members)
+         $member.memberName = null;
+#end
+}
+}
+
+
+
+
+

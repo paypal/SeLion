@@ -1,0 +1,468 @@
+<html>
+<head>
+<title>SeLion Runtime Report</title>
+<style type="text/css" title="currentStyle">
+@import "resources/demo_table.css";
+
+h1.heading {
+	color: blue;
+	border-bottom: solid;
+	border-width: 1px;
+	font-style: italic;
+}
+
+body {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 14px;
+}
+</style>
+<script type="text/javascript" language="javascript"
+	src="resources/jquery.js"></script>
+<script type="text/javascript" language="javascript"
+	src="resources/jquery.dataTables.min.js"></script>
+<script src="resources/jquery-ui.custom.js" type="text/javascript"></script>
+<script src="resources/jquery.cookie.js" type="text/javascript"></script>
+<link href="resources/ui.dynatree.css" rel="stylesheet" type="text/css"
+	id="skinSheet">
+<script src="resources/jquery.dynatree.js" type="text/javascript"></script>
+<script type="text/javascript"
+	src="resources/jquery.fancybox.js?v=2.1.4"></script>
+<link rel="stylesheet" type="text/css"
+	href="resources/jquery.fancybox.css?v=2.1.4" media="screen" />
+<script>
+	jQuery(document).ready(function() { /*		 *  Simple image gallery. Uses default settings		 */
+		jQuery('.fancybox').fancybox(); /*		 *  Different effects		 */
+	});
+	function loadXMLDoc(dname) {
+		if (window.XMLHttpRequest) {
+			xhttp = new XMLHttpRequest();
+		} else {
+			xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xhttp.open("GET", dname, false);
+		xhttp.send("");
+		return xhttp.responseXML;
+	}
+	function fnFormatDetails(oTable, nTr) {
+		var oData = oTable.fnGetData(nTr);
+		var sOut = '<div class="innerDetails" >'
+				+ '<table cellpadding="0" cellspacing="0" border="3" class="display" width="100%">';
+		if (oData[oData.length - 6] != null && oData[oData.length - 6] != "") {
+			sOut = sOut + '<tr class="odd"><td width=15%>Start Time:</td><td>'
+					+ oData[oData.length - 6] + '</td></tr>';
+		}
+		if (oData[oData.length - 5] != null && oData[oData.length - 5] != "") {
+			sOut = sOut + '<tr class="even"><td>End Time:</td><td>'
+					+ oData[oData.length - 5] + '</td></tr>';
+		}
+		if (oData[oData.length - 4] != null && oData[oData.length - 4] != "") {
+			sOut = sOut + '<tr class="odd"><td>Description:</td><td>'
+					+ oData[oData.length - 4] + '</td></tr>';
+		}
+		if (oData[oData.length - 3] != null && oData[oData.length - 3] != "") {
+			sOut = sOut + '<tr class="even"><td>Exception:</td><td>'
+					+ oData[oData.length - 3] + '</td></tsr>';
+		}
+		if (oData[oData.length - 2] != null && oData[oData.length - 2] != "") {
+			sOut = sOut + '<tr class="odd"><td>Stack Trace:</td><td>'
+					+ oData[oData.length - 2] + '</td></tr>';
+		}
+		if (oData[oData.length - 1] != null && oData[oData.length - 1] != "") {
+			sOut = sOut + '<tr class="even"><td>Logs:</td><td>'
+					+ oData[oData.length - 1] + '</td></tr>';
+		}
+		sOut = sOut + '</table>' + '</div>';
+		return sOut;
+	}
+	function displayResult(id) {
+		initConfig();
+		initReport();
+	}
+	function initReport() {
+		var anOpen = [];
+		var oTable = jQuery('#example').dataTable({
+			"bProcessing" : true,
+			"bAutoWidth" : false,
+			"bDeferRender" : true,
+			"aaData" : [ 
+			            ${testMethod}
+			 ],
+			"aoColumns" : [ /* Image */{
+				"sWidth" : "5%"
+			}, /* Suite */{
+				"sWidth" : "10%"
+			}, /* Test */{
+				"sWidth" : "10%"
+			}, /* Group */{
+				"sWidth" : "20%"
+			}, /* Class */{
+				"sWidth" : "10%"
+			}, /* Method */{
+				"sWidth" : "10%"
+			}, /* Status */{
+				"sWidth" : "10%"
+			}, /* Start Time */{
+				"sWidth" : "5%"
+			}, /* End Time */{
+				"bVisible" : false
+			}, /* Parameters */{
+				"bVisible" : false
+			}, /* Description */{
+				"bVisible" : false
+			}, /* Exception */{
+				"bVisible" : false
+			}, /* StackTrace */{
+				"bVisible" : false
+			}, /* StackTrace */{
+				"bVisible" : false
+			} ]
+		});
+		jQuery('#example td').live(
+				'click',
+				function() {
+					var nTr = this.parentNode;
+					var i = jQuery.inArray(nTr, anOpen);
+					if (i === -1) {
+						jQuery('img', this).attr('src',
+								"resources/details_close.png");
+						var nDetailsRow = oTable.fnOpen(nTr, fnFormatDetails(
+								oTable, nTr), 'details');
+						jQuery('div.innerDetails', nTr).slideDown(10000);
+						anOpen.push(nTr);
+					} else {
+						jQuery('img', this).attr('src',
+								"resources/details_open.png");
+						jQuery('div.innerDetails', jQuery(nTr).next()[0])
+								.slideUp(function() {
+									oTable.fnClose(nTr);
+									anOpen.splice(i, 1);
+								});
+					}
+				});
+	}
+	function initConfig() {
+		var anOpen = [];
+		var oTable = jQuery('#config').dataTable({
+			"bProcessing" : true,
+			"bDeferRender" : true,
+			"bAutoWidth" : false,
+			"aaData" : [ 
+			            ${configMethod}
+			 ],
+			"aoColumns" : [ /* Image */{
+				"sWidth" : "10%"
+			}, /* Suite */{
+				"sWidth" : "10%"
+			}, /* Test */{
+				"sWidth" : "10%"
+			}, /* Package */{
+				"sWidth" : "10%"
+			}, /* Name */{
+				"sWidth" : "10%"
+			}, /* Type */{
+				"sWidth" : "10%"
+			}, /* Start Time */{
+				"sWidth" : "10%"
+			}, /* End Time */{
+				"sWidth" : "10%"
+			}, /* Parameters */{
+				"bVisible" : false
+			}, /* Status */{
+				"bVisible" : false
+			}, /* Description */{
+				"bVisible" : false
+			}, /* Exception */{
+				"bVisible" : false
+			}, /* StackTrace */{
+				"bVisible" : false
+			}, /* StackTrace */{
+				"bVisible" : false
+			} ]
+		});
+		jQuery('#config td').live(
+				'click',
+				function() {
+					var nTr = this.parentNode;
+					var i = jQuery.inArray(nTr, anOpen);
+					if (i === -1) {
+						jQuery('img', this).attr('src',
+								"resources/details_close.png");
+						var nDetailsRow = oTable.fnOpen(nTr, fnFormatDetails(
+								oTable, nTr), 'details');
+						jQuery('div.innerDetails', nTr).slideDown(10000);
+						anOpen.push(nTr);
+					} else {
+						jQuery('img', this).attr('src',
+								"resources/details_open.png");
+						jQuery('div.innerDetails', jQuery(nTr).next()[0])
+								.slideUp(function() {
+									oTable.fnClose(nTr);
+									anOpen.splice(i, 1);
+								});
+					}
+					var hei = jQuery("#content").height();
+					$("#menu").height(hei);
+				});
+	}
+
+
+
+	jQuery.fn.dataTableExt.afnFiltering.push(function(oSettings, aData, iDataIndex) {
+		if (typeof String.prototype.trim !== 'function') {
+			String.prototype.trim = function() {
+				return this.replace(/^\s+|\s+$/g, '');
+			}
+		}
+		var node = $("#tree1").dynatree("getActiveNode");
+		if (node != null) {
+			var text = node.data.title.split(":");
+			if (text[0].trim() == 'Suite') {
+				if (text[1].trim() == aData[1].trim()) {
+					return true;
+				}
+				return false;
+			} else if (text[0].trim() == 'Test') {
+				if (text[1].trim() == aData[2].trim()) {
+					var parentNode = node.getParent();
+					var text1 = parentNode.data.title.split(":");
+					if (text1[1].trim() == aData[1].trim()) {
+						return true;
+					}
+					return false;
+				}
+				return false;
+			} else if (text[0].trim() == 'Package') {
+				if (text[1].trim() == aData[3].trim()) {
+					var parentNode = node.getParent();
+					var text1 = parentNode.data.title.split(":");
+					if (text1[1].trim() == aData[2].trim()) {
+						var grandParentNode = parentNode.getParent();
+						var text2 = grandParentNode.data.title.split(":");
+						if (text2[1].trim() == aData[1].trim()) {
+							return true;
+						}
+						return false;
+					}
+					return false;
+				}
+				return false;
+			} else if (text[0].trim() == 'Class') {
+				if (text[1].trim() == aData[4].trim()) {
+					var parentNode = node.getParent();
+					var text1 = parentNode.data.title.split(":");
+					if (text1[1].trim() == aData[3].trim()) {
+						var grandParentNode = parentNode.getParent();
+						var text2 = grandParentNode.data.title.split(":");
+						if (text2[1].trim() == aData[2].trim()) {
+							var ggparentNode = grandParentNode.getParent();
+							var text3 = ggparentNode.data.title.split(":");
+							if (text3[1].trim() == aData[1].trim()) {
+								return true;
+							}
+							return false;
+						}
+						return false;
+					}
+					return false;
+				}
+				return false;
+			}
+		}
+		return false;
+	});
+
+	var testLocalConfigSummaryMap = {};
+	function updateLocalConfigTestTable(title){
+
+		var testName;
+		var rowData;
+		if(title.split(":")[0].trim()=='Suite'){
+			rowData = testLocalConfigSummaryMap['GlobalConfig'];
+		}else if(title.split(":")[0].trim()=='Test'){
+			testName = title.split(":")[1].trim();
+		    rowData = testLocalConfigSummaryMap[testName];
+		}else{
+	    	testName = document.getElementById("example").rows[1].cells[2].textContent;
+	    	rowData = testLocalConfigSummaryMap[testName];
+		}
+		
+	    $("#testLocalConfigTable").empty();
+	    $("#testLocalConfigTable").append('<thead width="100%"><tr bgcolor="#5882FA"><td>Config Parameter Name</td><td>Config Parameter Value</td></tr></thead>');
+	    $("#testLocalConfigTable").append(rowData);
+	}
+	
+	function displayTreeView() {
+
+		jQuery("#tree1").dynatree(
+				{
+					fx : {
+						height : "toggle",
+						duration : 200
+					},
+					onActivate : function(node) {
+						if (node.data.title != null) {
+							$('#example').dataTable().fnDraw();
+							$('#config').dataTable().fnDraw();
+							displaySummary(node.data.title);
+							updateLocalConfigTestTable(node.data.title);
+
+						}
+					},
+					onDeactivate : function(node) {
+					}
+				});
+	    $("#testLocalConfigTable").empty();
+	    $("#testLocalConfigTable").append('<thead width="100%"><tr bgcolor="#5882FA"><td>Config Parameter Name</td><td>Config Parameter Value</td></tr></thead>');
+	    $("#testLocalConfigTable").append(testLocalConfigSummaryMap['GlobalConfig']);	
+	}
+
+
+	function displaySummary(title){
+		var settings = $('#example').dataTable().fnSettings();
+		var aiRows = settings.aiDisplay;
+		var passed = 0, failed = 0, skipped = 0;
+		running = 0;
+		for ( var i = 0, c = aiRows.length; i < c; i++) {
+			iRow = aiRows[i];
+			var sValue = $('#example').dataTable()
+					.fnGetData(iRow, 7);
+			if (sValue.trim() == 'Passed') {
+				passed = passed + 1;
+			} else if (sValue.trim() == 'Failed') {
+				failed = failed + 1;
+			} else if (sValue.trim() == 'Skipped') {
+				skipped = skipped + 1;
+			} else if (sValue.trim() == 'Running') {
+				running = running + 1;
+			}
+		}
+		
+		$('#summary_passed').text(passed);
+		$('#summary_failed').text(failed);
+		$('#summary_skipped').text(skipped);
+		$('#summary_running').text(running);
+		$('#summary_total').text(aiRows.length);
+		$('#summary_name').text(title.split(":")[1].trim());
+		$('#summary_type').text(
+				title.split(":")[0].trim());
+
+	}
+
+</script>
+</head>
+<body>
+	<div id="container" style="">
+		<div id="header" style="height: 80px">
+			<h1 id="head4" style="width: 100%" class="heading">SeLion
+				Runtime Report</h1>
+		</div>
+		<div id="menu" style="width: 20%; float: left; height: float">
+			<div id="tree1">
+				<ul style="display: none;">
+				${tree}
+				</ul>
+			</div>
+		</div>
+		<div id="content" style="width: 79%; float: right;">
+			<div id="sample">
+				<h1 id='head1' style="width: 100%;" class="heading">Configuration
+					Summary</h1>
+				<table id='testLocalConfigTable' cellpadding="0" cellspacing="0" border="1" class="display">
+				</table>
+				<div>
+					<br></br>
+				</div>
+				<h1 id='head1' style="width: 100%;" class="heading">Test
+					Summary</h1>
+				<table id='overall' cellpadding="0" cellspacing="0" border="0"
+					class="display">
+					<thead width="100%">
+						<tr>
+							<th>Type</th>
+							<th>Name</th>
+							<th>Total</th>
+							<th>Passed</th>
+							<th>Failed</th>
+							<th>Skipped</th>
+							<th>Running</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="odd">
+							<td id='summary_type' class="center"></td>
+							<td id='summary_name' class="center"></td>
+							<td id='summary_total' class="center"></td>
+							<td id='summary_passed' class="center"></td>
+							<td id='summary_failed' class="center"></td>
+							<td id='summary_skipped' class="center"></td>
+							<td id='summary_running' class="center"></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div>
+					<br></br>
+				</div>
+				<h1 id='head3' style="width: 100%;" class="heading">Test
+					Methods Report</h1>
+				<table id="example" cellpadding="0" cellspacing="0" border="0"
+					class="display" style="width: 100%;">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Suite</th>
+							<th>Test</th>
+							<th>Package</th>
+							<th>Class</th>
+							<th>Method</th>
+							<th>Parameters</th>
+							<th>Status</th>
+							<th>Start Time</th>
+							<th>End Time</th>
+							<th>Exception</th>
+							<th>Stack Trace</th>
+							<th>Logs</th>
+						</tr>
+					</thead>
+					<tbody id='tbody'>
+					</tbody>
+				</table>
+				<div>
+					<br></br>
+				</div>
+				<h1 id='head2' style="width: 100%;" class="heading">Configuration
+					Methods Report</h1>
+				<table id='config' cellpadding="0" cellspacing="0" border="0"
+					class="display">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Suite</th>
+							<th>Test</th>
+							<th>Package</th>
+							<th>Class</th>
+							<th>Method</th>
+							<th>Type</th>
+							<th>Status</th>
+							<th>Start Time</th>
+							<th>End Time</th>
+							<th>Description</th>
+							<th>Exception</th>
+							<th>Stack Trace</th>
+							<th>Logs</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(displayTreeView("11"));
+	$("#tree1").dynatree("getTree").getNodeByKey("1").activateSilently();
+	$(document).ready(displayResult("11"));
+	displaySummary($("#tree1").dynatree("getTree").getNodeByKey("1").data.title)
+</script>
+</html>

@@ -1,0 +1,41 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+  US: "API Page"
+elements:
+  addOrEditAPIPermissionsLink:
+    locators: 
+      US: "//div[@id='apiOption1']/p[3]/a"
+  viewAPICertificateLink:
+    locators: 
+      US: "//div[@id='apiOption2']/p[3]/a"
+  enableExpressCheckoutLink:
+    locators: 
+      US: "//div[@id='main']/div/form/p[3]/a"
+  requestAPICredentialsLink:
+    locators: 
+      US: "//a[contains(@href, 'cmd=_profile-api-add-direct-access')]|//a[contains(@href, 'cmd&#x3d;%5fprofile%2dapi%2dadd%2ddirect%2daccess')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dadd%2ddirect%2daccess')]"
+  grantAPIPermissionLink:
+    locators: 
+      US: "//a[contains(@href, 'cmd=_profile-api-add-authorization')]|//a[contains(@href, 'cmd&#x3d;%5fprofile%2dapi%2dadd%2dauthorization')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dadd%2dauthorization')]"
+  viewAPIPermissionLink:
+    locators: 
+      US:  "//a[contains(@href, 'cmd=_profile-api-cert-download')]|//a[contains(@href, 'cmd&#x3d;%5fprofile%2dapi%2dcert%2ddownload')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dcert%2ddownload')]"
+  viewAPISignatureLink:
+    locators: 
+      US: "//a[contains(@href, 'cmd=_profile-api-signature')]|//a[contains(@href, 'cmd&#x3d;%5fprofile%2dapi%2dsignature')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dsignature')]"
+  bluefinContainer:
+    locators:
+      US: "//div"
+    containerElements:
+      containerButton:
+        locators:
+          US: ".//input" 
+  sampleContainer:
+    locators:
+      US: "//div"
+    containerElements:
+      containerButton:
+        locators:
+          US: ".//input"     
+pageValidators: []
+defaultLocale: "US"

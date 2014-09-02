@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=9" />
+  <meta charset="utf-8">
+  <title>ElementList Unit Test Page</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script>
+  $(function() {
+    $( "#datepicker1" ).datepicker();
+    $( "#datepicker2" ).datepicker();
+    $( "#datepicker3" ).datepicker();
+  });
+  </script>
+</head>
+
+<body>
+<span class="fail">This section is here to try to break some test cases<br><br>
+  <p>Date: <input type="text" id="datepicker1" name="datepicker"></p><br>
+  <div id="duplicateId" name="fail">Bad TextField: <input type="text" value="fail" class="dupId" name="fail"></div><br>
+  <table border="1">
+    <tr>
+      <td>bad cell 1</td>
+      <td>bad cell 2</td>
+    </tr>
+  </table>
+  <form action="https://www.google.com/#q=fail" method="get">
+    <input type="checkbox" checked>Bad Checkbox<br>
+    <input type="radio" checked>Bad Radio1<br>
+    <input type="radio" checked>Bad Radio2<br>
+  <input type="submit" value="Submit">
+  </form>
+  <a href="www.google.com/#q=fail" name="fail">dupLinkText</a><br>
+  <a href="https://www.google.com/#q=fail"><img class="dupName" id="fail" name="duplicateName" src="http://mobile-cuisine.com/wp-content/uploads/2014/01/fail-stamp.jpg" width="100" height="75"></a><br>
+  <select>
+    <option value="badOption1">BadOption1</option>
+    <option value="badOption2">BadOption2</option>
+  </select><br>
+  <innertag name="fail"></innertag>
+</span>
+
+
+<hr>
+Start ElementList containing multiple web elements<br><br>
+<span class="base" id="base" name="base">
+  <p>Date: <input type="text" id="datepicker2" name="datepicker"></p>
+  <div id="duplicateId" name="uniqueName1">TextField1: <input type="text" value="field1" class="dupId" name="uniqueName1"></div><br>
+  <table border="1">
+    <tr>
+      <td>table 1, cell 1<br><input type="checkbox"><a href="https://www.google.com/#q=celllink1" name="uniqueName2">link</a></td>
+      <td>table 1, cell 2</td>
+    </tr>
+  </table>
+  <form action="https://www.paypal.com/" method="get">
+    <input type="checkbox">Checkbox1<br>
+    <input type="radio" name="group1">Radio1<br>
+    <input type="radio" name="group1">Radio2<br>
+  <input type="submit" value="Submit">
+  </form>
+  <a href="https://www.google.com/#q=link1" name="uniqueName1">dupLinkText</a><br>
+  <a href="https://www.google.com/#q=paypal1"><img class="dupName" id="uniqueId1" name="duplicateName" src="https://www.paypalobjects.com/webstatic/i/sparta/logo/logo_paypal_106x29.png"></a><br>
+  <select>
+    <option value="option1" id="option1">Option1</option>
+    <option value="option2" id="option2">Option2</option>
+  </select><br>
+  <innertag name="uniqueName1"></innertag>
+</span><br>
+
+<span class="base" id="base" name="base">
+  <p>Date: <input type="text" id="datepicker3" name="datepicker"></p>
+  <div id="duplicateId" name="uniqueName2">TextField2: <input type="text" value="field2" class="dupId" name="uniqueName2"></div><br>
+  <table border="1">
+    <tr>
+      <td>table 2, cell 1</td>
+      <td>table 2, cell 2<br><input type="checkbox"><a href="https://www.google.com/#q=celllink2" name="uniqueName2">link</a></td>
+    </tr>
+  </table><br>
+  <form action="https://www.paypal.com/" method="get">
+    <input type="checkbox">Checkbox2<br>
+    <input type="radio" name="group2">Radio3<br>
+    <input type="radio" name="group2">Radio4<br>
+  <input type="submit" value="Submit">
+  </form>
+  <a href="https://www.google.com/#q=link2" name="uniqueName2">dupLinkText</a><br>
+  <a href="https://www.google.com/#q=paypal2"><img class="dupName" id="uniqueId2" name="duplicateName" src="https://www.paypalobjects.com/webstatic/i/sparta/logo/logo_paypal_106x29.png" width="100" height="30"></a><br>
+  <select multiple>
+    <option value="option3" id="option3">Option3</option>
+    <option value="option4" id="option4">Option4</option>
+  </select><br>
+  <innertag name="uniqueName2"></innertag>
+</span>
+
+
+<hr>
+Start ElementList containing multiple links with nested div tags<br><br>
+<a href="https://www.google.com">baseLink
+  <div class="dupId" id="duplicateId" name="uniqueName1"></div>
+  <div class="dupName" id="uniqueId1" name="duplicateName"></div>
+  <innertag name="uniqueName1"></innertag>
+</a>
+<a href="https://www.google.com">baseLink
+  <div class="dupId" id="duplicateId" name="uniqueName2"></div>
+  <div class="dupName" id="uniqueId2" name="duplicateName"></div>
+  <innertag name="uniqueName2"></innertag>
+</a>
+
+<hr>
+Start ElementList containing custom html tags (not supported with IE)<br><br>
+<customtag class="customTag" id="customTag" name="customTag">
+  <p>Date: <input type="text" id="datepicker2" name="datepicker"></p>
+  <div id="duplicateId" name="uniqueName1">TextField1: <input type="text" value="field1" class="dupId" name="uniqueName1"></div><br>
+  <table border="1">
+    <tr>
+      <td>table 1, cell 1<br><input type="checkbox"><a href="https://www.google.com/#q=celllink1" name="uniqueName2">link</a></td>
+      <td>table 1, cell 2</td>
+    </tr>
+  </table>
+  <form action="https://www.paypal.com/" method="get">
+    <input type="checkbox">Checkbox1<br>
+    <input type="radio" name="group1">Radio1<br>
+    <input type="radio" name="group1">Radio2<br>
+  <input type="submit" value="Submit">
+  </form>
+  <a href="https://www.google.com/#q=link1" name="uniqueName1">dupLinkText</a><br>
+  <a href="https://www.google.com/#q=paypal1"><img class="dupName" id="uniqueId1" name="duplicateName" src="https://www.paypalobjects.com/webstatic/i/sparta/logo/logo_paypal_106x29.png"></a><br>
+  <select>
+    <option value="option1" id="option1">Option1</option>
+    <option value="option2" id="option2">Option2</option>
+  </select><br>
+  <innertag name="uniqueName1"></innertag>
+</customtag><br>
+
+</body></html>

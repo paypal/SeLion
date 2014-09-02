@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="100" verbose="1" name="Chrome Basic Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="methods" data-provider-thread-count="50" annotations="JDK">
+
+    <parameter name="browser" value="*chrome" />
+
+    <test verbose="2" name="Unit" annotations="JDK">
+        <groups>
+            <run>
+                <exclude name="SeleniumCapabilitiesTest" />
+                <include name="unit" />
+            </run>
+        </groups>
+        <packages>
+            <package name="com.paypal.selion.platform.*" />
+            <package name="com.paypal.selion.reports.*" />
+            <package name="com.paypal.selion.logging.*" />
+            <package name="com.paypal.selion.logger.*" />
+            <package name="com.paypal.selion.utilities.*" />
+        </packages>
+    </test>
+
+</suite>
+

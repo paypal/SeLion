@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="100" verbose="1" name="Chrome SeLion Config Parallel Tests Suite" skipfailedinvocationcounts="false"
+    junit="false" parallel="tests" data-provider-thread-count="50" annotations="JDK">
+
+    <test verbose="2" name="Parallel1" annotations="JDK">
+        <parameter name="browser" value="*chrome" />
+        <groups>
+            <run>
+                <include name="parallelBrowserTest1" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.configuration.LocalConfigTest" />
+            <class name="com.paypal.selion.configuration.ConfigManagerTest" />
+        </classes>
+    </test>
+
+</suite>
+

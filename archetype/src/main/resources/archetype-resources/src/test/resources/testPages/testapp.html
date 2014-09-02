@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script type="text/javascript">
+            function resetDisplay() {
+               var getInput = document.getElementById('getInformation');
+               var show = document.getElementById('showInformation');
+               clearFields();
+               show.className='hide';
+               getInput.className='show';
+            }
+            function display() {
+                var getInput = document.getElementById('getInformation');
+                var show = document.getElementById('showInformation');
+                getInput.className = 'hide';
+                displayInfoToUser();
+                show.className='show;';
+            }
+            function clearField(id) {
+                var field = document.getElementById(id);
+                field.value = '';
+            }
+            function clearFields() {
+                clearField('first_name');
+                clearField('last_name');
+                clearField('email');
+            }
+            function copyValue(src, dest) {
+                var from = document.getElementById(src);
+                var to = document.getElementById(dest);
+                to.innerHTML = from.value;
+            }
+            function displayInfoToUser() {
+                copyValue('first_name','display_first_name');
+                copyValue('last_name','display_last_name');
+                copyValue('email','display_email');
+            }
+        </script>
+    <title>Awesome Deals</title>
+</head>
+<body>
+<div id='getInformation' class="show">
+    <section id='content'>
+        <form  id='basic_example_form' method='post' role='form'>
+            <legend>Please Fill in the Form below to avail discounts</legend>
+            <ul class='form-group'>
+                <li class='control-group' id='your_information'>
+                    <fieldset>
+                        <legend>Please key in your basic information</legend>
+                        <ol>
+                            <li class='form-group'>
+                                <label for='first_name'>First Name</label>
+                                <input class='form-control' id='first_name' name='first_name' placeholder='First Name' required type='text'>
+                            </li>
+                            <li class='form-group'>
+                                <label for='last_name'>Last Name</label>
+                                <input class='form-control' id='last_name' name='last_name' placeholder='Last Name' required type='text'>
+                            </li>
+                            <li class='form-group'>
+                                <label for='email'>Email</label>
+                                <input class='form-control' id='email' name='email' placeholder='name@example.com' required type='email'>
+                            </li>
+                        </ol>
+                    </fieldset>
+                </li>
+            </ul>
+            <input class='btn btn-default' id='submit_button' onclick="display()" value='Submit Information'>
+        </form>
+    </section>
+</div>
+<div id='showInformation' class='hide'>
+    <section>
+        <legend>You provided the following information towards availing discounts</legend>
+        <ul>
+            <li>
+                <label for='display_first_name'>First Name</label>
+                <span class="badge" id='display_first_name'></span>
+            </li>
+            <li>
+                <label for='display_last_name'>Last Name</label>
+                <span class="label label-info" id='display_last_name'></span>
+            </li>
+            <li>
+                <label for='display_email'>Email Address</label>
+                <span class="label label-info" id='display_email'></span>
+            </li>
+        </ul>
+        <input class='btn btn-default' id='retry_button' onclick="resetDisplay()" value='Retry again'>
+    </section>
+</div>
+</body>
+</html>

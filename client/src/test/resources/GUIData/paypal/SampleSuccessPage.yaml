@@ -1,0 +1,3 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+  US: "*Success*|Success Page *"

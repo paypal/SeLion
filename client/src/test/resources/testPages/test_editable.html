@@ -1,0 +1,234 @@
+<html>
+<!--
+Copyright 2006 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<title>Sample Unit Test Page</title>
+</head>
+<body>
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+<form>
+<table>
+
+<tr><th>Editable text-field</th><td><input name="normal_text" value=""></td></tr>
+<tr><th>Editable select</th><td><select name="normal_select"><option value="black">black</option><option value="Red">Red</option><option value="White">White</option></select></td></tr>
+
+<tr><th>Disabled text-field</th><td><input name="disabled_text" value="black" disabled="yup"></td></tr>
+<tr><th>Disabled select</th><td><select name="disabled_select" disabled="yup"><option>black</option></select></td></tr>
+<tr><th>Readonly text-field</th><td><input name="readonly_text" value="black" readonly></td></tr>
+
+<tr><th>Faked read-only input</th><td><span id="fake_input" name="fake_input" style="border: 1px solid grey">black</span></td></tr>
+
+</table>
+<fieldset>
+<legend>Base</legend>
+<input type="radio" id="base-spud" name="base" value="spud" checked="yes"/> Baked Potato<br/>
+<input type="radio" id="base-rice" name="base" value="rice"/> Steamed Rice<br/>
+</fieldset>
+<fieldset>
+<legend>Options</legend>
+<input type="checkbox" id="option-beans" name="option" value="beans" checked="yes"/> Beans<br/>
+<input type="checkbox" id="option-cheese" name="option" value="cheese" checked="yes"/> Cheese<br/>
+<input type="checkbox" id="option-chilli" name="option" value="chilli"/> Chilli Flakes<br/>
+
+</fieldset>
+
+</form>
+<form id="searchForm" method="GET" action="javascript:alert('form submitted')"
+      onsubmit="javascript:alert('onsubmit called'); document.forms[1].elements.okayToSubmit.checked=true">
+search: <input name="search" type="text">
+<br />
+OK to submit? <input name="okayToSubmit" type="checkbox" />
+<br />
+<input type="submit" id='submitButton'/>
+</form>
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+  <script type="text/javascript">
+
+  function confirmLeaving() {
+    if (confirm("You are about to go to a dummy page.")) {
+        document.location = "test_dummy_page.html";
+    }
+}
+</script>
+<img id='Earth' onclick="javascript:alert('onsubmit called')" src="Earth.gif"/>
+<img id='ChangePage' onclick="location.href='SuccessPage.html'" src="Earth.gif"/>
+
+<a id="openNewPage" href="SuccessPage.html">click to navigate to a new page for chrome </a>
+<input id="navigateButton" value="Submit Button" type="button" onclick="location.href='SuccessPage.html'"/>
+</head>
+<body>
+<a id="confirmAndLeave" href="javascript:confirmLeaving();">click to navigate to a new page</a>
+</body>
+<br>
+<table border='1' id='TestTable' width='500' align='left' >
+	<tbody>
+	<tr id=$tr1>
+		<th>Date</th>
+		<th>Type</th>
+		<th>Status</th>
+	</tr>
+	<tr id=$tr2>
+		<td>Sep 9,2011</td>
+		<td>Payment</td>
+		<td><a id='completed1' href='SuccessPage.html'>Completed</a></td>
+	</tr>
+	<tr id=$tr3>
+		<td>Sep 9,2011</td>
+		<td>Payment</td>
+		<td><a id='completed2' href='SuccessPage.html'>Completed</a></td>
+	</tr>
+	<tr id=$tr4>
+		<td>
+			<input type='checkbox' id='selection1'>
+		</td>
+		<td>
+			<input type='checkbox' id='selection2'>
+		</td>
+		<td>
+			<input type='checkbox' id='selection3'>
+		</td>
+
+	</tr>
+	</tbody>
+</table>
+</br>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<tr><th>Table with column in tbody and multiple columns</th></tr>
+<br />
+<table border='2' id='TestMultipleHeadersTable' width='500' align='left' >
+	<tbody>
+		<tr>
+			<th>Vegetables - Table with columns in tbody</th>
+		</tr>
+		<tr>
+			<th>Type</th>
+			<th>Color</th>
+			<th>Completed</th>
+			<th>Checkbox</th>
+		</tr>
+		<tr>
+			<td>Tomato</td>
+			<td>Red</td>
+			<td><a id='completed1' href='SuccessPage.html'>Completed</a></td>
+			<td><input type='checkbox' id='selection1'></td>
+		</tr>
+		<tr>
+			<td>Cucumber</td>
+			<td>Green</td>
+			<td><a id='completed2' href='SuccessPage.html'>Completed</a></td>
+			<td><input type='checkbox' id='selection1'></td>
+
+		</tr>
+		<tr>
+			<td>Pumpkin</td>
+			<td>Orange</td>
+			<td><a id='completed3' href='SuccessPage.html'>Completed</a></td>
+			<td><input type='checkbox' id='selection1'></td>
+		</tr>
+	</tbody>
+</table>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<tr><th>Table with column in thead</th></tr>
+<br/>
+<table border='2' id='TestColumnInTHEADTable' width='500' align='left' >
+	<thead>
+		<tr>
+			<th>Vegetables - Table with columns in tbody</th>
+		</tr>
+		<tr>
+			<th>Type</th>
+			<th>Color</th>
+			<th>Completed</th>
+			<th>Checkbox</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Tomato</td>
+			<td>Red</td>
+			<td><a id='completed1' href='SuccessPage.html'>Completed</a></td>
+			<td><input type='checkbox' id='selection1'></td>
+		</tr>
+		<tr>
+			<td>Cucumber</td>
+			<td>Green</td>
+			<td><a id='completed2' href='SuccessPage.html'>Completed</a></td>
+			<td><input type='checkbox' id='selection1'></td>
+
+		</tr>
+		<tr>
+			<td>Pumpkin</td>
+			<td>Orange</td>
+			<td><a id='completed3' href='SuccessPage.html'>Completed</a></td>
+			<td><input type='checkbox' id='selection1'></td>
+		</tr>
+	</tbody>
+</table>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<tr><th>Empty table with column in tbody</th></tr>
+<br/>
+<table border='2' id='TestEmptyTable' width='500' align='left' >
+	<tbody>
+		<tr>
+			<th>Type</th>
+			<th>Color</th>
+			<th>Completed</th>
+			<th>Checkbox</th>
+		</tr>
+	</tbody>
+</table>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<tr><th>Empty table with column in thead</th></tr>
+<br/>
+<textarea cols='20' rows='03' id='myTextarea'></textarea>
+<select multiple name="multiple_select">
+  <option value="volvo">volvo</option>
+  <option value="saab">saab</option>
+  <option value="opel">opel</option>
+  <option value="audi">audi</option>
+</select>
+
+</html>

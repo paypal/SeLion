@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="basic">
+
+    <fileSets>
+        <fileSet filtered="true" packaged="true">
+            <directory>src/main/java/</directory>
+            <includes>
+                <include>**/*.html</include>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+            <directory>src/main/resources/</directory>
+            <includes>
+                <include>**/*.html</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/main/resources/GUIData/</directory>
+            <includes>
+                <include>**/*.yaml</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true">
+            <directory>src/test/java/</directory>
+            <includes>
+                <include>**/*.html</include>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+            <directory>src/test/resources/</directory>
+            <includes>
+                <include>**/*.html</include>
+                <include>**/*.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/testdata/</directory>
+            <includes>
+                <include>**/*.xls</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+            <directory>src/test/resources/testdata/</directory>
+            <includes>
+                <include>**/*.yaml</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/testPages/</directory>
+            <includes>
+                <include>**/*.html</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/en.lproj/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/en.lproj/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/fr.lproj/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/zh-Hant.lproj/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/Settings.bundle/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/Settings.bundle/en.lproj/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/Settings.bundle/fr.lproj/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false">
+            <directory>src/test/resources/apps/InternationalMountains.app/Settings.bundle/zh-Hant.lproj/</directory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+</archetype-descriptor>

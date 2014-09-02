@@ -1,0 +1,28 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="1" name="SeLion Sample Tests" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="1" annotations="JDK">
+
+    <!-- KEY CONCEPT Place your configuration settings for this test suite here. -->
+
+    <!-- optional, defaults to *firefox -->
+    <parameter name="browser" value="*firefox" />
+    <!-- optional, defaults to false -->
+    <parameter name="runLocally" value="true" />
+    <!-- The appFolder parameter is applicable for the Native apps and points to the folder where the ios Native app resides -->
+    <parameter name="appFolder" value="src/test/resources/apps" />
+
+    <test verbose="2" name="DemoWebTests" annotations="JDK">
+        <classes>
+            <class name="${package}.sample.selion.SimpleUIFlowDemoTest" />
+            <class name="${package}.sample.selion.WebDriverSessionHandlerTest" />
+            <class name="${package}.sample.selion.WebSessionSharingTest" />
+            <class name="${package}.sample.selion.UIFlowUsingSeLionPageObjectsTest" />
+        </classes>
+    </test>
+    <test verbose="2" name="DemoIOSTests" annotations="JDK">
+        <classes>
+            <class name="${package}.sample.selion.IOSNativeAppDemoTest" />
+        </classes>
+    </test>
+
+</suite>

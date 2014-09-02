@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Chrome SeLion Config Parallel classes suite" parallel="classes" verbose="2">
+
+    <test name="TestPC1">
+        <parameter name="browser" value="*chrome" />
+        <groups>
+            <run>
+                <!-- P1 used chrome -->
+                <include name="parallelBrowserTest1" />
+                <include name="unit" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.configuration.LocalConfigTest" />
+            <class name="com.paypal.selion.configuration.ConfigManagerTest" />
+        </classes>
+    </test>
+
+</suite>

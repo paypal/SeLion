@@ -1,0 +1,120 @@
+<!-- start panel title -->
+<h2 class="yuk_goldgrad_ltitle">$description</h2>
+<!-- //end panel title -->
+
+
+
+<!-- start panel table -->
+<table class="yuk_table" cellpadding="0" cellspacing="0" border="0" summary="This is a summary of the data presented in the table"> <!-- *** please complete a summary of the table *** -->
+
+<!-- start colgroup -->
+<colgroup>
+    <col align="right" />
+    <col align="right" />
+    <col align="right" />
+    <col align="right" /> <!-- needs align attribute for IE -->
+    <col align="right" /> <!-- needs align attribute for IE -->
+</colgroup>
+<!-- //end colgroup -->
+
+
+
+<!-- start table column headers -->
+<thead> <!-- *** give column headers abbr *** -->
+<tr>
+  <th scope="col" abbr="header1_abbr" id="first_col">suite : ${suiteName}</th>
+  <th scope="col" abbr="header2_abbr" class="right">Tests run</th>
+  <th scope="col" abbr="header3_abbr" class="right">Tests passed</th>
+  <th scope="col" abbr="header4_abbr" class="right">Tests failed</th>
+  <th scope="col" abbr="header5_abbr" class="right">Tests skipped</th> <!-- use class name left/right/center to align text in column -->
+</tr>
+</thead>
+<!-- //end table column headers -->
+
+<!-- start table foot -->
+<!--<tfoot>-->
+<!--<tr>-->
+<!---->
+<!--  <td colspan="5">&nbsp;</td>  set total number of columns -->
+<!--</tr>-->
+<!--</tfoot>-->
+<!-- //end table foot -->
+
+
+
+<!-- start table body -->
+<tbody>
+#set ($odd=1)
+#set ($total=0)
+
+#foreach ($line in $lines)
+
+	#if ( $odd==1 ) <tr class="odd"> #set($odd=0)
+	#else	<tr class="even">	#set($odd=1)
+	#end
+	
+	
+	<td class="first clickable" content_id=$line.getId() >$line.getLabel() </td>
+	<td>$line.getTotalMethods()</td>
+	#set ($total = $total + $line.getTotalMethods())
+	
+	
+	#set ($passed = $line.getInstancePassed())
+	
+	
+	<td title="$passed tests">
+	$passed 	
+	</td>
+	
+	#set ($failed = $line.getInstanceFailed())
+	
+	<td title="$failed tests">
+	$failed 	
+	</td>
+	
+	<td>$line.getInstanceSkipped()
+	</td>
+	</tr>
+	
+	
+#end
+		
+
+
+<tr class="even"> 
+  <td class="first"><b>Total</b></td>
+
+  <td><b>$total</b></td>
+  
+	#set ($all = $view.getSplitter().getTotalInstancePassed())
+	
+	<td title="$all tests envt checks">
+		<b>
+			$all 	
+		</b>
+	</td>
+  
+	#set ($all = $view.getSplitter().getTotalInstanceFailed())
+	
+	<td title="$all tests envt checks">
+		<b>
+			$all 	
+		</b>
+	</td>
+	
+  
+  
+	#set ($all = $view.getSplitter().getTotalInstanceSkipped())
+	
+	<td title="$all tests envt checks">
+		<b>
+			$all 	
+		</b>
+	</td>
+</tr>
+		    
+</tbody>
+<!-- //end table body -->
+  
+</table>
+<!-- //end panel table -->

@@ -1,0 +1,6 @@
+--- # Inline associative array
+{name: 1, email: user1@paypal.com, txId: 10686626}
+--- # Block associative array
+  name: 2
+  email: user2@paypal.com
+  txId: 10686627

@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="10" verbose="2" name="Functional Test Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="methods" data-provider-thread-count="1" annotations="JDK">
+
+    <parameter name="runLocally" value="false" />
+    <parameter name="browser" value="*chrome" />
+
+    <test name="Functional">
+        <groups>
+            <run>
+                <include name="functional" />
+            </run>
+        </groups>
+        <packages>
+            <package name="com.paypal.selion.platform.*" />
+            <package name="com.paypal.selion.reports.*" />
+        </packages>
+    </test>
+
+</suite>
+

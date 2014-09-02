@@ -1,0 +1,8 @@
+# Associative array of an inline associative array
+test1: {name: 1, email: user1@paypal.com, txId: 10686626 }
+
+# Associative array of a block associative array
+test2: 
+    name: 2
+    email: user2@paypal.com
+    txId: 10686627

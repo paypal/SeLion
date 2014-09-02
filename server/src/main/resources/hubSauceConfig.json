@@ -1,0 +1,11 @@
+{
+    "servlets": [
+        "com.paypal.selion.grid.servlets.LoginServlet",
+        "com.paypal.selion.grid.servlets.SauceServlet",
+        "com.paypal.selion.grid.servlets.PasswordChangeServlet",
+        "com.paypal.selion.grid.servlets.SauceConfigChangeServlet"
+    ],
+    "browserTimeout": 180000,
+    "newSessionWaitTimeout": 1800000,
+    "capabilityMatcher": "com.paypal.selion.grid.internal.SeLionSauceCapabilityMatcher"
+}

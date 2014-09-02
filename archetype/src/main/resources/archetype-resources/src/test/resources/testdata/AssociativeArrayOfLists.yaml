@@ -1,0 +1,6 @@
+# Block associated array of lists (showing examples of both inline and blocked lists)
+test1: [1, user1@paypal.com, 10686626]
+test2: 
+   - 2
+   - user2@paypal.com
+   - 10686627

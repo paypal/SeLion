@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="100" verbose="1" name="SeLion GUI Test Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="50" annotations="JDK">
+    <listeners>
+        <listener class-name="com.paypal.selion.reports.runtime.DebugListener" />
+    </listeners>
+
+    <parameter name="runLocally" value="false" />
+    <parameter name="browser" value="*chrome" />
+
+    <test verbose="2" name="P1" annotations="JDK">
+        <classes>
+            <class name="com.paypal.selion.testcomponents.BasicPageImplTest" />
+            <class name="com.paypal.selion.testcomponents.GUIPageExtensionTest" />
+        </classes>
+    </test>
+
+</suite>
+

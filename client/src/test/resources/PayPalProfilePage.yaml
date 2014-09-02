@@ -1,0 +1,29 @@
+---
+Key: "CreditCardsLink"
+US: "link=Credit/Debit Cards"
+FR: "link=French Credit/Debit Cards"
+CN: "ä¸ªäººè´¦æˆ·ä¸»é¡µ - è´?å®?"
+---
+Key: "BankAccountLink"
+US: "link=Bank Accounts"
+FR: "link=French Bank Accounts"
+DE: "\"Escape Sequence check \""
+---
+Key: "CurrencyBalancesLink"
+US: "link=Currency Balances"
+FR: "link=French Currency Balances"
+---
+Key: "LanguagePreferenceLink"
+US: "link=Language Preference"
+FR: "//a[contains(text(),'DÃ©connexion')]"
+---
+Key: "myContainer"
+US: "//usContainer"
+FR: "//frContainer"
+Elements:
+  - Key: "containerLink"
+    US: ".//usContainerLink"
+    FR: ".//frContainerLink"
+  - Key: "containerButton"
+    US: ".//usContainerButton"
+    FR: ".//frContainerButton"

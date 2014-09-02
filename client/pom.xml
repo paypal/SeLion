@@ -1,0 +1,187 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.paypal.selion</groupId>
+        <artifactId>SeLion-Parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>SeLion</artifactId>
+    <packaging>jar</packaging>
+    <name>SeLion Client</name>
+    <description>
+        The SeLion framework. A collection of classes for testing with WebDriver.
+    </description>
+
+    <properties>
+        <suiteXmlPath>src/test/resources/suites/</suiteXmlPath>
+        <suiteXmlFile>Default-UnitTest-Suite.xml</suiteXmlFile>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/selionbuildinfo.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/selionbuildinfo.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlPath}${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>selionFiles</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.paypal.selion</groupId>
+                <artifactId>SeLion-Project-BOM</artifactId>
+                <version>${project.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Apache commons configuration -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+
+        <!-- Selenium 2 dependencies -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+        </dependency>
+
+        <!-- HtmlUnitDriver requires latest xml-apis jar -->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+        </dependency>
+
+        <!-- WebDriver now by default seems to be attempting to trigger a registration of org.openqa.selenium.phantomjs
+        .PhantomJSDriver and com.opera.core.systems.OperaDriver. But both these libraries are outside the realms of 
+        Selenium/WebDriver. So adding an explicit dependency on them to ensure that our logs dont show up any INFO 
+        level ClassNotFoundException, when a user tries to run tests locally. -->
+        <dependency>
+            <groupId>com.github.detro.ghostdriver</groupId>
+            <artifactId>phantomjsdriver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.opera</groupId>
+            <artifactId>operadriver</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <!-- Apache commons configuration -->
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+        </dependency>
+
+        <!-- selendroid dependencies -->
+        <dependency>
+            <groupId>io.selendroid</groupId>
+            <artifactId>selendroid-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.selendroid</groupId>
+            <artifactId>selendroid-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.selendroid</groupId>
+            <artifactId>selendroid-grid-plugin</artifactId>
+        </dependency>
+
+        <!-- IOS Driver dependencies. -->
+        <dependency>
+            <groupId>org.uiautomation</groupId>
+            <artifactId>ios-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uiautomation</groupId>
+            <artifactId>ios-grid</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.uiautomation</groupId>
+                    <artifactId>ios-common</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- A utility for parsing user agent strings -->
+        <dependency>
+            <groupId>nl.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+        </dependency>
+
+        <!-- add xerces - used by runtime reporter -->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -1,0 +1,88 @@
+- !!${package}.sample.dataobjects.UserInformation
+  accountNumber: 78901
+  amount: 120.0
+  areaCode:
+  - &id001 {areaCode: '501'}
+  - &id002 {areaCode: '301'}
+  bank: &id003
+    address: {street: 12 Pico st}
+    name: Well fargo
+    type: savings
+  doubleTest: 1340.24
+  floatTest: 0.0020
+  isbooleanGood: false
+  longTest: 599880
+  name: Nemo
+  password: password
+  phoneNumber: 1-408-666-5508
+  preintTest: 10
+- !!${package}.sample.dataobjects.UserInformation
+  accountNumber: 123456
+  amount: 100.0
+  areaCode:
+  - *id001
+  - &id004 {areaCode: '408'}
+  - {areaCode: '650'}
+  bank: &id005
+    address: {street: 1234 Elm st}
+    name: BOA
+    type: checking
+  doubleTest: 12.5
+  floatTest: 12.5
+  isbooleanGood: true
+  longTest: 167045
+  name: Rambo
+  password: abc123
+  phoneNumber: 1-408-225-8040
+  preintTest: 12
+- !!${package}.sample.dataobjects.UserInformation
+  accountNumber: 124567
+  amount: 200.5
+  areaCode:
+  - {areaCode: '317'}
+  - *id002
+  - {areaCode: '701'}
+  bank: *id003
+  doubleTest: 13.5
+  floatTest: 13.5
+  isbooleanGood: true
+  longTest: 1234
+  name: Shifu
+  password: abc124
+  phoneNumber: 1-714-666-0043
+  preintTest: 14
+- !!${package}.sample.dataobjects.UserInformation
+  accountNumber: 1234567
+  amount: 300.75
+  areaCode:
+  - *id001
+  - *id002
+  - *id004
+  bank: *id005
+  doubleTest: 14.5
+  floatTest: 14.5
+  isbooleanGood: false
+  longTest: 456567
+  name: Simba
+  password: abc124
+  phoneNumber: 1-213-580-6070
+  preintTest: 17
+- !!${package}.sample.dataobjects.UserInformation {accountNumber: 385749204,
+  amount: , areaCode: , bank: , doubleTest: 0.0, floatTest: 0.0, isbooleanGood: false,
+  longTest: 0, name: , password: , phoneNumber: , preintTest: 0}
+- !!${package}.sample.dataobjects.UserInformation
+  accountNumber: 1234567
+  amount: 300.75
+  areaCode:
+  - *id001
+  - *id002
+  - *id004
+  bank: *id005
+  doubleTest: 14.5
+  floatTest: 14.5
+  isbooleanGood: false
+  longTest: 456567
+  name: Simba
+  password: abc124
+  phoneNumber: 1-213-580-6070
+  preintTest: 17

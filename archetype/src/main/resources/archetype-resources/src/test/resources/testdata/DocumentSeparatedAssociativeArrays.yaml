@@ -1,0 +1,7 @@
+--- # Inline associative array
+{item1: string1, item2: string2, item3: string3}
+--- # Block associative array
+item1: string1
+item2: string2
+item3: string3
+

@@ -1,0 +1,1216 @@
+.yuk_table td.clickedOnce {
+	font-weight: bold;
+    background: transparent url('checked.png') no-repeat center left;
+}
+
+.errorBox p {color:red; margin: 0;}
+
+.clear_both {
+	clear: both;
+}
+
+.floatRight {
+	float: right;
+	font-size: small;
+}
+
+.floatLeft {
+	float: left;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.testDetail {
+	width: 95%;
+	margin-left: 1cm;
+}
+
+table.ex {
+	width: 95%;
+	margin-left: 1cm;
+	border-color: gray;
+	border-style: solid;
+	border-width: 1px 0 0 1px;
+	color: #000000;
+	font-size: 100%;
+	padding: 0;
+}
+
+table.ex th,table.ex td {
+	border-color: gray;
+	border-style: solid;
+	border-width: 0 1px 1px 0;
+	padding-bottom: 2px;
+}
+
+table .paramValue {
+	color: black;
+	text-align: center;
+	font-weight: bold;
+}
+
+/* -----------large gold gradient panel title--------------------------- */
+h2.yuk_goldgrad_ltitle {
+	padding: 3px 9px;
+	margin: 0;
+	color: #5d5d5d;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grad_ltitle_passed {
+	padding: 3px 9px;
+	margin: 0;
+	color: green;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grad_ltitle_failed {
+	padding: 3px 9px;
+	margin: 0;
+	color: red;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grad_ltitle_skipped {
+	padding: 3px 9px;
+	margin: 0;
+	color: blue;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grey_midpnl_ltitle {padding:7px 9px 3px 9px; margin:0; color:#5d5d5d; font-size:small; font-weight:bold; background-color:#e8e8e8; border-style:solid; border-color:#ccc; border-width:1px; font-family:Arial, Helvetica, sans-serif;}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------table--------------------------- */
+.yuk_table {
+	display: table;
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 0;
+	margin: 0;
+	color: #333;
+	background-color: #fff;
+	border-collapse: separate;
+	border-spacing: 0;
+	text-align: left;
+	width: 100%;
+}
+
+/* -----------table thead area--------------------------- */
+.yuk_table thead {
+	display: table-header-group;
+	background-color: #e8e8e8;
+}
+
+.yuk_table th {
+	font-size: x-small;
+	font-weight: normal;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	padding: 4px 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.yuk_table th.first_col {
+	padding: 0 17px;
+}
+
+/* -----------table tfoot--------------------------- */
+.yuk_table tfoot td {
+	background: #fff;
+	padding: 0;
+	text-align: right;
+	border: none;
+	color: #666;
+	line-height: 10px;
+}
+
+/* -----------panel footer--------------------------- */
+.yuk_grey_bm {
+	border: 1px solid #ccc;
+	border-top: 0;
+}
+
+.yuk_grey_br {
+	position: relative;
+	bottom: -1px;
+	right: -1px;
+	background:
+		no-repeat bottom right;
+}
+
+.yuk_grey_bl {
+	position: relative;
+	left: -2px;
+	height: 6px;
+	font-size: 0;
+	background:
+		url(http://dev-web.ebaydevelopment.co.uk/cssyukontoolbox/img/grey_bl.gif)
+		no-repeat bottom left;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------table columns and rows--------------------------- */
+.yuk_table tr.odd td.first {
+	border-style: solid;
+	border-color: #ccc #ccc #ccc #ccc;
+	border-width: 0 1px 0 0;
+	// background: none;
+	padding: 0 17px;
+}
+
+.yuk_table td {
+	font-size: small;
+	padding: 4px 10px;
+	border-right: 1px solid #ccc;
+	background: none;
+}
+
+.yuk_table tr.odd td.last {
+	border: none;
+	background: none;
+}
+
+.yuk_table tr.even td {
+	background-color: #f2f2f2;
+}
+
+.yuk_table tr.even td.first {
+	border-style: solid;
+	border-color: #ccc #ccc #ccc #ccc;
+	border-width: 0 1px 0 0;
+	
+	padding: 0 18px;
+}
+
+.yuk_table tr.even td.last {
+	border: none;
+	background: #fff
+		repeat-y bottom right;
+}
+
+/* -----------separator lines / other color determined by bg color of table--------------------------- */
+.yuk_table tr.alt td.first {
+	background: #fff
+		repeat-x bottom left;
+}
+
+.yuk_table tr.alt td.last {
+	background: #fff
+		repeat-x bottom right;
+}
+
+/* -----------alignment of td's and text (ps. align property used in colgroup within html file for IE--------------------------- */
+.yuk_table td:first-child+td {
+	text-align: right;
+	color: black
+}
+
+.yuk_table td:first-child+td+td {
+	text-align: right;
+	color: green
+}
+
+.yuk_table td:first-child+td+td+td {
+	text-align: right;
+	color: red
+}
+
+.yuk_table td:first-child+td+td+td+td {
+	text-align: right;
+	color: blue
+}
+
+.yuk_table .left {
+	text-align: left;
+}
+
+.yuk_table .center {
+	text-align: center;
+}
+
+.yuk_table .right {
+	text-align: right;
+}
+
+/* -----------tab panel--------------------------- */
+.yuk_tab_panel {
+	padding: 0;
+	margin: 10px;
+	width: 99%;
+}
+
+h2.yuk_grey_midpnl_ltitle {width =95%;
+	padding: 7px 9px 3px 9px;
+	margin: 0;
+	color: #5d5d5d;
+	font-size: medium;
+	font-weight: bold;
+	background-color: #e8e8e8;
+	border-style: solid;
+	border-color: #ccc;
+	border-width: 1px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* -----------tab title--------------------------- */
+h2.yuk_tab_title {
+	margin: 0;
+	padding: 3px 10px 0 9px;
+	font-size: medium;
+	font-weight: bold;
+	color: #5d5d5d;
+}
+
+/* -----------gold gradient titlebar--------------------------- */
+.yuk_goldgrad_tl {
+	background-color: #faf5ce;
+	border: solid #fcd13c;
+	border-width: 1px 1px 0 1px;
+}
+
+.yuk_goldgrad_tl .yuk_goldgrad_tr {
+	position: relative;
+	top: -1px;
+	right: -1px;
+	background:
+		no-repeat top right;
+}
+
+.yuk_goldgrad_tl .yuk_goldgrad_m {
+	position: relative;
+	left: -2px;
+	height: 4px;
+	font-size: 0;
+	background:
+		no-repeat top left;
+}
+
+/* -----------tabbed navigation container--------------------------- */
+.yuk_tabbed_nav {
+	float: left;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #ccc #fcd13c #ccc #fcd13c;
+	border-width: 0 1px 0px 1px;
+	width: 100%;
+	/* set width -2px from panel width so that 1px left/right borders are taken into account */
+}
+
+/* -----------tab list--------------------------- */
+.yuk_tabbed_nav ul {
+	margin: 0;
+	padding: 5px 10px 0 10px;
+	list-style: none;
+}
+
+.yuk_tabbed_nav li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+/* -----------normal state of tabs--------------------------- */
+.yuk_tabbed_nav a {
+	float: left;
+	background:
+		no-repeat left top;
+	margin: 0;
+	padding: 0 3px 0 4px;
+	border-bottom: 1px solid #aaa;
+	text-decoration: none;
+}
+
+.yuk_tabbed_nav a span {
+	float: left;
+	display: block;
+	background:
+		no-repeat right top;
+	padding: 6px 8px 3px 4px;
+	font-weight: bold;
+	color: #333;
+	font-size: small;
+}
+
+/* -----------active state of tabs--------------------------- */
+.yuk_tabbed_nav .active a {
+	background-position: 0 -300px;
+	border-width: 0;
+}
+
+.yuk_tabbed_nav .active a span {
+	background-position: 100% -300px;
+	padding-bottom: 4px;
+	color: #333;
+}
+
+/* -----------hover action for active state of tabs--------------------------- */
+.yuk_tabbed_nav .active a:hover span {
+	background-position: 0 -150px;
+}
+
+.yuk_tabbed_nav li.active a:hover span {
+	background-position: 100% -300px;
+	color: #333;
+}
+
+/* -----------hover state of tabs--------------------------- */
+.yuk_tabbed_nav a:hover {
+	background-position: 0% -150px;
+}
+
+.yuk_tabbed_nav a:hover span {
+	background-position: 100% -150px;
+	color: #333;
+}
+
+/* -----------panel subheading--------------------------- */
+h4.yuk_pnl_subheading {
+	background-color: #e8e8e8;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: #5d5d5d;
+}
+
+h4.yuk_pnl_subheading_passed {
+	background-color: #A7E1B3;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: : #5d5d5d;
+}
+
+h4.yuk_pnl_subheading_failed {
+	background-color: #F7AEA2;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: : #5d5d5d;
+}
+
+h4.yuk_pnl_subheading_skipped {
+	background-color: #C3CBF8;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: : #5d5d5d;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------panel content area--------------------------- */
+.yuk_pnl_content {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #fff;
+}
+
+.yuk_pnl_content_failed {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #FFD0D0;
+}
+
+.yuk_pnl_content_passed {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #D8FADE;
+}
+
+.yuk_pnl_content_skipped {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #DADFFC;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------panel footer--------------------------- */
+.yuk_grey_bm {
+	border: 1px solid #ccc;
+	border-top: 0;
+}
+
+.yuk_grey_bm_footer {
+	border: 1px solid #ccc;
+	border-top: 0;
+	background-color: #e8e8e8;
+}
+
+/* This required when a footerbar panel is required inorder to create a gradient background */
+.yuk_grey_br {
+	position: relative;
+	bottom: -1px;
+	right: -1px;
+	background:
+		no-repeat bottom right;
+}
+
+.yuk_grey_bl {
+	position: relative;
+	left: -2px;
+	height: 6px;
+	font-size: 0;
+	background:
+		no-repeat bottom left;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------footerbar gradient--------------------------- */
+.yuk_pnl_footerbar {
+	text-align: right;
+	background: #e9e9e9
+		repeat-x scroll top;
+	border-style: solid;
+	border-color: #e8e8e8 #ccc #e8e8e8 #ccc;
+	border-width: 1px 1px 0 1px;
+	position: relative;
+	font-size: small;
+}
+
+.yuk_pnl_footerbar_link {
+	padding: 6px 10px 0 0;
+	font-size: small;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* ebay color strap in header*/
+td.brnd1 {
+	background-color: #FF0000;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd2 {
+	background-color: #990033;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 4%;
+}
+
+td.brnd3 {
+	background-color: #000099;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd4 {
+	background-color: #CC6600;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 5%;
+}
+
+td.brnd5 {
+	background-color: #FFCC00;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd6 {
+	background-color: #999900;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 4%;
+}
+
+td.brnd7 {
+	background-color: #99CC00;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd8 {
+	background-color: #C0C0C0;
+	height: 2px;
+	margin: 0;
+	padding: 0;
+}
+/* end of the colo?r strap in header */.yuk_table td.clickedOnce {
+	font-weight: bold;
+    background: transparent url('checked.png') no-repeat center left;
+}
+
+.errorBox p {color:red; margin: 0;}
+
+.clear_both {
+	clear: both;
+}
+
+.floatRight {
+	float: right;
+	font-size: small;
+}
+
+.floatLeft {
+	float: left;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.testDetail {
+	width: 95%;
+	margin-left: 1cm;
+}
+
+table.ex {
+	width: 95%;
+	margin-left: 1cm;
+	border-color: gray;
+	border-style: solid;
+	border-width: 1px 0 0 1px;
+	color: #000000;
+	font-size: 100%;
+	padding: 0;
+}
+
+table.ex th,table.ex td {
+	border-color: gray;
+	border-style: solid;
+	border-width: 0 1px 1px 0;
+	padding-bottom: 2px;
+}
+
+table .paramValue {
+	color: black;
+	text-align: center;
+	font-weight: bold;
+}
+
+/* -----------large gold gradient panel title--------------------------- */
+h2.yuk_goldgrad_ltitle {
+	padding: 3px 9px;
+	margin: 0;
+	color: #5d5d5d;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grad_ltitle_passed {
+	padding: 3px 9px;
+	margin: 0;
+	color: green;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grad_ltitle_failed {
+	padding: 3px 9px;
+	margin: 0;
+	color: red;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grad_ltitle_skipped {
+	padding: 3px 9px;
+	margin: 0;
+	color: blue;
+	font-size: small;
+	font-weight: bold;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
+	border-width: 0 1px 1px 1px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+}
+
+h2.yuk_grey_midpnl_ltitle {padding:7px 9px 3px 9px; margin:0; color:#5d5d5d; font-size:small; font-weight:bold; background-color:#e8e8e8; border-style:solid; border-color:#ccc; border-width:1px; font-family:Arial, Helvetica, sans-serif;}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------table--------------------------- */
+.yuk_table {
+	display: table;
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 0;
+	margin: 0;
+	color: #333;
+	background-color: #fff;
+	border-collapse: separate;
+	border-spacing: 0;
+	text-align: left;
+	width: 100%;
+}
+
+/* -----------table thead area--------------------------- */
+.yuk_table thead {
+	display: table-header-group;
+	background-color: #e8e8e8;
+}
+
+.yuk_table th {
+	font-size: x-small;
+	font-weight: normal;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	padding: 4px 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.yuk_table th.first_col {
+	padding: 0 17px;
+}
+
+/* -----------table tfoot--------------------------- */
+.yuk_table tfoot td {
+	background: #fff;
+	padding: 0;
+	text-align: right;
+	border: none;
+	color: #666;
+	line-height: 10px;
+}
+
+/* -----------panel footer--------------------------- */
+.yuk_grey_bm {
+	border: 1px solid #ccc;
+	border-top: 0;
+}
+
+.yuk_grey_br {
+	position: relative;
+	bottom: -1px;
+	right: -1px;
+	background:
+		no-repeat bottom right;
+}
+
+.yuk_grey_bl {
+	position: relative;
+	left: -2px;
+	height: 6px;
+	font-size: 0;
+	background:
+		no-repeat bottom left;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------table columns and rows--------------------------- */
+.yuk_table tr.odd td.first {
+	border-style: solid;
+	border-color: #ccc #ccc #ccc #ccc;
+	border-width: 0 1px 0 0;
+	// background: none;
+	padding: 0 17px;
+}
+
+.yuk_table td {
+	font-size: small;
+	padding: 4px 10px;
+	border-right: 1px solid #ccc;
+	background: none;
+}
+
+.yuk_table tr.odd td.last {
+	border: none;
+	background: none;
+}
+
+.yuk_table tr.even td {
+	background-color: #f2f2f2;
+}
+
+.yuk_table tr.even td.first {
+	border-style: solid;
+	border-color: #ccc #ccc #ccc #ccc;
+	border-width: 0 1px 0 0;
+	
+	padding: 0 18px;
+}
+
+.yuk_table tr.even td.last {
+	border: none;
+	background: #fff
+		repeat-y bottom right;
+}
+
+/* -----------separator lines / other color determined by bg color of table--------------------------- */
+.yuk_table tr.alt td.first {
+	background: #fff
+		repeat-x bottom left;
+}
+
+.yuk_table tr.alt td.last {
+	background: #fff
+		repeat-x bottom right;
+}
+
+/* -----------alignment of td's and text (ps. align property used in colgroup within html file for IE--------------------------- */
+.yuk_table td:first-child+td {
+	text-align: right;
+	color: black
+}
+
+.yuk_table td:first-child+td+td {
+	text-align: right;
+	color: green
+}
+
+.yuk_table td:first-child+td+td+td {
+	text-align: right;
+	color: red
+}
+
+.yuk_table td:first-child+td+td+td+td {
+	text-align: right;
+	color: blue
+}
+
+.yuk_table .left {
+	text-align: left;
+}
+
+.yuk_table .center {
+	text-align: center;
+}
+
+.yuk_table .right {
+	text-align: right;
+}
+
+/* -----------tab panel--------------------------- */
+.yuk_tab_panel {
+	padding: 0;
+	margin: 10px;
+	width: 99%;
+}
+
+h2.yuk_grey_midpnl_ltitle {width =95%;
+	padding: 7px 9px 3px 9px;
+	margin: 0;
+	color: #5d5d5d;
+	font-size: medium;
+	font-weight: bold;
+	background-color: #e8e8e8;
+	border-style: solid;
+	border-color: #ccc;
+	border-width: 1px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* -----------tab title--------------------------- */
+h2.yuk_tab_title {
+	margin: 0;
+	padding: 3px 10px 0 9px;
+	font-size: medium;
+	font-weight: bold;
+	color: #5d5d5d;
+}
+
+/* -----------gold gradient titlebar--------------------------- */
+.yuk_goldgrad_tl {
+	background-color: #faf5ce;
+	border: solid #fcd13c;
+	border-width: 1px 1px 0 1px;
+}
+
+.yuk_goldgrad_tl .yuk_goldgrad_tr {
+	position: relative;
+	top: -1px;
+	right: -1px;
+	background:
+		no-repeat top right;
+}
+
+.yuk_goldgrad_tl .yuk_goldgrad_m {
+	position: relative;
+	left: -2px;
+	height: 4px;
+	font-size: 0;
+	background:
+		no-repeat top left;
+}
+
+/* -----------tabbed navigation container--------------------------- */
+.yuk_tabbed_nav {
+	float: left;
+	background: #faf5ce
+		repeat-x bottom;
+	border-style: solid;
+	border-color: #ccc #fcd13c #ccc #fcd13c;
+	border-width: 0 1px 0px 1px;
+	width: 100%;
+	/* set width -2px from panel width so that 1px left/right borders are taken into account */
+}
+
+/* -----------tab list--------------------------- */
+.yuk_tabbed_nav ul {
+	margin: 0;
+	padding: 5px 10px 0 10px;
+	list-style: none;
+}
+
+.yuk_tabbed_nav li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+/* -----------normal state of tabs--------------------------- */
+.yuk_tabbed_nav a {
+	float: left;
+	background:
+		no-repeat left top;
+	margin: 0;
+	padding: 0 3px 0 4px;
+	border-bottom: 1px solid #aaa;
+	text-decoration: none;
+}
+
+.yuk_tabbed_nav a span {
+	float: left;
+	display: block;
+	background:
+		no-repeat right top;
+	padding: 6px 8px 3px 4px;
+	font-weight: bold;
+	color: #333;
+	font-size: small;
+}
+
+/* -----------active state of tabs--------------------------- */
+.yuk_tabbed_nav .active a {
+	background-position: 0 -300px;
+	border-width: 0;
+}
+
+.yuk_tabbed_nav .active a span {
+	background-position: 100% -300px;
+	padding-bottom: 4px;
+	color: #333;
+}
+
+/* -----------hover action for active state of tabs--------------------------- */
+.yuk_tabbed_nav .active a:hover span {
+	background-position: 0 -150px;
+}
+
+.yuk_tabbed_nav li.active a:hover span {
+	background-position: 100% -300px;
+	color: #333;
+}
+
+/* -----------hover state of tabs--------------------------- */
+.yuk_tabbed_nav a:hover {
+	background-position: 0% -150px;
+}
+
+.yuk_tabbed_nav a:hover span {
+	background-position: 100% -150px;
+	color: #333;
+}
+
+/* -----------panel subheading--------------------------- */
+h4.yuk_pnl_subheading {
+	background-color: #e8e8e8;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: #5d5d5d;
+}
+
+h4.yuk_pnl_subheading_passed {
+	background-color: #A7E1B3;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: : #5d5d5d;
+}
+
+h4.yuk_pnl_subheading_failed {
+	background-color: #F7AEA2;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: : #5d5d5d;
+}
+
+h4.yuk_pnl_subheading_skipped {
+	background-color: #C3CBF8;
+	padding: 5px 10px;
+	margin: 0;
+	border-style: solid;
+	border-color: #ccc #ccc #dedede #ccc;
+	border-width: 0 1px 1px 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	font-weight: normal;
+	color: : #5d5d5d;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------panel content area--------------------------- */
+.yuk_pnl_content {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #fff;
+}
+
+.yuk_pnl_content_failed {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #FFD0D0;
+}
+
+.yuk_pnl_content_passed {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #D8FADE;
+}
+
+.yuk_pnl_content_skipped {
+	border: solid #ccc;
+	border-width: 0 1px;
+	padding: 7px 10px 12px 10px;
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	background-color: #DADFFC;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------panel footer--------------------------- */
+.yuk_grey_bm {
+	border: 1px solid #ccc;
+	border-top: 0;
+}
+
+.yuk_grey_bm_footer {
+	border: 1px solid #ccc;
+	border-top: 0;
+	background-color: #e8e8e8;
+}
+
+/* This required when a footerbar panel is required inorder to create a gradient background */
+.yuk_grey_br {
+	position: relative;
+	bottom: -1px;
+	right: -1px;
+	background:
+		no-repeat bottom right;
+}
+
+.yuk_grey_bl {
+	position: relative;
+	left: -2px;
+	height: 6px;
+	font-size: 0;
+	background:
+		no-repeat bottom left;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* -----------footerbar gradient--------------------------- */
+.yuk_pnl_footerbar {
+	text-align: right;
+	background: #e9e9e9
+		repeat-x scroll top;
+	border-style: solid;
+	border-color: #e8e8e8 #ccc #e8e8e8 #ccc;
+	border-width: 1px 1px 0 1px;
+	position: relative;
+	font-size: small;
+}
+
+.yuk_pnl_footerbar_link {
+	padding: 6px 10px 0 0;
+	font-size: small;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------ */
+	/* ebay color strap in header*/
+td.brnd1 {
+	background-color: #FF0000;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd2 {
+	background-color: #990033;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 4%;
+}
+
+td.brnd3 {
+	background-color: #000099;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd4 {
+	background-color: #CC6600;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 5%;
+}
+
+td.brnd5 {
+	background-color: #FFCC00;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd6 {
+	background-color: #999900;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 4%;
+}
+
+td.brnd7 {
+	background-color: #99CC00;
+	height: 4px;
+	margin: 0;
+	padding: 0;
+	width: 22%;
+}
+
+td.brnd8 {
+	background-color: #C0C0C0;
+	height: 2px;
+	margin: 0;
+	padding: 0;
+}
+/* end of the colo?r strap in header */

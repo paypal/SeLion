@@ -1,0 +1,92 @@
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
+
+package com.paypal.selion.reader;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.plugins.GUIElement;
+import com.paypal.selion.plugins.HtmlContainerElement;
+import com.paypal.selion.plugins.Logger;
+import com.paypal.selion.plugins.Page;
+import com.paypal.selion.plugins.PageFactory;
+import com.paypal.selion.plugins.TestPlatform;
+
+/**
+ * Concrete Yaml reader that is capable of reading Yaml v2 format file.
+ */
+class YamlV2Reader extends AbstractYamlReader {
+
+    /**
+     * This is a public constructor to create an input stream & Yaml instance for the input file.
+     * 
+     * @param fileName
+     *            the name of the YAML data file.
+     * @throws IOException
+     */
+    public YamlV2Reader(String fileName) throws IOException {
+        FileSystemResource resource = new FileSystemResource(fileName);
+        processPage(resource);
+    }
+
+    @Override
+    public void processPage(FileSystemResource resource) throws IOException {
+        try {
+            InputStream is = resource.getInputStream();
+            String fileName = resource.getFileName();
+            Page page = PageFactory.getPage(is);
+            setBaseClassName(page.getBaseClass());
+            Logger.getLogger().debug(String.format("++ Processing %s as PageYaml V2", fileName));
+            
+            TestPlatform currentPlatform = TestPlatform.identifyPlatform(page.getPlatform());
+
+            if (currentPlatform == null) {
+                throw new IllegalArgumentException("Missing or invalid platform specified in " + fileName);
+            }
+
+            setPlatform(currentPlatform);
+            
+            for (Entry<String, GUIElement> eachElement : page.getElements().entrySet()) {
+                if (!eachElement.getKey().isEmpty()) {
+
+                    appendKey(eachElement.getKey());
+                    if ((currentPlatform == TestPlatform.WEB)
+                            && HtmlSeLionElement.CONTAINER.looksLike(eachElement.getKey())) {
+                        if (!eachElement.getValue().getContainerElements().isEmpty()) {
+                            Map<String, HtmlContainerElement> allElements = eachElement.getValue()
+                                    .getContainerElements();
+                            List<String> elementKeys = parseKeysForContainer(fileName, allElements);
+                            for (String elementKey : elementKeys) {
+                                // concat parent key separated with # to retain association
+                                appendKey(eachElement.getKey() + DELIMITER + elementKey);
+                            }
+                        }
+                    }
+                }
+            }
+            setProcessed(true);
+        } catch (Exception ex) { // NOSONAR
+            // Just log a debug message. The input is probably not a V2 PageYaml
+            Logger.getLogger().debug(
+                    String.format("Unable to process %s as PageYaml V2.\n\t %s", resource.getFileName(),
+                            ex.getLocalizedMessage()));
+        }
+    }
+}

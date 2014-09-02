@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.paypal.selion</groupId>
+        <artifactId>SeLion-Parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>SeLion-Project-BOM</artifactId>
+    <packaging>pom</packaging>
+    <name>SeLion Project BOM</name>
+    <description>Provides a dependency bill of materials for SeLion  projects</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Apache commons configuration -->
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.12</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>3.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>3.6</version>
+            </dependency>
+
+            <!-- Selenium 2 dependencies -->
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-server</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+
+            <!-- HtmlUnitDriver requires latest xml-apis jar -->
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.4.01</version>
+            </dependency>
+
+            <!-- WebDriver now by default seems to be attempting to trigger a registration of org.openqa.selenium.phantomjs 
+                .PhantomJSDriver and com.opera.core.systems.OperaDriver. But both these libraries are outside the realms of Selenium/WebDriver. 
+                So adding an explicit dependency on them to ensure that our logs dont show up any INFO level ClassNotFoundException, when 
+                a user tries to run tests locally. -->
+            <dependency>
+                <groupId>com.github.detro.ghostdriver</groupId>
+                <artifactId>phantomjsdriver</artifactId>
+                <version>1.1.0</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>selenium-remote-driver</artifactId>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>selenium-java</artifactId>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>selenium-server</artifactId>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.opera</groupId>
+                <artifactId>operadriver</artifactId>
+                <version>1.5</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>selenium-java</artifactId>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>20090211</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>1.7</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <!-- Apache commons configuration -->
+            <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>1.8</version>
+            </dependency>
+
+            <!-- selendroid dependencies -->
+            <dependency>
+                <groupId>io.selendroid</groupId>
+                <version>${selendroid.version}</version>
+                <artifactId>selendroid-server</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>io.selendroid</groupId>
+                <version>${selendroid.version}</version>
+                <artifactId>selendroid-client</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>io.selendroid</groupId>
+                <artifactId>selendroid-grid-plugin</artifactId>
+                <version>${selendroid.version}</version>
+            </dependency>
+
+            <!-- IOS Driver dependencies. -->
+            <dependency>
+                <groupId>org.uiautomation</groupId>
+                <artifactId>ios-server</artifactId>
+                <version>${iosdriver.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-remote-driver</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-support</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.uiautomation</groupId>
+                <artifactId>ios-grid</artifactId>
+                <version>${iosdriver.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-server</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- A utility for parsing user agent strings -->
+            <dependency>
+                <groupId>nl.bitwalker</groupId>
+                <artifactId>UserAgentUtils</artifactId>
+                <version>1.6</version>
+            </dependency>
+
+            <!-- add xerces - used by runtime reporter -->
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>2.9.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

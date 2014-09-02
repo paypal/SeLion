@@ -1,0 +1,21 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+defaultLocale: "US"
+elements:
+  preLoginButton:
+    locators:
+      US: "css=a#login-button"
+  headerContainer:
+    locators:
+      US: "css=header"
+    containerElements:
+      someLink:
+        locators:
+          US: "css=a"
+pageTitle:
+  US: "PayPal: Activity"
+pageValidators: [ 
+  loginEmailTextField, 
+  loginPasswordTextField, 
+  loginButton, 
+  preLoginButton
+  ]

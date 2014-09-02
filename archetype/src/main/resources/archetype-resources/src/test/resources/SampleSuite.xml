@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="1" name="SeLion Sample Tests" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="1" annotations="JDK">
+
+    <!-- KEY CONCEPT Place your configuration settings for this test suite here. -->
+
+    <test verbose="2" name="DemoNonUITests" annotations="JDK">
+        <classes>
+            <class name="${package}.sample.selion.DataDrivenWithCustomTypesTest" />
+            <class name="${package}.sample.selion.SimpleDataDrivenTest" />
+            <class name="${package}.sample.selion.SimpleDataDrivenWithSelectiveRowsTest" />
+            <class name="${package}.sample.selion.SoftAssertionsTest" />
+            <class name="${package}.sample.selion.YamlPoweredDataDrivenTest" />
+        </classes>
+    </test>
+
+</suite>
