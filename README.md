@@ -12,8 +12,8 @@ Please stay tuned for more details.
 
 In the meantime, you can use GitHub issues or if you have a contribution, feel free to send a pull request!
 
-Bugs
------
+Submitting bugs and feature requests
+------------------------------------
 We use GitHub issues. Please scan the list of current issues before filing a new one.
 
 Contributing
@@ -34,10 +34,11 @@ Areas that need contribution
 3. Expanding PageYaml and SeLion's Code Generator to work with Selendroid.
 4. Look & Feel Enhancements to SeLion's RuntimeReporter.
 5. Support for additional data formats such as JSON, CSV, and XML for data driven testing.
+6. Any open item from GitHub issues.
 
 Projects we depend on that need contributors 
 ---------------------------------------------
-1. The ios-driver - hhttps://ios-driver.github.io/ios-driver/ project.
+1. The ios-driver - https://ios-driver.github.io/ios-driver/ project.
 2. The Selendroid - http://selendroid.io/ project.
 
 License
