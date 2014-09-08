@@ -28,6 +28,10 @@ import org.apache.poi.ss.usermodel.Sheet;
  * by providing the excel filename, the data sheet name, and they key. Or get the whole data sheet by providing excel
  * file name and the data sheet name.
  * 
+ * The first column is reserved for keys which are not part of the actual test data. Read
+ * <a href="http://paypal.github.io/SeLion/html/documentation.html#excel-data-provider">Excel Data Provider Documentation</a> 
+ * for more information on the required format of the Excel sheet.
+ *  
  */
 
 public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
