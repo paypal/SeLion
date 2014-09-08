@@ -1,7 +1,7 @@
 @DataProvider(name = "IReadExcelSheets")
 public Object[][] myExcelsheetReader() throws Exception {
-  ExcelDataProvider dataProvider =
-    new ExcelDataProvider("src/test/resources/testdata/MyDataFile.xls");
+  SimpleExcelDataProvider dataProvider =
+    new SimpleExcelDataProvider("src/test/resources/testdata/MyDataFile.xls");
   MyDataSheet dataRow = new MyDataSheet();
 
   ArrayList<String> keyList = new ArrayList<String>();
