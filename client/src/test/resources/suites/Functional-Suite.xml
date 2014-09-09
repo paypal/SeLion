@@ -2,7 +2,6 @@
 <suite thread-count="10" verbose="2" name="Functional Test Suite" skipfailedinvocationcounts="false" junit="false"
     parallel="methods" data-provider-thread-count="1" annotations="JDK">
 
-    <parameter name="runLocally" value="false" />
     <parameter name="browser" value="*chrome" />
 
     <test name="Functional">

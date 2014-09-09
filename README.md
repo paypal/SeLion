@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/paypal/SeLion.svg?branch=develop)](https://travis-ci.org/paypal/SeLion)
+
 SeLion
 =======
 Enabling Test Automation in Java

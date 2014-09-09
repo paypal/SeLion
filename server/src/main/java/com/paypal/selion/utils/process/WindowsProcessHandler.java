@@ -37,7 +37,7 @@ public class WindowsProcessHandler extends AbstractProcessHandler implements Pro
 
     @Override
     public List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException {
-        String[] cmd = { "tasklist.exe /fo csv /nh" };
+        String[] cmd = { "cmd.exe", "/C", "tasklist /FO CSV /NH" };
         try {
             return super.getProcessInfo(cmd, DELIMITER, OSPlatform.WINDOWS);
         } catch (IOException | InterruptedException e) {
@@ -47,7 +47,8 @@ public class WindowsProcessHandler extends AbstractProcessHandler implements Pro
 
     @Override
     public void killProcess(List<ProcessInfo> processes) throws ProcessHandlerException {
-        super.killProcess("TASKKILL /F /T /PID ", processes);
+        String[] cmd = {"cmd.exe", "/C", "taskkill /F /T /PID"};
+        super.killProcess(cmd, processes);
     }
 
     /**

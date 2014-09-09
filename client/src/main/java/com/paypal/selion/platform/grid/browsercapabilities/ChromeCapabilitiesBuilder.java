@@ -37,6 +37,7 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         capabilities.setBrowserName(DesiredCapabilities.chrome().getBrowserName());
         String userAgent = getUserAgent();
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--test-type");
         options.addArguments("--ignore-certificate-errors");
         if ((userAgent != null) && (!userAgent.trim().isEmpty())) {
             options.addArguments("--user-agent=" + userAgent);

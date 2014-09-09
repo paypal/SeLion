@@ -24,13 +24,9 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.test.utilities.logging.SimpleLogger;
 
 // Test requires execution with SeLionConfig-Suite.xml
 public class ConfigTest {
-
-    SimpleLogger logger = SeLionLogger.getLogger();
 
     @Test(groups = { "unit" })
     public void testGetConfigProperty() {

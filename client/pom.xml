@@ -17,7 +17,7 @@
 
     <properties>
         <suiteXmlPath>src/test/resources/suites/</suiteXmlPath>
-        <suiteXmlFile>Default-UnitTest-Suite.xml</suiteXmlFile>
+        <suiteXmlFile>Default-Suite.xml</suiteXmlFile>
     </properties>
 
     <build>
@@ -154,6 +154,12 @@
         <dependency>
             <groupId>org.uiautomation</groupId>
             <artifactId>ios-server</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-server</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

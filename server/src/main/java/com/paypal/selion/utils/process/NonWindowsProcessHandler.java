@@ -56,7 +56,7 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
 
     @Override
     public void killProcess(List<ProcessInfo> processes) throws ProcessHandlerException {
-        super.killProcess("kill -9 ", processes);
+        super.killProcess(new String[] {"kill", "-9"}, processes);
     }
 
     /**

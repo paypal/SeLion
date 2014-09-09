@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="EventFiringWebDriverSuite" parallel="false" verbose="2">
-    <!-- This suite file has to remain separate because the EventFiringWebDriver capabilities is a "global only"
+    <!-- This suite is separate because the EventFiringWebDriver capabilities is a global only
     configuration and hence it makes sense to have it in a separate suite file -->
     <parameter name="webDriverEventListener"
                value="com.paypal.selion.platform.grid.ScreenshotRemoteWebDriverWithListenerTest$MyEventListener"/>
 
-    <!-- STAGE & HOST CONFIGURATION -->
     <parameter name="runLocally" value="false" />
     <parameter name="browser" value="*chrome" />
 

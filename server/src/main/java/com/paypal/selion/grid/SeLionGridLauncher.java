@@ -15,6 +15,7 @@
 
 package com.paypal.selion.grid;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.openqa.grid.common.CommandLineOptionHelper;
@@ -39,6 +40,12 @@ import org.openqa.selenium.server.cli.RemoteControlLauncher;
 public class SeLionGridLauncher {
 
   private static final Logger log = Logger.getLogger(SeLionGridLauncher.class.getName());
+  
+  public static void printEnvironment() {
+      System.out.println("Environment Variables: " + Arrays.asList(System.getenv()));
+      System.out.println("JVM System Properties: " + Arrays.asList(System.getProperties()));
+  }
+  
 
   public static void main(String[] args) throws Exception {
 
@@ -51,7 +58,8 @@ public class SeLionGridLauncher {
     }
 
     GridRole role = GridRole.find(args);
-
+    printEnvironment();
+    
     switch (role) {
       case NOT_GRID:
         log.info("Launching a standalone server");

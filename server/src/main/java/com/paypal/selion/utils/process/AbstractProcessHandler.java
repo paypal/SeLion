@@ -77,11 +77,13 @@ public abstract class AbstractProcessHandler {
         return processToBeKilled;
     }
 
-    protected void killProcess(String killCommand, List<ProcessInfo> process) throws ProcessHandlerException {
+    protected void killProcess(String[] killCommand, List<ProcessInfo> process) throws ProcessHandlerException {
         try {
             for (ProcessInfo eachProcess : process) {
                 log.info("Killing process : " + eachProcess);
-                Process output = Runtime.getRuntime().exec(killCommand + " " + eachProcess.getProcessId());
+                String[] cmd = Arrays.copyOf(killCommand, killCommand.length + 1);
+                cmd[cmd.length] = eachProcess.getProcessId();
+                Process output = Runtime.getRuntime().exec(cmd);
                 int returnCode = output.waitFor();
                 if (returnCode != 0) {
                     log.info("Printing possible errors " + convertStreamToString(output.getErrorStream()));

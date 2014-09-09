@@ -14,8 +14,7 @@
         <suite-file path="SeLionConfig-Suite.xml"></suite-file>
         <suite-file path="Chrome-SeLionConfig-Parallel-Tests-Suite.xml"></suite-file>
         <suite-file path="Chrome-SeLionConfig-Parallel-Classes-Suite.xml"></suite-file>
-        <suite-file path="Local-Grid-Tests.xml"></suite-file>
-        <suite-file path="Chrome-UnitTest-Suite.xml"></suite-file>
+        <suite-file path="Chrome-Suite.xml"></suite-file>
         <suite-file path="ExcelReport-Test.xml"></suite-file>
         <suite-file path="EventFiringCapabilitiesTests.xml" />
     </suite-files>

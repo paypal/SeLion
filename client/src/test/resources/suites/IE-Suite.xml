@@ -1,24 +1,23 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite thread-count="10" verbose="1" name="Chrome Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
+<suite thread-count="10" verbose="1" name="IE Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
     parallel="methods" data-provider-thread-count="50" annotations="JDK">
 
-    <!-- STAGE & HOST CONFIGURATION -->
-    <parameter name="runLocally" value="false" />
-    <parameter name="browser" value="*chrome" />
+    <parameter name="browser" value="*iexplore" />
 
-    <test verbose="2" name="Chrome-Test" annotations="JDK">
+    <test verbose="2" name="IE-Test" annotations="JDK" preserve-order="true">
         <groups>
             <run>
-                <exclude name="chrome-broken-test" />
+                <exclude name="ie-broken-test" />
                 <include name="browser-tests" />
             </run>
         </groups>
         <classes>
+            <!-- Refer : http://code.google.com/p/selenium/wiki/InternetExplorerDriver#Clicking_%3Coption%3E_Elements_or_Submitting_Forms_and_alert%28%29 
+                Intentionally omitting the ButtonTest and FormTest because this is triggering false alarms Before these can be re-enabled 
+                our unit test site will need to be redesigned such that it is IEDriver friendly. <class name="com.paypal.selion.platform.html.ButtonTest"/> 
+                <class name="com.paypal.selion.platform.html.FormTest"/> -->
             <class name="com.paypal.selion.platform.html.ContainerTest" />
-            <class name="com.paypal.selion.platform.html.CheckBoxTest" />
-            <class name="com.paypal.selion.platform.html.ButtonTest" />
             <class name="com.paypal.selion.platform.html.DatePickerTest" />
-            <class name="com.paypal.selion.platform.html.FormTest" />
             <class name="com.paypal.selion.platform.html.ImageTest" />
             <class name="com.paypal.selion.platform.html.LabelTest" />
             <class name="com.paypal.selion.platform.html.LinkTest" />
@@ -28,8 +27,8 @@
             <class name="com.paypal.selion.platform.html.TextAreaTest" />
             <class name="com.paypal.selion.platform.html.TextFieldTest" />
             <class name="com.paypal.selion.platform.html.support.ByOrOperatorTest" />
+            <class name="com.paypal.selion.platform.html.CheckBoxTest" />
         </classes>
     </test>
-
 </suite>
 

@@ -492,7 +492,7 @@ public final class Config {
         SAUCELAB_API_KEY("sauceApiKey", "", true),
 
         /**
-         * Directory with Excel files to read info about GUI controls from.<br>
+         * Directory with page asset files to read info about GUI controls from.<br>
          * Default is set to <b>GUIData</b> in resources
          */
         GUI_DATA_DIR("GUIDataDir", "GUIData", true),

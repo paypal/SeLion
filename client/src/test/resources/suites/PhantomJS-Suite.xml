@@ -1,33 +1,34 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite thread-count="10" verbose="1" name="Firefox Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
+<suite thread-count="10" verbose="1" name="PhantomJS Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
     parallel="methods" data-provider-thread-count="50" annotations="JDK">
-    <!-- STAGE & HOST CONFIGURATION -->
-    <parameter name="runLocally" value="false" />
-    <parameter name="browser" value="*firefox" />
 
-    <test verbose="2" name="Firefox-Test" annotations="JDK">
+    <parameter name="browser" value="*phantomjs" />
+
+    <test verbose="2" name="PhantomJS-Test" annotations="JDK">
         <groups>
             <run>
-                <exclude name="ff-broken-test" />
+                <exclude name="phantomjs-broken-test" />
                 <include name="browser-tests" />
             </run>
         </groups>
         <classes>
             <class name="com.paypal.selion.platform.html.ContainerTest" />
             <class name="com.paypal.selion.platform.html.CheckBoxTest" />
-            <class name="com.paypal.selion.platform.html.ButtonTest" />
             <class name="com.paypal.selion.platform.html.DatePickerTest" />
-            <class name="com.paypal.selion.platform.html.FormTest" />
-            <class name="com.paypal.selion.platform.html.ImageTest" />
             <class name="com.paypal.selion.platform.html.LabelTest" />
-            <class name="com.paypal.selion.platform.html.LinkTest" />
             <class name="com.paypal.selion.platform.html.RadioButtonTest" />
             <class name="com.paypal.selion.platform.html.SelectListTest" />
             <class name="com.paypal.selion.platform.html.TableTest" />
             <class name="com.paypal.selion.platform.html.TextAreaTest" />
             <class name="com.paypal.selion.platform.html.TextFieldTest" />
             <class name="com.paypal.selion.platform.html.support.ByOrOperatorTest" />
+            <!-- Excluding the below classes due to alert handling -->
+            <!--<class name="com.paypal.selion.platform.html.FormTest"/> -->
+            <!--<class name="com.paypal.selion.platform.html.ImageTest"/> -->
+            <!--<class name="com.paypal.selion.platform.html.ButtonTest"/> -->
+            <!--<class name="com.paypal.selion.platform.html.LinkTest"/> -->
         </classes>
     </test>
 
 </suite>
+

@@ -77,6 +77,9 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
             while (iterator.hasNext()) {
                 String capabilityName = (String) iterator.next();
                 Object capabilityValue = jsonObject.get(capabilityName);
+                if ((capabilityValue instanceof String) && (capabilityValue.toString().startsWith("__string__"))) {
+                    capabilityValue = capabilityValue.toString().replace("__string__", "");
+                }
                 if (capabilityValue instanceof JSONArray) {
                     capabilityValue = retrieveValuesFromJSONArray((JSONArray) capabilityValue);
                 }

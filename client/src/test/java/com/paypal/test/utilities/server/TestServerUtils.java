@@ -15,11 +15,13 @@
 
 package com.paypal.test.utilities.server;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.handler.ResourceHandler;
 
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 
 public class TestServerUtils {
@@ -30,13 +32,29 @@ public class TestServerUtils {
     private static String DATE_PICKER_FILE = "/datePicker.html";
     private static String CONTAINER_FILE = "/ContainerTest.html";
     private static String TEST_EDITABLE_FILE = "/test_editable.html";
+    
+    private static int[] sauceConnectPorts = { 2000, 2001, 2020, 2109, 2222, 2310, 3000, 3001, 3030, 3210, 3333, 4000,
+            4001, 4040, 4321, 4502, 4503, 4567, 5000, 5001, 5050, 5432, 6000, 6001, 6060, 6666, 6543, 7000, 7070,
+            7774, 7777, 8000, 8001, 8003, 8031, 8080, 8081, 8765, 8777, 8888, 9000, 9001, 9080, 9090, 9876, 9877, 9999,
+            49221, 55001 };
 
     public static final String TEST_PAGE_DIR = "src/test/resources/testPages";
 
     static Server server;
 
     private static void createServer() {
-        serverPort = PortProber.findFreePort();
+        if (! Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_SAUCELAB_GRID)) {
+            serverPort = PortProber.findFreePort();
+        }
+        else {
+            //use a port Sauce Connect can reach
+            for (int port : sauceConnectPorts) {
+                if (PortProber.pollPort(port)) {
+                    serverPort = port;
+                    break;
+                }
+            }
+        }
         localIP = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
         initServer();
     }
