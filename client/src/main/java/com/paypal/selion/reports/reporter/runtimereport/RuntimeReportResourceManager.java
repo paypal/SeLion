@@ -66,11 +66,18 @@ public class RuntimeReportResourceManager {
 
         logger.entering(new Object[] { outputFolder });
 
+        copyResource(outputFolder, "RuntimeReporterResources.properties");
+        copyResource(outputFolder, "Resources.properties");
+
+        logger.exiting();
+    }
+
+    private void copyResource(String outputFolder, String resourceName) {
         Properties resourceListToCopy = new Properties();
         try {
             ClassLoader localClassLoader = this.getClass().getClassLoader();
 
-            resourceListToCopy.load(localClassLoader.getResourceAsStream("RuntimeReporterResources.properties"));
+            resourceListToCopy.load(localClassLoader.getResourceAsStream(resourceName));
             Enumeration<Object> keys = resourceListToCopy.keys();
             while (keys.hasMoreElements()) {
                 String key = (String) keys.nextElement();
@@ -82,7 +89,6 @@ public class RuntimeReportResourceManager {
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
-        logger.exiting();
     }
 
 }

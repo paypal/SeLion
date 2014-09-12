@@ -1,468 +1,522 @@
-<html>
-<head>
-<title>SeLion Runtime Report</title>
-<style type="text/css" title="currentStyle">
-@import "resources/demo_table.css";
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SeLion Report</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../css/bootstrap.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]><script src="../bower_components/html5shiv/dist/html5shiv.js"></script><script src="../bower_components/respond/dest/respond.min.js"></script><![endif]-->
+        <style type="text/css">.modal-dialog {width: 95%; min-height: 95%; padding: 0;}.modal-content {min-height: 100%; }
+        </style>
+    </head>
+    <body>
+        <!-- Header Begin -->
+        <div class="navbar" style="border-radius: 0px;">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse"> 
+                    <span class="icon-bar">
+                    </span>
+                    <span class="icon-bar">
+                    </span>
+                    <span class="icon-bar">
+                    </span>
+                </button>
+                <div>
+                    <img src="../images/selion-horiz-notag.svg" style="width:478px; height:74px;" alt="SeLion Logo, horizontal, without a tag line" border="0">
+                </div>
+            </div>
+            <div class="navbar-collapse collapse navbar-responsive-collapse">
+                <form class="navbar-form navbar-left">
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                    <a href="javascript:;" class="btn-auto-update">Auto Update<span class="label label-success">On</span></a>
+                    </li>
+                    <li>
+                    <a href="#">Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Header End -->
+        <div class="container">
+            <!-- Statistics Begin -->
+            <div style="clear: both;" id="statistics-data">
+                <div id="statistics-data-passed" class="text-center text-success" style="float: left;">
+                </div>
+                <div id="statistics-data-failed" class="text-center text-danger" style="float: left;">
+                </div>
+                <div id="statistics-data-skipped" class="text-center text-warning" style="float: left;">
+                </div>
+                <div id="statistics-data-running" class="text-center text-info" style="float: left;">
+                </div>
+            </div>
+            <div class="progress" style="clear: both;">
+                <div id="statistics-progress-passed" class="progress-bar progress-bar-success">
+                </div>
+                <div id="statistics-progress-failed" class="progress-bar progress-bar-danger">
+                </div>
+                <div id="statistics-progress-skipped" class="progress-bar progress-bar-warning">
+                </div>
+                <div id="statistics-progress-running" class="progress-bar progress-bar-info">
+                </div>
+            </div>
+            <!-- Statistics End -->
+            <!-- Results Begin -->
+            <div class="panel panel-default" id="testcaseTable">
+                <div class="panel-heading">
+                    <div class="btn-group">
+                        <button type="button" data-index="#" class="btn btn-default active btn-list" id="testcase-btn-list"> 
+                            <span class="glyphicon glyphicon-th-list">
+                            </span>
+                        </button>
+                        <button type="button" data-index="#" class="btn btn-default btn-grid" id="testcase-btn-grid"> 
+                            <span class="glyphicon glyphicon-th">
+                            </span>
+                        </button>
+                    </div>&nbsp;Testcase Results
+                </div>
+                <div class="panel-body" id="testcaseBody">
+                    <div class="dataTables_processing">Processing...</div>
+                </div>
+            </div>
+            <div class="panel panel-default" id="configTestcaseTable">
+                <div class="panel-heading">
+                    <div class="btn-group">
+                        <button type="button" data-index="#" class="btn btn-default active btn-list" id="config-testcase-btn-list"> 
+                            <span class="glyphicon glyphicon-th-list">
+                            </span>
+                        </button>
+                    </div>&nbsp;Configuration Testcase Results
+                </div>
+                <div class="panel-body" id="configTestcaseBody">
+                    <div class="dataTables_processing">Processing...</div>
+                </div>
+            </div>
+            <!-- Results End -->
+        </div>
+        <div class="modal fade modal-screenshot" id="modal-id-screenshot">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;
+                            </span>
+                            <span class="sr-only">Close
+                            </span>
+                        </button>
+                        <span class="modal-title">
+                        </span>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade modal-image" id="modal-id-image">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;
+                            </span>
+                            <span class="sr-only">Close
+                            </span>
+                        </button>
+                        <span class="modal-title">
+                        </span>
+                    </div>
+                    <div class="modal-body" class="img-fullscreen">
+                        <img src="" style="border: 1px solid #ecf0f1; border-radius: 4px;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade modal-source" id="modal-id-source">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <span class="modal-title"></span>
+                    </div>
+                    <div class="modal-body" style="color: white">
+                        <iframe src="" frameborder=0 width=100% height=600 scrolling=auto></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade modal-stacktrace" id="modal-id-stacktrace">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <span class="modal-title"></span>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/render.min.js"></script>
+<script src="../js/readmore.min.js"></script>
+<script src="../js/jquery.dataTables.min.js"></script>
+<script id="tableImpl" type="text/x-jsrender">
+		<table class="table table-striped table-hover" id="paginationTextCaseTable">
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:15%">Suite</th>
+                    <th style="width:10%">Test</th>
+                    <th style="width:15%">Package</th>
+                    <th style="width:15%">Class</th>
+                    <th style="width:15%">Method</th>
+                    <th>Status</th>
+                    <th style="width:18%">Parameters</th>
+                    <th style="width:7%"><th>
+                </tr>
+            </thead>
+            <tbody>
+                {{for results}}
+                <tr>
+                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index + 1}}</span></td>
+                    <td>{{:suite}}</td>
+                    <td>{{:test}}</td>
+                    <td>{{:packageInfo}}</td>
+                    <td>{{:className}}</td>
+                    <td>{{:methodName}}</td>
+                    <td>{{:status}}</td>
+                    <td>{{:parameters}}</td>
+                    <td>
+                        <button type="button" data-index="{{:#index}}" class="btn btn-default btn-xs btn-screenshot" data-toggle="tooltip" data-placement="top" title="Screenshots"><span class="glyphicon glyphicon-picture"></span></button>
+                    {{if status == "Failed" }}
+                        <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-xs btn-stacktrace" data-toggle="tooltip" data-placement="top" title="Stacktrace"><span class="glyphicon glyphicon-warning-sign"></span></button>
+                    {{/if}}
+                    <td>
+                </tr>
+                {{/for}}
+            </tbody>
+		</table>
+	</script>
+<script id="configTableImpl" type="text/x-jsrender">
+		<table class="table table-striped table-hover " id="paginationTextConfigTable">
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:15%">Suite</th>
+                    <th style="width:15%">Test</th>
+                    <th style="width:17%">Package</th>
+                    <th style="width:16%">Class</th>
+                    <th style="width:15%">Method</th>
+                    <th>Status</th>
+                    <th style="width:10%">Type</th>
+                    <th style="width:7%"><th>
+                </tr>
+            </thead>
+            <tbody>
+                {{for results}}
+                <tr>
+                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index + 1}}</span></td>
+                    <td>{{:suite}}</td>
+                    <td>{{:test}}</td>
+                    <td>{{:packageInfo}}</td>
+                    <td>{{:className}}</td>
+                    <td>{{:methodName}}</td>
+                    <td>{{:status}}</td>
+                    <td>{{:type}}</td>
+                    <td>
+                    {{if status == "Failed" }}
+                        <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-xs btn-stacktrace-config" data-toggle="tooltip" data-placement="top" title="Stacktrace"><span class="glyphicon glyphicon-warning-sign"></span></button>
+                    {{/if}}
+                    <td>
+                </tr>
+                {{/for}}
+            </tbody>
+        </table>
+	</script>
+<script id="gridImpl" type="text/x-jsrender">
+                {{for results}}
+                <div class="col-lg-4">
+                    <div class="panel panel-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{:className}}.{{:methodName}}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <span class="thumbnail">
+                                {{if logs != null}}
+                                    <img src="../{{:logs[(logs.length - 1)].image}}" alt="{{:logs[(logs.length - 1)].message}}" onclick='displayImage("../{{:logs[(logs.length - 1)].image}}", "{{:logs[(logs.length - 1)].message}}");'>
+                                {{else}}
+                                    <img src="images/no-image-available.png" alt="No Screenshot Available" onclick='displayImage("../" + "images/no-image-available.png", "No Screenshot Available");'>
+                                {{/if}}
+                            </span>
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    Suite: {{:suite}}
+                                </li>
+                                <li class="list-group-item">
+                                    Test: {{:test}}
+                                </li>
+                                <li class="list-group-item">
+                                    Package: {{:packageInfo}}
+                                </li>
+                                <li class="list-group-item">
+                                    Class: {{:className}}
+                                </li>
+                                <li class="list-group-item">
+                                    Method: {{:methodName}}
+                                </li>
+                                <li class="list-group-item">
+                                    Parameters: {{:parameters}}
+                                </li>
+                            </ul>
+                            <div class="col-lg-6">
+                                <button type="button" data-index="{{:#index}}" class="btn btn-default btn-block btn-screenshot">Screenhots</button>
+                            </div>
+                            <div class="col-lg-6">
+                                <button type="button" data-index="{{:#index}}" class="btn btn-default btn-block btn-stacktrace">Stacktrace</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/for}}
+	</script>
 
-h1.heading {
-	color: blue;
-	border-bottom: solid;
-	border-width: 1px;
-	font-style: italic;
-}
+<script id="screenshotImpl" type="text/x-jsrender">
+        <div class="row show">
+        {{if logs == null}}
+        <div class="col-lg-4">
+            <span class="thumbnail">
+                <img src="images/no-image-available.png" alt="No Screenshot Available" onclick='displayImage("images/no-image-available.png", "No Screenshot Available");'>
+            </span>
+        </div>
+        {{/if}}
+	    {{for logs}}
+            {{if #index != 0 && (#index%3) == 0}}
+                </div>
+                <div class="row show">
+            {{/if}}
+            <div class="col-lg-4">
+                <div class="thumbnail">
+                    <img src="../{{:image}}" alt="{{:message}}" onclick='displayImage("../{{:image}}", "{{:message}}");' style="border:1px solid #ecf0f1">
+                    <div class="caption">
+                        <p>{{:message}}</p>
+                        <p>
+                            <button type="button" class="btn btn-default btn-block btn-source" onclick='displaySource("../{{:source}}", "{{:message}}");'>Source</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {{/for}}
+        </div>
+    </script>
+<script id="stacktraceImpl" type="text/x-jsrender">
+        <div class="row show">
+            <p>{{:~getUpdatedStackTrace(stacktrace)}}</p>
+        </div>
+    </script>
+<script type="text/javascript">
+					var textCaseTable;
+					var autoRefresh;
+					var timeRefresh = 300 * 1000;//300 seconds refresh interval
+					$(document).ready(function()
+							{
+								var reports =
+								${reports}
+								;
 
-body {
-	font-family: "Times New Roman", Times, serif;
-	font-size: 14px;
-}
-</style>
-<script type="text/javascript" language="javascript"
-	src="resources/jquery.js"></script>
-<script type="text/javascript" language="javascript"
-	src="resources/jquery.dataTables.min.js"></script>
-<script src="resources/jquery-ui.custom.js" type="text/javascript"></script>
-<script src="resources/jquery.cookie.js" type="text/javascript"></script>
-<link href="resources/ui.dynatree.css" rel="stylesheet" type="text/css"
-	id="skinSheet">
-<script src="resources/jquery.dynatree.js" type="text/javascript"></script>
-<script type="text/javascript"
-	src="resources/jquery.fancybox.js?v=2.1.4"></script>
-<link rel="stylesheet" type="text/css"
-	href="resources/jquery.fancybox.css?v=2.1.4" media="screen" />
-<script>
-	jQuery(document).ready(function() { /*		 *  Simple image gallery. Uses default settings		 */
-		jQuery('.fancybox').fancybox(); /*		 *  Different effects		 */
-	});
-	function loadXMLDoc(dname) {
-		if (window.XMLHttpRequest) {
-			xhttp = new XMLHttpRequest();
-		} else {
-			xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		xhttp.open("GET", dname, false);
-		xhttp.send("");
-		return xhttp.responseXML;
-	}
-	function fnFormatDetails(oTable, nTr) {
-		var oData = oTable.fnGetData(nTr);
-		var sOut = '<div class="innerDetails" >'
-				+ '<table cellpadding="0" cellspacing="0" border="3" class="display" width="100%">';
-		if (oData[oData.length - 6] != null && oData[oData.length - 6] != "") {
-			sOut = sOut + '<tr class="odd"><td width=15%>Start Time:</td><td>'
-					+ oData[oData.length - 6] + '</td></tr>';
-		}
-		if (oData[oData.length - 5] != null && oData[oData.length - 5] != "") {
-			sOut = sOut + '<tr class="even"><td>End Time:</td><td>'
-					+ oData[oData.length - 5] + '</td></tr>';
-		}
-		if (oData[oData.length - 4] != null && oData[oData.length - 4] != "") {
-			sOut = sOut + '<tr class="odd"><td>Description:</td><td>'
-					+ oData[oData.length - 4] + '</td></tr>';
-		}
-		if (oData[oData.length - 3] != null && oData[oData.length - 3] != "") {
-			sOut = sOut + '<tr class="even"><td>Exception:</td><td>'
-					+ oData[oData.length - 3] + '</td></tsr>';
-		}
-		if (oData[oData.length - 2] != null && oData[oData.length - 2] != "") {
-			sOut = sOut + '<tr class="odd"><td>Stack Trace:</td><td>'
-					+ oData[oData.length - 2] + '</td></tr>';
-		}
-		if (oData[oData.length - 1] != null && oData[oData.length - 1] != "") {
-			sOut = sOut + '<tr class="even"><td>Logs:</td><td>'
-					+ oData[oData.length - 1] + '</td></tr>';
-		}
-		sOut = sOut + '</table>' + '</div>';
-		return sOut;
-	}
-	function displayResult(id) {
-		initConfig();
-		initReport();
-	}
-	function initReport() {
-		var anOpen = [];
-		var oTable = jQuery('#example').dataTable({
-			"bProcessing" : true,
-			"bAutoWidth" : false,
-			"bDeferRender" : true,
-			"aaData" : [ 
-			            ${testMethod}
-			 ],
-			"aoColumns" : [ /* Image */{
-				"sWidth" : "5%"
-			}, /* Suite */{
-				"sWidth" : "10%"
-			}, /* Test */{
-				"sWidth" : "10%"
-			}, /* Group */{
-				"sWidth" : "20%"
-			}, /* Class */{
-				"sWidth" : "10%"
-			}, /* Method */{
-				"sWidth" : "10%"
-			}, /* Status */{
-				"sWidth" : "10%"
-			}, /* Start Time */{
-				"sWidth" : "5%"
-			}, /* End Time */{
-				"bVisible" : false
-			}, /* Parameters */{
-				"bVisible" : false
-			}, /* Description */{
-				"bVisible" : false
-			}, /* Exception */{
-				"bVisible" : false
-			}, /* StackTrace */{
-				"bVisible" : false
-			}, /* StackTrace */{
-				"bVisible" : false
-			} ]
-		});
-		jQuery('#example td').live(
-				'click',
-				function() {
-					var nTr = this.parentNode;
-					var i = jQuery.inArray(nTr, anOpen);
-					if (i === -1) {
-						jQuery('img', this).attr('src',
-								"resources/details_close.png");
-						var nDetailsRow = oTable.fnOpen(nTr, fnFormatDetails(
-								oTable, nTr), 'details');
-						jQuery('div.innerDetails', nTr).slideDown(10000);
-						anOpen.push(nTr);
-					} else {
-						jQuery('img', this).attr('src',
-								"resources/details_open.png");
-						jQuery('div.innerDetails', jQuery(nTr).next()[0])
-								.slideUp(function() {
-									oTable.fnClose(nTr);
-									anOpen.splice(i, 1);
+								function reloadPage() {
+									location.reload();
+								}
+
+								autoRefresh = setInterval(reloadPage,timeRefresh);
+
+								//Calulate the test case summary
+								var passed = 0, failed = 0, skipped = 0, running = 0;
+								$.each(reports.testmethods,function(index, item) {
+									if (item.status == 'Passed') {
+										passed++;
+									} else if (item.status == 'Failed') {
+										failed++;
+									} else if (item.status == 'Skipped') {
+										skipped++;
+									} else {
+										running++;
+									}
+								})
+
+								var total = passed + failed + skipped + running;
+								if (passed > 0) {
+									$('#statistics-data-passed').css('width',(passed * 100 / total)+ '%').html(passed + ' passed');
+									$('#statistics-progress-passed').css('width',(passed * 100 / total)+ '%');
+								}
+								if (failed > 0) {
+									$('#statistics-data-failed').css('width',(failed * 100 / total)+ '%').html(failed + ' failed');
+									$('#statistics-progress-failed').css('width',(failed * 100 / total)+ '%');
+								}
+								if (skipped > 0) {
+									$('#statistics-data-skipped').css('width',(skipped * 100 / total)+ '%').html(skipped + ' skipped');
+									$('#statistics-progress-skipped').css('width',(skipped * 100 / total)+ '%');
+								}
+								if (running > 0) {
+									$('#statistics-data-running').css('width',(running * 100 / total)+ '%').html(running + ' running');
+									$('#statistics-progress-running').css('width',(running * 100 / total)+ '%');
+								}
+
+								$('#testcaseBody').html($('#tableImpl').render({'results' : reports.testmethods}));
+								afterRender(reports.testmethods, '');
+
+								textCaseTable = $('#paginationTextCaseTable').dataTable(
+								{
+									"pagingType" : "full_numbers",
+									"iDisplayLength" : 100,
+									"bAutoWidth" : false,
+									"bLengthChange" : true,
+									"bProcessing" : true,
+									"bDeferRender" : true,
+									"columnDefs" : [ {
+										"targets" : [ 6 ],
+										"visible" : false,
+										"searchable" : true
+									} ]
 								});
-					}
-				});
-	}
-	function initConfig() {
-		var anOpen = [];
-		var oTable = jQuery('#config').dataTable({
-			"bProcessing" : true,
-			"bDeferRender" : true,
-			"bAutoWidth" : false,
-			"aaData" : [ 
-			            ${configMethod}
-			 ],
-			"aoColumns" : [ /* Image */{
-				"sWidth" : "10%"
-			}, /* Suite */{
-				"sWidth" : "10%"
-			}, /* Test */{
-				"sWidth" : "10%"
-			}, /* Package */{
-				"sWidth" : "10%"
-			}, /* Name */{
-				"sWidth" : "10%"
-			}, /* Type */{
-				"sWidth" : "10%"
-			}, /* Start Time */{
-				"sWidth" : "10%"
-			}, /* End Time */{
-				"sWidth" : "10%"
-			}, /* Parameters */{
-				"bVisible" : false
-			}, /* Status */{
-				"bVisible" : false
-			}, /* Description */{
-				"bVisible" : false
-			}, /* Exception */{
-				"bVisible" : false
-			}, /* StackTrace */{
-				"bVisible" : false
-			}, /* StackTrace */{
-				"bVisible" : false
-			} ]
-		});
-		jQuery('#config td').live(
-				'click',
-				function() {
-					var nTr = this.parentNode;
-					var i = jQuery.inArray(nTr, anOpen);
-					if (i === -1) {
-						jQuery('img', this).attr('src',
-								"resources/details_close.png");
-						var nDetailsRow = oTable.fnOpen(nTr, fnFormatDetails(
-								oTable, nTr), 'details');
-						jQuery('div.innerDetails', nTr).slideDown(10000);
-						anOpen.push(nTr);
-					} else {
-						jQuery('img', this).attr('src',
-								"resources/details_open.png");
-						jQuery('div.innerDetails', jQuery(nTr).next()[0])
-								.slideUp(function() {
-									oTable.fnClose(nTr);
-									anOpen.splice(i, 1);
+
+								$('#testcase-btn-grid').click(function() {
+									$('#testcase-btn-list').removeClass('active');
+									$('#testcase-btn-grid').addClass('active');
+									$('#testcaseBody').html($('#gridImpl').render({'results' : reports.testmethods}));
+									afterRender(reports.testmethods, '');
 								});
-					}
-					var hei = jQuery("#content").height();
-					$("#menu").height(hei);
-				});
-	}
 
+								$('#testcase-btn-list').click(function() {
+									$('#testcase-btn-grid').removeClass('active');
+									$('#testcase-btn-list').addClass('active');
+									$('#testcaseBody').html($('#tableImpl').render({'results' : reports.testmethods}));
+									afterRender(reports.testmethods,'');
 
+									textCaseTable = $('#paginationTextCaseTable').dataTable(
+										{
+											"pagingType" : "full_numbers",
+											"iDisplayLength" : 100,
+											"bAutoWidth" : false,
+											"bLengthChange" : true,
+											"bProcessing" : true,
+											"bDeferRender" : true,
+											"columnDefs" : [ {
+												"targets" : [ 6 ],
+												"visible" : false,
+												"searchable" : true
+											} ]
+										});
+								});
 
-	jQuery.fn.dataTableExt.afnFiltering.push(function(oSettings, aData, iDataIndex) {
-		if (typeof String.prototype.trim !== 'function') {
-			String.prototype.trim = function() {
-				return this.replace(/^\s+|\s+$/g, '');
-			}
-		}
-		var node = $("#tree1").dynatree("getActiveNode");
-		if (node != null) {
-			var text = node.data.title.split(":");
-			if (text[0].trim() == 'Suite') {
-				if (text[1].trim() == aData[1].trim()) {
-					return true;
-				}
-				return false;
-			} else if (text[0].trim() == 'Test') {
-				if (text[1].trim() == aData[2].trim()) {
-					var parentNode = node.getParent();
-					var text1 = parentNode.data.title.split(":");
-					if (text1[1].trim() == aData[1].trim()) {
-						return true;
+								$('#configTestcaseBody').html($('#configTableImpl').render({'results' : reports.configurationmethods}));
+								afterRender(reports.configurationmethods,'-config');
+								$('#paginationTextConfigTable').dataTable(
+									{
+										"pagingType" : "full_numbers",
+										"bAutoWidth" : false,
+										"bProcessing" : true,
+										"bDeferRender" : true,
+										"columnDefs" : [ {
+											"targets" : [ 6 ],
+											"visible" : false,
+											"searchable" : true
+									}]
+								});
+
+								$('.btn-auto-update').click(function() {
+									var span = $(this).find('span');
+									if ($(span).hasClass('label-success')) {
+										$(span).removeClass('label-success').addClass('label-danger').html('Off');
+										if (autoRefresh != null) {
+											clearInterval(autoRefresh);
+										}
+									} else {
+										$(span).removeClass('label-danger').addClass('label-success').html('On');
+										autoRefresh = setInterval(reloadPage,timeRefresh);
+									}
+								});
+
+								enableClick("passed");
+								enableClick("failed");
+								enableClick("skipped");
+								enableClick("running");
+								$('#statistics-data').click(function() {
+									textCaseTable.fnFilter('');
+								});
+							});
+
+					function enableClick(status) {
+						$('#statistics-progress-' + status).click(function() {
+							textCaseTable.fnFilter(status);
+						});
 					}
-					return false;
-				}
-				return false;
-			} else if (text[0].trim() == 'Package') {
-				if (text[1].trim() == aData[3].trim()) {
-					var parentNode = node.getParent();
-					var text1 = parentNode.data.title.split(":");
-					if (text1[1].trim() == aData[2].trim()) {
-						var grandParentNode = parentNode.getParent();
-						var text2 = grandParentNode.data.title.split(":");
-						if (text2[1].trim() == aData[1].trim()) {
-							return true;
-						}
-						return false;
+
+					function searchResults(data) {
+						var filterCtrl = $("#paginationTextCaseTable_filter :input");
+						filterCtrl.val(data);
+						filterCtrl.keyup();
 					}
-					return false;
-				}
-				return false;
-			} else if (text[0].trim() == 'Class') {
-				if (text[1].trim() == aData[4].trim()) {
-					var parentNode = node.getParent();
-					var text1 = parentNode.data.title.split(":");
-					if (text1[1].trim() == aData[3].trim()) {
-						var grandParentNode = parentNode.getParent();
-						var text2 = grandParentNode.data.title.split(":");
-						if (text2[1].trim() == aData[2].trim()) {
-							var ggparentNode = grandParentNode.getParent();
-							var text3 = ggparentNode.data.title.split(":");
-							if (text3[1].trim() == aData[1].trim()) {
-								return true;
+
+					function afterRender(data, buttonAdditonalClassName) {
+
+						$("a[data-toggle='tooltip']").tooltip();
+
+						$('.btn-screenshot' + buttonAdditonalClassName).click(function() {
+							var testcase = data[parseInt($(this).attr('data-index'))];
+							var params = ' ';
+							if (testcase['parameters'] != null) {
+								params = testcase['parameters'];
 							}
-							return false;
-						}
-						return false;
-					}
-					return false;
+							$('.modal-screenshot .modal-header .modal-title').text(
+								testcase['packageInfo'] + '.' + testcase['className'] + '.' + testcase['methodName']
+										+ '(' + params + ')');
+							$('.modal-screenshot .modal-body').html($("#screenshotImpl").render(testcase));
+							$('.modal-screenshot').modal();
+						});
+
+						$('.btn-stacktrace' + buttonAdditonalClassName).click(function() {
+							var testcase = data[parseInt($(this).attr('data-index'))];
+							var params = ' ';
+							if (testcase['parameters'] != null) {
+								params = testcase['parameters'];
+							}
+							$('.modal-stacktrace .modal-header .modal-title').text(
+								testcase['packageInfo'] + '.' + testcase['className'] + '.' + testcase['methodName']
+										+ '(' + params + ')');
+							$('.modal-stacktrace .modal-body').html($("#stacktraceImpl").render(testcase, {
+								getUpdatedStackTrace : function(value) {
+									var newValue = 'No data to display';
+									if (value != null) {
+										var temp = value.replace(/\n/g, '<br/>');
+										newValue = temp.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+									}
+									return newValue;
+								}
+							}));
+							$('.modal-stacktrace').modal();
+					});
 				}
-				return false;
-			}
-		}
-		return false;
-	});
 
-	var testLocalConfigSummaryMap = {};
-	function updateLocalConfigTestTable(title){
+                function displayImage(src, title) {
+                    $('.modal-image .modal-body').find('img').attr('src',src);
+                    $('.modal-image .modal-header .modal-title').text(title);
+                    $('.modal-image').modal();
+                }
 
-		var testName;
-		var rowData;
-		if(title.split(":")[0].trim()=='Suite'){
-			rowData = testLocalConfigSummaryMap['GlobalConfig'];
-		}else if(title.split(":")[0].trim()=='Test'){
-			testName = title.split(":")[1].trim();
-		    rowData = testLocalConfigSummaryMap[testName];
-		}else{
-	    	testName = document.getElementById("example").rows[1].cells[2].textContent;
-	    	rowData = testLocalConfigSummaryMap[testName];
-		}
-		
-	    $("#testLocalConfigTable").empty();
-	    $("#testLocalConfigTable").append('<thead width="100%"><tr bgcolor="#5882FA"><td>Config Parameter Name</td><td>Config Parameter Value</td></tr></thead>');
-	    $("#testLocalConfigTable").append(rowData);
-	}
-	
-	function displayTreeView() {
-
-		jQuery("#tree1").dynatree(
-				{
-					fx : {
-						height : "toggle",
-						duration : 200
-					},
-					onActivate : function(node) {
-						if (node.data.title != null) {
-							$('#example').dataTable().fnDraw();
-							$('#config').dataTable().fnDraw();
-							displaySummary(node.data.title);
-							updateLocalConfigTestTable(node.data.title);
-
-						}
-					},
-					onDeactivate : function(node) {
-					}
-				});
-	    $("#testLocalConfigTable").empty();
-	    $("#testLocalConfigTable").append('<thead width="100%"><tr bgcolor="#5882FA"><td>Config Parameter Name</td><td>Config Parameter Value</td></tr></thead>');
-	    $("#testLocalConfigTable").append(testLocalConfigSummaryMap['GlobalConfig']);	
-	}
-
-
-	function displaySummary(title){
-		var settings = $('#example').dataTable().fnSettings();
-		var aiRows = settings.aiDisplay;
-		var passed = 0, failed = 0, skipped = 0;
-		running = 0;
-		for ( var i = 0, c = aiRows.length; i < c; i++) {
-			iRow = aiRows[i];
-			var sValue = $('#example').dataTable()
-					.fnGetData(iRow, 7);
-			if (sValue.trim() == 'Passed') {
-				passed = passed + 1;
-			} else if (sValue.trim() == 'Failed') {
-				failed = failed + 1;
-			} else if (sValue.trim() == 'Skipped') {
-				skipped = skipped + 1;
-			} else if (sValue.trim() == 'Running') {
-				running = running + 1;
-			}
-		}
-		
-		$('#summary_passed').text(passed);
-		$('#summary_failed').text(failed);
-		$('#summary_skipped').text(skipped);
-		$('#summary_running').text(running);
-		$('#summary_total').text(aiRows.length);
-		$('#summary_name').text(title.split(":")[1].trim());
-		$('#summary_type').text(
-				title.split(":")[0].trim());
-
-	}
-
-</script>
-</head>
-<body>
-	<div id="container" style="">
-		<div id="header" style="height: 80px">
-			<h1 id="head4" style="width: 100%" class="heading">SeLion
-				Runtime Report</h1>
-		</div>
-		<div id="menu" style="width: 20%; float: left; height: float">
-			<div id="tree1">
-				<ul style="display: none;">
-				${tree}
-				</ul>
-			</div>
-		</div>
-		<div id="content" style="width: 79%; float: right;">
-			<div id="sample">
-				<h1 id='head1' style="width: 100%;" class="heading">Configuration
-					Summary</h1>
-				<table id='testLocalConfigTable' cellpadding="0" cellspacing="0" border="1" class="display">
-				</table>
-				<div>
-					<br></br>
-				</div>
-				<h1 id='head1' style="width: 100%;" class="heading">Test
-					Summary</h1>
-				<table id='overall' cellpadding="0" cellspacing="0" border="0"
-					class="display">
-					<thead width="100%">
-						<tr>
-							<th>Type</th>
-							<th>Name</th>
-							<th>Total</th>
-							<th>Passed</th>
-							<th>Failed</th>
-							<th>Skipped</th>
-							<th>Running</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="odd">
-							<td id='summary_type' class="center"></td>
-							<td id='summary_name' class="center"></td>
-							<td id='summary_total' class="center"></td>
-							<td id='summary_passed' class="center"></td>
-							<td id='summary_failed' class="center"></td>
-							<td id='summary_skipped' class="center"></td>
-							<td id='summary_running' class="center"></td>
-						</tr>
-					</tbody>
-				</table>
-
-				<div>
-					<br></br>
-				</div>
-				<h1 id='head3' style="width: 100%;" class="heading">Test
-					Methods Report</h1>
-				<table id="example" cellpadding="0" cellspacing="0" border="0"
-					class="display" style="width: 100%;">
-					<thead>
-						<tr>
-							<th></th>
-							<th>Suite</th>
-							<th>Test</th>
-							<th>Package</th>
-							<th>Class</th>
-							<th>Method</th>
-							<th>Parameters</th>
-							<th>Status</th>
-							<th>Start Time</th>
-							<th>End Time</th>
-							<th>Exception</th>
-							<th>Stack Trace</th>
-							<th>Logs</th>
-						</tr>
-					</thead>
-					<tbody id='tbody'>
-					</tbody>
-				</table>
-				<div>
-					<br></br>
-				</div>
-				<h1 id='head2' style="width: 100%;" class="heading">Configuration
-					Methods Report</h1>
-				<table id='config' cellpadding="0" cellspacing="0" border="0"
-					class="display">
-					<thead>
-						<tr>
-							<th></th>
-							<th>Suite</th>
-							<th>Test</th>
-							<th>Package</th>
-							<th>Class</th>
-							<th>Method</th>
-							<th>Type</th>
-							<th>Status</th>
-							<th>Start Time</th>
-							<th>End Time</th>
-							<th>Description</th>
-							<th>Exception</th>
-							<th>Stack Trace</th>
-							<th>Logs</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</body>
-<script type="text/javascript" charset="utf-8">
-	$(document).ready(displayTreeView("11"));
-	$("#tree1").dynatree("getTree").getNodeByKey("1").activateSilently();
-	$(document).ready(displayResult("11"));
-	displaySummary($("#tree1").dynatree("getTree").getNodeByKey("1").data.title)
-</script>
+                function displaySource(src, title) {
+                    $('.modal-source .modal-body').find('iframe').attr("src", src);
+                    $('.modal-source .modal-header .modal-title').text(title);
+                    $('.modal-source').modal();
+                }
+			</script>
+    </body>
 </html>

@@ -18,8 +18,6 @@ package com.paypal.selion.reports.reporter.html;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -28,12 +26,10 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -136,47 +132,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
 
         out.flush();
         out.close();
-        copyResources(outputDir);
         logger.exiting();
-    }
-
-    private void copyResources(String outputFolder) {
-        Properties resourceListToCopy = new Properties();
-        try {
-            ClassLoader localClassLoader = this.getClass().getClassLoader();
-            // Any new resources being added under src/main/resources/templates
-            // folder
-            // would need to have an entry in the Resources.properties file
-            // so that it can be copied over to the testng output folder.
-            resourceListToCopy.load(localClassLoader.getResourceAsStream("Resources.properties"));
-            Enumeration<Object> keys = resourceListToCopy.keys();
-            while (keys.hasMoreElements()) {
-                String key = (String) keys.nextElement();
-                String fileName = resourceListToCopy.getProperty(key);
-                writeStreamToFile(localClassLoader.getResourceAsStream("templates/" + fileName), fileName, outputFolder);
-            }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        }
-    }
-
-    private void writeStreamToFile(InputStream isr, String fileName, String outputFolder) throws IOException {
-        if (isr == null) {
-            logger.log(Level.SEVERE, "InputStream was null. Aborting..");
-            return;
-        }
-        File outFile = new File(outputFolder + File.separator + fileName);
-        if (!outFile.getParentFile().exists()) {
-            outFile.getParentFile().mkdirs();
-        }
-        try (FileOutputStream outStream = new FileOutputStream(outFile)) {
-            byte[] bytes = new byte[1024];
-            int readLength = 0;
-            while ((readLength = isr.read(bytes)) != -1) {
-                outStream.write(bytes, 0, readLength);
-            }
-            outStream.flush();
-        }
     }
 
     private void createDetail(List<Line> lines) {

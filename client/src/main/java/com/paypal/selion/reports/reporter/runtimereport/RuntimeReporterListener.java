@@ -16,18 +16,12 @@
 package com.paypal.selion.reports.reporter.runtimereport;
 
 import java.io.File;
-import java.util.logging.Level;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.internal.IResultListener2;
-import org.w3c.dom.Document;
 
 import com.paypal.selion.annotations.DoNotReport;
 import com.paypal.selion.configuration.ListenerInfo;
@@ -42,7 +36,8 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class RuntimeReporterListener implements IResultListener2, ISuiteListener {
 
     private String outputDirectory;
-    private RuntimeReporterHelper helper;
+    private JsonRuntimeReporterHelper jsonHelper;
+
     /**
      * This String constant represents the JVM argument that can be enabled/disabled to enable/disable
      * {@link RuntimeReporterListener}
@@ -62,16 +57,7 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
         // Lets register this listener with the ListenerManager
         ListenerManager.registerListener(new ListenerInfo(this.getClass(), ENABLE_RUNTIME_REPORTER_LISTENER));
 
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = null;
-        try {
-            docBuilder = docFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        }
-
-        Document doc = docBuilder.newDocument();
-        helper = new RuntimeReporterHelper(doc);
+        jsonHelper = new JsonRuntimeReporterHelper();
     }
 
     public void onTestStart(ITestResult result) {
@@ -158,10 +144,10 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
 
         String packageName = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
 
-        helper.insertTestMethod(result.getTestContext().getSuite().getName(), result.getTestContext()
+        jsonHelper.insertTestMethod(result.getTestContext().getSuite().getName(), result.getTestContext()
                 .getCurrentXmlTest().getName(), packageName, className, result);
 
-        helper.writeXML(outputDirectory, false);
+        jsonHelper.writeJSON(outputDirectory, false);
 
         logger.exiting();
 
@@ -180,7 +166,7 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
         }
 
         logger.entering(new Object[] { context });
-        helper.generateLocalConfigSummary(context.getCurrentXmlTest().getName());
+        jsonHelper.generateLocalConfigSummary(context.getSuite().getName(), context.getCurrentXmlTest().getName());
         logger.exiting();
 
     }
@@ -256,10 +242,11 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
 
         String packageName = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
 
-        helper.insertConfigMethod(result.getTestContext().getSuite().getName(), result.getTestContext()
+        jsonHelper.insertConfigMethod(result.getTestContext().getSuite().getName(), result.getTestContext()
                 .getCurrentXmlTest().getName(), packageName, className, result);
 
-        helper.writeXML(outputDirectory, false);
+        jsonHelper.writeJSON(outputDirectory, false);
+
         logger.exiting();
 
     }
@@ -280,7 +267,6 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
             logger.info("Runtime Report : " + outputDirectory + File.separator + "index.html");
             RuntimeReportResourceManager resourceMgr = new RuntimeReportResourceManager();
             resourceMgr.copyResources(outFile.getParent());
-            helper.generateConfigSummary();
         }
         logger.exiting();
     }
@@ -294,7 +280,7 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
             return;
         }
 
-        helper.writeXML(outputDirectory, true);
+        jsonHelper.writeJSON(outputDirectory, true);
 
         logger.exiting();
 
