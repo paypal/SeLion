@@ -50,6 +50,13 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * @parameter expression="${selion-code-generator.basePackage}" default-value="com.paypal.selion.testcomponents"
      */
     private String basePackage;
+    
+    /**
+     * Represents the base folder used for reading yaml files.
+     * 
+     * @parameter expression="${selion-code-generator.baseFolder}" default-value="GUIData"
+     */
+    private String baseFolder;
 
     /**
      * List of "domains" to exclude during code generation.
@@ -102,8 +109,12 @@ public class CodeGeneratorMojo extends AbstractMojo {
 
     private String pathToFolder(File file) {
         String path = file.getAbsolutePath();
-        return path.substring(path.indexOf("GUIData") + "GUIData".length() + 1, path.lastIndexOf(File.separator))
+        try {
+            return path.substring(path.indexOf(baseFolder) + baseFolder.length() + 1, path.lastIndexOf(File.separator))
                 .trim();
+        } catch(StringIndexOutOfBoundsException ex) {
+            return "";
+        }
     }
 
     /*
@@ -121,7 +132,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
 
         String sourceDir = sourceDir();
         String generatedSourceDir = generatedSourcesDir();
-        String resourceDir = resourcesDir();
+        String resourceDir = resourcesDir() + File.separator + baseFolder;
 
         List<File> allDataFiles = loadFiles(new File(resourceDir));
 
@@ -218,10 +229,10 @@ public class CodeGeneratorMojo extends AbstractMojo {
     }
 
     /**
-     * This method will return all the data files available in the GUIData dir and return List of {@link File}
+     * This method will return all the data files available in the base directory and return List of {@link File}
      * 
      * @param workingDir
-     *            - GUIData directory
+     *            - Base directory
      * @return List<File>
      */
     private List<File> loadFiles(File workingDir) {
