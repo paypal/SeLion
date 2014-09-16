@@ -26,6 +26,8 @@ import org.openqa.selenium.support.ui.Select;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.platform.html.support.events.Deselectable;
+import com.paypal.selion.platform.html.support.events.Selectable;
 
 /**
  * This class is the web element Select wrapper.
@@ -34,7 +36,7 @@ import com.paypal.selion.configuration.Config.ConfigProperty;
  * </p>
  * 
  */
-public class SelectList extends AbstractElement {
+public class SelectList extends AbstractElement implements Selectable, Deselectable {
 
     /**
      * SelectList Construction method <br>
@@ -101,6 +103,8 @@ public class SelectList extends AbstractElement {
      *            the select list option locator
      */
     public void select(String optionLocator) {
+        dispatcher.beforeSelect(this, optionLocator);
+        
         if (StringUtils.isBlank(optionLocator)) {
             throw new IllegalArgumentException("Locator cannot be null or empty.");
         }
@@ -130,6 +134,8 @@ public class SelectList extends AbstractElement {
         } else {
             throw new NoSuchElementException("Unable to find " + optionLocator);
         }
+        
+        dispatcher.afterSelect(this, optionLocator);
     }
 
     /**
@@ -162,10 +168,14 @@ public class SelectList extends AbstractElement {
      *            the value to select
      */
     public void selectByValue(String value) {
+        dispatcher.beforeSelect(this, value);
+        
         new Select(getElement()).selectByValue(value);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.SELECTED, value);
         }
+        
+        dispatcher.afterSelect(this, value);
     }
 
     /**
@@ -175,10 +185,14 @@ public class SelectList extends AbstractElement {
      *            the label to select
      */
     public void selectByLabel(String label) {
+        dispatcher.beforeSelect(this, label);
+        
         new Select(getElement()).selectByVisibleText(label);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.SELECTED, label);
         }
+        
+        dispatcher.afterSelect(this, label);
     }
 
     /**
@@ -189,10 +203,14 @@ public class SelectList extends AbstractElement {
      *            the index to select
      */
     public void selectByIndex(int index) {
+        dispatcher.beforeSelect(this, index);
+        
         new Select(getElement()).selectByIndex(index);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.SELECTED, Integer.toString(index));
         }
+        
+        dispatcher.afterSelect(this, index);
     }
 
     /**
@@ -377,10 +395,14 @@ public class SelectList extends AbstractElement {
      *             If the SELECT does not support multiple selections
      */
     public void deselectAll() {
+        dispatcher.beforeDeselect(this);
+        
         new Select(getElement()).deselectAll();
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, "all");
         }
+        
+        dispatcher.afterDeselect(this);
     }
 
     /**
@@ -390,10 +412,14 @@ public class SelectList extends AbstractElement {
      *            the value to deselect
      */
     public void deselectByValue(String value) {
+        dispatcher.beforeDeselect(this, value);
+        
         new Select(getElement()).deselectByValue(value);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, value);
         }
+        
+        dispatcher.afterDeselect(this, value);
     }
 
     /**
@@ -404,10 +430,14 @@ public class SelectList extends AbstractElement {
      *            the index to deselect
      */
     public void deselectByIndex(int index) {
+        dispatcher.beforeDeselect(this, index);
+        
         new Select(getElement()).deselectByIndex(index);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, Integer.toString(index));
         }
+        
+        dispatcher.afterDeselect(this, index);
     }
 
     /**
@@ -417,9 +447,13 @@ public class SelectList extends AbstractElement {
      *            the label to deselect
      */
     public void deselectByLabel(String label) {
+        dispatcher.beforeDeselect(this, label);
+        
         new Select(getElement()).deselectByVisibleText(label);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, label);
         }
+        
+        dispatcher.afterDeselect(this, label);
     }
 }

@@ -19,6 +19,7 @@ import org.openqa.selenium.remote.RemoteWebElement;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.platform.html.support.events.Checkable;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /**
@@ -29,7 +30,7 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  * </p>
  * 
  */
-public class RadioButton extends AbstractElement {
+public class RadioButton extends AbstractElement implements Checkable {
 
     /**
      * RadioButton Construction method<br>
@@ -95,31 +96,43 @@ public class RadioButton extends AbstractElement {
      * It invokes SeLion session to handle the check action against the element.
      */
     public void check() {
+        dispatcher.beforeCheck(this);
+        
         if (!isChecked()) {
             this.click();
         }
+        
+        dispatcher.afterCheck(this);
     }
 
     /**
      * The RadioButton click function and wait for page to load
      */
     public void click() {
+        dispatcher.beforeClick(this);
+        
         getElement().click();
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIAction(UIActions.CLICKED);
         }
+        
+        dispatcher.afterClick(this);
     }
 
     /**
      * The RadioButton click function and wait for object to load
      */
     public void click(String locator) {
+        dispatcher.beforeClick(this, locator);
+        
         getElement().click();
         validatePresenceOfAlert();
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIAction(UIActions.CLICKED);
         }
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
+        
+        dispatcher.afterClick(this, locator);
     }
 
     /**

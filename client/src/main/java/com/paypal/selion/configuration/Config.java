@@ -480,6 +480,15 @@ public final class Config {
          * as <code>en_US</code>
          */
         SELENIUM_NATIVE_APP_LOCALE("appLocale", "en_US", false),
+        
+        /**
+         * Use this parameter to provide SeLion with a custom listener which can be plugged into
+         * {@link EventFiringWebDriver}. If the fully qualified class implements {@link WebDriverEventListener} then
+         * SeLion will invoke the custom implementation provided by you via your implementation as and when the
+         * relevant events happen. If more than one custom listeners are to be provided please separate the fully
+         * qualified class names with commas.
+         */
+        SELION_ELEMENT_EVENT_LISTENER("seLionElementEventListener","",true),
 
         /**
          * This parameter is used to pass SauceLabs user name

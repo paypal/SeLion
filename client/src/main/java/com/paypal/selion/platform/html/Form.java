@@ -15,6 +15,8 @@
 
 package com.paypal.selion.platform.html;
 
+import com.paypal.selion.platform.html.support.events.Submitable;
+
 /**
  * This class is the web element Form wrapper.
  * <p>
@@ -23,7 +25,7 @@ package com.paypal.selion.platform.html;
  * </p>
  * 
  */
-public class Form extends AbstractElement {
+public class Form extends AbstractElement implements Submitable {
 
     /**
      * Form Construction method<br>
@@ -88,6 +90,10 @@ public class Form extends AbstractElement {
      * The Form submit function It invokes SeLion session to handle the submit action against the element.
      */
     public void submit() {
+        dispatcher.beforeSubmit(this);
+        
         getElement().submit();
+        
+        dispatcher.afterSubmit(this);
     }
 }

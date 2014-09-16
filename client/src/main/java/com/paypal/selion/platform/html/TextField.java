@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.html.support.events.Typeable;
 
 /**
  * This class is the web element Input wrapper.
@@ -34,7 +35,7 @@ import com.paypal.selion.logger.SeLionLogger;
  * </p>
  * 
  */
-public class TextField extends AbstractElement {
+public class TextField extends AbstractElement implements Typeable {
 
     /**
      * TextField Construction method <br>
@@ -100,12 +101,16 @@ public class TextField extends AbstractElement {
      * It invokes SeLion session to handle the type action against the element.
      */
     public void type(String value) {
+        dispatcher.beforeType(this, value);
+        
         RemoteWebElement element = getElement();
         element.clear();
         element.sendKeys(value);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.ENTERED, value);
         }
+        
+        dispatcher.afterType(this, value);
     }
 
     /**
@@ -115,10 +120,14 @@ public class TextField extends AbstractElement {
      */
     public void type(String value, boolean isKeepExistingText) {
         if (isKeepExistingText == true) {
+            dispatcher.beforeType(this, value);
+            
             getElement().sendKeys(value);
             if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
                 logUIActions(UIActions.ENTERED, value);
             }
+            
+            dispatcher.afterType(this, value);
         } else {
             type(value);
         }

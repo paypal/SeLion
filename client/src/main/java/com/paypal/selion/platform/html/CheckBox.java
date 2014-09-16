@@ -19,6 +19,8 @@ import org.openqa.selenium.remote.RemoteWebElement;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.platform.html.support.events.Checkable;
+import com.paypal.selion.platform.html.support.events.Uncheckable;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /**
@@ -29,7 +31,7 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  * </p>
  * 
  */
-public class CheckBox extends AbstractElement {
+public class CheckBox extends AbstractElement implements Checkable, Uncheckable {
 
     /**
      * CheckBox Construction method<br>
@@ -93,6 +95,8 @@ public class CheckBox extends AbstractElement {
      * The CheckBox check function It invokes selenium session to handle the check action against the element.
      */
     public void check() {
+        dispatcher.beforeCheck(this);
+        
         RemoteWebElement e = (RemoteWebElement) getElement();
         while (!e.isSelected()) {
             e.click();
@@ -100,6 +104,8 @@ public class CheckBox extends AbstractElement {
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIAction(UIActions.CHECKED);
         }
+        
+        dispatcher.afterCheck(this);
     }
 
     /**
@@ -107,15 +113,21 @@ public class CheckBox extends AbstractElement {
      * until element is found with given locator.
      */
     public void check(String locator) {
+        dispatcher.beforeCheck(this, locator);
+        
         this.check();
         validatePresenceOfAlert();
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
+        
+        dispatcher.afterUncheck(this, locator);
     }
 
     /**
      * The CheckBox uncheck function It invokes SeLion session to handle the uncheck action against the element.
      */
     public void uncheck() {
+        dispatcher.beforeUncheck(this);
+        
         RemoteWebElement e = (RemoteWebElement) getElement();
         while (e.isSelected()) {
             e.click();
@@ -123,6 +135,8 @@ public class CheckBox extends AbstractElement {
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIAction(UIActions.UNCHECKED);
         }
+        
+        dispatcher.afterUncheck(this);
     }
 
     /**
@@ -130,28 +144,40 @@ public class CheckBox extends AbstractElement {
      * until element is found with given locator.
      */
     public void uncheck(String locator) {
+        dispatcher.beforeUncheck(this, locator);
+        
         this.uncheck();
         validatePresenceOfAlert();
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
+        
+        dispatcher.afterUncheck(this, locator);
     }
 
     /**
      * The CheckBox click function and wait for page to load
      */
     public void click() {
+        dispatcher.beforeClick(this);
+        
         getElement().click();
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIAction(UIActions.CLICKED);
         }
+        
+        dispatcher.afterClick(this);
     }
 
     /**
      * The CheckBox click function and wait for object to load
      */
     public void click(String locator) {
+        dispatcher.beforeClick(this, locator);
+        
         click();
         validatePresenceOfAlert();
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
+        
+        dispatcher.afterClick(this, locator);
     }
 
     /**

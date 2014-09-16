@@ -11,6 +11,18 @@ elements:
   hiddenButton:
     locators:
       US: "//input[@id='hidden.x']"
+  logLabel:
+    locators:
+      US: "//label[@id='logLabel']"
+  xCheckBox:
+    locators:
+      US: "//input[@id='checkbox']"
+  xRadioButton:
+    locators:
+      US: "//input[@id='radio']"
+  xSelectList:
+    locators:
+      US: "//select[@id='select']"
   selionContainer:
     locators:
       US: "//div"
