@@ -39,6 +39,7 @@ import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.browsercapabilities.DesiredCapabilitiesFactory;
+import com.paypal.selion.platform.html.support.events.SeLionElementEventListener;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -158,6 +159,7 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
         setWindowSize(driver);
         ScreenShotRemoteWebDriver wrappedInstance = new ScreenShotRemoteWebDriver(driver);
         registerWebDriverEventListeners(wrappedInstance);
+        registerSeLionElementEventListeners(wrappedInstance);
 
         logger.exiting(driver);
 
@@ -183,6 +185,27 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
             }
         }
     }
+    
+    private static void registerSeLionElementEventListeners(ScreenShotRemoteWebDriver driver) {
+        String listeners = Config.getConfigProperty(ConfigProperty.SELION_ELEMENT_EVENT_LISTENER);
+
+        if (StringUtils.isBlank(listeners)) {
+            return;
+        }
+
+        String[] allEventListeners = listeners.split(",");
+        for (String eachEventListener : allEventListeners) {
+            try {
+                Object listener = Class.forName(eachEventListener).newInstance();
+                if (SeLionElementEventListener.class.isAssignableFrom(listener.getClass())) {
+                    driver.register((SeLionElementEventListener) listener);
+                    logger.info("Registered [" + eachEventListener + "] as a webdriver event listener.");
+                }
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                logger.warning("Unable to register [" + eachEventListener + "] as a selion element event listener.");
+            }
+        }
+    }
 
     private static void setWindowSize(WebDriver driver) {
         WebTestSession config = Grid.getWebTestSession();
@@ -197,6 +220,30 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
             throw (new IllegalArgumentException(
                     "Both the height and the width of the browser window should be greater than  zero"));
         }
+    }
+    
+    /**
+     * Register a {@link SeLionElementEventListener} to the driver.
+     * 
+     * @param listener
+     *            The listener that you want to register
+     * @return the driver
+     */
+    public ScreenShotRemoteWebDriver register(SeLionElementEventListener listener) {
+        Grid.getTestSession().getListeners().add(listener);
+        return this;
+    }
+
+    /**
+     * Register a {@link SeLionElementEventListener} to the driver.
+     * 
+     * @param listener
+     *            The listener that you want to register
+     * @return the driver
+     */
+    public ScreenShotRemoteWebDriver unregister(SeLionElementEventListener listener) {
+        Grid.getTestSession().getListeners().remove(listener);
+        return this;
     }
 
 }

@@ -15,6 +15,10 @@
 
 package com.paypal.selion.platform.html;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +45,8 @@ import com.paypal.selion.platform.grid.BrowserFlavors;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.html.support.ParentNotFoundException;
+import com.paypal.selion.platform.html.support.events.Clickable;
+import com.paypal.selion.platform.html.support.events.SeLionElementEventListener;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.selion.reports.runtime.WebReporter;
 import com.paypal.selion.testcomponents.BasicPageImpl;
@@ -49,7 +55,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * Abstract element class for web elements.
  */
-public abstract class AbstractElement {
+public abstract class AbstractElement implements Clickable {
     private static final String ALERTS_ARE_NOT_SUPPORTED_ERR_MSG = "Alerts are not supported in iPhone/iPad/PhantomJS as of 2.39.0.";
     private String locator;
     private String controlName;
@@ -58,6 +64,22 @@ public abstract class AbstractElement {
     protected static final String LOG_DEMARKER = "&#8594;";
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
+    
+    protected final SeLionElementEventListener dispatcher = (SeLionElementEventListener) Proxy.newProxyInstance(
+            SeLionElementEventListener.class.getClassLoader(), new Class[] { SeLionElementEventListener.class },
+            new InvocationHandler() {
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    try {
+                        List<SeLionElementEventListener> eventListeners = Grid.getTestSession().getListeners();
+                        for (SeLionElementEventListener eventListener : eventListeners) {
+                            method.invoke(eventListener, args);
+                        }
+                        return null;
+                    } catch (InvocationTargetException e) {
+                        throw e.getTargetException();
+                    }
+                }
+            });
 
     /**
      * Instance method used to call static class method locateElement.
@@ -442,6 +464,8 @@ public abstract class AbstractElement {
      *            {@link Table}, a {@link SelectList}, a {@link CheckBox}, or a {@link RadioButton}.
      */
     public void click(Object... expected) {
+        dispatcher.beforeClick(this, expected);
+        
         getElement().click();
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
@@ -478,6 +502,8 @@ public abstract class AbstractElement {
         } finally {
             // Attempt at taking screenshots even when there are time-outs triggered from the wait* methods.
             processScreenShot();
+            
+            dispatcher.afterClick(this, expected);
         }
     }
 
@@ -503,6 +529,8 @@ public abstract class AbstractElement {
      * </pre>
      */
     public Object clickAndExpect(ExpectedCondition<?> expectedCondition) {
+        dispatcher.beforeClick(this, expectedCondition);
+        
         getElement().click();
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
@@ -514,6 +542,9 @@ public abstract class AbstractElement {
         WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
         Object variable = wait.until(expectedCondition);
         processScreenShot();
+        
+        dispatcher.afterClick(this, expectedCondition);
+        
         return variable;
     }
 
@@ -527,6 +558,8 @@ public abstract class AbstractElement {
      * @return - return first {@link org.openqa.selenium.support.ui.ExpectedCondition} that was matched
      */
     public ExpectedCondition<?> clickAndExpectOneOf(final List<ExpectedCondition<?>> conditions) {
+        dispatcher.beforeClick(this, conditions);
+        
         getElement().click();
 
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
@@ -571,6 +604,8 @@ public abstract class AbstractElement {
         } finally {
             // Attempt at taking screenshots even when there are time-outs triggered from the wait* methods.
             processScreenShot();
+            
+            dispatcher.afterClick(this, conditions);
         }
     }
 
@@ -584,6 +619,8 @@ public abstract class AbstractElement {
      * @return - return the first object that was matched
      */
     public Object clickAndExpectOneOf(final Object... expected) {
+        dispatcher.beforeClick(this, expected);
+        
         getElement().click();
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
@@ -637,6 +674,8 @@ public abstract class AbstractElement {
         } finally {
             // Attempt at taking screenshots even when there are time-outs triggered from the wait* methods.
             processScreenShot();
+            
+            dispatcher.afterClick(this, expected);
         }
     }
 }
