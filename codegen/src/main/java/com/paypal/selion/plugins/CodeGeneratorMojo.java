@@ -50,6 +50,13 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * @parameter expression="${selion-code-generator.basePackage}" default-value="com.paypal.selion.testcomponents"
      */
     private String basePackage;
+    
+    /**
+     * Represents the base folder used for reading yaml files.
+     * 
+     * @parameter expression="${selion-code-generator.baseFolder}" default-value="GUIData"
+     */
+    private String baseFolder;
 
     /**
      * Represents the base folder used for reading page asset files such as PageYaml.
