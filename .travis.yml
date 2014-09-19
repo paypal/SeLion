@@ -4,9 +4,7 @@ jdk:
   - openjdk7
 install:
   - sh -e install-ios-driver.sh
-before_script:
-  - "echo { \"sauceUserName\": \"${SAUCE_USERNAME}\", \"sauceApiKey\": \"${SAUCE_ACCESS_KEY}\", \"tunnel-identifier\": \"__string__${TRAVIS_JOB_NUMBER}\", \"build\": \"${TRAVIS_BUILD_NUMBER}\", \"idle-timeout\": 120, \"tags\": [\"commit ${TRAVIS_COMMIT}\", \"branch ${TRAVIS_BRANCH}\", \"pull request ${TRAVIS_PULL_REQUEST}\"] } > client/src/test/resources/sauceConfig.json"
 script:
-  - mvn test -Djava.net.preferIPv4Stack=true
+  - sh -e run-travis-ci-tests.sh
 addons:
   sauce_connect: true
