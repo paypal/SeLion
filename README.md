@@ -6,28 +6,41 @@ Enabling Test Automation in Java
 
 SeLion builds on top of TestNG and Selenium to provide a set of capabilities that get you up and running with WebDriver in a short time. It can be used for testing web and mobile applications.
 
+- A client module which you can add as a Maven dependency.
+  - Annotation based WebDriver session management. 
+  - Access test data from Excel or YAML through TestNG's `@DataProvider`. 
+  - Runtime Reporter for real-time test execution status. 
+  - Swap out browser targets at run-time. 
+  - Automate native, hybrid, and web applications on iOS devices. 
+  - and more 
+- A maven archetype for creating new SeLion based projects. 
+- A customized Selenium Grid2 component. 
+- A Code generator Maven plugin for generating Java "page objects" out of YAML.
+
 Documentation
 -------------
-Project documentation including prerequisites, compilation, usage, and more is at http://paypal.github.io/SeLion/
+Project documentation including prerequisites, compilation, usage, and more is at http://paypal.github.io/SeLion/html/documentation.html
 
 Contact
 -------
-Please stay tuned for more details. 
+Feel free to ask questions and/or share ideas.
 
-In the meantime, you can use GitHub issues or if you have a contribution, feel free to send a pull request!
+- [Raise a GitHub Issue](https://github.com/paypal/SeLion/issues).
+- [Join our Google Group](https://groups.google.com/forum/#!forum/selion).
+- Initiate a pull request, if you have a contribution.
 
 Submitting bugs and feature requests
 ------------------------------------
-We use GitHub for tracking issues. Please scan the list of [SeLion Issues](https://github.com/paypal/SeLion/issues) before filing a new one.
+We use GitHub for tracking issues. Please scan the list of [GitHub Issues](https://github.com/paypal/SeLion/issues) before filing a new one.
 
 Contributing
 -------------
 Your contribution is welcome and appreciated!
 
-* Code Development is done on the <code>develop</code> branch. 
-* Documentation is done on the <code>gh-pages</code> branch.
+- Code Development is done on the <code>develop</code> branch. 
+- Documentation is done on the <code>gh-pages</code> branch.
 
-1. Complete and return either the Personal or Corporate CLA <em>(links coming soon)</em>.
+1. Complete and return either the [Personal](https://docs.google.com/forms/d/1t_Rqly6-qVP536O8ESltIRCHM0qBsmahWUdJda0oo3U/viewform) or [Corporate CLA](https://docs.google.com/forms/d/1qngimdtbwKcxMIJAxeV0DEqVYPCGHcYegFX0PVgMD78/viewform).
 2. Make sure your <code>~/.gitconfig</code> file has your full name with proper use of case as <code>user.name</code> and your real email address as <code>user.email</code>. GitHub has [a nice write-up on this](https://help.github.com/articles/setting-your-username-in-git).
 3. Make sure you rebase off of the latest upstream version before submitting your pull request.
 
@@ -38,13 +51,12 @@ Areas that need contribution
 3. Expanding PageYaml and SeLion's Code Generator to work with Selendroid.
 4. Look & Feel Enhancements to SeLion's RuntimeReporter.
 5. Support for additional data formats such as JSON, CSV, and XML for data driven testing.
-6. Any open item from [SeLion Issues](https://github.com/paypal/SeLion/issues)
+6. Any open item from [GitHub Issues](https://github.com/paypal/SeLion/issues)
 
 Projects we depend on that need contributors 
 ---------------------------------------------
-1. The [ios-driver](https://ios-driver.github.io/ios-driver/) project.
-2. The [Selendroid](http://selendroid.io/) project.
-
+- The [ios-driver](https://ios-driver.github.io/ios-driver/) project.
+- The [Selendroid](http://selendroid.io/) project.
 
 Current version
 ---------------
@@ -53,5 +65,3 @@ Current version
 License
 -----------
 [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-
