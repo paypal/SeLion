@@ -28,7 +28,8 @@ import com.paypal.test.utilities.logging.SimpleLogger.ConsoleLevel;
  * <br>
  * With this class you can configure {@link SimpleLogger} to create User and/or Developer log files and at {@link Level}
  * s which best fit your needs. In addition, you can attach a {@link ConsoleHandler} to either the User or Developer
- * log.<br>
+ * log. You can enable rolling logs by specifying a max size you want your log file to grow to and the number
+ * of files to save (roll).<br>
  * <br>
  * Default settings are as follows;<br>
  * 
@@ -43,6 +44,8 @@ import com.paypal.test.utilities.logging.SimpleLogger.ConsoleLevel;
  *      - Application identifier = ''
  *      - Console log level = {@link ConsoleLevel#OFF}
  *      - SimpleLogger events = none
+ *      - Max File Size = 0 (unlimited)
+ *      - Max File Count = 1
  * </pre>
  * 
  */
@@ -57,7 +60,9 @@ public class SimpleLoggerSettings {
     private String identifier;
     private ConsoleLevel consoleLogLevel;
     private SimpleLoggerEvents loggerEventsImpl;
-
+    private int maxFileSize;
+    private int maxFileCount;
+    
     /**
      * Create new {@link SimpleLoggerSettings} with default settings
      */
@@ -71,6 +76,8 @@ public class SimpleLoggerSettings {
         this.devLevel = Level.ALL;
         this.identifier = null;
         this.consoleLogLevel = ConsoleLevel.OFF;
+        this.maxFileSize = 0;
+        this.maxFileCount = 1;        
         this.loggerEventsImpl = new SimpleLoggerEvents() {
             public void onPreInitialization(SimpleLogger logger) {
                 return;
@@ -245,6 +252,36 @@ public class SimpleLoggerSettings {
      */
     public SimpleLoggerEvents getSimpleLoggerEventsImpl() {
         return this.loggerEventsImpl;
+    }
+
+    /**
+     * @return the maxFileSize in MB.  If 0 then there is no max file size limit.
+     */
+    public int getMaxFileSize() {
+        return maxFileSize;
+    }
+
+    /**
+     * @param maxFileSize
+     *      the maxFileSize in MB to set. Use 0 to set no max file size limit.
+     */
+    public void setMaxFileSize(int maxFileSize) {
+        this.maxFileSize = maxFileSize;
+    }
+
+    /**
+     * @return the maximum number of files that will be created from rolling logs.
+     */
+    public int getMaxFileCount() {
+        return maxFileCount;
+    }
+
+    /**
+     * @param maxFileCount
+     *      the maximum number of files that will be created from rolling logs.
+     */
+    public void setMaxFileCount(int maxFileCount) {
+        this.maxFileCount = maxFileCount;
     }
 
 }

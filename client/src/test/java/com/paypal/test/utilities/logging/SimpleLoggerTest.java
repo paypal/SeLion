@@ -15,6 +15,10 @@
 
 package com.paypal.test.utilities.logging;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.util.logging.Filter;
 import java.util.logging.Handler;
@@ -22,17 +26,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertEquals;
-
 import org.testng.annotations.Test;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.test.utilities.logging.SimpleLogger;
-import com.paypal.test.utilities.logging.SimpleLoggerEvents;
-import com.paypal.test.utilities.logging.SimpleLoggerSettings;
 import com.paypal.test.utilities.logging.SimpleLogger.ConsoleLevel;
 
 public class SimpleLoggerTest {
@@ -62,13 +59,14 @@ public class SimpleLoggerTest {
     @Test(groups = "unit")
     public void testHooksForLoggerConfiguration() {
         SimpleLoggerSettings settings = new SimpleLoggerSettings();
-        settings.setLoggerName("testHooksForLoggerConfiguration");
         settings.setLogsDir(getWorkDir().getAbsolutePath());
 
         SimpleLoggerEvents events = new SimpleLoggerEvents() {
 
+            @Override
             public void onPreInitialization(SimpleLogger logger) {
                 Filter anonymousFilter = new Filter() {
+                    @Override
                     public boolean isLoggable(LogRecord record) {
                         return false;
                     }
@@ -76,6 +74,7 @@ public class SimpleLoggerTest {
                 logger.setFilter(anonymousFilter);
             }
 
+            @Override
             public void onPostInitialization(SimpleLogger logger) {
                 for (Handler handler : logger.getHandlers()) {
                     handler.close();
@@ -83,6 +82,7 @@ public class SimpleLoggerTest {
                 }
             }
 
+            @Override
             public void onLog(LogRecord record) {
             }
         };
@@ -115,5 +115,35 @@ public class SimpleLoggerTest {
 
         assertTrue(devLogsFile.exists(), "Dev logs was not created");
         assertEquals(logger.getName(), "Tester", "Logger was not created with provided name");
+    }
+
+    @Test(groups = "functional")
+    public void testRollingLog() throws InterruptedException {
+        SimpleLoggerSettings settings = new SimpleLoggerSettings();
+        settings.setLogsDir(getWorkDir().getAbsolutePath());
+        settings.setLog2Console(ConsoleLevel.OFF);
+        settings.setDeveloperLogFileName("rolling-detailed.log");
+        settings.setUserLogFileName("rolling.log");
+        settings.setLoggerName("Rolling");
+        settings.setMaxFileSize(2);
+        settings.setMaxFileCount(3);
+        Logger logger = SimpleLogger.getLogger(settings);
+
+        for (int i = 0; i < 75000; i++) {
+            logger.log(Level.FINE, " My Test Message. " + i);// 87 bytes approximately
+        }
+
+        // Verify that 3rd log file exist and their file size is no larger than 2 MB
+        File thirdLogFile = new File(getWorkDir().getAbsolutePath() + File.separator + "rolling-detailed.log.2");
+        assertTrue(thirdLogFile.exists(), "Rolling log file does not exist.");
+        assertTrue(thirdLogFile.length() > 0, "Rolling log file is empty.");
+        // allow for some tolerance since the last log write will make it exceed exactly 2000000 bytes
+        assertTrue(thirdLogFile.length() < 2001000,
+                "The log file length must be less than 2MB.  Actual log length is: " + thirdLogFile.length());
+
+        // Better not be a 4th log file since max file count was 3
+        File fourthLogFile = new File(getWorkDir().getAbsolutePath() + File.separator + "rolling-detailed.log.3");
+        assertFalse(fourthLogFile.exists(),
+                "4th rolling log file 'rolling-detailed.log.3' should not exist but has been detected.");
     }
 }

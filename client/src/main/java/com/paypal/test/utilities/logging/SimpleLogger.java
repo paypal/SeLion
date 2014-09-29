@@ -35,8 +35,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import com.paypal.test.utilities.logging.SimpleLoggerSettings;
-
 /**
  * A generic, reusable, and configurable logger for Java applications.<br>
  * <br>
@@ -55,38 +53,41 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
  * {@link Handler#close()}, {@link SimpleLogger#removeHandler(Handler)}, and {@link SimpleLogger#addHandler(Handler)}
  * (see code snippet 2 below).<br>
  * <br>
- * 
+ * If you use the default {@link FileHandler}, you can enable rolling logs by specifying a max size you want your log
+ * file to grow to and the number of files to save(roll) in {@link SimpleLoggerSettings}<br>
+ * <br>
+ *
  * <b>For Example:</b><br>
  * <i>Snippet 1</i>
  * 
  * <pre>
  *        public class SingletonAppLogger {
  *            private static SimpleLogger logger = null;
- *            private static final String LOGGER_NAME = SingletonAppLogger.class.getCanonicalName();    
+ *            private static final String LOGGER_NAME = SingletonAppLogger.class.getCanonicalName();
  *            private static final String CLASS_NAME = SingletonAppLogger.class.getSimpleName();
- *           
+ * 
  *            public static SimpleLogger getLogger() {
  *                if (logger == null) {
  *                    logger = SimpleLogger.getLogger(new SingletonAppLoggerSettings());
  *                }
  *                return logger;
  *            }
- *        
+ * 
  *            private static class SingletonAppLoggerEvents implements SimpleLoggerEvents {
  *                public void onPreInitialization(SimpleLogger logger) {
  *                    //TODO :: any pre initialization customization you want to define goes here
  *                }
- *        
+ * 
  *                public void onPostInitialization(SimpleLogger logger) {
  *                    //TODO :: any post initialization customization you want to define goes here
  *                }
- *        
+ * 
  *                public void onLog(LogRecord record) {
  *                    //TODO :: Use this method if you want to peek at the log record and take
  *                    // some sort of action before the log event is forwarded to all registered log handlers
- *                }              
+ *                }
  *            }
- *            
+ * 
  *            private static class SingletonAppLoggerSettings extends SimpleLoggerSettings {
  *                //Create a logger for this application that directs user level output to app.log and 
  *                //developer level output to app-detailed.log. Also, register our SingletonAppLoggerEvents with 
@@ -100,11 +101,11 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
  *                        this.setSimpleLoggerEventsImpl(new SingletonAppLoggerEvents());
  *                    }
  *            }
- * 
+ *
  * </pre>
- * 
+ *
  * <i>Snippet 2</i>
- * 
+ *
  * <pre>
  *      ......
  *                public void onPostInitialization(SimpleLogger logger) {
@@ -119,14 +120,14 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
  *                                    element.setFormatter(new XMLFormatter());
  *                                } catch (SecurityException e) {
  *                                    e.printStackTrace();
- *                                }                        
+ *                                }
  *                            }
  *                        }
  *                    }
  *                }
  *     ........
  * </pre>
- * 
+ *
  */
 public final class SimpleLogger extends Logger implements Closeable {
 
@@ -145,7 +146,7 @@ public final class SimpleLogger extends Logger implements Closeable {
     private SimpleLogger() {
         super(LOGGER_NAME, null);
         this.loggerSettings = new SimpleLoggerSettings();
-        // We need to ensure we close everything properly. So lets add a shutdownhook
+        // We need to ensure we close everything properly. So lets add a shut down hook
         // of doing this. Doing this as part of finalize() seems to be triggering sonar
         // warnings.
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -158,7 +159,7 @@ public final class SimpleLogger extends Logger implements Closeable {
 
     /**
      * Creates a new logger with your {@link SimpleLoggerSettings}
-     * 
+     *
      * @param settings
      *            - the configured {@link SimpleLoggerSettings} for your logger
      */
@@ -169,7 +170,7 @@ public final class SimpleLogger extends Logger implements Closeable {
 
     /**
      * Get the configured {@link SimpleLogger} for this instance.
-     * 
+     *
      * @return the {@link SimpleLogger} configured
      */
     private synchronized SimpleLogger getLogger() {
@@ -186,7 +187,7 @@ public final class SimpleLogger extends Logger implements Closeable {
      * If a new logger is created, log levels will be configured based on the {@link SimpleLoggerSettings} configuration
      * and it will also be configured to send logging output to parent handlers. Lastly, it will be registered in the
      * {@link LogManager} global namespace.
-     * 
+     *
      * @param logSettings
      *            - the {@link SimpleLoggerSettings} to apply
      * @return the {@link SimpleLogger} instance
@@ -221,20 +222,16 @@ public final class SimpleLogger extends Logger implements Closeable {
         // ensure log directory and log files exist when level is not OFF
         if ((devLevel != Level.OFF) || (userLevel != Level.OFF)) {
             logsDir.mkdirs();
-
-            if ((devLevel != Level.OFF) && (!devLog.exists())) {
-                devLog.createNewFile();
-            }
-            if ((userLevel != Level.OFF) && (!userLog.exists())) {
-                userLog.createNewFile();
-            }
         }
 
+        // add corresponding file handlers
         if (userLevel != Level.OFF) {
-            logger.addFileHandler(userLog, userLevel, logger.new SingleLineFormatter(logSettings.getIdentifier()));
+            logger.addFileHandler(userLog, userLevel, logger.new SingleLineFormatter(logSettings.getIdentifier()),
+                    logSettings.getMaxFileSize(), logSettings.getMaxFileCount());
         }
         if (devLevel != Level.OFF) {
-            logger.addFileHandler(devLog, devLevel, new SimpleFormatter());
+            logger.addFileHandler(devLog, devLevel, new SimpleFormatter(), logSettings.getMaxFileSize(),
+                    logSettings.getMaxFileCount());
         }
     }
 
@@ -253,7 +250,7 @@ public final class SimpleLogger extends Logger implements Closeable {
 
     /**
      * Called to setup the {@link SimpleLogger} based on specified {@link SimpleLoggerSettings}
-     * 
+     *
      * @param logSettings
      * @param logger
      */
@@ -289,7 +286,7 @@ public final class SimpleLogger extends Logger implements Closeable {
 
     /**
      * Turns level string into {@link Level}
-     * 
+     *
      * @return The log level
      */
     public static Level string2Level(String logLevelString) {
@@ -327,60 +324,70 @@ public final class SimpleLogger extends Logger implements Closeable {
      * Function entry log convenience method.
      */
     public void entering() {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().entering(fi.className, fi.methodName);
+        if (this.isLoggable(Level.FINER)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().entering(fi.className, fi.methodName);
+        }
     }
 
     /**
      * Function entry log convenience method with additional parm.
-     * 
+     *
      * @param param
      *            additional param
      */
     public void entering(Object param) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().entering(fi.className, fi.methodName, param);
+        if (this.isLoggable(Level.FINER)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().entering(fi.className, fi.methodName, param);
+        }
     }
 
     /**
      * Function entry log convenience method (varargs-style).
-     * 
+     *
      * @param params
      *            varargs
      */
     public void entering(Object[] params) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().entering(fi.className, fi.methodName, params);
+        if (this.isLoggable(Level.FINER)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().entering(fi.className, fi.methodName, params);
+        }
     }
 
     /**
      * Function exit log convenience method.
      */
     public void exiting() {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().exiting(fi.className, fi.methodName);
+        if (this.isLoggable(Level.FINER)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().exiting(fi.className, fi.methodName);
+        }
     }
 
     /**
      * Function exit log convenience method.
-     * 
+     *
      * @param param
      *            return value
      */
     public void exiting(Object param) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().exiting(fi.className, fi.methodName, param);
+        if (this.isLoggable(Level.FINER)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().exiting(fi.className, fi.methodName, param);
+        }
     }
 
     /**
      * Function exit log convenience method (varargs-style).
-     * 
+     *
      * @param params
      *            return values
      */
     public void exiting(Object[] params) {
-        FrameInfo fi = getLoggingFrame();
         if (this.isLoggable(Level.FINER)) {
+            FrameInfo fi = getLoggingFrame();
             String msg = "RETURN";
             if (null != params) {
                 StringBuilder msgBuffer = new StringBuilder("RETURN");
@@ -400,76 +407,100 @@ public final class SimpleLogger extends Logger implements Closeable {
 
     @Override
     public void log(LogRecord record) {
-        // notify and custom logger event handlers defined
-        this.loggerSettings.getSimpleLoggerEventsImpl().onLog(record);
-        // deal with this record normally
-        super.log(record);
+        if (this.isLoggable(record.getLevel())) {
+            // notify and custom logger event handlers defined
+            this.loggerSettings.getSimpleLoggerEventsImpl().onLog(record);
+            // deal with this record normally
+            super.log(record);
+        }
     }
 
     @Override
     public void log(Level level, String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(level, fi.className, fi.methodName, msg);
+        if (this.isLoggable(level)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(level, fi.className, fi.methodName, msg);
+        }
     }
 
     @Override
     public void log(Level level, String msg, Object param1) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(level, fi.className, fi.methodName, msg, param1);
+        if (this.isLoggable(level)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(level, fi.className, fi.methodName, msg, param1);
+        }
     }
 
     @Override
     public void log(Level level, String msg, Object[] params) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(level, fi.className, fi.methodName, msg, params);
+        if (this.isLoggable(level)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(level, fi.className, fi.methodName, msg, params);
+        }
     }
 
     @Override
     public void log(Level level, String msg, Throwable thrown) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(level, fi.className, fi.methodName, msg, thrown);
+        if (this.isLoggable(level)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(level, fi.className, fi.methodName, msg, thrown);
+        }
     }
 
     @Override
     public void fine(String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(Level.FINE, fi.className, fi.methodName, msg);
+        if (this.isLoggable(Level.FINE)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(Level.FINE, fi.className, fi.methodName, msg);
+        }
     }
 
     @Override
     public void finer(String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(Level.FINER, fi.className, fi.methodName, msg);
+        if (this.isLoggable(Level.FINER)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(Level.FINER, fi.className, fi.methodName, msg);
+        }
     }
 
     @Override
     public void finest(String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(Level.FINEST, fi.className, fi.methodName, msg);
+        if (this.isLoggable(Level.FINEST)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(Level.FINEST, fi.className, fi.methodName, msg);
+        }
     }
 
     @Override
     public void config(String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(Level.CONFIG, fi.className, fi.methodName, msg);
+        if (this.isLoggable(Level.CONFIG)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(Level.CONFIG, fi.className, fi.methodName, msg);
+        }
     }
 
     @Override
     public void info(String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(Level.INFO, fi.className, fi.methodName, msg);
+        if (this.isLoggable(Level.INFO)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(Level.INFO, fi.className, fi.methodName, msg);
+        }
     }
 
     @Override
     public void severe(String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(Level.SEVERE, fi.className, fi.methodName, msg);
+        if (this.isLoggable(Level.SEVERE)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(Level.SEVERE, fi.className, fi.methodName, msg);
+        }
     }
 
     @Override
     public void warning(String msg) {
-        FrameInfo fi = getLoggingFrame();
-        getLogger().logp(Level.WARNING, fi.className, fi.methodName, msg);
+        if (this.isLoggable(Level.WARNING)) {
+            FrameInfo fi = getLoggingFrame();
+            getLogger().logp(Level.WARNING, fi.className, fi.methodName, msg);
+        }
     }
 
     /**
@@ -485,8 +516,9 @@ public final class SimpleLogger extends Logger implements Closeable {
     /**
      * Add a file handler with the appropriate log level and formatter and filename
      */
-    private void addFileHandler(File logFile, Level logLevel, Formatter formatter) throws IOException {
-        Handler handler = new FileHandler(logFile.getAbsolutePath(), true);
+    private void addFileHandler(File logFile, Level logLevel, Formatter formatter, int maxFileSizeMB, int maxFileCount)
+            throws IOException {
+        Handler handler = new FileHandler(logFile.getAbsolutePath(), maxFileSizeMB * 1000000, maxFileCount, true);
         handler.setFormatter(formatter);
         handler.setLevel(logLevel);
         getLogger().addHandler(handler);
@@ -501,7 +533,7 @@ public final class SimpleLogger extends Logger implements Closeable {
 
     /**
      * Calculate the logging frame's class name and method name.
-     * 
+     *
      * @return FrameInfo with className and methodName.
      */
     private FrameInfo getLoggingFrame() {
@@ -625,7 +657,7 @@ public final class SimpleLogger extends Logger implements Closeable {
 
         /**
          * Synchronized to protect the Format instance from concurrent access...
-         * 
+         *
          * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
          */
         @Override
