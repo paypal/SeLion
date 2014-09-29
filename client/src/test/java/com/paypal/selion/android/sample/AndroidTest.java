@@ -55,6 +55,8 @@ public class AndroidTest {
     public void testLaunch_PPH() throws Exception {
         RemoteWebDriver driver = Grid.selendroidDriver();
         assertNotNull(driver);
+        WebElement element1 = driver.findElement(By.xpath("//Button[@id='login']"));
+        element1.click();
         MobileReporter.log("PPH!", true);
     }
 }
