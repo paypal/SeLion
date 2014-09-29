@@ -105,10 +105,10 @@
             <artifactId>xml-apis</artifactId>
         </dependency>
 
-        <!-- WebDriver now by default seems to be attempting to trigger a registration of org.openqa.selenium.phantomjs
-        .PhantomJSDriver and com.opera.core.systems.OperaDriver. But both these libraries are outside the realms of 
-        Selenium/WebDriver. So adding an explicit dependency on them to ensure that our logs dont show up any INFO 
-        level ClassNotFoundException, when a user tries to run tests locally. -->
+        <!-- WebDriver now by default seems to be attempting to trigger a registration of org.openqa.selenium.phantomjs .PhantomJSDriver 
+            and com.opera.core.systems.OperaDriver. But both these libraries are outside the realms of Selenium/WebDriver. So adding 
+            an explicit dependency on them to ensure that our logs dont show up any INFO level ClassNotFoundException, when a user tries 
+            to run tests locally. -->
         <dependency>
             <groupId>com.github.detro.ghostdriver</groupId>
             <artifactId>phantomjsdriver</artifactId>
@@ -139,10 +139,6 @@
         <!-- selendroid dependencies -->
         <dependency>
             <groupId>io.selendroid</groupId>
-            <artifactId>selendroid-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.selendroid</groupId>
             <artifactId>selendroid-client</artifactId>
         </dependency>
         <dependency>
@@ -153,6 +149,12 @@
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-standalone</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- IOS Driver dependencies. -->
         <dependency>
@@ -173,10 +175,6 @@
                 <exclusion>
                     <groupId>org.seleniumhq.selenium</groupId>
                     <artifactId>selenium-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.uiautomation</groupId>
-                    <artifactId>ios-common</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
