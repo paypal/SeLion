@@ -199,14 +199,14 @@ public class LocalSelendroidNode implements LocalServerComponent {
         Level level = Logger.getLogger("").getLevel();
 
         for (Handler handler : Logger.getLogger("").getHandlers()) {
-         Logger.getLogger("").removeHandler(handler);
-         }
-         // put the original ones back
-         for (Handler handler : handlers) {
-         Logger.getLogger("").addHandler(handler);
-         }
-         // reset the log level
-         Logger.getLogger("").setLevel(level);
+            Logger.getLogger("").removeHandler(handler);
+        }
+        // put the original ones back
+        for (Handler handler : handlers) {
+            Logger.getLogger("").addHandler(handler);
+        }
+        // reset the log level
+        Logger.getLogger("").setLevel(level);
 
         server.launchSelendroid();
         logger.exiting();
