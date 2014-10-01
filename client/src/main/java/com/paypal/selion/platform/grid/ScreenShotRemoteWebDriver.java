@@ -95,10 +95,20 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
         Properties props = new Properties();
         props.put("Selenium V", new org.openqa.selenium.internal.BuildInfo().getReleaseLabel());
         props.put("Client OS", System.getProperty("os.name") + " " + System.getProperty("os.version"));
-        String currentBrowser = Grid.getWebTestSession().getBrowser();
+
+        String currentBrowser = BrowserFlavors.GENERIC.getBrowser();
+
+        if (WebDriverPlatform.WEB.equals(Grid.getTestSession().getPlatform())) {
+            currentBrowser = Grid.getWebTestSession().getBrowser();
+        }
+
         if (BrowserFlavors.isHeadLessBrowser(BrowserFlavors.getBrowser(currentBrowser))) {
-            props.put("Running on ", StringUtils.capitalize(currentBrowser.substring(1)));
-        } else {
+            props.put("Browser", StringUtils.capitalize(currentBrowser.substring(1)));
+        } else if (WebDriverPlatform.IOS.equals(Grid.getTestSession().getPlatform()) ||
+                (WebDriverPlatform.ANDROID.equals(Grid.getTestSession().getPlatform()))) {
+            props.put("Device" , Grid.getMobileTestSession().getDevice().toString());
+        }
+        else {
             String userAgent = (String) this.executeScript("return navigator.userAgent", "");
             String browserFlavor = "UNKNOWN browser";
             if (StringUtils.isNotBlank(userAgent)) {
@@ -106,7 +116,7 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
             }
             props.put("Browser", browserFlavor);
         }
-        logger.log(Level.INFO, "Running on :" + props.toString());
+        logger.log(Level.INFO, "Running on: " + props.toString());
     }
 
     private String extractBrowserInfo(String userAgent) {
