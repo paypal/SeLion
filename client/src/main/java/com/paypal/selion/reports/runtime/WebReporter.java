@@ -40,7 +40,7 @@ public class WebReporter extends AbstractReporter {
          * Changed html file extension to txt
          */
         if (!(saver instanceof SaverFileSystem)) {
-            throw new RuntimeException("NI");
+            throw new RuntimeException("Internal error. WebReporter expects an instance of SaverFileSystem.");
         }
         if (saveSrc) {
             if (this.driver != null) {
@@ -60,11 +60,11 @@ public class WebReporter extends AbstractReporter {
 
     public static void log(String message, boolean takeScreenshot, boolean saveSrc) {
         WebReporter reporter = new WebReporter();
-        reporter.driver = Grid.driver();
+        reporter.driver = Grid.wrappedDriver();
         WebLog currentLog = new WebLog();
         currentLog.setMsg(message);
         currentLog.setType("WEB");
-        currentLog.setLocation(Gatherer.saveGetLocation(Grid.driver()));
+        currentLog.setLocation(Gatherer.saveGetLocation(Grid.wrappedDriver()));
         reporter.setLog(currentLog);
         reporter.generateLog(takeScreenshot, saveSrc);
         logger.exiting();

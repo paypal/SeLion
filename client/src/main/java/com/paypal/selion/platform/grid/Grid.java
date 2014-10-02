@@ -30,37 +30,29 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
-
 import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 import org.uiautomation.ios.client.uiamodels.impl.augmenter.IOSDriverAugmenter;
 
-import com.paypal.selion.configuration.Config;
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.BrowserFlavors;
-import com.paypal.selion.platform.grid.browsercapabilities.DesiredCapabilitiesFactory;
 import com.paypal.selion.platform.remote.SeLionDriverAugmenter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * Utility class making it easy to write tests based on Selenium WebDriver in a multi-thread context.
- * 
  */
 public final class Grid {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private static ThreadLocal<ScreenShotRemoteWebDriver> threadLocalWebDriver = new ThreadLocal<ScreenShotRemoteWebDriver>();
     private static ThreadLocal<AbstractTestSession> threadTestSession = new ThreadLocal<AbstractTestSession>();
-
-    private static boolean isLocalRC = Boolean.parseBoolean(Config
-            .getConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY));
 
     static {
         Logger.getLogger("").setLevel(Level.OFF);
@@ -78,30 +70,40 @@ public final class Grid {
         return threadTestSession;
     }
 
+    /**
+     * @return A {@link RemoteIOSDriver} object which can be used in the case of IOS {@link MobileTest}s
+     */
     public static RemoteIOSDriver iOSDriver() {
         return IOSDriverAugmenter.getIOSDriver((RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver());
     }
 
-    public static SelendroidDriver selendroidDriver() throws Exception {
+    /**
+     * @return A {@link SelendroidDriver} object which can be used in the case of Android {@link MobileTest}s
+     */
+    public static SelendroidDriver selendroidDriver() {
         RemoteWebDriver driver = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
-        return SeLionDriverAugmenter.selendroidDriver(driver,
-                DesiredCapabilitiesFactory.getCapabilities(BrowserFlavors.GENERIC));
+        return SeLionDriverAugmenter.getSelendroidDriver(driver);
     }
 
-    public static RemoteWebDriver genericDriver() throws Exception {
-        String deviceType = Grid.getMobileTestSession().getDevice();
-        if (deviceType.contains("android")) {
-            RemoteWebDriver driver = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
-            return SeLionDriverAugmenter.selendroidDriver(driver,
-                    DesiredCapabilitiesFactory.getCapabilities(BrowserFlavors.GENERIC));
-        } else if (deviceType.equalsIgnoreCase("iphone") || deviceType.equalsIgnoreCase("ipad")) {
-            return IOSDriverAugmenter.getIOSDriver((RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver());
-        } else {
-            throw new RuntimeException("Only 'android', 'ipad', and 'iphone' devices supported.");
+    /**
+     * @return A {@link RemoteWebDriver} object which can be used in the case of {@link MobileTest}s and 
+     *         {@link WebTest}s
+     */
+    public static RemoteWebDriver wrappedDriver() {
+        WebDriverPlatform platform = Grid.getTestSession().getPlatform();
+        RemoteWebDriver rwd = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
+        if (platform == WebDriverPlatform.ANDROID) {
+            return SeLionDriverAugmenter.getSelendroidDriver(rwd);
+        } else if (platform == WebDriverPlatform.IOS) {
+            return IOSDriverAugmenter.getIOSDriver(rwd);
         }
+        return rwd;
     }
 
-    public static long getNewTimeOut() {
+    /**
+     * @return The configured {@link ConfigProperty#EXECUTION_TIMEOUT} for the current session.
+     */
+    public static long getExecutionTimeoutValue() {
         logger.entering();
         String stringTimeOut = ConfigManager.getConfig(getTestSession().getXmlTestName()).getConfigProperty(
                 ConfigProperty.EXECUTION_TIMEOUT);
@@ -110,12 +112,16 @@ public final class Grid {
         return returnValue;
     }
 
+    /**
+     * @return A  {@link ScreenShotRemoteWebDriver} object which can be used in the case of {@link MobileTest} and
+     *         {@link WebTest}s
+     */
     public static ScreenShotRemoteWebDriver driver() {
         return threadLocalWebDriver.get();
     }
 
     /**
-     * @return - A {@link AbstractTestSession} object that represents the basic configurations for the currently running
+     * @return A {@link AbstractTestSession} object that represents the basic configurations for the currently running
      *         <code>{@literal @}WebTest</code>/<code>{@literal @}MobileTest</code> annotated method.
      */
     public static AbstractTestSession getTestSession() {
@@ -123,7 +129,7 @@ public final class Grid {
     }
 
     /**
-     * @return - A {@link MobileTestSession} object that represents the App configurations for the currently running
+     * @return A {@link MobileTestSession} object that represents the App configurations for the currently running
      *         <code>{@literal @}MobileTest</code> annotated method.
      */
     public static MobileTestSession getMobileTestSession() {
@@ -136,7 +142,7 @@ public final class Grid {
     }
 
     /**
-     * @return - A {@link WebTestSession} object that represents the Web configurations for the currently running
+     * @return A {@link WebTestSession} object that represents the Web configurations for the currently running
      *         <code>{@literal @}WebTest</code> annotated method.
      */
     public static WebTestSession getWebTestSession() {
@@ -149,31 +155,22 @@ public final class Grid {
     }
 
     /**
-     * runOnLocalRC()
-     * 
-     * @return localRC, Seleniuum run local if localRC=true, Selenium will run remote if localRC=false example:
-     *         Grid.runOnLocalRC()
-     */
-    public static boolean getRunOnLocalRC() {
-        return isLocalRC;
-    }
-
-    /**
-     * Helper method that can be used to load a URL in a browser.
+     * Helper method to load a URL in a browser. Can be used for browsers in the case of {@link WebTest} and
+     * {@link MobileTest}
      * 
      * @param url
-     *            - The url of the web application that needs to be opened.
+     *            The url of the web application that needs to be opened.
      */
     public static void open(String url) {
         Grid.driver().get(url);
     }
 
     /**
-     * Converts a http response into a JSON Object
+     * Converts a {@link HttpResponse} into a {@link JSONObject}
      * 
      * @param resp
-     *            - a http response obtained from executing a rqst against a host
-     * @return - An object of type {@link JSONObject}
+     *            A {@link HttpResponse} obtained from executing a request against a host
+     * @return An object of type {@link JSONObject}
      * @throws IOException
      * @throws JSONException
      */
@@ -196,12 +193,12 @@ public final class Grid {
      * port to which the execution was redirected to by the hub.
      * 
      * @param hostName
-     *            - The name of the hub machine
+     *            The name of the hub machine
      * @param port
-     *            - The port on which the hub machine is listening to
+     *            The port on which the hub machine is listening to
      * @param session
-     *            - An object of type {@link SessionId} which represents the current session for a user.
-     * @return - An array of string wherein the first element represents the remote node's name and the second element
+     *            An object of type {@link SessionId} which represents the current session for a user.
+     * @return An array of string wherein the first element represents the remote node's name and the second element
      *         represents its port.
      */
     static RemoteNodeInformation getRemoteNodeInfo(String hostName, int port, SessionId session) {

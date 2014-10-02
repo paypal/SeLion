@@ -84,11 +84,59 @@ public final class SeLionBuildInfo {
         /**
          * The version of SeLion
          */
-        CORE_VERSION("core.build.version"),
+        SELION_VERSION("selion.build.version"),
         /**
          * The user name of the person that initiated the SeLion build
          */
-        CORE_USER_NAME("core.build.user.name");
+        USER_NAME("selion.build.user.name"),
+        /**
+         * The version of Java used for the SeLion build
+         */
+        JAVA_VERSION("selion.build.java.version"),
+        /**
+         * The Java vendor used for the SeLion build
+         */
+        JAVA_VENDOR("selion.build.java.vendor"),
+        /**
+         * The Java compiler compatibility version used for the SeLion build
+         */
+        JAVA_COMPILE_VERSION("selion.build.java.compile.version"),
+        /**
+         * The OS architecture used to build SeLion
+         */
+        OS_ARCH("selion.build.os.arch"),
+        /**
+         * The OS name used to build SeLion
+         */
+        OS_NAME("selion.build.os.name"),
+        /**
+         * The OS version used to build SeLion
+         */
+        OS_VERSION("selion.build.os.version"),
+        /**
+         * Whether tests were executed as part of the SeLion build
+         */
+        SKIP_TESTS("selion.build.skip.tests"),
+        /**
+         * The test suite used as part of the SeLion build
+         */
+        TEST_SUITE("selion.build.testsuite"),
+        /**
+         * The TestNG dependency version at the time of compilation
+         */
+        BUILD_DEPENDENCY_TESTNG("selion.build.dependency.testng.version"),
+        /**
+         * The Selenium dependency version at the time of compilation
+         */
+        BUILD_DEPENDENCY_SELENIUM_VERSION("selion.build.dependency.selenium.version"),
+        /**
+         * The ios-driver dependency version at the time of compilation
+         */
+        BUILD_DEPENDENCY_IOSDRIVER("selion.build.dependency.iosdriver.version"),
+        /**
+         * The Selendroid dependency version at the time of compilation
+         */
+        BUILD_DEPENDENCY_SELENDROID("selion.build.dependency.selendroid.version");
 
         private SeLionBuildProperty(String value) {
             this.propertyValue = value;

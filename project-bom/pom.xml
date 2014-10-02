@@ -173,6 +173,12 @@
 
             <dependency>
                 <groupId>org.uiautomation</groupId>
+                <artifactId>standalone-no-selenium</artifactId>
+                <version>${iosdriver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.uiautomation</groupId>
                 <artifactId>ios-grid</artifactId>
                 <version>${iosdriver.version}</version>
                 <exclusions>

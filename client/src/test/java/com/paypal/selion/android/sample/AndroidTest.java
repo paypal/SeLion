@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.WebReporter;
 
 public class AndroidTest {
     @Test
@@ -44,19 +44,9 @@ public class AndroidTest {
         // Now submit the form. WebDriver will find the form for us from the element
         element.submit();
 
-        MobileReporter.log("cheese!", true);
+        WebReporter.log("cheese!", true, true);
 
         // Check the title of the page
         System.out.println("Page title is: " + driver.getTitle());
-    }
-
-    @Test
-    @MobileTest(appName = "com.paypal.here:2.0.0", device = "android19")
-    public void testLaunch_PPH() throws Exception {
-        RemoteWebDriver driver = Grid.selendroidDriver();
-        assertNotNull(driver);
-        WebElement element1 = driver.findElement(By.xpath("//Button[@id='login']"));
-        element1.click();
-        MobileReporter.log("PPH!", true);
     }
 }

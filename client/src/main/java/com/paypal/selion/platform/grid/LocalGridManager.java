@@ -75,7 +75,7 @@ final class LocalGridManager {
         initializeServerList();
         for (LocalServerComponent eachItem : toBoot) {
             try {
-                eachItem.startUp(platform);
+                eachItem.boot(platform);
             } catch (GridException e) {
                 // If either the Grid or the Node or the IOS-Node for that matter failed to start at the first attempt
                 // then there is NO point in trying to keep restarting it for every iteration. So lets log a severe

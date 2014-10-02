@@ -15,8 +15,10 @@
 
 package com.paypal.selion.grid.internal;
 
+import io.selendroid.SelendroidCapabilities;
 import io.selendroid.grid.SelendroidCapabilityMatcher;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
@@ -34,20 +36,22 @@ public class SeLionCapabilitiesMatcher extends DefaultCapabilityMatcher {
         }
         boolean android = isAndroid(requestedCapability);
         if (android) {
-            return new SelendroidCapabilityMatcher().matches(nodeCapability, requestedCapability);
+            //TODO Hack -- As of Selendroid 0.10.0, the AUT capabilities are not added, so we are removing it from the
+            // requested capabilities before sending to the matcher. 
+            // See io.selendroid.server.grid.SelfRegisteringRemote#getNodeConfig() for more on this problem
+            Map<String, Object> augmentedRequestedCapabilities = new HashMap<String, Object>();
+            augmentedRequestedCapabilities.putAll(requestedCapability);
+            augmentedRequestedCapabilities.remove(SelendroidCapabilities.AUT);
+            return new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities);
         }
         return super.matches(nodeCapability, requestedCapability);
     }
 
     private boolean isAndroid(Map<String, Object> requestedCapability) {
-        // first lets check if its a Native or a hybrid app
+        // return true if the requestedCapabilies include an android app or an android browser type
         boolean nativeApp = requestedCapability.containsKey("aut");
-        if (nativeApp) {
-            return true;
-        }
-        //Maybe it wasn't a native app, so now lets check if it was a hybrid app
         String browser = (String) requestedCapability.get("browserName");
         boolean mobileWeb = BrowserType.ANDROID.equals(browser) || "selendroid".equals(browser);
-        return mobileWeb;
+        return nativeApp || mobileWeb;
     }
 }

@@ -160,11 +160,11 @@ public final class WebDriverWaitUtils {
     }
 
     private static long timeoutInSeconds(){
-        return timeoutInSeconds(Grid.getNewTimeOut());
+        return timeoutInSeconds(Grid.getExecutionTimeoutValue());
     }
 
     private static long timeoutInSeconds(long timeOutInMilliseconds){
-        return Grid.getNewTimeOut()/1000;
+        return Grid.getExecutionTimeoutValue()/1000;
     }
     
 }

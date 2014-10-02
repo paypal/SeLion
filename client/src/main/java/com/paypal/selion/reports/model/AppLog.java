@@ -25,7 +25,7 @@ public class AppLog extends AbstractLog {
 
     @Override
     protected void parse(String part) {
-        // At the moment we dont have anything extra to parse apart from what AbstractLog is already parsing.
+        // At the moment we don't have anything extra to parse apart from what AbstractLog is already parsing.
     }
 
     public AppLog() {

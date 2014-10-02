@@ -25,7 +25,7 @@ interface LocalServerComponent {
      * @param platform
      *            A {@link WebDriverPlatform} that represents the platform.
      */
-    public void startUp(WebDriverPlatform platform);
+    public void boot(WebDriverPlatform platform);
 
     /**
      * Shuts down the node/hub running locally.

@@ -62,7 +62,7 @@ class LocalNode implements LocalServerComponent {
     }
 
     @Override
-    public void startUp(WebDriverPlatform platform) {
+    public void boot(WebDriverPlatform platform) {
         logger.entering(platform);
         if (isRunning) {
             logger.exiting();

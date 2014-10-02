@@ -489,7 +489,7 @@ public abstract class AbstractElement implements Clickable {
                     WebDriverWaitUtils.waitUntilElementIsPresent(s);
                 } else if (expect instanceof WebPage) {
                     final WebPage w = (WebPage) expect;
-                    long timeOutInSeconds = Grid.getNewTimeOut() / 1000;
+                    long timeOutInSeconds = Grid.getExecutionTimeoutValue() / 1000;
                     ExpectedCondition<Boolean> condition = new ExpectedCondition<Boolean>() {
                         @Override
                         public Boolean apply(WebDriver webDriver) {
@@ -574,7 +574,7 @@ public abstract class AbstractElement implements Clickable {
         }
         validatePresenceOfAlert();
 
-        long timeout = Grid.getNewTimeOut() / 1000;
+        long timeout = Grid.getExecutionTimeoutValue() / 1000;
 
         try {
             WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
@@ -634,7 +634,7 @@ public abstract class AbstractElement implements Clickable {
         }
         validatePresenceOfAlert();
 
-        long timeout = Grid.getNewTimeOut() / 1000;
+        long timeout = Grid.getExecutionTimeoutValue() / 1000;
 
         try {
             WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);

@@ -17,13 +17,15 @@ package com.paypal.selion.platform.remote;
 
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
 import io.selendroid.SelendroidDriver;
 import io.selendroid.SelendroidCapabilities;
 
 import org.openqa.selenium.Beta;
+
+import com.paypal.selion.platform.grid.BrowserFlavors;
+import com.paypal.selion.platform.grid.browsercapabilities.DesiredCapabilitiesFactory;
 
 /**
  * This class transforms a normal {@link RemoteWebDriver} with Selendroid capabilities to a {@link SelendroidDriver}
@@ -39,13 +41,9 @@ public final class SeLionDriverAugmenter {
      * 
      * @param driver
      *            {@link RemoteWebDriver} with {@link SelendroidCapabilities} to be transformed
-     * @param capability
-     *            {@link Capabilities} to be used by the {@link SelendroidDriver}, should be of type
-     *            {@link SelendroidCapabilities}
      * @return a transformed {@link SelendroidDriver} to be used in the automation
-     * @throws Exception 
      */
-    public static SelendroidDriver selendroidDriver(RemoteWebDriver driver, Capabilities capability) throws Exception {
+    public static SelendroidDriver getSelendroidDriver(RemoteWebDriver driver) {
         if (!(driver.getCommandExecutor() instanceof HttpCommandExecutor)) {
             throw new WebDriverException("selendroid only supports http communication.");
         }
@@ -53,7 +51,12 @@ public final class SeLionDriverAugmenter {
             throw new WebDriverException(
                     "SelendoidDriver needs a RemoteWebDriver with http command executor and SelendroidCapabilities to function.");
         }
-        return new SeLionRemoteSelendroidDriver((RemoteWebDriver) driver, capability);
+        try {
+            return new SeLionRemoteSelendroidDriver((RemoteWebDriver) driver, 
+                    DesiredCapabilitiesFactory.getCapabilities(BrowserFlavors.GENERIC));
+        } catch (Exception e) {
+            throw new WebDriverException(e);
+        }
     }
 
 }

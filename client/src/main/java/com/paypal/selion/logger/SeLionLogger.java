@@ -56,7 +56,7 @@ public final class SeLionLogger {
             this.setUserLevel(SimpleLogger.string2Level(LoggerConfig
                     .getConfigProperty(LoggerConfig.LoggerProperties.LOG_LEVEL_USER)));
             this.setSimpleLoggerEventsImpl(new SeLionLoggerEventsImpl());
-            this.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.CORE_VERSION));
+            this.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
             String log2Console = LoggerConfig.getConfigProperty(LoggerConfig.LoggerProperties.LOG_TO_CONSOLE);
             if (log2Console.equalsIgnoreCase("dev")) {
                 this.setLog2Console(ConsoleLevel.DEV);

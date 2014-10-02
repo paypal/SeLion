@@ -14,7 +14,7 @@
     <properties>
         <compileSource>1.7</compileSource>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>2.42.2</selenium.version>
+        <selenium.version>2.43.1</selenium.version>
         <iosdriver.version>0.6.6-SNAPSHOT</iosdriver.version>
         <selendroid.version>0.11.0</selendroid.version>
         <testng.version>6.8.7</testng.version>

@@ -36,7 +36,7 @@ public class SeLionCapabilitiesMatcher extends DefaultCapabilityMatcher {
         }
         boolean android = isAndroid(requestedCapability);
         if (android) {
-            //TODO Hack Selendroid does not register node capabilities with AUT, so we are removing it from the
+            //TODO Hack -- As of Selendroid 0.10.0, the AUT capabilities are not added, so we are removing it from the
             // requested capabilities before sending to the matcher. 
             // See io.selendroid.server.grid.SelfRegisteringRemote#getNodeConfig() for more on this problem
             Map<String, Object> augmentedRequestedCapabilities = new HashMap<String, Object>();
@@ -48,7 +48,7 @@ public class SeLionCapabilitiesMatcher extends DefaultCapabilityMatcher {
     }
 
     private boolean isAndroid(Map<String, Object> requestedCapability) {
-        // first lets check if its a Native or a hybrid app
+        // return true if the requestedCapabilies include an android app or an android browser type
         boolean nativeApp = requestedCapability.containsKey("aut");
         String browser = (String) requestedCapability.get("browserName");
         boolean mobileWeb = BrowserType.ANDROID.equals(browser) || "selendroid".equals(browser);

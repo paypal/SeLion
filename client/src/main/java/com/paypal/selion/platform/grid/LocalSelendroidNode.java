@@ -58,7 +58,7 @@ public class LocalSelendroidNode implements LocalServerComponent {
     private SimpleLogger logger = SeLionLogger.getLogger();
 
     @Override
-    public void startUp(WebDriverPlatform platform) {
+    public void boot(WebDriverPlatform platform) {
         logger.entering(platform);
         if (isRunning) {
             logger.exiting();

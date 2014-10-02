@@ -38,7 +38,7 @@ public class GridTest {
         String origTimeout = Config.getConfigProperty(ConfigProperty.EXECUTION_TIMEOUT);
         try {
             Config.setConfigProperty(ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            assertEquals(Grid.getNewTimeOut(), 20000l, "Verify the timeout value is correctly retrieved");
+            assertEquals(Grid.getExecutionTimeoutValue(), 20000l, "Verify the timeout value is correctly retrieved");
         } finally {
             Config.setConfigProperty(ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }

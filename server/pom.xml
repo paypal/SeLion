@@ -95,6 +95,11 @@
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-grid-plugin</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.selendroid</groupId>
+            <artifactId>selendroid-common</artifactId>
+            <version>${selendroid.version}</version>
+        </dependency>
         <!-- This dependency brings in IOSCapabilitiesMatcher -->
         <dependency>
             <groupId>org.uiautomation</groupId>

@@ -40,10 +40,9 @@ public class SeLionRemoteSelendroidDriver extends SelendroidDriver {
      *            function
      * @param capabilities
      *            driver capabilities of type {@link Capabilities}
-     * @throws Exception
+     * @throws Exception 
      */
-    public SeLionRemoteSelendroidDriver(RemoteWebDriver driver, Capabilities capabilities)
-            throws Exception {
+    public SeLionRemoteSelendroidDriver(RemoteWebDriver driver, Capabilities capabilities) throws Exception {
         super(((HttpCommandExecutor) driver.getCommandExecutor()).getAddressOfRemoteServer(), null);
         setCommandExecutor(new HttpCommandExecutor(
                 ((HttpCommandExecutor) driver.getCommandExecutor()).getAddressOfRemoteServer()));
@@ -64,9 +63,11 @@ public class SeLionRemoteSelendroidDriver extends SelendroidDriver {
     
     @Override
     protected void startClient() {
+        //intentionally left blank to override base class implementation
     }
 
     @Override
     protected void startSession(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+        //intentionally left blank to override base class implementation
     }
 }

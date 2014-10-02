@@ -13,30 +13,20 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.grid.browsercapabilities;
+package com.paypal.selion.configuration;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.uiautomation.ios.IOSCapabilities;
-import org.uiautomation.ios.communication.device.DeviceType;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
-/**
- * @deprecated dead code. todo - refactor GenericCapabilitiesBuilder so this is used
- */
-class IOSCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
-    private DeviceType deviceType;
+import com.paypal.selion.configuration.SeLionBuildInfo.SeLionBuildProperty;
 
-    public IOSCapabilitiesBuilder(DeviceType deviceType) {
-        this.deviceType = deviceType;
-    }
-
-    @Override
-    public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-        if (deviceType == DeviceType.ipad) {
-            return IOSCapabilities.ipad("Safari");
-        } else if (deviceType == DeviceType.iphone) {
-            return IOSCapabilities.iphone("Safari");
-        } else {
-            throw new IllegalArgumentException("Safari is supported either on an iPhone or an iPad.");
+public class SeLionBuildInfoTest {
+    @Test
+    public void testBuildInfoIsPresent() {
+        for (SeLionBuildInfo.SeLionBuildProperty prop : SeLionBuildProperty.values()) {
+            assertNotEquals(SeLionBuildInfo.getBuildValue(prop), prop.getFallBackValue(),
+                    "failed for " + prop.getPropertyValue());
         }
     }
+
 }

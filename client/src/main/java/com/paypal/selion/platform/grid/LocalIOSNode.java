@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import org.openqa.grid.common.exception.GridException;
 import org.uiautomation.ios.IOSServer;
 import org.uiautomation.ios.IOSServerConfiguration;
-import org.uiautomation.ios.grid.IOSRemoteProxy;
+import org.uiautomation.ios.grid.IOSMutableRemoteProxy;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -63,7 +63,7 @@ class LocalIOSNode implements LocalServerComponent {
         }
     }
 
-    public void startUp(WebDriverPlatform platform) {
+    public void boot(WebDriverPlatform platform) {
         logger.entering(platform);
         if (isRunning) {
             logger.exiting();
@@ -152,7 +152,7 @@ class LocalIOSNode implements LocalServerComponent {
         logger.entering(port);
         List<String> args = new ArrayList<String>();
         args.add(" -hub ");
-        args.add(" http://localhost:" + Config.getIntConfigProperty(ConfigProperty.SELENIUM_PORT) + "/grid/register");
+        args.add(" http://127.0.0.1:" + Config.getIntConfigProperty(ConfigProperty.SELENIUM_PORT) + "/grid/register");
         args.add(" -port ");
         args.add(Integer.toString(port));
         String autFolder = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
@@ -161,9 +161,9 @@ class LocalIOSNode implements LocalServerComponent {
             args.add(autFolder);
         }
         args.add(" -proxy ");
-        args.add(IOSRemoteProxy.class.getCanonicalName());
+        args.add(IOSMutableRemoteProxy.class.getCanonicalName());
         args.add(" -host ");
-        args.add(" localhost ");
+        args.add(" 127.0.0.1 ");
         Handler[] handlers = Logger.getLogger("").getHandlers();
         Level level = Logger.getLogger("").getLevel();
 
