@@ -599,7 +599,59 @@ public final class Config {
          * Force Reinstall the Selendroid Server and AUT.<br>
          * Default is set to <b>false</b>
          */
-        SELENDROID_SERVER_FORCE_REINSTALL("selendroidServerForceReinstall" ,"false", true);
+        SELENDROID_SERVER_FORCE_REINSTALL("selendroidServerForceReinstall" ,"false", true),
+
+        /**
+         * Maximum duration of a session duration in milliseconds. Session will be forcefully terminated if it takes
+         * longer.<br>
+         * The value of this parameter is used as the value of <b>sessionTimeout</b> for ios-driver and selendroid.<br>
+         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
+         * is set to true.<br>
+         * The unit is milliseconds.<br>
+         * Default is set to <b>1800000</b> milliseconds.
+         */
+        MOBILE_DRIVER_SESSION_TIMEOUT("sessionTimeout", "1800000", false),
+
+        /**
+         * Time the server component of mobile drivers will wait for application to launch before assuming it has
+         * crashed. You may increase the value if your application is slow to start.<br>
+         * The value of this parameter is used as the value of <b>newSessionTimeoutSecs</b> for ios-driver.<br>
+         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
+         * is set to true.<br>
+         * The unit is milliseconds.<br>
+         * Default is set to <b>20000</b> milliseconds.<br>
+         */
+        IOSDRIVER_NEWSESSION_TIMEOUT("newSessionTimeout", "20000", false),
+
+        /**
+         * Maximum time interval in milliseconds between consecutive commands in a single session. Session will be
+         * forcefully terminated if a command is received beyond this time limit.<br>
+         * The value of this parameter is used as the value of <b>maxIdleBetweenCommands</b> for ios-driver.<br>This
+         * configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY} is set
+         * to true.<br>The unit is milliseconds.<br>
+         * Default is set to <b>60000</b> milliseconds.<br>
+         */
+        IOSDRIVER_COMMAND_INTERVAL("maxIdleBetweenCommands", "60000", false),
+
+        /**
+         * Timeout that will be used to start Android emulators.<br>
+         * The value for this parameter is used as the value of <b>timeoutEmulatorStart</b> for selendroid.<br>
+         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
+         * is set to true.<br>
+         * The unit is milliseconds.<br>
+         * Default is set to <b>300000</b> milliseconds.<br>
+         */
+        SELENDROID_EMULATOR_START_TIMEOUT("timeoutEmulatorStart", "300000", false),
+
+        /**
+         * Maximum time in milliseconds to wait for the selendroid-server to come up on the device.<br>
+         * The value for this parameter is used as the value of <b>serverStartTimeout</b> for selendroid.<br>
+         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
+         * is set to true.<br>
+         * The unit is milliseconds.<br>
+         * Default is set to <b>20000</b> milliseconds.<br>
+         */
+        SELENDROID_SERVER_START_TIMEOUT("serverStartTimeout", "20000", false);
 
         private String name = null;
         private String defaultValue = null;

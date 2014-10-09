@@ -26,6 +26,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -185,6 +186,15 @@ public class LocalSelendroidNode implements LocalServerComponent {
             }
         }
 
+        String timeoutEmulatorStart = checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
+        args.add(" -timeoutEmulatorStart ");
+        args.add(timeoutEmulatorStart);
+        String serverStartTimeout = checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);
+        args.add(" -serverStartTimeout ");
+        args.add(serverStartTimeout);
+        String sessionTimeout = checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
+        args.add(" -sessionTimeout ");
+        args.add(sessionTimeout);
         args.add("-proxy");
         args.add(SelendroidSessionProxy.class.getCanonicalName());
         args.add("-host");
@@ -215,6 +225,54 @@ public class LocalSelendroidNode implements LocalServerComponent {
 
         server.launchSelendroid();
         logger.exiting();
+    }
+
+    private String checkAndValidateParameters(ConfigProperty configProperty) {
+
+        // Checks the presence of selendroid specific parameters provided by the user and validates them.
+        // IllegalArgumentException is thrown if the parameter is either insufficient or irrelevant. Throws a
+        // NullPointerException if the received configProperty is null.
+        logger.entering(configProperty);
+        String validatedValue = null;
+        switch (configProperty) {
+        case SELENDROID_SERVER_START_TIMEOUT:
+        case SELENDROID_EMULATOR_START_TIMEOUT:
+            try {
+
+                // Selendroid takes timeoutEmulatorStart/serverStartTimeout in milliseconds.
+                int receivedValue = Config.getIntConfigProperty(configProperty);
+                validatedValue = String.valueOf(receivedValue);
+            } catch (ConversionException exe) {
+                String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
+                        + ", probably not an integer for milliseconds.";
+                throw new IllegalArgumentException(errorMessage, exe);
+            }
+            break;
+        case MOBILE_DRIVER_SESSION_TIMEOUT:
+            try {
+
+                // Selendroid takes sessionTimeout in seconds.
+                int receivedValue = Config.getIntConfigProperty(configProperty) / 1000;
+                if (receivedValue == 0) {
+                    String errorMessage = "Insufficient value received for configuration property "
+                            + configProperty.getName() + ", probably value is less than 1000 milliseconds.";
+                    throw new IllegalArgumentException(errorMessage);
+                } else {
+                    validatedValue = String.valueOf(receivedValue);
+                }
+            } catch (ConversionException exe) {
+                String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
+                        + ", probably not an integer for milliseconds.";
+                throw new IllegalArgumentException(errorMessage, exe);
+            }
+            break;
+        default:
+            throw new IllegalArgumentException(
+                    "Invalid selendroid configuration received for validation, configuration property = "
+                            + configProperty.getName());
+        }
+        logger.exiting(validatedValue);
+        return validatedValue;
     }
 
 }

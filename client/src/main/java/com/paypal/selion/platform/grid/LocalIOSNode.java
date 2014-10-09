@@ -25,6 +25,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -160,6 +161,15 @@ class LocalIOSNode implements LocalServerComponent {
             args.add(" -folder ");
             args.add(autFolder);
         }
+        String newSessionTimeoutSec = checkAndValidateParameters(ConfigProperty.IOSDRIVER_NEWSESSION_TIMEOUT);
+        args.add(" -newSessionTimeoutSec ");
+        args.add(newSessionTimeoutSec);
+        String sessionTimeout = checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
+        args.add(" -sessionTimeout ");
+        args.add(sessionTimeout);
+        String maxIdleBetweenCommands = checkAndValidateParameters(ConfigProperty.IOSDRIVER_COMMAND_INTERVAL);
+        args.add(" -maxIdleBetweenCommands ");
+        args.add(maxIdleBetweenCommands);
         args.add(" -proxy ");
         args.add(IOSMutableRemoteProxy.class.getCanonicalName());
         args.add(" -host ");
@@ -184,6 +194,41 @@ class LocalIOSNode implements LocalServerComponent {
 
         server.start();
         logger.exiting();
+    }
+
+    private String checkAndValidateParameters(ConfigProperty configProperty) {
+
+        // Checks the presence of ios-driver specific parameters provided by the user and validates them.
+        // IllegalArgumentException is thrown if the parameter is either insufficient or irrelevant. Throws a
+        // NullPointerException if the received configProperty is null.
+        logger.entering(configProperty);
+        String validatedValue = null;
+        switch (configProperty) {
+        case IOSDRIVER_NEWSESSION_TIMEOUT:
+        case MOBILE_DRIVER_SESSION_TIMEOUT:
+        case IOSDRIVER_COMMAND_INTERVAL:
+            try {
+                int receivedValue = Config.getIntConfigProperty(configProperty) / 1000;
+                if (receivedValue == 0) {
+                    String errorMessage = "Insufficient value received for configuration property "
+                            + configProperty.getName() + ", probably value is less than 1000 milliseconds.";
+                    throw new IllegalArgumentException(errorMessage);
+                } else {
+                    validatedValue = String.valueOf(receivedValue);
+                }
+            } catch (ConversionException exe) {
+                String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
+                        + ", probably not an integer for milliseconds.";
+                throw new IllegalArgumentException(errorMessage, exe);
+            }
+            break;
+        default:
+            throw new IllegalArgumentException(
+                    "Invalid ios-server configuration received for validation, configuration property = "
+                            + configProperty.getName());
+        }
+        logger.exiting(validatedValue);
+        return validatedValue;
     }
 
 }
