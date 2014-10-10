@@ -38,6 +38,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.reports.reporter.html.ReporterException;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
@@ -69,10 +71,11 @@ public class RuntimeReporterHelper {
         runningTest = new ArrayList<TestMethodDetails>();
         runningConfig = new ArrayList<ConfigMethodDetails>();
         try {
-            completedTest = File.createTempFile("selion", "RuntimeReporterCompletedTest");
+            File workingDir = new File(Config.getConfigProperty(ConfigProperty.WORK_DIR));
+            workingDir.mkdir();
+            completedTest = File.createTempFile("selion", "RuntimeReporterCompletedTest", workingDir);
             completedTest.deleteOnExit();
-
-            completedConfig = File.createTempFile("selion", "RuntimeReporterCompletedConfig");
+            completedConfig = File.createTempFile("selion", "RuntimeReporterCompletedConfig", workingDir);
             completedConfig.deleteOnExit();
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
