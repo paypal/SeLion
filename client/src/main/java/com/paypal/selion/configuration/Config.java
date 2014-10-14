@@ -32,6 +32,7 @@ import org.testng.ITestContext;
 
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
+import com.paypal.selion.platform.html.support.events.ElementEventListener;
 
 /**
  * A configuration object that contains properties needed throughout SeLion. These options can be configured via the
@@ -482,13 +483,11 @@ public final class Config {
         SELENIUM_NATIVE_APP_LOCALE("appLocale", "en_US", false),
         
         /**
-         * Use this parameter to provide SeLion with a custom listener which can be plugged into
-         * {@link EventFiringWebDriver}. If the fully qualified class implements {@link WebDriverEventListener} then
-         * SeLion will invoke the custom implementation provided by you via your implementation as and when the
-         * relevant events happen. If more than one custom listeners are to be provided please separate the fully
-         * qualified class names with commas.
+         * Use this parameter to provide SeLion with a custom element listener that implements 
+         * {@link ElementEventListener}. SeLion will invoke the custom implementation when the relevant events happen. 
+         * If more than one custom listeners is needed, please separate the fully qualified class names with commas.
          */
-        SELION_ELEMENT_EVENT_LISTENER("seLionElementEventListener","",true),
+        ELEMENT_EVENT_LISTENER("elementEventListener","",true),
 
         /**
          * This parameter is used to pass SauceLabs user name

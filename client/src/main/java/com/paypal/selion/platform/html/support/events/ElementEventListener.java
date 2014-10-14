@@ -15,6 +15,7 @@
 
 package com.paypal.selion.platform.html.support.events;
 
+import com.paypal.selion.platform.html.AbstractElement;
 import com.paypal.selion.platform.html.Button;
 import com.paypal.selion.platform.html.CheckBox;
 import com.paypal.selion.platform.html.DatePicker;
@@ -27,10 +28,14 @@ import com.paypal.selion.platform.html.SelectList;
 import com.paypal.selion.platform.html.Table;
 import com.paypal.selion.platform.html.TextField;
 
-public interface SeLionElementEventListener {
+/**
+ * Events which can occur in SeLion's {@link AbstractElement} implementations. This interface allows you to hook into
+ * those events to do customization.
+ */
+public interface ElementEventListener {
 
     /**
-     * This event gets triggered before we perform a click on a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we perform a click on an element. The following objects trigger this event,
      * {@link Button}, {@link CheckBox}, {@link DatePicker}, {@link Form}, {@link Image}, {@link Label}, {@link Link},
      * {@link RadioButton}, {@link SelectList}, {@link Table}, {@link TextField}
      * 
@@ -40,7 +45,7 @@ public interface SeLionElementEventListener {
     void beforeClick(Clickable target, Object... expected);
 
     /**
-     * This event gets triggered after we perform a click on a SeLionElement The following objects trigger this event,
+     * This event gets triggered after we perform a click on an element. The following objects trigger this event,
      * {@link Button}, {@link CheckBox}, {@link DatePicker}, {@link Form}, {@link Image}, {@link Label}, {@link Link},
      * {@link RadioButton}, {@link SelectList}, {@link Table}, {@link TextField}
      * 
@@ -50,7 +55,7 @@ public interface SeLionElementEventListener {
     void afterClick(Clickable target, Object... expected);
     
     /**
-     * This event gets triggered before we start typing in a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we start typing in an element. The following objects trigger this event,
      * {@link TextField}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Typeable}
@@ -59,7 +64,7 @@ public interface SeLionElementEventListener {
     void beforeType(Typeable target, String value);
     
     /**
-     * This event gets triggered after we start typing in a SeLionElement The following objects trigger this event,
+     * This event gets triggered after we start typing in an element. The following objects trigger this event,
      * {@link TextField}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Typeable}
@@ -68,7 +73,7 @@ public interface SeLionElementEventListener {
     void afterType(Typeable target, String value);
 
     /**
-     * This event gets triggered before we check a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we check an element. The following objects trigger this event,
      * {@link CheckBox}, {@link RadioButton}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Checkable}
@@ -77,7 +82,7 @@ public interface SeLionElementEventListener {
     void beforeCheck(Checkable target, String expected);
     
     /**
-     * This event gets triggered before we check a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we check an element. The following objects trigger this event,
      * {@link CheckBox}, {@link RadioButton}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Checkable}
@@ -86,7 +91,7 @@ public interface SeLionElementEventListener {
     void afterCheck(Checkable target, String expected);
 
     /**
-     * This event gets triggered before we check a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we check an element. The following objects trigger this event,
      * {@link CheckBox}, {@link RadioButton}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Checkable}
@@ -94,7 +99,7 @@ public interface SeLionElementEventListener {
     void beforeCheck(Checkable target);
     
     /**
-     * This event gets triggered after we check a SeLionElement The following objects trigger this event,
+     * This event gets triggered after we check an element. The following objects trigger this event,
      * {@link CheckBox}, {@link RadioButton}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Checkable}
@@ -102,7 +107,7 @@ public interface SeLionElementEventListener {
     void afterCheck(Checkable target);
     
     /**
-     * This event gets triggered before we uncheck a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we uncheck an element. The following objects trigger this event,
      * {@link CheckBox}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Uncheckable}
@@ -111,7 +116,7 @@ public interface SeLionElementEventListener {
     void beforeUncheck(Uncheckable target, String expected);
     
     /**
-     * This event gets triggered after we uncheck a SeLionElement The following objects trigger this event,
+     * This event gets triggered after we uncheck an element. The following objects trigger this event,
      * {@link CheckBox}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Uncheckable}
@@ -120,7 +125,7 @@ public interface SeLionElementEventListener {
     void afterUncheck(Uncheckable target, String expected);
     
     /**
-     * This event gets triggered before we uncheck a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we uncheck an element. The following objects trigger this event,
      * {@link CheckBox}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Uncheckable}
@@ -128,7 +133,7 @@ public interface SeLionElementEventListener {
     void beforeUncheck(Uncheckable target);
     
     /**
-     * This event gets triggered after we uncheck a SeLionElement The following objects trigger this event,
+     * This event gets triggered after we uncheck an element. The following objects trigger this event,
      * {@link CheckBox}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Uncheckable}
@@ -136,7 +141,7 @@ public interface SeLionElementEventListener {
     void afterUncheck(Uncheckable target);
     
     /**
-     * This event gets triggered before we submit a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we submit an element. The following objects trigger this event,
      * {@link Form}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Submitable}
@@ -144,7 +149,7 @@ public interface SeLionElementEventListener {
     void beforeSubmit(Submitable target);
     
     /**
-     * This event gets triggered after we submit a SeLionElement The following objects trigger this event,
+     * This event gets triggered after we submit an element. The following objects trigger this event,
      * {@link Form}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Submitable}
@@ -152,7 +157,7 @@ public interface SeLionElementEventListener {
     void afterSubmit(Submitable target);
     
     /**
-     * This event gets triggered before we select a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we select a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -161,7 +166,7 @@ public interface SeLionElementEventListener {
     void beforeSelect(Selectable target, int index);
     
     /**
-     * This event gets triggered after select a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered after select a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -170,7 +175,7 @@ public interface SeLionElementEventListener {
     void afterSelect(Selectable target, int index);
     
     /**
-     * This event gets triggered before we select a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we select a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -179,7 +184,7 @@ public interface SeLionElementEventListener {
     void beforeSelect(Selectable target, String value);
     
     /**
-     * This event gets triggered after select a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered after select a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -188,7 +193,7 @@ public interface SeLionElementEventListener {
     void afterSelect(Selectable target, String value);
     
     /**
-     * This event gets triggered before we deselect a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we deselect a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -197,7 +202,7 @@ public interface SeLionElementEventListener {
     void beforeDeselect(Deselectable target, int index);
     
     /**
-     * This event gets triggered after deselect a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered after deselect a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -206,7 +211,7 @@ public interface SeLionElementEventListener {
     void afterDeselect(Deselectable target, int index);
     
     /**
-     * This event gets triggered before we deselect a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we deselect a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -215,7 +220,7 @@ public interface SeLionElementEventListener {
     void beforeDeselect(Deselectable target, String value);
     
     /**
-     * This event gets triggered after deselect a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered after deselect a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -224,7 +229,7 @@ public interface SeLionElementEventListener {
     void afterDeselect(Deselectable target, String value);
     
     /**
-     * This event gets triggered before we deselect a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered before we deselect a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
@@ -232,7 +237,7 @@ public interface SeLionElementEventListener {
     void beforeDeselect(Deselectable target);
     
     /**
-     * This event gets triggered after deselect a option in a SeLionElement The following objects trigger this event,
+     * This event gets triggered after deselect a option in an element. The following objects trigger this event,
      * {@link SelectList}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Selectable}

@@ -27,8 +27,7 @@ import com.paypal.selion.platform.html.support.ParentNotFoundException;
 import com.paypal.selion.testcomponents.BasicPageImpl;
 
 /**
- * This abstract class is meant to be extended to create a web element Container wrapper for handling infrastructure
- * testing technology. <br>
+ * This abstract class is meant to be extended to create a web element Container wrapper<br>
  * <br>
  * <p>
  * <table border=1>
@@ -37,7 +36,7 @@ import com.paypal.selion.testcomponents.BasicPageImpl;
  * <th>Usage</th>
  * </thead> <tbody>
  * <tr>
- * <td><b><i> A Stand alone container</b></i>
+ * <td><b><i> A stand alone container</b></i>
  * 
  * <pre>
  * class MyContainer extends AbstractContainer {

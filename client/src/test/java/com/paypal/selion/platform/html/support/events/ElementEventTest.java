@@ -27,7 +27,7 @@ import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.testcomponents.paypal.TestPage;
 
-public class SeLionElementEventTest {
+public class ElementEventTest {
     
     @Test(groups = { "functional" })
     @WebTest
@@ -38,7 +38,7 @@ public class SeLionElementEventTest {
         driver.executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new SeLionElementListenerTestImpl());
+        Grid.driver().register(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -56,7 +56,7 @@ public class SeLionElementEventTest {
         driver.executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new SeLionElementListenerTestImpl());
+        Grid.driver().register(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -74,7 +74,7 @@ public class SeLionElementEventTest {
         driver.executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new SeLionElementListenerTestImpl());
+        Grid.driver().register(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -95,7 +95,7 @@ public class SeLionElementEventTest {
         driver.executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new SeLionElementListenerTestImpl());
+        Grid.driver().register(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 

@@ -19,7 +19,7 @@ import com.paypal.selion.platform.html.AbstractElement;
 import com.paypal.selion.testcomponents.paypal.TestPage;
 
 
-public class SeLionElementListenerTestImpl implements SeLionElementEventListener {
+public class ElementListenerTestImpl implements ElementEventListener {
 
     @Override
     public void beforeClick(Clickable target, Object... expected) {

@@ -46,7 +46,7 @@ import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.html.support.ParentNotFoundException;
 import com.paypal.selion.platform.html.support.events.Clickable;
-import com.paypal.selion.platform.html.support.events.SeLionElementEventListener;
+import com.paypal.selion.platform.html.support.events.ElementEventListener;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.selion.reports.runtime.WebReporter;
 import com.paypal.selion.testcomponents.BasicPageImpl;
@@ -65,13 +65,13 @@ public abstract class AbstractElement implements Clickable {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
     
-    protected final SeLionElementEventListener dispatcher = (SeLionElementEventListener) Proxy.newProxyInstance(
-            SeLionElementEventListener.class.getClassLoader(), new Class[] { SeLionElementEventListener.class },
+    protected final ElementEventListener dispatcher = (ElementEventListener) Proxy.newProxyInstance(
+            ElementEventListener.class.getClassLoader(), new Class[] { ElementEventListener.class },
             new InvocationHandler() {
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                     try {
-                        List<SeLionElementEventListener> eventListeners = Grid.getTestSession().getListeners();
-                        for (SeLionElementEventListener eventListener : eventListeners) {
+                        List<ElementEventListener> eventListeners = Grid.getTestSession().getElementEventListeners();
+                        for (ElementEventListener eventListener : eventListeners) {
                             method.invoke(eventListener, args);
                         }
                         return null;

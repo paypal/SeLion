@@ -30,7 +30,7 @@ import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.grid.SauceLabsHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.html.support.events.SeLionElementEventListener;
+import com.paypal.selion.platform.html.support.events.ElementEventListener;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -47,7 +47,7 @@ public abstract class AbstractTestSession {
     protected static SimpleLogger logger = SeLionLogger.getLogger();
     private boolean handlesSessions = false;
     protected String xmlTestName = "";
-    protected List<SeLionElementEventListener> listeners = new ArrayList<SeLionElementEventListener>();
+    protected List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
 
 
     public final boolean handleSessions() {
@@ -239,9 +239,9 @@ public abstract class AbstractTestSession {
     }
     
     /**
-     * @return the SeLionEvent listeners
+     * @return a {@link List} of {@link ElementEventListener}s attached to the test session.
      */
-    public final List<SeLionElementEventListener> getListeners() {
+    public final List<ElementEventListener> getElementEventListeners() {
         return this.listeners;
     }
 

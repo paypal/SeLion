@@ -15,7 +15,11 @@
 
 package com.paypal.selion.platform.html.support.events;
 
-public class AbstractSeLionElementEventListener implements SeLionElementEventListener {
+/**
+ * Use this class as base class, if you want to implement a {@link ElementEventListener} and are
+ * only interested in some events. All methods provided by this class have an empty method body.
+ */
+public abstract class AbstractElementEventListener implements ElementEventListener {
 
     @Override
     public void beforeClick(Clickable target, Object... expected) {

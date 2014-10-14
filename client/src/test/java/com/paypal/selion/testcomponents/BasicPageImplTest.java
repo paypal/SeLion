@@ -26,9 +26,7 @@ import org.testng.annotations.Test;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.asserts.SeLionAsserts;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.platform.html.Button;
 import com.paypal.selion.platform.html.Container;
-import com.paypal.selion.platform.html.TextField;
 import com.paypal.selion.testcomponents.BasicPageImpl;
 import com.paypal.selion.testcomponents.paypal.TestPage;
 
