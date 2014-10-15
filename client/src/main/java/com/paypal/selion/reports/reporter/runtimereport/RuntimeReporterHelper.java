@@ -73,9 +73,9 @@ public class RuntimeReporterHelper {
         try {
             File workingDir = new File(Config.getConfigProperty(ConfigProperty.WORK_DIR));
             workingDir.mkdirs();
-            completedTest = File.createTempFile("selion", "RuntimeReporterCompletedTest", workingDir);
+            completedTest = File.createTempFile("selion-rrct", null, workingDir);
             completedTest.deleteOnExit();
-            completedConfig = File.createTempFile("selion", "RuntimeReporterCompletedConfig", workingDir);
+            completedConfig = File.createTempFile("selion-rrcf", null, workingDir);
             completedConfig.deleteOnExit();
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
