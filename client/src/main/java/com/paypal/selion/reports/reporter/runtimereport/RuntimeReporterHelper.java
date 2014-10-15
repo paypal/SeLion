@@ -48,7 +48,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * RuntimeReportHelper will provide methods to create html file which contains information about list of test methods
  * and configuration methods executed and there corresponding status.
- * 
+ *
  */
 public class RuntimeReporterHelper {
 
@@ -72,7 +72,7 @@ public class RuntimeReporterHelper {
         runningConfig = new ArrayList<ConfigMethodDetails>();
         try {
             File workingDir = new File(Config.getConfigProperty(ConfigProperty.WORK_DIR));
-            workingDir.mkdir();
+            workingDir.mkdirs();
             completedTest = File.createTempFile("selion", "RuntimeReporterCompletedTest", workingDir);
             completedTest.deleteOnExit();
             completedConfig = File.createTempFile("selion", "RuntimeReporterCompletedConfig", workingDir);
@@ -84,7 +84,7 @@ public class RuntimeReporterHelper {
 
     /**
      * This method returns the running test method details as javascript array
-     * 
+     *
      * @return testmethod details as javascript array
      */
     public StringBuilder getRunningTestMethodDetails() {
@@ -105,7 +105,7 @@ public class RuntimeReporterHelper {
 
     /**
      * This method returns the running config method details as javascript array
-     * 
+     *
      * @return configmethod details as javascript array
      */
     public StringBuilder getRunningConfigMethodDetails() {
@@ -124,7 +124,7 @@ public class RuntimeReporterHelper {
     /**
      * This method will generate html tags to create tree view from the list of Suites, Tests, Packages and Class
      * executed
-     * 
+     *
      * @return html tags used to create tree view.
      */
     public String generateTreeView() {
@@ -223,7 +223,7 @@ public class RuntimeReporterHelper {
 
     /**
      * This method will generate test local configuration summary in html format to render as table
-     * 
+     *
      * @param testName
      */
     public void generateLocalConfigSummary(String testName) {
@@ -245,10 +245,10 @@ public class RuntimeReporterHelper {
         this.testLocalConfigSummary.put(testName, localConfigSummary.toString());
         logger.exiting();
     }
-    
+
     /**
      * This method is used to insert test method details based on the methods suite, test, groups and class name.
-     * 
+     *
      * @param suite
      *            - suite name of the test method.
      * @param test
@@ -308,7 +308,7 @@ public class RuntimeReporterHelper {
 
     /**
      * This method is used to insert configuration method details based on the suite, test, groups and class name.
-     * 
+     *
      * @param suite
      *            - suite name of the configuration method.
      * @param test
@@ -441,7 +441,7 @@ public class RuntimeReporterHelper {
 
     /**
      * Used to get element of tag "type" from the parent element.
-     * 
+     *
      * @param parent
      *            - parent element whose descendants are searched.
      * @param type
@@ -467,7 +467,7 @@ public class RuntimeReporterHelper {
 
     /**
      * Creates an element and add it as child to a parent element with tag as type
-     * 
+     *
      * @param parent
      *            - parent Element.
      * @param type
@@ -538,7 +538,7 @@ public class RuntimeReporterHelper {
                     mapString.append(";");
                     if (!this.testLocalConfigSummary.isEmpty()) {
                         writer.write(mapString.toString());
-                        writer.newLine(); 
+                        writer.newLine();
                     }
                 } else {
                     writer.write(temp);
@@ -577,7 +577,7 @@ public class RuntimeReporterHelper {
         tempReader.close();
 
     }
-    
+
     private String getTestLocalConfigAsJsonString() throws JSONException {
         JSONObject json = new JSONObject();
         for (Entry<String, String> temp : testLocalConfigSummary.entrySet()) {
