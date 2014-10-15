@@ -56,20 +56,17 @@ public abstract class AbstractProcessHandler {
             if (eachProcessData != null && eachProcessData.length >= 2) {
                 ProcessInfo tProcess = null;
                 switch (platform) {
-                case NON_WINDOWS:
+                case NONWINDOWS:
                     // In the output process name comes second
                     tProcess = new ProcessInfo(eachProcessData[1], eachProcessData[0]);
                     break;
-                case WINDOWS:
+                default:
                     // In the output process name comes first.
                     tProcess = new ProcessInfo(eachProcessData[0], eachProcessData[1]);
-                    break;
-                default:
                     break;
                 }
                 if (matches(tProcess.getProcessName())) {
                     processToBeKilled.add(tProcess);
-                    break;
                 }
 
             }
@@ -82,7 +79,7 @@ public abstract class AbstractProcessHandler {
             for (ProcessInfo eachProcess : process) {
                 log.info("Killing process : " + eachProcess);
                 String[] cmd = Arrays.copyOf(killCommand, killCommand.length + 1);
-                cmd[cmd.length] = eachProcess.getProcessId();
+                cmd[cmd.length-1] = eachProcess.getProcessId();
                 Process output = Runtime.getRuntime().exec(cmd);
                 int returnCode = output.waitFor();
                 if (returnCode != 0) {

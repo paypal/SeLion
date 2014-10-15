@@ -45,10 +45,10 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
         // The tail command is basically being used here to get rid of the column headers from the output
         // of ps command and the awk column basically prints the pid and command columns delimited by the
         // delimiter <#>
-        String cmd = String.format("ps -e -w -u %s -o pid,command | tail -n +2 | awk '{ print $1\"%s\"$2 }'",
+        String cmd = String.format("ps -e -w -u %s -o pid,command | tail -n +2 | awk '{ print $1\"%s\"$2\" \"$3\" \"$4 }'",
                 currentUser, DELIMITER);
         try {
-            return getProcessInfo(new String[] { "sh", "-c", cmd }, DELIMITER, OSPlatform.NON_WINDOWS);
+            return getProcessInfo(new String[] { "sh", "-c", cmd }, DELIMITER, OSPlatform.NONWINDOWS);
         } catch (IOException | InterruptedException e) {
             throw new ProcessHandlerException(e);
         }

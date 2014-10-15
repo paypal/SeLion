@@ -6,6 +6,9 @@ import java.util.Properties;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.openqa.selenium.Platform;
+
+import com.google.common.base.Preconditions;
 
 /**
  * A Pojo class to hold the details of the artifacts that needs to be downloaded
@@ -16,18 +19,38 @@ public class ArtifactDetails {
     public static final String CHROME_KEY = "chrome";
     public static final String PHANTOM_KEY = "phantom";
     public static final String EXPLORER_KEY = "explorer";
+    public static final String CHROME_LINUX_KEY = "chrome_linux";
+    public static final String CHROME_MAC_KEY = "chrome_mac";
+    public static final String PHANTOM_LINUX_KEY = "phantom_linux";
+    public static final String PHANTOM_MAC_KEY = "phantom_mac";
     private Map<String, URLChecksumEntity> entities = new HashMap<>();
 
     public ArtifactDetails(Map<String, String> request) {
-        if (request == null || request.isEmpty()) {
-            throw new IllegalStateException("Request Map cannot be null (or) empty.");
+        entities.put(SELENIUM_KEY, getEntityFromRqst(PropsKeys.SELENIUM_URL, PropsKeys.SELENIUM_CHECKSUM, request));
+        switch (Platform.getCurrent()) {
+        case UNIX:
+        case LINUX: {
+            entities.put(CHROME_LINUX_KEY,
+                    getEntityFromRqst(PropsKeys.CHROME_LINUX_URL, PropsKeys.CHROME_LINUX_CHECKSUM, request));
+            entities.put(PHANTOM_LINUX_KEY,
+                    getEntityFromRqst(PropsKeys.PHANTOMJS_LINUX_URL, PropsKeys.PHANTOMJS_LINUX_CHECKSUM, request));
+            break;
         }
-        entities.put(SELENIUM_KEY, getEntityFromRqst(PropsKeys.SELENIUM_URL,PropsKeys.SELENIUM_CHECKSUM, request));
-        entities.put(CHROME_KEY, getEntityFromRqst(PropsKeys.CHROME_URL,PropsKeys.CHROME_CHECKSUM, request));
-        entities.put(EXPLORER_KEY, getEntityFromRqst(PropsKeys.IE_URL,PropsKeys.IE_CHECKSUM, request));
-        entities.put(PHANTOM_KEY, getEntityFromRqst(PropsKeys.PHANTOMJS_URL,PropsKeys.PHANTOMJS_CHECKSUM, request));
 
-        
+        case MAC: {
+            entities.put(CHROME_MAC_KEY,
+                    getEntityFromRqst(PropsKeys.CHROME_MAC_URL, PropsKeys.CHROME_MAC_CHECKSUM, request));
+            entities.put(PHANTOM_MAC_KEY,
+                    getEntityFromRqst(PropsKeys.PHANTOMJS_MAC_URL, PropsKeys.PHANTOMJS_MAC_CHECKSUM, request));
+            break;
+        }
+        default: {
+            entities.put(CHROME_KEY, getEntityFromRqst(PropsKeys.CHROME_URL, PropsKeys.CHROME_CHECKSUM, request));
+            entities.put(EXPLORER_KEY, getEntityFromRqst(PropsKeys.IE_URL, PropsKeys.IE_CHECKSUM, request));
+            entities.put(PHANTOM_KEY, getEntityFromRqst(PropsKeys.PHANTOMJS_URL, PropsKeys.PHANTOMJS_CHECKSUM, request));
+            break;
+        }
+        }
     }
     
     private URLChecksumEntity getEntityFromRqst(PropsKeys urlKey, PropsKeys checksumKey, Map<String, String> request) {
@@ -57,12 +80,24 @@ public class ArtifactDetails {
 
         entity = getEntityFromProp(PropsKeys.CHROME_URL, PropsKeys.CHROME_CHECKSUM, props);
         artifactDetailMap.put(CHROME_KEY, entity);
+        
+        entity = getEntityFromProp(PropsKeys.CHROME_LINUX_URL, PropsKeys.CHROME_LINUX_CHECKSUM, props);
+        artifactDetailMap.put(CHROME_LINUX_KEY, entity);
+        
+        entity = getEntityFromProp(PropsKeys.CHROME_MAC_URL, PropsKeys.CHROME_MAC_CHECKSUM, props);
+        artifactDetailMap.put(CHROME_MAC_KEY, entity);
 
         entity = getEntityFromProp(PropsKeys.IE_URL, PropsKeys.IE_CHECKSUM, props);
         artifactDetailMap.put(EXPLORER_KEY, entity);
 
         entity = getEntityFromProp(PropsKeys.PHANTOMJS_URL, PropsKeys.PHANTOMJS_CHECKSUM, props);
         artifactDetailMap.put(PHANTOM_KEY, entity);
+        
+        entity = getEntityFromProp(PropsKeys.PHANTOMJS_LINUX_URL, PropsKeys.PHANTOMJS_LINUX_CHECKSUM, props);
+        artifactDetailMap.put(PHANTOM_LINUX_KEY, entity);
+        
+        entity = getEntityFromProp(PropsKeys.PHANTOMJS_MAC_URL, PropsKeys.PHANTOMJS_MAC_CHECKSUM, props);
+        artifactDetailMap.put(PHANTOM_MAC_KEY, entity);
         return artifactDetailMap;
     }
 
@@ -73,6 +108,61 @@ public class ArtifactDetails {
      */
     public Map<String, URLChecksumEntity> getArtifactDetailsAsMap() {
         return new HashMap<>(this.entities);
+    }
+
+    /**
+     * Utility method to return the {@link ArtifactDetails} as a {@link Map} specific to {@link Platform}
+     * 
+     * @param platform
+     *            {@link Platform} mentioning the platform
+     * @param props
+     *            {@link Properties} containing the artifact details
+     * @return A {@link Map} containing the URL and CheckSum with Keys for the map from {@link PropsKeys}
+     */
+    public static Map<String, URLChecksumEntity> getArtifactDetailsForCurrentPlatform(Properties props) {
+        Preconditions.checkNotNull(props, "The Properties to get artifact details cannot be null");
+        Map<String, URLChecksumEntity> artifactDetailMap = new HashMap<>();
+
+        URLChecksumEntity entity = getEntityFromProp(PropsKeys.SELENIUM_URL, PropsKeys.SELENIUM_CHECKSUM, props);
+        artifactDetailMap.put(SELENIUM_KEY, entity);
+
+        switch (Platform.getCurrent()) {
+        case UNIX:
+        case LINUX: {
+
+            entity = getEntityFromProp(PropsKeys.CHROME_LINUX_URL, PropsKeys.CHROME_LINUX_CHECKSUM, props);
+            artifactDetailMap.put(CHROME_LINUX_KEY, entity);
+
+            entity = getEntityFromProp(PropsKeys.PHANTOMJS_LINUX_URL, PropsKeys.PHANTOMJS_LINUX_CHECKSUM, props);
+            artifactDetailMap.put(PHANTOM_LINUX_KEY, entity);
+
+            break;
+        }
+        case MAC: {
+
+            entity = getEntityFromProp(PropsKeys.CHROME_MAC_URL, PropsKeys.CHROME_MAC_CHECKSUM, props);
+            artifactDetailMap.put(CHROME_MAC_KEY, entity);
+
+            entity = getEntityFromProp(PropsKeys.PHANTOMJS_MAC_URL, PropsKeys.PHANTOMJS_MAC_CHECKSUM, props);
+            artifactDetailMap.put(PHANTOM_MAC_KEY, entity);
+
+            break;
+        }
+        default: {
+            entity = getEntityFromProp(PropsKeys.CHROME_URL, PropsKeys.CHROME_CHECKSUM, props);
+            artifactDetailMap.put(CHROME_KEY, entity);
+
+            entity = getEntityFromProp(PropsKeys.PHANTOMJS_URL, PropsKeys.PHANTOMJS_CHECKSUM, props);
+            artifactDetailMap.put(PHANTOM_KEY, entity);
+
+            entity = getEntityFromProp(PropsKeys.IE_URL, PropsKeys.IE_CHECKSUM, props);
+            artifactDetailMap.put(EXPLORER_KEY, entity);
+
+            break;
+        }
+        }
+
+        return artifactDetailMap;
     }
 
     /**

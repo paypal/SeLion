@@ -13,23 +13,18 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.utils.process;
+package com.paypal.selion.utils;
 
+import org.testng.annotations.Test;
 
-/**
- * A simple enum that differentiates Operating systems for internal usage by
- * SeLion.
- * 
- */
-public enum OSPlatform {
-    /**
-     * Represents Windows Operating system [ all the sub flavors of windows viz., XP, Vista, windows 7 etc., are
-     * collectively represented by this value.
-     */
-    WINDOWS,
-    /**
-     * Represents non windows Operating systems such as OSX or other flavors of Unix.
-     */
-    NONWINDOWS;
+import com.paypal.selion.utils.FileDownloader;
 
+public class FileDownloaderTest {
+
+    @Test(expectedExceptions = { UnsupportedOperationException.class })
+    public void testUnsupportedFileType() {
+        // gz compression type is not supported.
+        String unsupportedFileURL = "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-i686.tar.gz";
+        FileDownloader.downloadFile(unsupportedFileURL, "123CEFRGxSdfnsfwefla");
+    }
 }

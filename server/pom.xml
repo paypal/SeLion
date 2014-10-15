@@ -105,5 +105,12 @@
             <groupId>org.uiautomation</groupId>
             <artifactId>ios-grid</artifactId>
         </dependency>
+        
+        <!--  This dependency is needed for extracting artifacts used by SeLion-Grid -->
+       <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.8.1</version>
+       </dependency>
     </dependencies>
 </project>

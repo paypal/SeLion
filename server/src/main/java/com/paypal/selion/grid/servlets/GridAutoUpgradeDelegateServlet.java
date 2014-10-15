@@ -187,10 +187,18 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
         writer.write("<script type='text/javascript' src='/grid/resources/form/view.js'></script>");
         writer.write("</head>");
         writer.write("<body id='main_body'>");
-        writer.write("<script>function validateForm(){if(document.getElementById('selenium_url').value==null||document.getElementById('selenium_url').value==''||document.getElementById('selenium_checksum').value==null||document.getElementById('selenium_checksum').value==''||document.getElementById('ie_url').value==null||document.getElementById('ie_url').value==''||document.getElementById('ie_checksum').value==null||document.getElementById('ie_checksum').value==''||document.getElementById('chrome_url').value==null||document.getElementById('chrome_url').value==''||document.getElementById('chrome_checksum').value==null||document.getElementById('chrome_checksum').value==''){alert('Fields cannot be empty: All Fields are required');return false;}");
+        writer.write("<script>function validateForm(){if(");
+        StringBuffer fieldNames = new StringBuffer();
+        for(PropsKeys eachKey : PropsKeys.getValuesForCurrentPlatform()){
+        	String fieldKey = eachKey.getKey();
+        	fieldNames.append("document.getElementById('").append(fieldKey).append("').value==null||document.getElementById('").append(fieldKey).append("').value==''||");
+        }
+        writer.write(fieldNames.toString().substring(0, fieldNames.length()-2));
+        writer.write("){alert('Fields cannot be empty: All Fields are required');return false;}");
         writer.write("var regExpr = '^[A-Za-z]+://[A-Za-z0-9-_]+\\\\.[A-Za-z0-9-_%&\\?\\/.=]+$\';");
+        //This needs to be appended as per the platforms
         StringBuffer urlPropertyNames = new StringBuffer();
-        for(PropsKeys eachKey : PropsKeys.values()){
+        for(PropsKeys eachKey : PropsKeys.getValuesForCurrentPlatform()){
             String currentKey = eachKey.getKey();
             if(currentKey.endsWith("url")){
                 urlPropertyNames.append("'").append(currentKey).append("',");
@@ -223,7 +231,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
 
         int labelIndex = 1;
         writer.write("<h3 align='center'>Enter Details below to download the artifacts</h3>");
-        for (PropsKeys eachKeys : PropsKeys.values()) {
+        for (PropsKeys eachKeys : PropsKeys.getValuesForCurrentPlatform()) {
             String currentName = eachKeys.getKey();
             if (labelIndex % 2 != 0) {
                 writer.write("<li class='section_break'></li>");

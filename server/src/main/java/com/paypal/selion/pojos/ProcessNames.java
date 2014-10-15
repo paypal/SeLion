@@ -15,6 +15,12 @@
 
 package com.paypal.selion.pojos;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.openqa.selenium.Platform;
+
 
 /**
  * This enum contains the list of processes that are of interest for the SeLion Grid.
@@ -27,7 +33,7 @@ public enum ProcessNames {
     FIREFOX("firefox.exe", "firefox"),
     CHROME("chrome.exe", "chrome"),
     CHROMEDRIVER("chromedriver.exe", "chromedriver"),
-    IEDRIVER("iedriverserver.exe", "iedriverserver"),
+    IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"),
     PHANTOMJS("phantomjs.exe", "phantomjs");
 
     private ProcessNames(String windowsImageName, String nonWindowsImageName){
@@ -43,6 +49,31 @@ public enum ProcessNames {
     public String getNonWindowsImageName() {
         return nonWindowsImageName;
     }
-    
+
+    /**
+     * Utility method to return the executable names for the specified platform.
+     * 
+     * @param platform
+     *            - The {@link Platform}
+     * @return {@link List} of {@link String} containing the executable file names.
+     */
+    public static List<String> getExecutableNames() {
+        List<String> executableName = new ArrayList<String>();
+        switch (Platform.getCurrent()) {
+        case MAC:
+        case UNIX:
+        case LINUX: {
+            Collections.addAll(executableName, ProcessNames.PHANTOMJS.getNonWindowsImageName(),
+                    ProcessNames.CHROMEDRIVER.getNonWindowsImageName());
+            break;
+        }
+        default: {
+            Collections.addAll(executableName, ProcessNames.PHANTOMJS.getWindowsImageName(),
+                    ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName());
+            break;
+        }
+        }
+        return executableName;
+    }
 
 }

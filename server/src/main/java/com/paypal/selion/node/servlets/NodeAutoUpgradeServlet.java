@@ -54,7 +54,7 @@ public class NodeAutoUpgradeServlet extends HttpServlet {
         Properties prop = new Properties();
         try {
             // set the properties value
-            for (PropsKeys eachKey : PropsKeys.values()) {
+            for (PropsKeys eachKey : PropsKeys.getValuesForCurrentPlatform()) {
                 String value = request.get(eachKey.getKey());
                 if (value != null) {
                     prop.setProperty(eachKey.getKey(), value.trim());

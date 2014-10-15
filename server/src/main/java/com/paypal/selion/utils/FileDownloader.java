@@ -15,8 +15,6 @@
 
 package com.paypal.selion.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,20 +23,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.openqa.selenium.Platform;
 
 import com.google.common.base.Preconditions;
 import com.paypal.selion.logging.SeLionGridLogger;
@@ -55,7 +52,8 @@ public final class FileDownloader {
     private static final Logger logger = SeLionGridLogger.getLogger();
     private static List<String> files = new ArrayList<String>();
     private static long lastModifiedTime = 0;
-
+    private static List<String> supportedTypes = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR, ArchiveStreamFactory.JAR, "bz2");
+    
     private FileDownloader() {
         // Utility class. Hide the constructor
     }
@@ -94,16 +92,17 @@ public final class FileDownloader {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new RuntimeException(e);
         }
-
-        Map<String, URLChecksumEntity> artifactDetails = ArtifactDetails.getArtifactDetailsAsMap(prop);
+        
+        logger.info("Current Platform:"+Platform.getCurrent());
+        Map<String, URLChecksumEntity> artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatform(prop);
+        
         for (Entry<String, URLChecksumEntity> artifact : artifactDetails.entrySet()) {
             URLChecksumEntity entity = artifact.getValue();
             String url = entity.getUrl().getValue();
             String checksum = entity.getChecksum().getValue();
             StringBuilder msg = new StringBuilder();
-            String key = capitalize(artifact.getKey());
-            msg.append("Initiating download for '").append(key).append("' ");
-            msg.append("artifacts from URL :").append(url).append("...");
+            msg.append("Downloading ").append(artifact.getKey());
+            msg.append(" artifacts from URL :").append(url).append("...");
             msg.append("[").append(checksum).append("] will be used for checksum validation.");
             logger.info(msg.toString());
             String result = null;
@@ -112,20 +111,12 @@ public final class FileDownloader {
                 logger.warning("Error downloading the file : " + url + ". Retrying....");
             }
             files.add(result);
-            if (!result.endsWith("jar")) {
-                // TODO: Again this is specific to windows , need to tweak for linux environment.
-                files.addAll(unZip(result));
+            if (!result.endsWith(".jar")) {
+                List<String> extractedFileList = FileExtractor.extractArchive(result);
+                files.addAll(extractedFileList);
             }
         }
-    }
-
-    private static String capitalize(String str) {
-        int strLen;
-        if (str == null || (strLen = str.length()) == 0) {
-            return str;
-        }
-        return new StringBuilder(strLen).append(Character.toTitleCase(str.charAt(0))).append(str.substring(1))
-                .toString();
+        logger.info("Files after download and extract:"+files.toString());
     }
 
     private static boolean checkLocalFile(String filename, String checksum, String algorithm) {
@@ -250,6 +241,8 @@ public final class FileDownloader {
                 "Invalid URL: Cannot be null or empty");
         Preconditions.checkArgument(checksum != null && !checksum.isEmpty(),
                 "Invalid CheckSum: Cannot be null or empty");
+        // Making sure only the files supported go through the download and extraction.
+        isValidFileType(artifactUrl);
         String algorithm = null;
         if (isValidSHA1(checksum)) {
             algorithm = "SHA1";
@@ -266,72 +259,14 @@ public final class FileDownloader {
     private static boolean isValidMD5(String s) {
         return s.matches("[a-fA-F0-9]{32}");
     }
-
-    /**
-     * This method is used to unzip the zip file.<br>
-     * <b>Note:</b> In WINDOWS environment , If the Zip file has more files along with .exe then only the .exe file will
-     * be extracted.
-     * 
-     * @param fileName
-     *            name of the zip file
-     * @return list of files that are unzipped.
-     */
-    public static List<String> unZip(String fileName) {
-        List<String> files = new ArrayList<String>();
-
-        ZipInputStream zin = null;
-        try {
-
-            byte[] data = new byte[1000];
-            int byteRead;
-            String entryName;
-
-            BufferedOutputStream bout = null;
-            zin = new ZipInputStream(new BufferedInputStream(new FileInputStream(fileName)));
-            ZipEntry entry;
-            while ((entry = zin.getNextEntry()) != null) {
-                byteRead = 0;
-                data = new byte[1000];
-                entryName = entry.getName();
-                // TODO: This is a solution specific to Windows environment. Need to explore options for Linux/Mac
-                // environments.
-                if (!entry.isDirectory() && entry.getName().endsWith("exe")) {
-                    // Create the parent folder if the entry has a parent to
-                    // tackle the FileNotFoundException
-                    File parentFile = new File(entry.getName()).getParentFile();
-                    if (parentFile != null) {
-                        // The parent folder must be created in order to extract the
-                        // file to that folder
-                        parentFile.mkdir();
-                        entryName = entryName.substring(entryName.lastIndexOf('/') + 1);
-                    }
-                    bout = new BufferedOutputStream(new FileOutputStream(entry.getName()), 1000);
-                    while ((byteRead = zin.read(data, 0, 1000)) != -1) {
-                        bout.write(data, 0, byteRead);
-                    }
-                    files.add(entryName);
-                    bout.flush();
-                    bout.close();
-
-                    if (parentFile != null) {
-                        // For any files that are extracted inside a folder the
-                        // .exe will be moved to Grid2 folder and the parent
-                        // folder will be deleted
-                        Files.move(FileSystems.getDefault().getPath(entry.getName()),
-                                FileSystems.getDefault().getPath(entryName), StandardCopyOption.REPLACE_EXISTING);
-                        parentFile.delete();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            try {
-                zin.close();
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-            }
+    
+    private static void isValidFileType(String url) {
+        //Obtaining only the file extension
+        String fileType = url.substring(url.lastIndexOf('.') + 1);
+        if (!supportedTypes.contains(fileType)) {
+            throw new UnsupportedOperationException("Unsupported file format: " + fileType+". Supported file types are .zip,.tar and bz2");
         }
-        return files;
     }
+    
 }
+

@@ -63,7 +63,7 @@ public final class ServletHelper {
      * @return - <code>true</code> if the map contains all the parameters represented by the keys in {@link PropsKeys}
      */
     public static boolean hasAllParameters(Map<String, String> request) {
-        for (PropsKeys eachProp : PropsKeys.values()) {
+        for (PropsKeys eachProp : PropsKeys.getValuesForCurrentPlatform()) {
             if (request.get(eachProp.getKey()) == null) {
                 return false;
             }
@@ -204,5 +204,5 @@ public final class ServletHelper {
         writer.write("<a>" + headerMessage + "</a>");
         writer.write("</h1>");
     }
-
+    
 }
