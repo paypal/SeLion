@@ -15,8 +15,10 @@
 
 package com.paypal.selion.platform.grid;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -28,6 +30,7 @@ import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.grid.SauceLabsHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.html.support.events.SeLionElementEventListener;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -44,6 +47,8 @@ public abstract class AbstractTestSession {
     protected static SimpleLogger logger = SeLionLogger.getLogger();
     private boolean handlesSessions = false;
     protected String xmlTestName = "";
+    protected List<SeLionElementEventListener> listeners = new ArrayList<SeLionElementEventListener>();
+
 
     public final boolean handleSessions() {
         return this.handlesSessions;
@@ -231,6 +236,13 @@ public abstract class AbstractTestSession {
      */
     public final String getXmlTestName() {
         return this.xmlTestName;
+    }
+    
+    /**
+     * @return the SeLionEvent listeners
+     */
+    public final List<SeLionElementEventListener> getListeners() {
+        return this.listeners;
     }
 
 }
