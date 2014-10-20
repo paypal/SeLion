@@ -190,9 +190,9 @@ public class LocalSelendroidNode implements LocalServerComponent {
         args.add("-host");
         args.add("127.0.0.1");
         
-        Boolean selendroid_force_reinstall = Config.getBoolConfigProperty(ConfigProperty.SELENDROID_SERVER_FORCE_REINSTALL);
+        Boolean selendroidForceReinstall = Config.getBoolConfigProperty(ConfigProperty.SELENDROID_SERVER_FORCE_REINSTALL);
         
-        if (selendroid_force_reinstall == true) {
+        if (selendroidForceReinstall == true) {
                   args.add("-forceReinstall");
         }
 
