@@ -189,6 +189,12 @@ public class LocalSelendroidNode implements LocalServerComponent {
         args.add(SelendroidSessionProxy.class.getCanonicalName());
         args.add("-host");
         args.add("127.0.0.1");
+        
+        Boolean selendroidForceReinstall = Config.getBoolConfigProperty(ConfigProperty.SELENDROID_SERVER_FORCE_REINSTALL);
+        
+        if (selendroidForceReinstall) {
+                  args.add("-forceReinstall");
+        }
 
         sconfig = SelendroidConfiguration.create(args.toArray(new String[args.size()]));
         server = new SelendroidLauncher(sconfig);
