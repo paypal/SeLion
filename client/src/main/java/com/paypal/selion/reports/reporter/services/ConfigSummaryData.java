@@ -20,6 +20,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.paypal.selion.logger.SeLionLogger;
+
 /**
  * This class provides mechanisms to inject summary information which would then be retrieved by all the SeLion
  * Reporting listeners. This class also houses the default summary that SeLion would be aware of.
@@ -57,7 +61,31 @@ public final class ConfigSummaryData {
      *            - A {@link String} that represents the configuration value to be displayed in the SeLion Reports.
      */
     public static void addConfigSummary(String key, String value) {
-        configSummary.put(key, value);
+        addConfigSummary(key, value, null);
+    }
+
+    /**
+     * @param key
+     *            - A {@link String} that represents the Configuration Name to be displayed in the SeLion Reports.
+     * @param value
+     *            - A {@link String} that represents the configuration value to be displayed in the SeLion Reports.
+     * @param testName
+     *            - A {@link String} that if specified, will add the configuration value to the specified test to be
+     *            displayed in the SeLion Reports. If not specified(null or empty), the configuration value will be
+     *            added to the global map for the SeLion Reports.
+     */
+    public static void addConfigSummary(String key, String value, String testName) {
+        if (StringUtils.isBlank(testName)) {
+            configSummary.put(key, value);
+        } else {
+            if (getLocalConfigSummary(testName) != null) {
+                getLocalConfigSummary(testName).put(key, value);
+            } else {
+                String message = "Error trying to insert key/value pair " + key + "/" + " into localConfigSummary map.  Map key "
+                        + testName + " does not exist in the localConfigSummary map.";
+                SeLionLogger.getLogger().fine(message);
+            }
+        }
     }
 
     /**
