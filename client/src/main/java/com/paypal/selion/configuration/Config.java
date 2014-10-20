@@ -61,6 +61,8 @@ import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBu
  * &lt;!-- optional, defaults to *firefox  --&gt;
  * &lt;parameter name="browser" value="*firefox" /&gt;
  * &lt;!-- optional, defaults to false  (GLOBAL) --&gt;
+ * &lt;parameter name="forceReinstall" value="" /&gt;
+ * &lt;!-- optional, defaults to false  (GLOBAL) --&gt;
  * &lt;parameter name="runLocally" value="true" /&gt;
  * &lt;!-- optional, turns automatic screen shots for click handlers on/off, defaults to true (GLOBAL) --&gt;
  * &lt;parameter name="autoScreenShot" value="true" /&gt;
@@ -586,7 +588,13 @@ public final class Config {
          * Device Serial to use.<br>
          * Default is selected automatically by Selendroid
          */
-        SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial" , "", true);
+        SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial" , "", true),
+        
+        /**
+         * Force Reinstall the Selendroid Server and AUT.<br>
+         * Default is selected automatically to false
+         */
+        SELENDROID_SERVER_FORCE_REINSTALL("forceReinstall" ,"false", true);
 
         private String name = null;
         private String defaultValue = null;
