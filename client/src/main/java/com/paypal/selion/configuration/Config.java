@@ -579,8 +579,7 @@ public final class Config {
         /**
          * Automatically log pages source code.<br>
          * Used in conjunction with {@link ConfigProperty#AUTO_SCREEN_SHOT}.<br>
-         * Default is set to <b>true</b><br>
-         * <br>
+         * Default is set to <b>true</b>
          */
         LOG_PAGES("logPages", "true", true),
 
@@ -594,7 +593,13 @@ public final class Config {
          * Device Serial to use.<br>
          * Default is selected automatically by Selendroid
          */
-        SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial" , "", true);
+        SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial" , "", true),
+        
+        /**
+         * Force Reinstall the Selendroid Server and AUT.<br>
+         * Default is set to <b>false</b>
+         */
+        SELENDROID_SERVER_FORCE_REINSTALL("selendroidServerForceReinstall" ,"false", true);
 
         private String name = null;
         private String defaultValue = null;
