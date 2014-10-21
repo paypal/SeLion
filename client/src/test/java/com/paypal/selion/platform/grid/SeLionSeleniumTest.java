@@ -15,109 +15,97 @@
 
 package com.paypal.selion.platform.grid;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.Button;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
-import com.thoughtworks.selenium.Wait.WaitTimedOutException;
 
 public class SeLionSeleniumTest {
 
     final String badLocator = "//wrong locator or text or page title";
-    final String locator = "//input[@id='lst-ib']";
+    final String locator = "//input[@id='gbqfq']";
+    final String pipedLocator = "//input[@id='gbqfq']|SomeOtherLocator";
     final String disappearElement = "btnI";
     final String pageTitle = "Google";
-    final String text = "Maps";
+    final String text = "Gmail";
     final String url = "http://www.google.com";
 
-    @Test(groups = { "browser-tests" })
+    @Test(groups = {"browser-tests"})
     @WebTest
     public void testWaitUntilPageTitlePresentPos() {
         Grid.driver().get(url);
-        try {
-            WebDriverWaitUtils.waitUntilPageTitleContains(pageTitle);
-            assertTrue(true);
-        } catch (WaitTimedOutException e) {
-            fail(e.getMessage());
-        }
+        WebDriverWaitUtils.waitUntilPageTitleContains(pageTitle);
     }
 
-    @Test(groups = { "browser-tests" })
+    @Test(groups = {"browser-tests"})
     @WebTest
     public void testWaitUntilElementVisiblePos() {
         Grid.driver().get(url);
-        try {
-            WebDriverWaitUtils.waitUntilElementIsVisible(locator);
-            assertTrue(true);
-        } catch (WaitTimedOutException e) {
-            fail(e.getMessage());
-        }
+        WebDriverWaitUtils.waitUntilElementIsVisible(locator);
     }
 
-    @Test(groups = { "browser-tests" })
+    @Test(groups = {"browser-tests"})
     @WebTest
     public void testWaitUntilTextPresentPos() {
         Grid.driver().get(url);
-        try {
-            WebDriverWaitUtils.waitUntilTextPresent(text);
-            assertTrue(true);
-        } catch (WaitTimedOutException e) {
-            fail(e.getMessage());
-        }
+        WebDriverWaitUtils.waitUntilTextPresent(text);
     }
 
-    @Test(groups = { "browser-tests" })
+    @Test(groups = {"browser-tests"})
     @WebTest
     public void testWaitUntilElementDisapearPos() {
         Grid.driver().get(url);
         WebDriverWaitUtils.waitUntilPageTitleContains(pageTitle);
         Button btn = new Button(disappearElement);
         btn.click();
-        try {
-            WebDriverWaitUtils.waitUntilElementIsInvisible(disappearElement);
-            assertTrue(true);
-        } catch (WaitTimedOutException e) {
-            fail(e.getMessage());
-        }
+        WebDriverWaitUtils.waitUntilElementIsInvisible(disappearElement);
     }
 
-    @Test(groups = { "browser-tests" })
+    @Test(groups = {"browser-tests"})
     @WebTest
     public void testWaitUntilElementPresentPos() {
         Grid.driver().get(url);
+        WebDriverWaitUtils.waitUntilElementIsPresent(locator);
+    }
+
+    @Test(groups = {"browser-tests"})
+    @WebTest
+    public void testWasitUntilElementPipedLocator() {
+        Grid.driver().get(url);
+        WebDriverWaitUtils.waitUntilElementIsPresent(pipedLocator);
+    }
+
+    @Test(groups = {"browser-tests"}, expectedExceptions = {TimeoutException.class})
+    @WebTest
+    public void testWaitUntilPageTitlePresentNeg() {
+        String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
         try {
-            WebDriverWaitUtils.waitUntilElementIsPresent(locator);
-            assertTrue(true);
-        } catch (WaitTimedOutException e) {
-            fail(e.getMessage());
+            Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
+            Grid.driver().get(url);
+            WebDriverWaitUtils.waitUntilPageTitleContains(badLocator);
+        } finally {
+            Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }
     }
 
-    @Test(groups = { "browser-tests" }, expectedExceptions = { WaitTimedOutException.class })
-    @WebTest
-    public void testWaitUntilPageTitlePresentNeg() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilPageTitleContains(badLocator);
-        fail("Wait Timeout Exception was not thrown.");
-    }
-
-    @Test(groups = { "browser-tests" }, expectedExceptions = { WaitTimedOutException.class })
+    @Test(groups = {"browser-tests"}, expectedExceptions = {TimeoutException.class})
     @WebTest
     public void testWaitUntilElementVisibleNeg() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilElementIsVisible(badLocator);
-        fail("Wait Timeout Exception was not thrown.");
+        String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
+        try {
+            Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
+            Grid.driver().get(url);
+            WebDriverWaitUtils.waitUntilElementIsVisible(badLocator);
+        } finally {
+            Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
+        }
     }
 
-    @Test(groups = { "browser-tests" }, expectedExceptions = { TimeoutException.class })
+    @Test(groups = {"browser-tests"}, expectedExceptions = {TimeoutException.class})
     @WebTest
     public void testWaitUntilTextPresentNeg() {
         Grid.driver().get(url);
@@ -128,18 +116,22 @@ public class SeLionSeleniumTest {
         } finally {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }
-        fail("Timeout Exception was not thrown.");
     }
 
-    @Test(groups = { "browser-tests" }, expectedExceptions = { RuntimeException.class })
+    @Test(groups = {"browser-tests"}, expectedExceptions = {RuntimeException.class})
     @WebTest
     public void testWaitUntilElementDisapearNeg() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilElementIsInvisible(disappearElement);
-        fail("Runtime Exception was not thrown.");
+        String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
+        try {
+            Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
+            Grid.driver().get(url);
+            WebDriverWaitUtils.waitUntilElementIsInvisible(disappearElement);
+        } finally {
+            Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
+        }
     }
 
-    @Test(groups = { "browser-tests" }, expectedExceptions = { TimeoutException.class })
+    @Test(groups = {"browser-tests"}, expectedExceptions = {TimeoutException.class})
     @WebTest
     public void testWaitUntilElementPresentNeg() {
         Grid.driver().get(url);
@@ -150,6 +142,5 @@ public class SeLionSeleniumTest {
         } finally {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }
-        fail("Timeout Exception was not thrown.");
     }
 }
