@@ -68,7 +68,7 @@ public final class WebDriverWaitUtils {
     public static void waitUntilElementIsInvisible(final String elementLocator) {
         logger.entering(elementLocator);
         Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
-        By by = HtmlElementUtils.getFindElementType(elementLocator);
+        By by = HtmlElementUtils.resolveByType(elementLocator);
         ExpectedCondition<Boolean> condition = ExpectedConditions.invisibilityOfElementLocated(by);
         waitForCondition(condition);
         logger.exiting();
@@ -84,7 +84,7 @@ public final class WebDriverWaitUtils {
     public static void waitUntilElementIsPresent(final String elementLocator) {
         logger.entering(elementLocator);
         Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
-        By by = HtmlElementUtils.getFindElementType(elementLocator);
+        By by = HtmlElementUtils.resolveByType(elementLocator);
         ExpectedCondition<WebElement> condition = ExpectedConditions.presenceOfElementLocated(by);
         waitForCondition(condition);
         logger.exiting();
@@ -100,7 +100,7 @@ public final class WebDriverWaitUtils {
     public static void waitUntilElementIsVisible(final String elementLocator) {
         logger.entering(elementLocator);
         Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
-        By by = HtmlElementUtils.getFindElementType(elementLocator);        
+        By by = HtmlElementUtils.resolveByType(elementLocator);
         ExpectedCondition<WebElement> condition = ExpectedConditions.visibilityOfElementLocated(by);
         waitForCondition(condition);
         logger.exiting();
