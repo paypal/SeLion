@@ -189,9 +189,13 @@ public class LocalSelendroidNode implements LocalServerComponent {
         String timeoutEmulatorStart = checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
         args.add(" -timeoutEmulatorStart ");
         args.add(timeoutEmulatorStart);
-        String serverStartTimeout = checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);
-        args.add(" -serverStartTimeout ");
-        args.add(serverStartTimeout);
+        //TODO: krmahadevan says :
+        //This configuration is NOT yet available in Selendroid 0.11.0. So I am commenting out using it right now.
+        //We anyways are going to be moving over to the newer version of Selendroid very soon. So this can be enabled back
+        //once we depend on the newer version of Selendroid.
+//        String serverStartTimeout = checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);
+//        args.add(" -serverStartTimeout ");
+//        args.add(serverStartTimeout);
         String sessionTimeout = checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
         args.add(" -sessionTimeout ");
         args.add(sessionTimeout);
