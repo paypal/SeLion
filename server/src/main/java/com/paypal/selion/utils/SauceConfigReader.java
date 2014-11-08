@@ -20,10 +20,11 @@ import java.util.logging.Logger;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * A configuration utility that is internally used by SeLion to parse sauce configuration json file.
@@ -55,9 +56,8 @@ public class SauceConfigReader {
      * Load the all the properties from JSON file(sauceConfig.json)
      */
     public void loadConfig() {
-
         try {
-            JSONObject jsonObject = JSONConfigurationUtils.loadJSON(SAUCE_CONFIG);
+            JsonObject jsonObject = JSONConfigurationUtils.loadJSON(SAUCE_CONFIG);
 
             authKey = getAttributeValue(jsonObject, "authenticationKey");
 
@@ -70,17 +70,16 @@ public class SauceConfigReader {
 
             LOG.info("Sauce Config loaded successfully");
 
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException e) {
             String error = "Error with the JSON of the Sauce Config : " + e.getMessage();
             LOG.log(Level.SEVERE, e.getMessage(), e);
             throw new GridConfigurationException(error, e);
         }
     }
 
-    private String getAttributeValue(JSONObject jsonObject, String key) throws JSONException {
-
-        if (jsonObject.has(key) && !jsonObject.isNull(key)) {
-            String value = jsonObject.getString(key);
+    private String getAttributeValue(JsonObject jsonObject, String key) {
+        if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull()) {
+            String value = jsonObject.get(key).getAsString();
             if(StringUtils.isNotBlank(value)) {
                 return value;
             }

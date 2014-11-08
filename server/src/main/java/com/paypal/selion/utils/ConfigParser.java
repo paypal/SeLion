@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * A configuration utility that is internally used by SeLion to parse SeLion configuration json file.
@@ -31,7 +33,7 @@ import org.json.JSONObject;
  */
 public final class ConfigParser {
     private static ConfigParser parser = new ConfigParser();
-    private JSONObject configuration = null;
+    private JsonObject configuration = null;
     private static final String CONFIG = "SeLionConfig";
 
     /**
@@ -48,8 +50,8 @@ public final class ConfigParser {
      */
     public int getInt(String key) {
         try {
-            return configuration.getInt(key);
-        } catch (JSONException e) {
+            return configuration.get(key).getAsInt();
+        } catch (JsonSyntaxException e) {
             throw new ConfigParserException(e);
         }
     }
@@ -60,8 +62,8 @@ public final class ConfigParser {
      */
     public long getLong(String key) {
         try {
-            return configuration.getLong(key);
-        } catch (JSONException e) {
+            return configuration.get(key).getAsLong();
+        } catch (JsonSyntaxException e) {
             throw new ConfigParserException(e);
         }
     }
@@ -72,8 +74,8 @@ public final class ConfigParser {
      */
     public String getString(String key) {
         try {
-            return configuration.getString(key);
-        } catch (JSONException e) {
+            return configuration.get(key).getAsString();
+        } catch (JsonSyntaxException e) {
             throw new ConfigParserException(e);
         }
     }
@@ -110,8 +112,8 @@ public final class ConfigParser {
             IOUtils.closeQuietly(br);
         }
         try {
-            configuration = new JSONObject(builder.toString());
-        } catch (JSONException e) {
+            configuration = new JsonParser().parse(builder.toString()).getAsJsonObject();
+        } catch (JsonSyntaxException e) {
             throw new ConfigParserException(e);
         }
 

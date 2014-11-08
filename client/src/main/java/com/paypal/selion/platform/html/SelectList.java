@@ -152,7 +152,7 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
     }
 
     /**
-     * Does the same thing as {@link #select(String) select(optionLocator)}
+     * Does the same thing as {@link #select(String)}
      * 
      * @param optionLocator
      *            the option locator to select
@@ -251,7 +251,7 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
     }
 
     /**
-     * Does the same thing as {@link #addSelectionByValue(String) addSelectionByValue(value)}
+     * Does the same thing as {@link #selectByValue(String)}
      * 
      * @param value
      *            the value to select
@@ -261,7 +261,7 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
     }
 
     /**
-     * Does the same thing as {@link #selectByLabel(String) selectByLabel(value)}
+     * Does the same thing as {@link #selectByLabel(String)}
      * 
      * @param label
      *            the label to select
@@ -271,7 +271,7 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
     }
 
     /**
-     * Does the same thing as {@link #selectByIndex(int) selectByIndex(index)}
+     * Does the same thing as {@link #selectByIndex(int)}
      * 
      * @param index
      *            the index to select

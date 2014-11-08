@@ -32,7 +32,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.json.JSONObject;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -95,10 +98,10 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
         boolean isUpdateSuccess = false;
 
         try (BufferedWriter bw = Files.newBufferedWriter(path, Charset.defaultCharset())) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("authenticationKey", authKey);
-            jsonObject.put("sauceURL", sauceURL);
-            bw.write(jsonObject.toString(4));
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("authenticationKey", authKey);
+            jsonObject.addProperty("sauceURL", sauceURL);
+            bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject));
             LOG.info("Sauce Config file updated successfully");
             isUpdateSuccess = true;
         } catch (Exception e) {

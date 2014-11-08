@@ -35,8 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpStatus;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
@@ -44,6 +42,9 @@ import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.paypal.selion.utils.SauceConfigReader;
 import com.paypal.selion.utils.SauceConnectManager;
 
@@ -106,17 +107,13 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
             if (seleniumRequest.getRequestType().equals(RequestType.START_SESSION)) {
                 String body = seleniumRequest.getBody();
                 // convert from String to JSON
-                try {
-                    JSONObject json = new JSONObject(body);
-                    // add username/accessKey
-                    JSONObject desiredCapabilities = json.getJSONObject("desiredCapabilities");
-                    desiredCapabilities.put("username", session.getRequestedCapabilities().get("sauceUserName"));
-                    desiredCapabilities.put("accessKey", session.getRequestedCapabilities().get("sauceApiKey"));
-                    // convert from JSON to String
-                    seleniumRequest.setBody(json.toString());
-                } catch (JSONException e) {
-                    log.log(Level.SEVERE, e.getMessage(), e);
-                }
+                JsonObject json = new JsonParser().parse(body).getAsJsonObject();
+                // add username/accessKey
+                JsonObject desiredCapabilities = json.getAsJsonObject("desiredCapabilities");
+                desiredCapabilities.addProperty("username", (String) session.getRequestedCapabilities().get("sauceUserName"));
+                desiredCapabilities.addProperty("accessKey", (String) session.getRequestedCapabilities().get("sauceApiKey"));
+                // convert from JSON to String
+                seleniumRequest.setBody(json.toString());
             }
 
         }
@@ -124,50 +121,51 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
     }
 
     /**
-     * Get the total number of running testcase that are running in sauce lab for paypaltester.
+     * Get the total number of test cases running in sauce labs for the primary account.
      * 
-     * @return number of tc running
+     * @return number of test cases running
      */
     public int getNumberOfTCRunning() {
         try {
             String result = getSauceLabsRestApi(SauceConfigReader.getInstance().getURL() + "/activity");
-            JSONObject obj = new JSONObject(result);
-            return (Integer) obj.getJSONObject("totals").get("all");
-        } catch (JSONException e) {
+            JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+            return obj.getAsJsonObject("totals").get("all").getAsInt();
+        } catch (JsonSyntaxException e) {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
         return maxTestCase + 1;
     }
 
+    /**
+     * Get the number of test cases running in sauce labs for the sauce labs subaccount/user
+     * @param user
+     * @return
+     */
     public int getNumberOfTCRunningForUser(String user) {
-
         try {
             String result = getSauceLabsRestApi(SauceConfigReader.getInstance().getURL() + "/activity");
-            JSONObject obj = new JSONObject(result);
-            return (Integer) obj.getJSONObject("subaccounts").getJSONObject(user).get("all");
-        } catch (JSONException e) {
+            JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+            return obj.getAsJsonObject("subaccounts").getAsJsonObject(user).get("all").getAsInt();
+        } catch (JsonSyntaxException e) {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
         return -1;
-
     }
 
     /**
-     * Get the maximum number of testcase that can run parallel for paypaltester user.
+     * Get the maximum number of test case that can run in parallel for the primary account.
      * 
      * @return maximum no of testcase
      */
     public int getMaxTestcase() {
-
         try {
             String result = getSauceLabsRestApi(SauceConfigReader.getInstance().getURL() + "/limits");
-            JSONObject obj = new JSONObject(result);
-            return (Integer) obj.get("concurrency");
-        } catch (JSONException e) {
+            JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+            return obj.get("concurrency").getAsInt();
+        } catch (JsonSyntaxException e) {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
         return 0;
-
     }
 
     public URL getRemoteHost() {
