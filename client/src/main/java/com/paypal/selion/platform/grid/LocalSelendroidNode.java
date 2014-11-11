@@ -15,30 +15,21 @@
 
 package com.paypal.selion.platform.grid;
 
-import java.io.BufferedReader;
+import io.selendroid.SelendroidConfiguration;
+import io.selendroid.SelendroidLauncher;
+import io.selendroid.grid.SelendroidSessionProxy;
+
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHttpRequest;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.openqa.grid.common.exception.GridException;
-
-import io.selendroid.SelendroidConfiguration;
-import io.selendroid.SelendroidLauncher;
-import io.selendroid.grid.SelendroidSessionProxy;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -50,7 +41,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * node.
  * 
  */
-public class LocalSelendroidNode implements LocalServerComponent {
+public class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
 
     protected boolean isRunning = false;
     private SelendroidLauncher server = null;
@@ -98,63 +89,9 @@ public class LocalSelendroidNode implements LocalServerComponent {
 
     }
 
-    private JSONObject extractObject(HttpResponse resp) throws IOException, JSONException {
-        logger.entering(resp);
-        BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-        StringBuilder s = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            s.append(line);
-        }
-        rd.close();
-        logger.exiting(s.toString());
-        return new JSONObject(s.toString());
-    }
-
-    public boolean wasNodeSpawned(int port) {
-        logger.entering(port);
-        String endPoint = String.format("http://localhost:%d/wd/hub/status", port);
-
-        CloseableHttpClient client = HttpClientBuilder.create().build();
-        try {
-            URL url = new URL(endPoint);
-            URL api = new URL("http://" + url.getHost() + ":" + url.getPort() + "/wd/hub/status");
-            HttpHost host = new HttpHost(api.getHost(), api.getPort());
-
-            BasicHttpRequest r = new BasicHttpRequest("GET", api.toExternalForm());
-
-            HttpResponse response = client.execute(host, r);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                throw new GridException("hub down or not responding. Reason : "
-                        + response.getStatusLine().getReasonPhrase());
-            }
-            JSONObject o = extractObject(response);
-            boolean status = (o.getInt("status") == 0);
-            logger.exiting(status);
-            return status;
-        } catch (Exception e) {
-            throw new GridException("Problem querying the status", e);
-        } finally {
-            IOUtils.closeQuietly(client);
-        }
-    }
-
     public void waitForNodeToComeUp(int port) { // this is fine
-        logger.entering(port);
-        for (int i = 0; i < 5; i++) {
-            try {
-                // Sleep for 10 seconds.
-                Thread.sleep(10 * 1000);
-            } catch (InterruptedException e) {
-                throw new GridException(e.getMessage(), e);
-            }
-            if (wasNodeSpawned(port)) {
-                logger.exiting();
-                return;
-            }
-        }
-        throw new GridException(
-                "Encountered problems when attempting to register the Selendroid Node to the local Grid");
+        String exceptionMsg = "Encountered problems when attempting to register the Selendroid Node to the local Grid";
+        waitForNodeToComeUp(port, exceptionMsg);
     }
 
     private void startSelendroidDriverNode(int port) throws Exception {
@@ -173,18 +110,24 @@ public class LocalSelendroidNode implements LocalServerComponent {
         String autFolder = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
         if ((autFolder != null) && (!autFolder.trim().isEmpty())) {
             File folder = new File(autFolder);
-            File[] fList = folder.listFiles();
-            if (fList != null) {
-                for (File file : fList) {
-                    if ((file.isFile()) && (file.getName().endsWith(".apk"))
-                            && (!file.getName().startsWith("resigned")) && (!file.isDirectory())) {
-                        args.add("-aut");
-                        args.add(file.getAbsolutePath());
-                    }
+            try {
+                Collection<File> files = FileUtils.listFiles(folder,
+                    FileFilterUtils.and(FileFilterUtils
+                               .notFileFilter(FileFilterUtils
+                                        .prefixFileFilter("resigned")),
+                        FileFilterUtils.suffixFileFilter(".apk")),
+                        FileFilterUtils.notFileFilter(FileFilterUtils
+                                .directoryFileFilter()));
+
+                for (File file : files) {
+                    args.add("-aut");
+                    args.add(file.getAbsolutePath());
                 }
+            } catch (IllegalArgumentException iae) {
+                logger.warning(iae.getMessage());
             }
         }
-
+        
         args.add("-proxy");
         args.add(SelendroidSessionProxy.class.getCanonicalName());
         args.add("-host");
