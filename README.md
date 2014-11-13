@@ -2,6 +2,7 @@
 
 SeLion
 =======
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/paypal/SeLion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Enabling Test Automation in Java
 
 SeLion builds on top of TestNG and Selenium to provide a set of capabilities that get you up and running with WebDriver in a short time. It can be used for testing web and mobile applications.
