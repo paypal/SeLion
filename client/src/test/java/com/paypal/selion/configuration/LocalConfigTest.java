@@ -24,15 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nl.bitwalker.useragentutils.Browser;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 
 import org.testng.ITestContext;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.ConfigManager;
-import com.paypal.selion.configuration.LocalConfig;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.platform.grid.Grid;
 
@@ -110,13 +109,20 @@ public class LocalConfigTest {
     public void testCorrectBrowserLaunched(ITestContext ctx) {
         Grid.driver().get("http://www.google.com");
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
-        String actualBrowser = Browser.parseUserAgentString(userAgent).getName().toLowerCase();
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(userAgent);
+        String actualBrowser = agent.getName().toLowerCase();
         // Read suite param directly.
         String browserParam = ctx.getCurrentXmlTest().getParameter("browser");
         // Ensure you've configured this test to run with browser param in suite file.
         assertTrue(!browserParam.isEmpty());
         // Drop the "* in browser and first char"
-        assertTrue(actualBrowser.contains(browserParam.substring(2).toLowerCase()));
+        if (browserParam.equals("*iexplore")) {
+            //Only for IE the user agent parsing library returns it as IE.
+            assertTrue(actualBrowser.equalsIgnoreCase("ie"));
+        }else {
+            assertTrue(actualBrowser.contains(browserParam.substring(1).toLowerCase()));
+        }
     }
 
     @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class })
