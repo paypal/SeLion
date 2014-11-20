@@ -108,6 +108,10 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
         Handler[] handlers = Logger.getLogger("").getHandlers();
         Level level = Logger.getLogger("").getLevel();
 
+        //add an option to skip ios default logger
+        args.add(" -skipLoggerConfiguration");
+        args.add(Boolean.TRUE.toString());
+
         IOSServerConfiguration config = IOSServerConfiguration.create(args.toArray(new String[args.size()]));
         server = new IOSServer(config);
         
