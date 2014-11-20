@@ -191,9 +191,9 @@
 
             <!-- A utility for parsing user agent strings -->
             <dependency>
-                <groupId>nl.bitwalker</groupId>
-                <artifactId>UserAgentUtils</artifactId>
-                <version>1.6</version>
+                <groupId>net.sf.uadetector</groupId>
+                <artifactId>uadetector-resources</artifactId>
+                <version>2014.04</version>
             </dependency>
 
             <!-- add xerces - used by runtime reporter -->

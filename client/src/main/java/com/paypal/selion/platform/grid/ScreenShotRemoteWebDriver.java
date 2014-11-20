@@ -22,8 +22,10 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import nl.bitwalker.useragentutils.Browser;
-import nl.bitwalker.useragentutils.OperatingSystem;
+import net.sf.uadetector.OperatingSystem;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.Dimension;
@@ -121,12 +123,13 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
     }
 
     private String extractBrowserInfo(String userAgent) {
-        Browser browser = Browser.parseUserAgentString(userAgent);
-        OperatingSystem os = OperatingSystem.parseUserAgentString(userAgent);
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(userAgent);
+        OperatingSystem os = agent.getOperatingSystem();
         StringBuilder sb = new StringBuilder();
-        sb.append(browser.getName());
-        sb.append(" v:").append(browser.getVersion(userAgent));
-        sb.append(" running on ").append(os.getName());
+        sb.append(agent.getName());
+        sb.append(" v:").append(agent.getVersionNumber().toVersionString());
+        sb.append(" running on ").append(os.getName()).append(" v :").append(os.getVersionNumber().toVersionString());
         return sb.toString();
 
     }
