@@ -96,7 +96,7 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
 
     private void printDebugInfoForUser() {
         Properties props = new Properties();
-        props.put("Selenium V", new org.openqa.selenium.internal.BuildInfo().getReleaseLabel());
+        props.put("Selenium Version", new org.openqa.selenium.internal.BuildInfo().getReleaseLabel());
         props.put("Client OS", System.getProperty("os.name") + " " + System.getProperty("os.version"));
 
         String currentBrowser = BrowserFlavors.GENERIC.getBrowser();
@@ -128,8 +128,8 @@ public final class ScreenShotRemoteWebDriver extends EventFiringWebDriver {
         OperatingSystem os = agent.getOperatingSystem();
         StringBuilder sb = new StringBuilder();
         sb.append(agent.getName());
-        sb.append(" v:").append(agent.getVersionNumber().toVersionString());
-        sb.append(" running on ").append(os.getName()).append(" v :").append(os.getVersionNumber().toVersionString());
+        sb.append(" ").append(agent.getVersionNumber().toVersionString());
+        sb.append(" running on ").append(os.getName()).append(" ").append(os.getVersionNumber().toVersionString());
         return sb.toString();
 
     }

@@ -61,10 +61,6 @@
             <id>central</id>
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
-        <repository>
-            <id>forge</id>
-            <url>http://repository.sonatype.org/content/groups/forge/</url>
-        </repository>
     </repositories>
 
     <build>
