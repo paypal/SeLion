@@ -173,17 +173,8 @@ public class LocalSelendroidNode implements LocalServerComponent {
 
         String autFolder = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
         if ((autFolder != null) && (!autFolder.trim().isEmpty())) {
-            File folder = new File(autFolder);
-            File[] fList = folder.listFiles();
-            if (fList != null) {
-                for (File file : fList) {
-                    if ((file.isFile()) && (file.getName().endsWith(".apk"))
-                            && (!file.getName().startsWith("resigned")) && (!file.isDirectory())) {
-                        args.add("-aut");
-                        args.add(file.getAbsolutePath());
-                    }
-                }
-            }
+            args.add("-folder");
+            args.add(autFolder);
         }
 
         String timeoutEmulatorStart = checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
