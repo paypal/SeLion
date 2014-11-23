@@ -1,3 +1,18 @@
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
+
 package com.paypal.selion.pojos;
 
 import java.util.HashMap;
@@ -29,27 +44,26 @@ public class ArtifactDetails {
         entities.put(SELENIUM_KEY, getEntityFromRqst(PropsKeys.SELENIUM_URL, PropsKeys.SELENIUM_CHECKSUM, request));
         switch (Platform.getCurrent()) {
         case UNIX:
-        case LINUX: {
+        case LINUX: 
             entities.put(CHROME_LINUX_KEY,
                     getEntityFromRqst(PropsKeys.CHROME_LINUX_URL, PropsKeys.CHROME_LINUX_CHECKSUM, request));
             entities.put(PHANTOM_LINUX_KEY,
                     getEntityFromRqst(PropsKeys.PHANTOMJS_LINUX_URL, PropsKeys.PHANTOMJS_LINUX_CHECKSUM, request));
             break;
-        }
 
-        case MAC: {
+        case MAC: 
             entities.put(CHROME_MAC_KEY,
                     getEntityFromRqst(PropsKeys.CHROME_MAC_URL, PropsKeys.CHROME_MAC_CHECKSUM, request));
             entities.put(PHANTOM_MAC_KEY,
                     getEntityFromRqst(PropsKeys.PHANTOMJS_MAC_URL, PropsKeys.PHANTOMJS_MAC_CHECKSUM, request));
             break;
-        }
-        default: {
+
+        default: 
             entities.put(CHROME_KEY, getEntityFromRqst(PropsKeys.CHROME_URL, PropsKeys.CHROME_CHECKSUM, request));
             entities.put(EXPLORER_KEY, getEntityFromRqst(PropsKeys.IE_URL, PropsKeys.IE_CHECKSUM, request));
             entities.put(PHANTOM_KEY, getEntityFromRqst(PropsKeys.PHANTOMJS_URL, PropsKeys.PHANTOMJS_CHECKSUM, request));
             break;
-        }
+
         }
     }
     
@@ -80,10 +94,10 @@ public class ArtifactDetails {
 
         entity = getEntityFromProp(PropsKeys.CHROME_URL, PropsKeys.CHROME_CHECKSUM, props);
         artifactDetailMap.put(CHROME_KEY, entity);
-        
+
         entity = getEntityFromProp(PropsKeys.CHROME_LINUX_URL, PropsKeys.CHROME_LINUX_CHECKSUM, props);
         artifactDetailMap.put(CHROME_LINUX_KEY, entity);
-        
+
         entity = getEntityFromProp(PropsKeys.CHROME_MAC_URL, PropsKeys.CHROME_MAC_CHECKSUM, props);
         artifactDetailMap.put(CHROME_MAC_KEY, entity);
 
@@ -92,10 +106,10 @@ public class ArtifactDetails {
 
         entity = getEntityFromProp(PropsKeys.PHANTOMJS_URL, PropsKeys.PHANTOMJS_CHECKSUM, props);
         artifactDetailMap.put(PHANTOM_KEY, entity);
-        
+
         entity = getEntityFromProp(PropsKeys.PHANTOMJS_LINUX_URL, PropsKeys.PHANTOMJS_LINUX_CHECKSUM, props);
         artifactDetailMap.put(PHANTOM_LINUX_KEY, entity);
-        
+
         entity = getEntityFromProp(PropsKeys.PHANTOMJS_MAC_URL, PropsKeys.PHANTOMJS_MAC_CHECKSUM, props);
         artifactDetailMap.put(PHANTOM_MAC_KEY, entity);
         return artifactDetailMap;
@@ -128,7 +142,7 @@ public class ArtifactDetails {
 
         switch (Platform.getCurrent()) {
         case UNIX:
-        case LINUX: {
+        case LINUX: 
 
             entity = getEntityFromProp(PropsKeys.CHROME_LINUX_URL, PropsKeys.CHROME_LINUX_CHECKSUM, props);
             artifactDetailMap.put(CHROME_LINUX_KEY, entity);
@@ -137,8 +151,8 @@ public class ArtifactDetails {
             artifactDetailMap.put(PHANTOM_LINUX_KEY, entity);
 
             break;
-        }
-        case MAC: {
+
+        case MAC: 
 
             entity = getEntityFromProp(PropsKeys.CHROME_MAC_URL, PropsKeys.CHROME_MAC_CHECKSUM, props);
             artifactDetailMap.put(CHROME_MAC_KEY, entity);
@@ -147,8 +161,8 @@ public class ArtifactDetails {
             artifactDetailMap.put(PHANTOM_MAC_KEY, entity);
 
             break;
-        }
-        default: {
+
+        default: 
             entity = getEntityFromProp(PropsKeys.CHROME_URL, PropsKeys.CHROME_CHECKSUM, props);
             artifactDetailMap.put(CHROME_KEY, entity);
 
@@ -159,7 +173,7 @@ public class ArtifactDetails {
             artifactDetailMap.put(EXPLORER_KEY, entity);
 
             break;
-        }
+
         }
 
         return artifactDetailMap;

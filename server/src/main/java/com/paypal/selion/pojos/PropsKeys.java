@@ -66,12 +66,10 @@ public enum PropsKeys {
     /**
      * Method to return the {@link PropsKeys} as per the {@link Platform}
      * 
-     * @param platform
-     *            - The OS Platform referred from {@link Platform}
      * @return Array of {@link PropsKeys} as per the platform
      */
     public static PropsKeys[] getValuesForCurrentPlatform() {
-        
+
         List<PropsKeys> platformKeyList = new ArrayList<PropsKeys>();
         // The selenium jar is not tied to any platform
         Collections.addAll(platformKeyList, SELENIUM_URL, SELENIUM_CHECKSUM);
