@@ -55,6 +55,17 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 public class JsonRuntimeReporterHelper {
 
+    private static final int ONE_MINUTE = 60000;
+    private static final String AFTER_METHOD = "AfterMethod";
+    private static final String AFTER_CLASS = "AfterClass";
+    private static final String AFTER_GROUP = "AfterGroup";
+    private static final String AFTER_TEST = "AfterTest";
+    private static final String AFTER_SUITE = "AfterSuite";
+    private static final String BEFORE_METHOD = "BeforeMethod";
+    private static final String BEFORE_CLASS = "BeforeClass";
+    private static final String BEFORE_GROUP = "BeforeGroup";
+    private static final String BEFORE_TEST = "BeforeTest";
+    private static final String BEFORE_SUITE = "BeforeSuite";
     private List<TestMethodInfo> runningTest = new ArrayList<TestMethodInfo>();;
     private List<ConfigMethodInfo> runningConfig = new ArrayList<ConfigMethodInfo>();
 
@@ -76,6 +87,7 @@ public class JsonRuntimeReporterHelper {
             jsonCompletedConfig.deleteOnExit();
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
+            throw new ReporterException(e);
         }
     }
 
@@ -211,25 +223,25 @@ public class JsonRuntimeReporterHelper {
         logger.entering(new Object[] { suite, test, packages, classname, result });
         String type = null;
         if (result.getMethod().isBeforeSuiteConfiguration()) {
-            type = "BeforeSuite";
+            type = BEFORE_SUITE;
         } else if (result.getMethod().isBeforeTestConfiguration()) {
-            type = "BeforeTest";
+            type = BEFORE_TEST;
         } else if (result.getMethod().isBeforeGroupsConfiguration()) {
-            type = "BeforeGroup";
+            type = BEFORE_GROUP;
         } else if (result.getMethod().isBeforeClassConfiguration()) {
-            type = "BeforeClass";
+            type = BEFORE_CLASS;
         } else if (result.getMethod().isBeforeMethodConfiguration()) {
-            type = "BeforeMethod";
+            type = BEFORE_METHOD;
         } else if (result.getMethod().isAfterSuiteConfiguration()) {
-            type = "AfterSuite";
+            type = AFTER_SUITE;
         } else if (result.getMethod().isAfterTestConfiguration()) {
-            type = "AfterTest";
+            type = AFTER_TEST;
         } else if (result.getMethod().isAfterGroupsConfiguration()) {
-            type = "AfterGroup";
+            type = AFTER_GROUP;
         } else if (result.getMethod().isAfterClassConfiguration()) {
-            type = "AfterClass";
+            type = AFTER_CLASS;
         } else if (result.getMethod().isAfterMethodConfiguration()) {
-            type = "AfterMethod";
+            type = AFTER_METHOD;
         }
 
         ConfigMethodInfo config1 = new ConfigMethodInfo(suite, test, packages, classname, type, result);
@@ -264,11 +276,24 @@ public class JsonRuntimeReporterHelper {
 
         long currentTime = System.currentTimeMillis();
         if (!bForceWrite) {
-            if (currentTime - previousTime < (1000 * 60)) {
+            if (currentTime - previousTime < ONE_MINUTE) {
                 return;
             }
         }
         previousTime = currentTime;
+
+        generateReports(outputDirectory);
+
+        logger.exiting();
+    }
+
+    /**
+     * Generate JSON report and HTML report
+     * @param outputDirectory
+     */
+    private void generateReports(String outputDirectory) {
+        logger.entering(outputDirectory);
+
         ClassLoader localClassLoader = this.getClass().getClassLoader();
 
         try (BufferedWriter writer = new BufferedWriter(
@@ -278,44 +303,75 @@ public class JsonRuntimeReporterHelper {
                 BufferedReader templateReader = new BufferedReader(new InputStreamReader(
                   localClassLoader.getResourceAsStream("templates/RuntimeReporter/index.html")));) {
 
-            JsonArray testObjects = loadJSONArray(jsonCompletedTest);
-
-            for (TestMethodInfo temp : runningTest) {
-                testObjects.add(new JsonPrimitive(temp.toJson()));
-            }
-
-            JsonArray configObjects = loadJSONArray(jsonCompletedConfig);
-            for (ConfigMethodInfo temp : runningConfig) {
-                configObjects.add(new JsonPrimitive(temp.toJson()));
-            }
-
-            JsonObject reporter = new JsonObject();
-            reporter.add("testmethods", testObjects);
-            reporter.add("configurationmethods", configObjects);
-            reporter.add("configsummary", generateConfigSummary());
-            reporter.add("localconfigsummary", testJsonLocalConfigSummary);
+            JsonObject reporter = buildJSONReport();
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             jsonWriter.write(gson.toJson(reporter));
             jsonWriter.newLine();
 
-            //Writing json content to html file
-            String readLine = null;
-            while ((readLine = templateReader.readLine()) != null) {
-                if(readLine.trim().equals("${reports}")) {
-                    writer.write(reporter.toString());
-                    writer.newLine();
-                } else {
-                    writer.write(readLine);
-                    writer.newLine();
-                }
-            }
+            generateHTMLReport(writer, templateReader, reporter);
 
         } catch (IOException | JsonParseException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ReporterException(e);
         }
+
         logger.exiting();
+    }
+
+    /**
+     * Writing JSON content to HTML file
+     *
+     * @param writer
+     * @param templateReader
+     * @param reporter
+     * @throws IOException
+     */
+    private void generateHTMLReport(BufferedWriter writer, BufferedReader templateReader, JsonObject reporter)
+            throws IOException {
+
+        logger.entering(new Object[] { writer, templateReader, reporter});
+
+        String readLine = null;
+        while ((readLine = templateReader.readLine()) != null) {
+            if(readLine.trim().equals("${reports}")) {
+                writer.write(reporter.toString());
+                writer.newLine();
+            } else {
+                writer.write(readLine);
+                writer.newLine();
+            }
+        }
+        logger.exiting();
+    }
+
+    /**
+     * Construct the JSON report for report generation
+     * @return
+     */
+    private JsonObject buildJSONReport() {
+        logger.entering();
+
+        JsonArray testObjects = loadJSONArray(jsonCompletedTest);
+
+        for (TestMethodInfo temp : runningTest) {
+            testObjects.add(new JsonPrimitive(temp.toJson()));
+        }
+
+        JsonArray configObjects = loadJSONArray(jsonCompletedConfig);
+        for (ConfigMethodInfo temp : runningConfig) {
+            configObjects.add(new JsonPrimitive(temp.toJson()));
+        }
+
+        JsonObject reporter = new JsonObject();
+        reporter.add("testmethods", testObjects);
+        reporter.add("configurationmethods", configObjects);
+        reporter.add("configsummary", generateConfigSummary());
+        reporter.add("localconfigsummary", testJsonLocalConfigSummary);
+
+        logger.exiting(reporter);
+
+        return reporter;
     }
 
     /**

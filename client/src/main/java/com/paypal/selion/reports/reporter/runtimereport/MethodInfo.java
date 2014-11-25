@@ -93,9 +93,11 @@ public class MethodInfo {
                     + result.getThrowable().getLocalizedMessage();
             this.stacktrace = getStackTraceInfo(result.getThrowable());
         }
+
+        loadMethodInfo(result);
     }
 
-    public void loadMethodInfo(ITestResult result) {
+    private void loadMethodInfo(ITestResult result) {
 
         boolean isWebTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(WebTest.class) != null;
         boolean isDeviceTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(MobileTest.class) != null;

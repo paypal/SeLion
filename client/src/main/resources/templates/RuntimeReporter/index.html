@@ -5,6 +5,7 @@
         <title>SeLion Report</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="../css/bootstrap.css">
+        <link rel="stylesheet" href="../css/bootstrap-table.min.css">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]><script src="../bower_components/html5shiv/dist/html5shiv.js"></script><script src="../bower_components/respond/dest/respond.min.js"></script><![endif]-->
         <style type="text/css">.modal-dialog {width: 95%; min-height: 95%; padding: 0;}.modal-content {min-height: 100%; }
@@ -77,9 +78,45 @@
                         </button>
                     </div>&nbsp;Testcase Results
                 </div>
-                <div class="panel-body" id="testcaseBody">
-                    <div class="dataTables_processing">Processing...</div>
+                <div class="panel-body" id="testcaseParentBody">
+                     <div class="fixed-table-pagination">
+                           <div class="pull-left pageSizeInfo">
+                               <span class="page-list">Records per page
+                                     <span class="btn-group dropup">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                <span class="page-size">10</span>
+                                                <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu pageSizeCombo" role="menu">
+                                            <li><a href="javascript:void(0)">10</a></li>
+                                            <li><a href="javascript:void(0)">25</a></li>
+                                            <li><a href="javascript:void(0)">50</a></li>
+                                            <li><a href="javascript:void(0)">100</a></li>
+                                        </ul>
+                                     </span> </span>
+                           </div>
+                           <div class="pull-right search" style="margin-bottom:10px">
+                                <input type="text" class="form-control" name="testCaseSearch" id="testCaseSearch" placeholder="Search" />
+                           </div>
+                     </div>
+                     <div class="fixed-table-container" id="testcaseBody">
+                     </div>
+                      <div class="fixed-table-pagination">
+                           <div class="pull-left pagination-detail">
+                                <span class="pagination-info" id="testcase-page-info">Showing 1 to 10 of 800 rows</span>
+                           </div>
+
+                           <div class="pull-right pagination" id="testcase-pagination">
+                                <ul class="pagination">
+                                    <li class="page-first"><a href="javascript:void(0)">&lt;&lt;</a></li>
+                                    <li class="page-pre"><a href="javascript:void(0)">&lt;</a></li>
+                                    <li class="page-next"><a href="javascript:void(0)">&gt;</a></li>
+                                    <li class="page-last"><a href="javascript:void(0)">&gt;&gt;</a></li>
+                                </ul>
+                           </div>
+                      </div>
                 </div>
+                <div class="clearfix"></div>
             </div>
             <div class="panel panel-default" id="configTestcaseTable">
                 <div class="panel-heading">
@@ -90,8 +127,43 @@
                         </button>
                     </div>&nbsp;Configuration Testcase Results
                 </div>
-                <div class="panel-body" id="configTestcaseBody">
-                    <div class="dataTables_processing">Processing...</div>
+                <div class="panel-body">
+                     <div class="fixed-table-pagination">
+                           <div class="pull-left pageSizeInfo">
+                               <span class="page-list">Records per page
+                                     <span class="btn-group dropup">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                <span class="page-size">10</span>
+                                                <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu config-pageSizeCombo" role="menu">
+                                            <li><a href="javascript:void(0)">10</a></li>
+                                            <li><a href="javascript:void(0)">25</a></li>
+                                            <li><a href="javascript:void(0)">50</a></li>
+                                            <li><a href="javascript:void(0)">100</a></li>
+                                        </ul>
+                                     </span> </span>
+                           </div>
+                           <div class="pull-right search" style="margin-bottom:10px">
+                                <input type="text" class="form-control" name="config-testCaseSearch" id="config-testCaseSearch" placeholder="Search" />
+                           </div>
+                     </div>
+                     <div class="fixed-table-container" id="config-testcaseBody">
+                     </div>
+                      <div class="fixed-table-pagination">
+                           <div class="pull-left pagination-detail">
+                                <span class="pagination-info" id="config-testcase-page-info">Showing 1 to 10 of 800 rows</span>
+                           </div>
+
+                           <div class="pull-right pagination" id="config-testcase-pagination">
+                                <ul class="pagination">
+                                    <li class="page-first"><a href="javascript:void(0)">&lt;&lt;</a></li>
+                                    <li class="page-pre"><a href="javascript:void(0)">&lt;</a></li>
+                                    <li class="page-next"><a href="javascript:void(0)">&gt;</a></li>
+                                    <li class="page-last"><a href="javascript:void(0)">&gt;&gt;</a></li>
+                                </ul>
+                           </div>
+                      </div>
                 </div>
             </div>
             <!-- Results End -->
@@ -168,9 +240,8 @@
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/render.min.js"></script>
 <script src="../js/readmore.min.js"></script>
-<script src="../js/jquery.dataTables.min.js"></script>
 <script id="tableImpl" type="text/x-jsrender">
-		<table class="table table-striped table-hover" id="paginationTextCaseTable">
+        <table class="table table-striped table-hover" id="paginationTextCaseTable">
             <thead>
                 <tr>
                     <th style="width:5%">#</th>
@@ -179,7 +250,6 @@
                     <th style="width:15%">Package</th>
                     <th style="width:15%">Class</th>
                     <th style="width:15%">Method</th>
-                    <th>Status</th>
                     <th style="width:18%">Parameters</th>
                     <th style="width:7%"><th>
                 </tr>
@@ -187,13 +257,12 @@
             <tbody>
                 {{for results}}
                 <tr>
-                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index + 1}}</span></td>
+                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index+~startIndex}}</span></td>
                     <td>{{:suite}}</td>
                     <td>{{:test}}</td>
                     <td>{{:packageInfo}}</td>
                     <td>{{:className}}</td>
                     <td>{{:methodName}}</td>
-                    <td>{{:status}}</td>
                     <td>{{:parameters}}</td>
                     <td>
                         <button type="button" data-index="{{:#index}}" class="btn btn-default btn-xs btn-screenshot" data-toggle="tooltip" data-placement="top" title="Screenshots"><span class="glyphicon glyphicon-picture"></span></button>
@@ -204,10 +273,10 @@
                 </tr>
                 {{/for}}
             </tbody>
-		</table>
-	</script>
-<script id="configTableImpl" type="text/x-jsrender">
-		<table class="table table-striped table-hover " id="paginationTextConfigTable">
+        </table>
+    </script>
+<script id="config-tableImpl" type="text/x-jsrender">
+        <table class="table table-striped table-hover " id="paginationTextConfigTable">
             <thead>
                 <tr>
                     <th style="width:5%">#</th>
@@ -216,7 +285,6 @@
                     <th style="width:17%">Package</th>
                     <th style="width:16%">Class</th>
                     <th style="width:15%">Method</th>
-                    <th>Status</th>
                     <th style="width:10%">Type</th>
                     <th style="width:7%"><th>
                 </tr>
@@ -224,13 +292,12 @@
             <tbody>
                 {{for results}}
                 <tr>
-                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index + 1}}</span></td>
+                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index+~startIndex}}</span></td>
                     <td>{{:suite}}</td>
                     <td>{{:test}}</td>
                     <td>{{:packageInfo}}</td>
                     <td>{{:className}}</td>
                     <td>{{:methodName}}</td>
-                    <td>{{:status}}</td>
                     <td>{{:type}}</td>
                     <td>
                     {{if status == "Failed" }}
@@ -241,7 +308,7 @@
                 {{/for}}
             </tbody>
         </table>
-	</script>
+    </script>
 <script id="gridImpl" type="text/x-jsrender">
                 {{for results}}
                 <div class="col-lg-4">
@@ -252,7 +319,7 @@
                         <div class="panel-body">
                             <span class="thumbnail">
                                 {{if logs != null}}
-                                    <img src="../{{:logs[(logs.length - 1)].image}}" alt="{{:logs[(logs.length - 1)].message}}" onclick='displayImage("../{{:logs[(logs.length - 1)].image}}", "{{:logs[(logs.length - 1)].message}}");'>
+                                    <img src="../{{:logs[(logs.length - 1)].image}}" alt="{{:logs[(logs.length - 1)].message}}" onclick='displayImage("../{{:logs[(logs.length - 1)].image}}", "");'>
                                 {{else}}
                                     <img src="images/no-image-available.png" alt="No Screenshot Available" onclick='displayImage("../" + "images/no-image-available.png", "No Screenshot Available");'>
                                 {{/if}}
@@ -287,7 +354,7 @@
                     </div>
                 </div>
                 {{/for}}
-	</script>
+    </script>
 
 <script id="screenshotImpl" type="text/x-jsrender">
         <div class="row show">
@@ -298,18 +365,18 @@
             </span>
         </div>
         {{/if}}
-	    {{for logs}}
+        {{for logs}}
             {{if #index != 0 && (#index%3) == 0}}
                 </div>
                 <div class="row show">
             {{/if}}
             <div class="col-lg-4">
                 <div class="thumbnail">
-                    <img src="../{{:image}}" alt="{{:message}}" onclick='displayImage("../{{:image}}", "{{:message}}");' style="border:1px solid #ecf0f1">
+                    <img src="../{{:image}}" alt="{{:message}}" onclick='displayImage("../{{:image}}", "");' style="border:1px solid #ecf0f1">
                     <div class="caption">
                         <p>{{:message}}</p>
                         <p>
-                            <button type="button" class="btn btn-default btn-block btn-source" onclick='displaySource("../{{:source}}", "{{:message}}");'>Source</button>
+                            <button type="button" class="btn btn-default btn-block btn-source" onclick='displaySource("../{{:source}}", "");'>Source</button>
                         </p>
                     </div>
                 </div>
@@ -323,188 +390,353 @@
         </div>
     </script>
 <script type="text/javascript">
-					var textCaseTable;
-					var autoRefresh;
-					var timeRefresh = 300 * 1000;//300 seconds refresh interval
-					$(document).ready(function()
-							{
-								var reports =
-								${reports}
-								;
+                    var pageSize = 10, configPageSize = 10;
+                    var index = 1, configIndex = 1;
+                    var total, configTotal;
+                    var noOfPage, configNoOfPage;
+                    var filterSearch, configFilterSearch;
+                    var autoRefresh;
+                    var timeRefresh = 300 * 1000;//300 seconds refresh interval
+                    var reports =
+                        ${reports}
+                        ;
 
-								function reloadPage() {
-									location.reload();
-								}
+                    $(document).ready(function() {
 
-								autoRefresh = setInterval(reloadPage,timeRefresh);
+                        function reloadPage() {
+                            location.reload();
+                        }
 
-								//Calulate the test case summary
-								var passed = 0, failed = 0, skipped = 0, running = 0;
-								$.each(reports.testmethods,function(index, item) {
-									if (item.status == 'Passed') {
-										passed++;
-									} else if (item.status == 'Failed') {
-										failed++;
-									} else if (item.status == 'Skipped') {
-										skipped++;
-									} else {
-										running++;
-									}
-								})
+                        autoRefresh = setInterval(reloadPage,timeRefresh);
 
-								var total = passed + failed + skipped + running;
-								if (passed > 0) {
-									$('#statistics-data-passed').css('width',(passed * 100 / total)+ '%').html(passed + ' passed');
-									$('#statistics-progress-passed').css('width',(passed * 100 / total)+ '%');
-								}
-								if (failed > 0) {
-									$('#statistics-data-failed').css('width',(failed * 100 / total)+ '%').html(failed + ' failed');
-									$('#statistics-progress-failed').css('width',(failed * 100 / total)+ '%');
-								}
-								if (skipped > 0) {
-									$('#statistics-data-skipped').css('width',(skipped * 100 / total)+ '%').html(skipped + ' skipped');
-									$('#statistics-progress-skipped').css('width',(skipped * 100 / total)+ '%');
-								}
-								if (running > 0) {
-									$('#statistics-data-running').css('width',(running * 100 / total)+ '%').html(running + ' running');
-									$('#statistics-progress-running').css('width',(running * 100 / total)+ '%');
-								}
+                        //Calulate the test case summary
+                        var passed = 0, failed = 0, skipped = 0, running = 0;
+                        $.each(reports.testmethods,function(index, item) {
+                            if (item.status == 'Passed') {
+                                passed++;
+                            } else if (item.status == 'Failed') {
+                                failed++;
+                            } else if (item.status == 'Skipped') {
+                                skipped++;
+                            } else {
+                                running++;
+                            }
+                        })
 
-								$('#testcaseBody').html($('#tableImpl').render({'results' : reports.testmethods}));
-								afterRender(reports.testmethods, '');
+                        total = passed + failed + skipped + running;
 
-								textCaseTable = $('#paginationTextCaseTable').dataTable(
-								{
-									"pagingType" : "full_numbers",
-									"iDisplayLength" : 100,
-									"bAutoWidth" : false,
-									"bLengthChange" : true,
-									"bProcessing" : true,
-									"bDeferRender" : true,
-									"columnDefs" : [ {
-										"targets" : [ 6 ],
-										"visible" : false,
-										"searchable" : true
-									} ]
-								});
+                        if (passed > 0) {
+                            $('#statistics-data-passed').css('width',(passed * 100 / total)+ '%').html(passed + ' passed');
+                            $('#statistics-progress-passed').css('width',(passed * 100 / total)+ '%');
+                        }
+                        if (failed > 0) {
+                            $('#statistics-data-failed').css('width',(failed * 100 / total)+ '%').html(failed + ' failed');
+                            $('#statistics-progress-failed').css('width',(failed * 100 / total)+ '%');
+                        }
+                        if (skipped > 0) {
+                            $('#statistics-data-skipped').css('width',(skipped * 100 / total)+ '%').html(skipped + ' skipped');
+                            $('#statistics-progress-skipped').css('width',(skipped * 100 / total)+ '%');
+                        }
+                        if (running > 0) {
+                            $('#statistics-data-running').css('width',(running * 100 / total)+ '%').html(running + ' running');
+                            $('#statistics-progress-running').css('width',(running * 100 / total)+ '%');
+                        }
 
-								$('#testcase-btn-grid').click(function() {
-									$('#testcase-btn-list').removeClass('active');
-									$('#testcase-btn-grid').addClass('active');
-									$('#testcaseBody').html($('#gridImpl').render({'results' : reports.testmethods}));
-									afterRender(reports.testmethods, '');
-								});
+                        //Pagination for Test case table
+                        filterSearch = reports.testmethods;
+                        total = filterSearch.length;
+                        noOfPage = Math.ceil(total/pageSize);
 
-								$('#testcase-btn-list').click(function() {
-									$('#testcase-btn-grid').removeClass('active');
-									$('#testcase-btn-list').addClass('active');
-									$('#testcaseBody').html($('#tableImpl').render({'results' : reports.testmethods}));
-									afterRender(reports.testmethods,'');
+                        renderPageCombo("#", ".pageSizeCombo");
+                        renderSearch("#", "#testCaseSearch", reports.testmethods);
+                        renderPageNumbers("#", 1, noOfPage);
+                        renderPagination("#", noOfPage);
+                        renderTable("#", filterSearch,index,pageSize);
 
-									textCaseTable = $('#paginationTextCaseTable').dataTable(
-										{
-											"pagingType" : "full_numbers",
-											"iDisplayLength" : 100,
-											"bAutoWidth" : false,
-											"bLengthChange" : true,
-											"bProcessing" : true,
-											"bDeferRender" : true,
-											"columnDefs" : [ {
-												"targets" : [ 6 ],
-												"visible" : false,
-												"searchable" : true
-											} ]
-										});
-								});
+                        //Pagination for Config Test case table
+                        configFilterSearch = reports.configurationmethods;
+                        configTotal = configFilterSearch.length;
+                        configNoOfPage = Math.ceil(configTotal/configPageSize);
 
-								$('#configTestcaseBody').html($('#configTableImpl').render({'results' : reports.configurationmethods}));
-								afterRender(reports.configurationmethods,'-config');
-								$('#paginationTextConfigTable').dataTable(
-									{
-										"pagingType" : "full_numbers",
-										"bAutoWidth" : false,
-										"bProcessing" : true,
-										"bDeferRender" : true,
-										"columnDefs" : [ {
-											"targets" : [ 6 ],
-											"visible" : false,
-											"searchable" : true
-									}]
-								});
+                        renderPageCombo("#config-", ".config-pageSizeCombo");
+                        renderSearch("#config-", "#config-testCaseSearch", reports.configurationmethods);
+                        renderPageNumbers("#config-", 1, configNoOfPage);
+                        renderPagination("#config-", configNoOfPage);
+                        renderTable("#config-", configFilterSearch, configIndex, configPageSize);
 
-								$('.btn-auto-update').click(function() {
-									var span = $(this).find('span');
-									if ($(span).hasClass('label-success')) {
-										$(span).removeClass('label-success').addClass('label-danger').html('Off');
-										if (autoRefresh != null) {
-											clearInterval(autoRefresh);
-										}
-									} else {
-										$(span).removeClass('label-danger').addClass('label-success').html('On');
-										autoRefresh = setInterval(reloadPage,timeRefresh);
-									}
-								});
+                        $('#testcase-btn-grid').click(function() {
+                            $('#testcaseParentBody .fixed-table-pagination').hide();
+                            $('#testcase-btn-list').removeClass('active');
+                            $('#testcase-btn-grid').addClass('active');
+                            $('#testcaseBody').html($('#gridImpl').render({'results' : reports.testmethods}));
+                            afterRender(reports.testmethods, '');
+                        });
 
-								enableClick("passed");
-								enableClick("failed");
-								enableClick("skipped");
-								enableClick("running");
-								$('#statistics-data').click(function() {
-									textCaseTable.fnFilter('');
-								});
-							});
+                        $('#testcase-btn-list').click(function() {
+                            $('#testcase-btn-grid').removeClass('active');
+                            $('#testcase-btn-list').addClass('active');
+                            renderTable("#", filterSearch,index,pageSize);
+                            $('#testcaseParentBody .fixed-table-pagination').show();
+                            afterRender(filterSearch,'');
+                        });
 
-					function enableClick(status) {
-						$('#statistics-progress-' + status).click(function() {
-							textCaseTable.fnFilter(status);
-						});
-					}
+                        $('.btn-auto-update').click(function() {
+                            var span = $(this).find('span');
+                            if ($(span).hasClass('label-success')) {
+                                $(span).removeClass('label-success').addClass('label-danger').html('Off');
+                                if (autoRefresh != null) {
+                                    clearInterval(autoRefresh);
+                                }
+                            } else {
+                                $(span).removeClass('label-danger').addClass('label-success').html('On');
+                                autoRefresh = setInterval(reloadPage,timeRefresh);
+                            }
+                        });
 
-					function searchResults(data) {
-						var filterCtrl = $("#paginationTextCaseTable_filter :input");
-						filterCtrl.val(data);
-						filterCtrl.keyup();
-					}
+                       enableClickForProgressBar("passed");
+                       enableClickForProgressBar("failed");
+                       enableClickForProgressBar("skipped");
+                       enableClickForProgressBar("running");
+                       $('#statistics-data').click(function() {
+                           searchResults('');
+                       });
 
-					function afterRender(data, buttonAdditonalClassName) {
+                    });
 
-						$("a[data-toggle='tooltip']").tooltip();
+                    function renderPageCombo(pageAdditionalId, comboClassName) {
 
-						$('.btn-screenshot' + buttonAdditonalClassName).click(function() {
-							var testcase = data[parseInt($(this).attr('data-index'))];
-							var params = ' ';
-							if (testcase['parameters'] != null) {
-								params = testcase['parameters'];
-							}
-							$('.modal-screenshot .modal-header .modal-title').text(
-								testcase['packageInfo'] + '.' + testcase['className'] + '.' + testcase['methodName']
-										+ '(' + params + ')');
-							$('.modal-screenshot .modal-body').html($("#screenshotImpl").render(testcase));
-							$('.modal-screenshot').modal();
-						});
+                        $(comboClassName + " li a").click(function(){
+                          var selText = $(this).text();
+                          $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
 
-						$('.btn-stacktrace' + buttonAdditonalClassName).click(function() {
-							var testcase = data[parseInt($(this).attr('data-index'))];
-							var params = ' ';
-							if (testcase['parameters'] != null) {
-								params = testcase['parameters'];
-							}
-							$('.modal-stacktrace .modal-header .modal-title').text(
-								testcase['packageInfo'] + '.' + testcase['className'] + '.' + testcase['methodName']
-										+ '(' + params + ')');
-							$('.modal-stacktrace .modal-body').html($("#stacktraceImpl").render(testcase, {
-								getUpdatedStackTrace : function(value) {
-									var newValue = 'No data to display';
-									if (value != null) {
-										var temp = value.replace(/\n/g, '<br/>');
-										newValue = temp.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
-									}
-									return newValue;
-								}
-							}));
-							$('.modal-stacktrace').modal();
-					});
-				}
+                          var mPageSize = parseInt(selText);
+                          var mNoOfPage;
+                          var mFilterSearch;
+
+                          if(pageAdditionalId == "#") {
+                             pageSize = mPageSize;
+                             noOfPage = Math.ceil(total/pageSize);
+                             mNoOfPage = noOfPage;
+                             index = 1;
+                             mFilterSearch = filterSearch;
+                          } else {
+                             configPageSize = mPageSize;
+                             configNoOfPage = Math.ceil(configTotal / configPageSize);
+                             mNoOfPage = configNoOfPage;
+                             configIndex = 1;
+                             mFilterSearch = configFilterSearch;
+                          }
+
+                          $(pageAdditionalId + 'testcase-pagination ul .page-number').remove();
+                          renderPageNumbers(pageAdditionalId, 1, mNoOfPage);
+                          renderTable(pageAdditionalId, mFilterSearch, 1, mPageSize);
+                       });
+                    }
+
+                    function renderSearch(pageAdditionalId, searchBoxId, records) {
+
+                       $(searchBoxId).keyup(function() {
+
+                           var val = $.trim($(this).val()).replace(/ + /g, ' ').toLowerCase();
+                           var searchArray = new Array(); var j=0;
+
+                           for (i = 0; i < records.length; i++) {
+                               var testCase = records[i];
+                               if(matchTestCase(testCase, val)) {
+                                 searchArray[j++] = testCase;
+                               }
+                           }
+
+                          setFilterSearch(pageAdditionalId, searchArray);
+                          setIndex(pageAdditionalId, 1);
+                          setNoOfPage(pageAdditionalId, Math.ceil(getFilterSearch(pageAdditionalId).length / getPageSize(pageAdditionalId)));
+
+                          if(searchBoxId == "#testCaseSearch") {
+                             total = filterSearch.length;
+                          } else {
+                             configTotal = configFilterSearch.length;
+                          }
+
+                           $(pageAdditionalId + 'testcase-pagination ul .page-number').remove();
+                           renderPageNumbers(pageAdditionalId, 1, getNoOfPage(pageAdditionalId));
+                           renderTable(pageAdditionalId, getFilterSearch(pageAdditionalId), 1, getPageSize(pageAdditionalId));
+                       });
+                    }
+
+                    function renderPagination(pageAdditionalId, mNoOfPage) {
+
+                      $(pageAdditionalId + 'testcase-pagination ul .page-first').click(function() {
+                           if(1 != getIndex(pageAdditionalId)) {
+                             setIndex(pageAdditionalId, 1);
+                             $(pageAdditionalId + 'testcase-pagination ul .page-number').remove();
+                             renderPageNumbers(pageAdditionalId, 1, getNoOfPage(pageAdditionalId));
+                             renderTable(pageAdditionalId, getFilterSearch(pageAdditionalId), getIndex(pageAdditionalId), getPageSize(pageAdditionalId));
+                           }
+                      });
+
+                       $(pageAdditionalId + 'testcase-pagination ul .page-pre').click(function() {
+                           if(0 < (getIndex(pageAdditionalId) - getPageSize(pageAdditionalId))) {
+                             setIndex(pageAdditionalId, (getIndex(pageAdditionalId) - getPageSize(pageAdditionalId)));
+                             var k = $(pageAdditionalId + 'testcase-pagination ul .page-number').first().find('a').text();
+                             var n = parseInt(k) - 1;
+                             if(n > 0) {
+                               $(pageAdditionalId + 'testcase-pagination ul .page-number').last().remove();
+                               $(pageAdditionalId + "testcase-pagination ul .page-pre").after($('<li>').attr('data-index',n).addClass('page-number').append($('<a>').attr('href','javascript:void(0)').append(n) ));
+                             }
+
+                             renderTable(pageAdditionalId, getFilterSearch(pageAdditionalId), getIndex(pageAdditionalId), getPageSize(pageAdditionalId));
+                           }
+                      });
+
+                       $(pageAdditionalId + 'testcase-pagination ul .page-number').click(function() {
+                             setIndex(pageAdditionalId,((parseInt($(this).attr('data-index')) - 1) * getPageSize(pageAdditionalId)) + 1);
+                             renderTable(pageAdditionalId, getFilterSearch(pageAdditionalId), getIndex(pageAdditionalId), getPageSize(pageAdditionalId));
+                         });
+
+                       $(pageAdditionalId + 'testcase-pagination ul .page-next').click(function() {
+                           if(getFilterSearch(pageAdditionalId).length >= (getIndex(pageAdditionalId) + getPageSize(pageAdditionalId))) {
+                             setIndex(pageAdditionalId, (getIndex(pageAdditionalId) + getPageSize(pageAdditionalId)));
+                             var k = $(pageAdditionalId + 'testcase-pagination ul .page-number').last().find('a').text();
+                             var n = parseInt(k) + 1;
+                             if(n <= getNoOfPage(pageAdditionalId)) {
+                              $(pageAdditionalId + 'testcase-pagination ul .page-number').first().remove();
+                              $(pageAdditionalId + "testcase-pagination ul .page-next").before($('<li>').attr('data-index',n).addClass('page-number').append($('<a>').attr('href','javascript:void(0)').append(n) ));
+                             }
+                             renderTable(pageAdditionalId, getFilterSearch(pageAdditionalId), getIndex(pageAdditionalId), getPageSize(pageAdditionalId));
+                           }
+                         });
+
+                       $(pageAdditionalId + 'testcase-pagination ul .page-last').click(function() {
+                           if(getFilterSearch(pageAdditionalId).length >= (getIndex(pageAdditionalId) + getPageSize(pageAdditionalId))) {
+                             var divIndex = Math.floor(getFilterSearch(pageAdditionalId).length / getPageSize(pageAdditionalId));
+                             var modIndex = getFilterSearch(pageAdditionalId).length % getPageSize(pageAdditionalId);
+                             setIndex(pageAdditionalId, (divIndex * getPageSize(pageAdditionalId)) + 1);
+                             if(modIndex == 0) {
+                              setIndex(pageAdditionalId, ((divIndex - 1) * getPageSize(pageAdditionalId)) + 1);
+                             }
+
+                             $(pageAdditionalId + 'testcase-pagination ul .page-number').remove();
+                             var siForPage = (getNoOfPage(pageAdditionalId) - 4);
+                             if(siForPage < 1) {
+                               siForPage = 1;
+                             }
+                             renderPageNumbers(pageAdditionalId, siForPage, getNoOfPage(pageAdditionalId));
+
+                             renderTable(pageAdditionalId, getFilterSearch(pageAdditionalId), getIndex(pageAdditionalId), getPageSize(pageAdditionalId));
+                           }
+                         });
+
+                    }
+
+                    function renderTable(pageAdditionalId, rtFilterSearch, rtIndex, rtPageSize) {
+
+                      var endIndex = rtIndex + rtPageSize - 1;
+                      var filterResult = extractResults(rtFilterSearch,rtIndex,endIndex);
+                      $(pageAdditionalId + 'testcaseBody').html($(pageAdditionalId + 'tableImpl').render({'results' : filterResult}, {"startIndex":rtIndex}, {"count": endIndex}));
+
+                      if(pageAdditionalId == '#') {
+                        afterRender(filterResult, '');
+                      } else {
+                        afterRender(filterResult, '-config');
+                      }
+
+                      if(filterSearch.length <= (endIndex - rtIndex)) {
+                        endIndex = rtFilterSearch.length;
+                      }
+                      $(pageAdditionalId + 'testcase-page-info').html("Showing " + rtIndex + " to " + endIndex + " of " + rtFilterSearch.length + " rows");
+
+                      $(pageAdditionalId + 'testcase-pagination ul .page-number').click(function() {
+                        var mIndex = ((parseInt($(this).attr('data-index')) - 1) * rtPageSize) + 1;
+
+                        if(pageAdditionalId == '#') {
+                          index = mIndex;
+                        } else {
+                          configIndex = mIndex;
+                        }
+                        renderTable(pageAdditionalId, rtFilterSearch,mIndex, rtPageSize);
+                      });
+                    }
+
+                    function renderPageNumbers(paginationId, startNumber, mNoOfPage) {
+                      var pageLoaded = 0;
+                      for (i = startNumber; (i <= mNoOfPage) && (pageLoaded < 5); i++) {
+                          $(paginationId + "testcase-pagination ul .page-next").before($('<li>').attr('data-index',i).addClass('page-number').append($('<a>').attr('href','javascript:void(0)').append(i) ));
+                          pageLoaded++;
+                      }
+                    }
+
+                    function matchTestCase(testCase, val) {
+                        if(!matchValue(testCase.status, val) || !matchValue(testCase.suite, val)  || !matchValue(testCase.test, val) || !matchValue(testCase.packageInfo, val) || !matchValue(testCase.className, val) || !matchValue(testCase.methodName, val)) {
+                            return true;
+                          }
+                        return false;
+                    }
+
+                    function matchValue(left, right) {
+                     var text = left.replace(/\s+/g, ' ').toLowerCase();
+                     return !~text.indexOf(right);
+                    }
+
+                    function extractResults(data, startIndex, endIndex) {
+                        var result = new Array(); var j=0;
+                        for (i = (startIndex-1); (i < endIndex) && (i < data.length); i++) {
+                            result[j++] = data[i];
+                        }
+                        return result;
+                    }
+
+                    function enableClickForProgressBar(status) {
+                        $('#statistics-progress-' + status).click(function() {
+                            searchResults(status);
+                        });
+                    }
+
+                    function searchResults(data) {
+                        var filterCtrl = $("#testCaseSearch");
+                            filterCtrl.val(data);
+                            filterCtrl.keyup();
+                    }
+
+                    function afterRender(data, buttonAdditonalClassName) {
+
+                        $("a[data-toggle='tooltip']").tooltip();
+
+                        $('.btn-screenshot' + buttonAdditonalClassName).click(function() {
+                            var testcase = data[parseInt($(this).attr('data-index'))];
+                            var params = ' ';
+                            if (testcase['parameters'] != null) {
+                                params = testcase['parameters'];
+                            }
+                            $('.modal-screenshot .modal-header .modal-title').text(
+                                testcase['packageInfo'] + '.' + testcase['className'] + '.' + testcase['methodName']
+                                        + '(' + params + ')');
+                            $('.modal-screenshot .modal-body').html($("#screenshotImpl").render(testcase));
+                            $('.modal-screenshot').modal();
+                        });
+
+                        $('.btn-stacktrace' + buttonAdditonalClassName).click(function() {
+                            var testcase = data[parseInt($(this).attr('data-index'))];
+                            var params = ' ';
+                            if (testcase['parameters'] != null) {
+                                params = testcase['parameters'];
+                            }
+                            $('.modal-stacktrace .modal-header .modal-title').text(
+                                testcase['packageInfo'] + '.' + testcase['className'] + '.' + testcase['methodName']
+                                        + '(' + params + ')');
+                            $('.modal-stacktrace .modal-body').html($("#stacktraceImpl").render(testcase, {
+                                getUpdatedStackTrace : function(value) {
+                                    var newValue = 'No data to display';
+                                    if (value != null) {
+                                        var temp = value.replace(/\n/g, '<br/>');
+                                        newValue = temp.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+                                    }
+                                    return newValue;
+                                }
+                            }));
+                            $('.modal-stacktrace').modal();
+                        });
+
+                }
 
                 function displayImage(src, title) {
                     $('.modal-image .modal-body').find('img').attr('src',src);
@@ -517,6 +749,69 @@
                     $('.modal-source .modal-header .modal-title').text(title);
                     $('.modal-source').modal();
                 }
-			</script>
+
+                 function setIndex(pageAdditionalId, val) {
+                   if(pageAdditionalId == '#') {
+                     index = val;
+                   } else {
+                     configIndex = val;
+                   }
+                 }
+
+                 function getIndex(pageAdditionalId) {
+                   if(pageAdditionalId == '#') {
+                     return index;
+                   } else {
+                     return configIndex;
+                   }
+                 }
+
+                 function setNoOfPage(pageAdditionalId, val) {
+                   if(pageAdditionalId == '#') {
+                     noOfPage = val;
+                   } else {
+                     configNoOfPage = val;
+                   }
+                 }
+
+                 function getNoOfPage(pageAdditionalId) {
+                   if(pageAdditionalId == '#') {
+                     return noOfPage;
+                   } else {
+                     return configNoOfPage;
+                   }
+                 }
+
+                 function setPageSize(pageAdditionalId, val) {
+                   if(pageAdditionalId == '#') {
+                     pageSize = val;
+                   } else {
+                     configPageSize = val;
+                   }
+                 }
+
+                 function getPageSize(pageAdditionalId) {
+                   if(pageAdditionalId == '#') {
+                     return pageSize;
+                   } else {
+                     return configPageSize;
+                   }
+                 }
+                 function setFilterSearch(pageAdditionalId, val) {
+                   if(pageAdditionalId == '#') {
+                     filterSearch = val;
+                   } else {
+                     configFilterSearch = val;
+                   }
+                 }
+
+                 function getFilterSearch(pageAdditionalId) {
+                   if(pageAdditionalId == '#') {
+                     return filterSearch;
+                   } else {
+                     return configFilterSearch;
+                   }
+                 }
+            </script>
     </body>
 </html>

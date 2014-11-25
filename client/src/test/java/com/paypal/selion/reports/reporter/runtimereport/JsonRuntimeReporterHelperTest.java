@@ -50,11 +50,11 @@ public class JsonRuntimeReporterHelperTest {
 
         assertEquals(jsonArray.size(), 1);
         JsonObject jsonObject = (JsonObject) jsonArray.get(0);
-        assertEquals(jsonObject.get("suite"), suiteName);
-        assertEquals(jsonObject.get("test"), testName);
-        assertEquals(jsonObject.get("packageInfo"), packageName);
-        assertEquals(jsonObject.get("className"), className);
-        assertEquals(jsonObject.get("status"), "Passed");
+        assertEquals(jsonObject.get("suite").getAsString(), suiteName);
+        assertEquals(jsonObject.get("test").getAsString(), testName);
+        assertEquals(jsonObject.get("packageInfo").getAsString(), packageName);
+        assertEquals(jsonObject.get("className").getAsString(), className);
+        assertEquals(jsonObject.get("status").getAsString(), "Passed");
 
     }
 
@@ -75,11 +75,11 @@ public class JsonRuntimeReporterHelperTest {
 
         assertEquals(jsonArray.size(), 1);
         JsonObject jsonObject = (JsonObject) jsonArray.get(0);
-        assertEquals(jsonObject.get("suite"), suiteName);
-        assertEquals(jsonObject.get("test"), testName);
-        assertEquals(jsonObject.get("packageInfo"), packageName);
-        assertEquals(jsonObject.get("className"), className);
-        assertEquals(jsonObject.get("status"), "Passed");
+        assertEquals(jsonObject.get("suite").getAsString(), suiteName);
+        assertEquals(jsonObject.get("test").getAsString(), testName);
+        assertEquals(jsonObject.get("packageInfo").getAsString(), packageName);
+        assertEquals(jsonObject.get("className").getAsString(), className);
+        assertEquals(jsonObject.get("status").getAsString(), "Passed");
 
     }
 

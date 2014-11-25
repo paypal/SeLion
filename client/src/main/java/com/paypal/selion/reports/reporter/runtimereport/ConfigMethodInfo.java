@@ -47,8 +47,6 @@ public class ConfigMethodInfo extends MethodInfo {
             ITestResult result) {
         super(suite, test, packages, classname, result);
         this.type = type;
-
-        loadMethodInfo(result);
     }
 
 }

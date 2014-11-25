@@ -58,8 +58,6 @@ public class TestMethodInfo extends MethodInfo {
         if (!param.isEmpty()) {
             this.parameters = param;
         }
-
-        loadMethodInfo(result);
     }
 
 }
