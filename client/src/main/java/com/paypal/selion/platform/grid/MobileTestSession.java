@@ -39,6 +39,8 @@ public class MobileTestSession extends AbstractTestSession {
     private String appLanguage;
     private String appLocale;
     private String deviceSerial;
+    private String deviceType;
+    private String platformVersion;
 
     MobileTestSession() {
         super();
@@ -74,27 +76,45 @@ public class MobileTestSession extends AbstractTestSession {
 
     public WebDriverPlatform getPlatform() {
         WebDriverPlatform platform = WebDriverPlatform.ANDROID;
-        if (getDevice().equalsIgnoreCase("iphone") || getDevice().equalsIgnoreCase("ipad")) {
+        if (getDevice().toLowerCase().contains("iphone") || getDevice().toLowerCase().contains("ipad")) {
             platform = WebDriverPlatform.IOS;
         }
         return platform;
     }
 
+    public String getPlatformVersion() {
+        return platformVersion;
+    }
+
     public String getDevice() {
-        if (device.contains("android") || device.equalsIgnoreCase("iphone") || device.equalsIgnoreCase("ipad")) {
+        final String errorMessage = "The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
+                            + " 'android:17', 'android:18', etc.";
+        if (StringUtils.isNotBlank(device) &&
+                (device.toLowerCase().contains("android") || device.toLowerCase().contains("iphone") || device.toLowerCase().contains("ipad"))) {
+            if (device.contains(":")) {
+                String args[] = device.split(":");
+                //validate to make sure we only get 2 parameters
+                if (args == null || args.length !=2) {
+                    throw new IllegalArgumentException(errorMessage);
+                }
+                platformVersion = args[1];
+                device = args[0];
+            }
             return device;
         } else {
-            throw new IllegalArgumentException("The device should either be provided as 'iphone', 'ipad', 'android16',"
-                    + " 'android17', 'android18', or 'android19'.");
+            throw new IllegalArgumentException(errorMessage);
         }
+    }
+
+    public String getDeviceType() {
+        return deviceType;
     }
 
     @Override
     public SeLionSession startSesion() {
         logger.entering();
-        BrowserFlavors flavor = null;
+        BrowserFlavors flavor;
         try {
-            //
             flavor = BrowserFlavors.getBrowser(this.appName);
         } catch (IllegalArgumentException ex) {
             flavor = BrowserFlavors.GENERIC;
@@ -148,6 +168,9 @@ public class MobileTestSession extends AbstractTestSession {
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.deviceSerial())) {
                 this.deviceSerial = deviceTestAnnotation.deviceSerial();
+            }
+            if (StringUtils.isNotBlank(deviceTestAnnotation.deviceType())) {
+                this.deviceType = deviceTestAnnotation.deviceType();
             }
         }
         logger.exiting();

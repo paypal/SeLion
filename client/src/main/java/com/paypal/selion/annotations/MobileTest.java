@@ -40,11 +40,19 @@ public @interface MobileTest {
      *     Grid.open(&quot;http://paypal.com&quot;);
      * }
      * </pre>
+     * App version can be specified as part of the appName as:
+     * <pre>
+     * appName = &quot;Safari:7.0&quot;
+     * </pre>
      */
     String appName() default "";
 
     /**
      * Establish the type of device to be used. Default's to <code>iphone</code>
+     * Platform version can be specified as part of the device as:
+     * <pre>
+     * device = &quot;iphone:7.1&quot;
+     * </pre>
      */
     String device() default "iphone";
 
@@ -64,5 +72,11 @@ public @interface MobileTest {
      * Device Serial to be used. Defaults to device/emulator chosen by Selendroid
      */
     String deviceSerial() default "";
+
+    /**
+     * Establish the type of device to be used (Nexus5, iPhone6, iPadAir, etc).
+     * Defaults to device/emulator chosen by Selendroid / iosDriver
+     */
+    String deviceType() default "";
 
 }
