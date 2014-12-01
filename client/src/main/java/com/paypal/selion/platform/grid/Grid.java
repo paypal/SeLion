@@ -15,8 +15,6 @@
 
 package com.paypal.selion.platform.grid;
 
-import io.selendroid.SelendroidDriver;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,12 +28,17 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
+
 import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 import org.uiautomation.ios.client.uiamodels.impl.augmenter.IOSDriverAugmenter;
+
+import io.selendroid.client.SelendroidDriver;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;

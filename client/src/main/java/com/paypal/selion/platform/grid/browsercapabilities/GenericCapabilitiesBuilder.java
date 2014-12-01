@@ -15,7 +15,7 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
-import io.selendroid.SelendroidCapabilities;
+import io.selendroid.common.SelendroidCapabilities;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.uiautomation.ios.IOSCapabilities;

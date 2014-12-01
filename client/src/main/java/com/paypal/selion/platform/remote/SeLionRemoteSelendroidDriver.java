@@ -15,8 +15,8 @@
 
 package com.paypal.selion.platform.remote;
 
-import io.selendroid.SelendroidDriver;
-import io.selendroid.SelendroidCapabilities;
+import io.selendroid.client.SelendroidDriver;
+import io.selendroid.common.SelendroidCapabilities;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.HttpCommandExecutor;

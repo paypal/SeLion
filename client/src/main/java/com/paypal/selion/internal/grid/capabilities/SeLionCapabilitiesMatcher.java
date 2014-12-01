@@ -15,7 +15,7 @@
 
 package com.paypal.selion.internal.grid.capabilities;
 
-import io.selendroid.SelendroidCapabilities;
+import io.selendroid.common.SelendroidCapabilities;
 import io.selendroid.grid.SelendroidCapabilityMatcher;
 
 import java.util.HashMap;
