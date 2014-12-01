@@ -17,15 +17,30 @@ package com.paypal.selion.ios.sample;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.reports.runtime.MobileReporter;
 import com.paypal.selion.reports.runtime.WebReporter;
 
 import org.testng.annotations.Test;
 
 public class IOSTest {
-    @Test
     @MobileTest(appName = "Safari")
+    @Test
     public void mobileTest() {
         Grid.open("http://www.paypal.com");
         WebReporter.log("screenshot", true, true);
+    }
+
+    @MobileTest(appName = "Safari", device = "ipad")
+    @Test
+    public void testIOSDefaultsIpad() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        Grid.open("http://www.paypal.com");
+    }
+
+    @MobileTest(appName = "Safari", device = "ipad:8.0", deviceType = "iPadAir")
+    @Test
+    public void testIOSDefaultsIpadAir() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        Grid.open("http://www.paypal.com");
     }
 }
