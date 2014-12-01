@@ -39,6 +39,8 @@ public class MobileTestSession extends AbstractTestSession {
     private String appLanguage;
     private String appLocale;
     private String deviceSerial;
+    private String deviceType;
+    private String platformVersion;
 
     MobileTestSession() {
         super();
@@ -80,13 +82,25 @@ public class MobileTestSession extends AbstractTestSession {
         return platform;
     }
 
+    public String getPlatformVersion() {
+        return platformVersion;
+    }
+
     public String getDevice() {
-        if (device.contains("android") || device.equalsIgnoreCase("iphone") || device.equalsIgnoreCase("ipad")) {
+        if (device.contains("android") || device.contains("iphone") || device.contains("ipad")) {
+            if (StringUtils.contains(device, ":")) {
+                platformVersion = StringUtils.split(this.device, ":")[1];
+                device = StringUtils.split(this.device, ":")[0];
+            }
             return device;
         } else {
-            throw new IllegalArgumentException("The device should either be provided as 'iphone', 'ipad', 'android16',"
-                    + " 'android17', 'android18', or 'android19'.");
+            throw new IllegalArgumentException("The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
+                    + " 'android:17', 'android:18', etc.");
         }
+    }
+
+    public String getDeviceType() {
+        return deviceType;
     }
 
     @Override
@@ -148,6 +162,9 @@ public class MobileTestSession extends AbstractTestSession {
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.deviceSerial())) {
                 this.deviceSerial = deviceTestAnnotation.deviceSerial();
+            }
+            if (StringUtils.isNotBlank(deviceTestAnnotation.deviceType())) {
+                this.deviceType = deviceTestAnnotation.deviceType();
             }
         }
         logger.exiting();

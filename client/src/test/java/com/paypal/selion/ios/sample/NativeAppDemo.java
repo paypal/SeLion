@@ -28,9 +28,9 @@ import com.paypal.selion.reports.runtime.MobileReporter;
 
 public class NativeAppDemo {
 
-    @MobileTest(appName = "InternationalMountains")
+    @MobileTest(appName = "InternationalMountains", device = "iphone7.1", deviceSerial = "iPhone4s")
     @Test
-    public void testMethod() throws InterruptedException {
+    public void testSDKDeviceVariation4s() throws InterruptedException {
         MobileReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
@@ -47,5 +47,82 @@ public class NativeAppDemo {
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.iOSDriver().findElement(selector);
         System.out.println(text.getAttribute("name"));
+    }
+
+    @MobileTest(appName = "InternationalMountains:1.3", device = "iphone:7.1", deviceType = "iPhone5s")
+    @Test
+    public void testSDKDeviceVariation5s() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        Assert.assertEquals(9, cells.size());
+
+        // get the 1st mountain
+        WebElement first = cells.get(0);
+        first.click();
+        Thread.sleep(10 * 1000);
+
+        // take a screenshot using the normal selenium api.
+        MobileReporter.log("My Screenshot 2", true);
+
+        // access the content
+        By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
+        WebElement text = Grid.iOSDriver().findElement(selector);
+        System.out.println(text.getAttribute("name"));
+    }
+
+    @MobileTest(appName = "InternationalMountains", device = "iphone")
+    @Test
+    public void testIOSDefaults() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        Assert.assertEquals(9, cells.size());
+
+        // get the 1st mountain
+        WebElement first = cells.get(0);
+        first.click();
+        Thread.sleep(10 * 1000);
+
+        // take a screenshot using the normal selenium api.
+        MobileReporter.log("My Screenshot 2", true);
+
+        // access the content
+        By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
+        WebElement text = Grid.iOSDriver().findElement(selector);
+        System.out.println(text.getAttribute("name"));
+    }
+
+    @MobileTest(appName = "InternationalMountains:1.3", device = "iphone", deviceType = "iPhone6")
+    @Test
+    public void testIOSDefaultsIphone6() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        Assert.assertEquals(9, cells.size());
+
+        // get the 1st mountain
+        WebElement first = cells.get(0);
+        first.click();
+        Thread.sleep(10 * 1000);
+
+        // take a screenshot using the normal selenium api.
+        MobileReporter.log("My Screenshot 2", true);
+
+        // access the content
+        By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
+        WebElement text = Grid.iOSDriver().findElement(selector);
+        System.out.println(text.getAttribute("name"));
+    }
+
+    @MobileTest(appName = "Safari", device = "ipad")
+    @Test
+    public void testIOSDefaultsIpad() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        Grid.open("http://www.paypal.com");
+    }
+
+    @MobileTest(appName = "Safari", device = "ipad:8.0", deviceType = "iPadAir")
+    @Test
+    public void testIOSDefaultsIpadAir() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        Grid.open("http://www.paypal.com");
     }
 }
