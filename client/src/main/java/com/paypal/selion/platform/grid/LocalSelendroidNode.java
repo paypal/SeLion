@@ -15,9 +15,9 @@
 
 package com.paypal.selion.platform.grid;
 
-import io.selendroid.SelendroidConfiguration;
-import io.selendroid.SelendroidLauncher;
 import io.selendroid.grid.SelendroidSessionProxy;
+import io.selendroid.standalone.SelendroidConfiguration;
+import io.selendroid.standalone.SelendroidLauncher;
 
 import java.io.File;
 import java.util.ArrayList;
