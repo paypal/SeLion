@@ -19,17 +19,13 @@ import io.selendroid.grid.SelendroidSessionProxy;
 import io.selendroid.standalone.SelendroidConfiguration;
 import io.selendroid.standalone.SelendroidLauncher;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.configuration.ConversionException;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.openqa.grid.common.exception.GridException;
 
 import com.paypal.selion.configuration.Config;
@@ -103,41 +99,22 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         args.add("-selendroidServerPort");
         args.add(Integer.toString(Config.getIntConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT)));
 
+        // Specify the aut folder so its contents will be monitored and read by Selendroid.
         String autFolder = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
         if ((autFolder != null) && (!autFolder.trim().isEmpty())) {
-            File folder = new File(autFolder);
-            try {
-                Collection<File> files = FileUtils.listFiles(folder,
-                    FileFilterUtils.and(FileFilterUtils
-                               .notFileFilter(FileFilterUtils
-                                        .prefixFileFilter("resigned")),
-                        FileFilterUtils.suffixFileFilter(".apk")),
-                        FileFilterUtils.notFileFilter(FileFilterUtils
-                                .directoryFileFilter()));
-
-                for (File file : files) {
-                    args.add("-aut");
-                    args.add(file.getAbsolutePath());
-                }
-            } catch (IllegalArgumentException iae) {
-                logger.warning(iae.getMessage());
-            }
+            args.add("-folder");
+            args.add(autFolder);
         }
 
         String timeoutEmulatorStart = checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
         args.add(" -timeoutEmulatorStart ");
         args.add(timeoutEmulatorStart);
-        //TODO: krmahadevan says :
-        //This configuration is NOT yet available in Selendroid 0.11.0. So I am commenting out using it right now.
-        //We anyways are going to be moving over to the newer version of Selendroid very soon. So this can be enabled back
-        //once we depend on the newer version of Selendroid.
-//        String serverStartTimeout = checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);
-//        args.add(" -serverStartTimeout ");
-//        args.add(serverStartTimeout);
+        String serverStartTimeout = checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);
+        args.add(" -serverStartTimeout ");
+        args.add(serverStartTimeout);
         String sessionTimeout = checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
         args.add(" -sessionTimeout ");
         args.add(sessionTimeout);
-        
         args.add("-proxy");
         args.add(SelendroidSessionProxy.class.getCanonicalName());
         args.add("-host");
@@ -217,5 +194,4 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         logger.exiting(validatedValue);
         return validatedValue;
     }
-
 }
