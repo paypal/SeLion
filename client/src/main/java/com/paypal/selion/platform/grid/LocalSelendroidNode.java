@@ -103,25 +103,11 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         args.add("-selendroidServerPort");
         args.add(Integer.toString(Config.getIntConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT)));
 
+        // Specify the aut folder so its contents will be monitored and read by Selendroid.
         String autFolder = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
         if ((autFolder != null) && (!autFolder.trim().isEmpty())) {
-            File folder = new File(autFolder);
-            try {
-                Collection<File> files = FileUtils.listFiles(folder,
-                    FileFilterUtils.and(FileFilterUtils
-                               .notFileFilter(FileFilterUtils
-                                        .prefixFileFilter("resigned")),
-                        FileFilterUtils.suffixFileFilter(".apk")),
-                        FileFilterUtils.notFileFilter(FileFilterUtils
-                                .directoryFileFilter()));
-
-                for (File file : files) {
-                    args.add("-aut");
-                    args.add(file.getAbsolutePath());
-                }
-            } catch (IllegalArgumentException iae) {
-                logger.warning(iae.getMessage());
-            }
+            args.add("-folder");
+            args.add(autFolder);
         }
 
         String timeoutEmulatorStart = checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
@@ -137,7 +123,7 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         String sessionTimeout = checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
         args.add(" -sessionTimeout ");
         args.add(sessionTimeout);
-        
+
         args.add("-proxy");
         args.add(SelendroidSessionProxy.class.getCanonicalName());
         args.add("-host");
@@ -217,5 +203,4 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         logger.exiting(validatedValue);
         return validatedValue;
     }
-
 }
