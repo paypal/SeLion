@@ -27,7 +27,7 @@ import com.paypal.selion.reports.runtime.WebReporter;
 
 public class AndroidTest {
     @Test
-    @MobileTest(appName = "android", device = "android19")
+    @MobileTest(appName = "android", device = "android18")
     public void testLaunch() throws Exception {
         RemoteWebDriver driver = Grid.selendroidDriver();
         assertNotNull(driver);
