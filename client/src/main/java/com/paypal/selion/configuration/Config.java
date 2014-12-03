@@ -475,6 +475,19 @@ public final class Config {
         SELENIUM_NATIVE_APP_NAME("appName", "", false),
 
         /**
+         * This parameter represents the version of the app that is to be spawned. There are two way to specified the
+         * version of the native app.<br>
+         * Specify app version as part of the appName as:
+         * <pre>
+         * appName = &quot;Safari:7.0&quot;
+         * </pre>
+         * or by itself as:
+         * <pre>
+         * appVersion = &quot;7.0&quot;
+         */
+        SELENIUM_NATIVE_APP_VERSION("appVersion", "", false),
+
+        /**
          * This parameter represents the language to be used. By default it is always <code>English</code> represented
          * as <code>en</code>
          */

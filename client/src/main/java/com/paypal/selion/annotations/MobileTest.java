@@ -44,6 +44,19 @@ public @interface MobileTest {
     String appName() default "";
 
     /**
+     * Establish the version of application to use. 
+     * The version can be specified as part of the appName as:
+     * Specify app version as part of the appName as:
+     * <pre>
+     * appName = &quot;Safari:7.0&quot;
+     * </pre>
+     * or by itself as:
+     * <pre>
+     * appVersion = &quot;7.0&quot;
+     */
+    String appVersion() default "";
+
+    /**
      * Establish the type of device to be used. Default's to <code>iphone</code>
      */
     String device() default "iphone";
