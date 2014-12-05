@@ -57,9 +57,9 @@
                 So adding an explicit dependency on them to ensure that our logs dont show up any INFO level ClassNotFoundException, when 
                 a user tries to run tests locally. -->
             <dependency>
-                <groupId>com.github.detro.ghostdriver</groupId>
+                <groupId>com.codeborne</groupId>
                 <artifactId>phantomjsdriver</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.1</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>selenium-remote-driver</artifactId>

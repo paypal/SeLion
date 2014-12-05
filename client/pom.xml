@@ -121,7 +121,7 @@
             an explicit dependency on them to ensure that our logs dont show up any INFO level ClassNotFoundException, when a user tries 
             to run tests locally. -->
         <dependency>
-            <groupId>com.github.detro.ghostdriver</groupId>
+            <groupId>com.codeborne</groupId>
             <artifactId>phantomjsdriver</artifactId>
         </dependency>
         <dependency>

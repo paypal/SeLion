@@ -59,7 +59,7 @@ public interface ElementEventListener {
      * {@link TextField}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Typeable}
-     * @param expected The value that was typed in the field
+     * @param value The value that was typed in the field
      */
     void beforeType(Typeable target, String value);
     
@@ -68,7 +68,7 @@ public interface ElementEventListener {
      * {@link TextField}
      * 
      * @param target Instance of the element that triggered this event and implements {@link Typeable}
-     * @param expected The value that was typed in the field
+     * @param value The value that was typed in the field
      */
     void afterType(Typeable target, String value);
 
