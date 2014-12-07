@@ -34,6 +34,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class MobileTestSession extends AbstractTestSession {
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private String appName;
+    private String appVersion;
     private String appLocation;
     private String device = "iphone";
     private String appLanguage;
@@ -59,9 +60,17 @@ public class MobileTestSession extends AbstractTestSession {
         if (StringUtils.isBlank(appName)) {
             throw new IllegalArgumentException(
                     "Please specify the application name either via the @AppTest annotation or via the SeLion configuration parameter");
+        } else if (StringUtils.contains(appName, ":")) {
+            appVersion = StringUtils.split(this.appName, ":")[1];
+            appName = StringUtils.split(this.appName, ":")[0];
         }
         logger.exiting(appName);
         return appName;
+    }
+
+    public String getAppVersion() {
+        getAppName();
+        return appVersion;
     }
 
     public String getdeviceSerial() {
@@ -130,12 +139,19 @@ public class MobileTestSession extends AbstractTestSession {
         appLocale = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_LOCALE);
         appLanguage = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_LANGUAGE);
         appName = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_NAME);
+        appVersion = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_VERSION);
         deviceSerial = getLocalConfigProperty(ConfigProperty.SELENDROID_DEVICE_SERIAL);
 
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
             if (StringUtils.isNotBlank(deviceTestAnnotation.appName())) {
                 this.appName = deviceTestAnnotation.appName();
+                if (StringUtils.contains(this.appName, ":")) {
+                    this.appVersion = StringUtils.split(this.appName, ":")[1];
+                }
+            }
+            if(StringUtils.isNotBlank(deviceTestAnnotation.appVersion())) {
+                this.appVersion = deviceTestAnnotation.appVersion();
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.language())) {
                 this.appLanguage = deviceTestAnnotation.language();

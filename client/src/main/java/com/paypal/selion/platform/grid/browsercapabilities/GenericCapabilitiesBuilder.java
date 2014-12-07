@@ -25,6 +25,7 @@ import com.paypal.selion.platform.grid.MobileTestSession;
 
 class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private String appName = null;
+    private String appVersion = null;
     private String deviceType = null;
     private String language = null;
     private String locale = null;
@@ -47,6 +48,7 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             caps = SelendroidCapabilities.android();
             caps.setBrowserName("selendroid");
             caps.setCapability(SelendroidCapabilities.AUT, appName);
+            caps.setCapability(SelendroidCapabilities.AUT_VERSION, appVersion);
             String platformVersion = deviceType.toLowerCase().replace("android", "");
             caps.setCapability(SelendroidCapabilities.PLATFORM_VERSION, platformVersion);
             caps.setCapability(SelendroidCapabilities.LOCALE, this.locale);
@@ -60,6 +62,7 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private void initCapabilities() {
         MobileTestSession config = Grid.getMobileTestSession();
         if (config != null) {
+            this.appVersion = config.getAppVersion();
             this.appName = config.getAppName();
             this.deviceType = config.getDevice();
             this.language = config.getAppLanguage();
