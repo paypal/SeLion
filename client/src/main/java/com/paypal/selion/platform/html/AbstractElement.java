@@ -31,6 +31,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -47,6 +48,7 @@ import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.html.support.ParentNotFoundException;
 import com.paypal.selion.platform.html.support.events.Clickable;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
+import com.paypal.selion.platform.html.support.events.Hoverable;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.selion.reports.runtime.WebReporter;
 import com.paypal.selion.testcomponents.BasicPageImpl;
@@ -55,7 +57,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * Abstract element class for web elements.
  */
-public abstract class AbstractElement implements Clickable {
+public abstract class AbstractElement implements Clickable, Hoverable {
     private static final String ALERTS_ARE_NOT_SUPPORTED_ERR_MSG = "Alerts are not supported in iPhone/iPad/PhantomJS as of 2.39.0.";
     private String locator;
     private String controlName;
@@ -676,6 +678,36 @@ public abstract class AbstractElement implements Clickable {
             processScreenShot();
             
             dispatcher.afterClick(this, expected);
+        }
+    }
+    
+    /**
+     * Moves the mouse pointer to the middle of the element. And waits for the expected elements to be visible.
+     * 
+     * @param expected
+     *            - parameters in the form of an element locator {@link String}, a
+     *            {@link Button}, a {@link TextField}, an {@link Image}, a {@link Form}, a {@link Label}, a
+     *            {@link Table}, a {@link SelectList}, a {@link CheckBox}, or a {@link RadioButton}.
+     */
+    public void hover(final Object... expected) {
+        dispatcher.beforeHover(this, expected);
+        
+        new Actions(Grid.driver()).moveToElement(getElement()).perform();
+        
+        try {
+            for (Object expect : expected) {
+                if (expect instanceof AbstractElement) {
+                    AbstractElement a = (AbstractElement) expect;
+                    WebDriverWaitUtils.waitUntilElementIsVisible(a.getLocator());
+                } else if (expect instanceof String) {
+                    String s = (String) expect;
+                    WebDriverWaitUtils.waitUntilElementIsVisible(s);
+                }
+            }
+        } finally {
+            processScreenShot();
+            
+            dispatcher.afterHover(this, expected);
         }
     }
 }
