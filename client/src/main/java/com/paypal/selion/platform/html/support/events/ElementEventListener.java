@@ -243,4 +243,24 @@ public interface ElementEventListener {
      * @param target Instance of the element that triggered this event and implements {@link Selectable}
      */
     void afterDeselect(Deselectable target);
+
+    /**
+     * This event gets triggered before we hover an element. The following objects trigger this event,
+     * {@link Button}, {@link CheckBox}, {@link DatePicker}, {@link Form}, {@link Image}, {@link Label}, {@link Link},
+     * {@link RadioButton}, {@link SelectList}, {@link Table}, {@link TextField}
+     * 
+     * @param target Instance of the element that triggered this event and implements {@link Hoverable}
+     * @param expected The expected objects that were passed to the hover method
+     */
+    void beforeHover(Hoverable target, Object... expected);
+
+    /**
+     * This event gets triggered after we hover an element. The following objects trigger this event,
+     * {@link Button}, {@link CheckBox}, {@link DatePicker}, {@link Form}, {@link Image}, {@link Label}, {@link Link},
+     * {@link RadioButton}, {@link SelectList}, {@link Table}, {@link TextField}
+     * 
+     * @param target Instance of the element that triggered this event and implements {@link Hoverable}
+     * @param expected The expected objects that were passed to the hover method
+     */
+    void afterHover(Hoverable target, Object... expected);
 }

@@ -46,7 +46,25 @@ public class ElementEventTest {
         Assert.assertEquals(page.getLogLabel().getProperty("data-before-click"), "true", "beforeClick method was not triggered.");
         Assert.assertEquals(page.getLogLabel().getProperty("data-after-click"), "true", "afterClick method was not triggered.");
     }
-    
+
+    @Test(groups = { "functional" })
+    @WebTest
+    public void testHoverEvents() throws InterruptedException, IOException {
+        Grid.open("about:blank");
+        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
+        String script = getScript();
+        driver.executeScript(script);
+        Thread.sleep(4000);
+
+        Grid.driver().register(new ElementListenerTestImpl());
+
+        TestPage page = new TestPage("US");
+
+        page.getContinueButton().hover();
+        Assert.assertEquals(page.getLogLabel().getProperty("data-before-hover"), "true", "beforeHover method was not triggered.");
+        Assert.assertEquals(page.getLogLabel().getProperty("data-after-hover"), "true", "afterHover method was not triggered.");
+    }
+
     @Test(groups = { "functional" })
     @WebTest
     public void testTypeEvents() throws InterruptedException, IOException {

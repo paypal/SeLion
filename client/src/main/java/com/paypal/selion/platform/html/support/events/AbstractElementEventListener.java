@@ -141,4 +141,13 @@ public abstract class AbstractElementEventListener implements ElementEventListen
         //NOSONAR
     }
 
+    @Override
+    public void beforeHover(Hoverable target, Object... expected) {
+        //NOSONAR
+    }
+
+    @Override
+    public void afterHover(Hoverable target, Object... expected) {
+        //NOSONAR
+    }
 }

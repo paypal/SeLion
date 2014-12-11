@@ -213,4 +213,20 @@ public class ElementListenerTestImpl implements ElementEventListener {
         page.getLogLabel().setProperty("data-after-deselect", "true");
     }
 
+    @Override
+    public void beforeHover(Hoverable target, Object... expected) {
+        AbstractElement element = (AbstractElement) target;
+        TestPage page = (TestPage) element.getParent().getCurrentPage();
+
+        page.getLogLabel().setProperty("data-before-hover", "true");
+    }
+
+    @Override
+    public void afterHover(Hoverable target, Object... expected) {
+        AbstractElement element = (AbstractElement) target;
+        TestPage page = (TestPage) element.getParent().getCurrentPage();
+
+        page.getLogLabel().setProperty("data-after-hover", "true");
+    }
+
 }
