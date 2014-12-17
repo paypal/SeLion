@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <name>SeLion Parent POM</name>
     <description>The SeLion Parent POM</description>
-    <url>${siteUrl}</url>
+    <url>http://selion.io</url>
 
     <properties>
         <compileSource>1.7</compileSource>
@@ -29,39 +29,94 @@
         <module>archetype</module>
     </modules>
 
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <organization>
-        <name>Paypal</name>
-        <url>http://www.paypal.com</url>
+        <name>PayPal Open Source</name>
+        <url>http://paypal.github.io</url>
     </organization>
 
     <scm>
-        <connection>${scmConnection}</connection>
-        <developerConnection>${scmConnection}</developerConnection>
+        <connection>scm:git:git@github.com:paypal/SeLion.git</connection>
+        <developerConnection>scm:git:git@github.com:paypal/SeLion.git</developerConnection>
+        <url>https://github.com/paypal/SeLion</url>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>libs-releases</id>
-            <url>${releaseUrl}</url>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>libs-snapshots</id>
-            <url>${snapshotUrl}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>${jiraURL}</url>
-    </issueManagement>
 
     <repositories>
         <repository>
-            <id>central</id>
-            <url>http://repo1.maven.org/maven2/</url>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url> 
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+ 
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/paypal/SeLion/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>sebady</id>
+            <name>Sherif Ebady</name>
+            <url>https://github.com/sebady</url>
+            <roles>
+                <role>Project Admin</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>tomg2012</id>
+            <name>Tom Gilmour</name>
+            <roles>
+                <role>Community Manager</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>krmahadevan</id>
+            <name>Krishnan Mahadevan</name>
+            <url>https://github.com/krmahadevan</url>
+            <roles>
+                <role>Project Admin</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>mach6</id>
+            <name>Doug Simmons</name>
+            <url>https://github.com/mach6</url>
+            <roles>
+                <role>Project Owner</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+    </developers>
+    
+    <contributors>
+        <contributor>
+            <organization>SeLion Commiters</organization>
+            <organizationUrl>https://github.com/paypal/SeLion/blob/develop/AUTHORS</organizationUrl>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </contributor>
+    </contributors>
 
     <build>
         <pluginManagement>
