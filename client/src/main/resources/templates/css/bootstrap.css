@@ -5598,7 +5598,8 @@ button.close {
   left: 0;
   z-index: 1060;
   display: none;
-  max-width: 276px;
+  max-width: 500px;
+  width:500px;
   padding: 1px;
   text-align: left;
   background-color: #ffffff;

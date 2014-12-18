@@ -32,6 +32,9 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
+                    <a href="javascript:;" id="config-popover" data-placement="bottom" data-html="true" data-toggle="popover" title="Configuration Summary">Configuration</a>
+                    </li>
+                    <li>
                     <a href="javascript:;" class="btn-auto-update">Auto Update<span class="label label-success">On</span></a>
                     </li>
                     <li>
@@ -168,6 +171,23 @@
             </div>
             <!-- Results End -->
         </div>
+        <div class="modal fade modal-config" id="modal-id-config">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;
+                            </span>
+                            <span class="sr-only">Close
+                            </span>
+                        </button>
+                        <span class="modal-title">Test Configuration Summary</span>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade modal-screenshot" id="modal-id-screenshot">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -245,13 +265,13 @@
             <thead>
                 <tr>
                     <th style="width:5%">#</th>
-                    <th style="width:15%">Suite</th>
+                    <th style="width:13%">Suite</th>
                     <th style="width:10%">Test</th>
                     <th style="width:15%">Package</th>
                     <th style="width:15%">Class</th>
                     <th style="width:15%">Method</th>
                     <th style="width:18%">Parameters</th>
-                    <th style="width:7%"><th>
+                    <th style="width:9%"><th>
                 </tr>
             </thead>
             <tbody>
@@ -265,6 +285,7 @@
                     <td>{{:methodName}}</td>
                     <td>{{:parameters}}</td>
                     <td>
+                        <button type="button" data-index="{{:test}}" class="btn btn-default btn-xs btn-config" data-toggle="tooltip" data-placement="top" title="Config"><span class="glyphicon glyphicon-cog"></span></button>
                         <button type="button" data-index="{{:#index}}" class="btn btn-default btn-xs btn-screenshot" data-toggle="tooltip" data-placement="top" title="Screenshots"><span class="glyphicon glyphicon-picture"></span></button>
                     {{if status == "Failed" }}
                         <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-xs btn-stacktrace" data-toggle="tooltip" data-placement="top" title="Stacktrace"><span class="glyphicon glyphicon-warning-sign"></span></button>
@@ -329,7 +350,7 @@
                                     Suite: {{:suite}}
                                 </li>
                                 <li class="list-group-item">
-                                    Test: {{:test}}
+                                    Test: <a href="javascript:;" data-index="{{:test}}" class="btn-config">{{:test}}</a>
                                 </li>
                                 <li class="list-group-item">
                                     Package: {{:packageInfo}}
@@ -345,11 +366,13 @@
                                 </li>
                             </ul>
                             <div class="col-lg-6">
-                                <button type="button" data-index="{{:#index}}" class="btn btn-default btn-block btn-screenshot">Screenhots</button>
+                                <button type="button" data-index="{{:#index}}" class="btn btn-default btn-block btn-screenshot">Screenshots</button>
                             </div>
+                            {{if status == "Failed" }}
                             <div class="col-lg-6">
-                                <button type="button" data-index="{{:#index}}" class="btn btn-default btn-block btn-stacktrace">Stacktrace</button>
+                                <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-block btn-stacktrace">Stacktrace</button>
                             </div>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
@@ -383,12 +406,30 @@
             </div>
         {{/for}}
         </div>
-    </script>
+</script>
 <script id="stacktraceImpl" type="text/x-jsrender">
         <div class="row show">
             <p>{{:~getUpdatedStackTrace(stacktrace)}}</p>
         </div>
-    </script>
+</script>
+<script id="configImpl" type="text/x-jsrender">
+        <table class="table table-striped table-hover" id="configTable">
+            <thead>
+                <tr>
+                    <th>Parameter Name</th>
+                    <th>Parameter Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{for results}}
+                <tr>
+                    <td>{{:key}}</td>
+                    <td>{{:value}}</td>
+                </tr>
+                {{/for}}
+            </tbody>
+        </table>
+</script>
 <script type="text/javascript">
                     var pageSize = 10, configPageSize = 10;
                     var index = 1, configIndex = 1;
@@ -397,6 +438,7 @@
                     var filterSearch, configFilterSearch;
                     var autoRefresh;
                     var timeRefresh = 300 * 1000;//300 seconds refresh interval
+                    var localConfigMap = new Object();
                     var reports =
                         ${reports}
                         ;
@@ -406,6 +448,16 @@
                         function reloadPage() {
                             location.reload();
                         }
+
+                        //Prepare configuration summary content
+                        $('#config-popover').popover();
+                        var configData = $.map(reports.configsummary, function(value, key) {return {value: value, key: key}});
+                        $('#config-popover').attr('data-content', $('#configImpl').render({'results' : configData}));
+
+                        //Prepare local config summary map
+                        $.each(reports.localconfigsummary, function(idx, obj) {
+                            localConfigMap[obj.test] = $.map(obj, function(value, key) {return {value: value, key: key}}); 
+                        });
 
                         autoRefresh = setInterval(reloadPage,timeRefresh);
 
@@ -700,6 +752,12 @@
                     function afterRender(data, buttonAdditonalClassName) {
 
                         $("a[data-toggle='tooltip']").tooltip();
+
+                        $('.btn-config' + buttonAdditonalClassName).click(function() {
+                            var test = $(this).attr('data-index');
+                            $('.modal-config .modal-body').html($("#configImpl").render({'results' : localConfigMap[test]}));
+                            $('.modal-config').modal();
+                        });
 
                         $('.btn-screenshot' + buttonAdditonalClassName).click(function() {
                             var testcase = data[parseInt($(this).attr('data-index'))];

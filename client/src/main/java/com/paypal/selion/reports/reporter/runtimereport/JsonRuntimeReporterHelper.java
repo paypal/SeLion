@@ -304,12 +304,12 @@ public class JsonRuntimeReporterHelper {
                   localClassLoader.getResourceAsStream("templates/RuntimeReporter/index.html")));) {
 
             JsonObject reporter = buildJSONReport();
-
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            jsonWriter.write(gson.toJson(reporter));
+            String jsonReport = gson.toJson(reporter);
+            jsonWriter.write(jsonReport);
             jsonWriter.newLine();
 
-            generateHTMLReport(writer, templateReader, reporter);
+            generateHTMLReport(writer, templateReader, jsonReport);
 
         } catch (IOException | JsonParseException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -324,18 +324,18 @@ public class JsonRuntimeReporterHelper {
      *
      * @param writer
      * @param templateReader
-     * @param reporter
+     * @param jsonReport
      * @throws IOException
      */
-    private void generateHTMLReport(BufferedWriter writer, BufferedReader templateReader, JsonObject reporter)
+    private void generateHTMLReport(BufferedWriter writer, BufferedReader templateReader, String jsonReport)
             throws IOException {
 
-        logger.entering(new Object[] { writer, templateReader, reporter});
+        logger.entering(new Object[] { writer, templateReader, jsonReport});
 
         String readLine = null;
         while ((readLine = templateReader.readLine()) != null) {
             if(readLine.trim().equals("${reports}")) {
-                writer.write(reporter.toString());
+                writer.write(jsonReport);
                 writer.newLine();
             } else {
                 writer.write(readLine);
