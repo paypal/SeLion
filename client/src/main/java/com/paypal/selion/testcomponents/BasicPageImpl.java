@@ -115,7 +115,11 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
      *         returns false
      */
     public boolean hasExpectedPageTitle() {
-
+        // If there are no page titles defined we should return false
+        if(getPage().pageTitle == null) {
+            throw new PageYamlException(getPage().getClass().getName() + ".yaml has no pageTitle defined.");
+        }
+        
         List<String> pageTitles = Arrays.asList(getPage().pageTitle.split("\\|"));
         for (String title : pageTitles) {
             if (RegexUtils.wildCardMatch(getPage().getActualPageTitle(), title)) {
