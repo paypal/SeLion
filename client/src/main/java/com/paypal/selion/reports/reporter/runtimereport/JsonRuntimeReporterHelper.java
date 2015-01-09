@@ -37,6 +37,7 @@ import org.testng.ITestResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
@@ -352,15 +353,17 @@ public class JsonRuntimeReporterHelper {
     private JsonObject buildJSONReport() {
         logger.entering();
 
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
         JsonArray testObjects = loadJSONArray(jsonCompletedTest);
 
         for (TestMethodInfo temp : runningTest) {
-            testObjects.add(new JsonPrimitive(temp.toJson()));
+            testObjects.add(gson.fromJson (temp.toJson(), JsonElement.class));
         }
 
         JsonArray configObjects = loadJSONArray(jsonCompletedConfig);
         for (ConfigMethodInfo temp : runningConfig) {
-            configObjects.add(new JsonPrimitive(temp.toJson()));
+            configObjects.add(gson.fromJson (temp.toJson(), JsonElement.class));
         }
 
         JsonObject reporter = new JsonObject();
