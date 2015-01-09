@@ -15,12 +15,14 @@
 
 package com.paypal.selion.platform.grid;
 
+import org.testng.ITestContext;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.configuration.LocalConfig;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.MobileTestSession;
 import com.paypal.selion.platform.grid.WebTestSession;
@@ -34,14 +36,10 @@ public class GridTest {
      */
     @WebTest
     @Test(groups = "functional")
-    public void testGetNewTimeOut() {
-        String origTimeout = Config.getConfigProperty(ConfigProperty.EXECUTION_TIMEOUT);
-        try {
-            Config.setConfigProperty(ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            assertEquals(Grid.getExecutionTimeoutValue(), 20000l, "Verify the timeout value is correctly retrieved");
-        } finally {
-            Config.setConfigProperty(ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
-        }
+    public void testGetNewTimeOut(ITestContext ctx) {
+        LocalConfig lc = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName());
+        lc.setConfigProperty(ConfigProperty.EXECUTION_TIMEOUT, "20000");
+        assertEquals(Grid.getExecutionTimeoutValue(), 20000l, "Verify the timeout value is correctly retrieved");
     }
 
     @WebTest

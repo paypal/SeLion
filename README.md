@@ -27,6 +27,7 @@ Feel free to ask questions and/or share ideas.
 
 - [Raise a GitHub Issue](https://github.com/paypal/SeLion/issues).
 - [Join our Google Group](https://groups.google.com/forum/#!forum/selion).
+- Find us in #selion on irc.freenode.net
 - Initiate a pull request, if you have a contribution.
 
 Submitting bugs and feature requests
@@ -47,11 +48,10 @@ Your contribution is welcome and appreciated!
 Areas that need contribution
 -----------------------------
 1. Project Documentation.
-2. Expanding @MobileTest to work with Selendroid.
+2. Expanding @MobileTest to work with Appium.
 3. Expanding PageYaml and SeLion's Code Generator to work with Selendroid.
-4. Look & Feel Enhancements to SeLion's RuntimeReporter.
-5. Support for additional data formats such as JSON, CSV, and XML for data driven testing.
-6. Any open item from [GitHub Issues](https://github.com/paypal/SeLion/issues)
+4. Support for additional data formats such as JSON, CSV, and XML for data driven testing.
+5. Any open item from [GitHub Issues](https://github.com/paypal/SeLion/issues)
 
 Projects we depend on that need contributors 
 ---------------------------------------------
