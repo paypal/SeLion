@@ -286,7 +286,9 @@
                     <td>{{:parameters}}</td>
                     <td>
                         <button type="button" data-index="{{:test}}" class="btn btn-default btn-xs btn-config" data-toggle="tooltip" data-placement="top" title="Config"><span class="glyphicon glyphicon-cog"></span></button>
-                        <button type="button" data-index="{{:#index}}" class="btn btn-default btn-xs btn-screenshot" data-toggle="tooltip" data-placement="top" title="Screenshots"><span class="glyphicon glyphicon-picture"></span></button>
+                    {{if logs != null}}
+                        <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-xs btn-screenshot" data-toggle="tooltip" data-placement="top" title="Reporter Output"><span class="glyphicon glyphicon-picture"></span></button>
+                    {{/if}}
                     {{if status == "Failed" }}
                         <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-xs btn-stacktrace" data-toggle="tooltip" data-placement="top" title="Stacktrace"><span class="glyphicon glyphicon-warning-sign"></span></button>
                     {{/if}}
@@ -338,13 +340,11 @@
                             <h3 class="panel-title">{{:className}}.{{:methodName}}</h3>
                         </div>
                         <div class="panel-body">
+                            {{if logs != null && logs[(logs.length - 1)].image != null}}
                             <span class="thumbnail">
-                                {{if logs != null}}
-                                    <img src="../{{:logs[(logs.length - 1)].image}}" alt="{{:logs[(logs.length - 1)].message}}" onclick='displayImage("../{{:logs[(logs.length - 1)].image}}", "");'>
-                                {{else}}
-                                    <img src="images/no-image-available.png" alt="No Screenshot Available" onclick='displayImage("../" + "images/no-image-available.png", "No Screenshot Available");'>
-                                {{/if}}
+                                    <img src="../{{:logs[(logs.length - 1)].image}}" onclick='displayImage("../{{:logs[(logs.length - 1)].image}}", "");'>
                             </span>
+                            {{/if}}
                             <ul class="list-group">
                                 <li class="list-group-item">
                                     Suite: {{:suite}}
@@ -365,9 +365,11 @@
                                     Parameters: {{:parameters}}
                                 </li>
                             </ul>
+                            {{if logs != null}}
                             <div class="col-lg-6">
-                                <button type="button" data-index="{{:#index}}" class="btn btn-default btn-block btn-screenshot">Screenshots</button>
+                                <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-block btn-screenshot">Reporter Output</button>
                             </div>
+                            {{/if}}
                             {{if status == "Failed" }}
                             <div class="col-lg-6">
                                 <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-block btn-stacktrace">Stacktrace</button>
@@ -381,13 +383,6 @@
 
 <script id="screenshotImpl" type="text/x-jsrender">
         <div class="row show">
-        {{if logs == null}}
-        <div class="col-lg-4">
-            <span class="thumbnail">
-                <img src="images/no-image-available.png" alt="No Screenshot Available" onclick='displayImage("images/no-image-available.png", "No Screenshot Available");'>
-            </span>
-        </div>
-        {{/if}}
         {{for logs}}
             {{if #index != 0 && (#index%3) == 0}}
                 </div>
@@ -395,12 +390,16 @@
             {{/if}}
             <div class="col-lg-4">
                 <div class="thumbnail">
+                    {{if image != null}}
                     <img src="../{{:image}}" alt="{{:message}}" onclick='displayImage("../{{:image}}", "");' style="border:1px solid #ecf0f1">
+                    {{/if}}
                     <div class="caption">
                         <p>{{:message}}</p>
+                        {{if source != null}}
                         <p>
                             <button type="button" class="btn btn-default btn-block btn-source" onclick='displaySource("../{{:source}}", "");'>Source</button>
                         </p>
+                        {{/if}}
                     </div>
                 </div>
             </div>
