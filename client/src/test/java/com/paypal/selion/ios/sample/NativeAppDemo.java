@@ -15,15 +15,11 @@
 
 package com.paypal.selion.ios.sample;
 
-import java.net.URL;
 import java.util.List;
 
-import com.paypal.selion.configuration.Config;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
@@ -32,16 +28,7 @@ import com.paypal.selion.reports.runtime.MobileReporter;
 
 public class NativeAppDemo {
 
-    private static final String appFolder = "/apps";
-
-    @BeforeClass
-    public void setup() {
-        URL url = NativeAppDemo.class.getResource(appFolder);
-        Config.setConfigProperty(Config.ConfigProperty.SELENIUM_NATIVE_APP_FOLDER, url.getPath());
-    }
-
-
-    @MobileTest(appName = "InternationalMountains", device = "iphone:7.1", deviceType = "iPhone4s")
+    @MobileTest(appName = "InternationalMountains", device = "iphone7.1", deviceSerial = "iPhone4s")
     @Test
     public void testSDKDeviceVariation4s() throws InterruptedException {
         MobileReporter.log("My Screenshot 1", true);
@@ -125,10 +112,17 @@ public class NativeAppDemo {
         System.out.println(text.getAttribute("name"));
     }
 
-    @AfterClass
-    public void teardown() {
-        Config.setConfigProperty(Config.ConfigProperty.SELENIUM_NATIVE_APP_FOLDER,
-                Config.ConfigProperty.SELENIUM_NATIVE_APP_FOLDER.getDefaultValue());
+    @MobileTest(appName = "Safari", device = "ipad")
+    @Test
+    public void testIOSDefaultsIpad() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        Grid.open("http://www.paypal.com");
     }
 
+    @MobileTest(appName = "Safari", device = "ipad:8.0", deviceType = "iPadAir")
+    @Test
+    public void testIOSDefaultsIpadAir() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        Grid.open("http://www.paypal.com");
+    }
 }
