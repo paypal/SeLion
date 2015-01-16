@@ -76,7 +76,7 @@ public class MobileTestSession extends AbstractTestSession {
 
     public WebDriverPlatform getPlatform() {
         WebDriverPlatform platform = WebDriverPlatform.ANDROID;
-        if (getDevice().toLowerCase().contains("iphone") || getDevice().toLowerCase().contains("ipad")) {
+        if (getDevice().equalsIgnoreCase("iphone") || getDevice().equalsIgnoreCase("ipad")) {
             platform = WebDriverPlatform.IOS;
         }
         return platform;
@@ -87,22 +87,15 @@ public class MobileTestSession extends AbstractTestSession {
     }
 
     public String getDevice() {
-        final String errorMessage = "The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
-                            + " 'android:17', 'android:18', etc.";
-        if (StringUtils.isNotBlank(device) &&
-                (device.toLowerCase().contains("android") || device.toLowerCase().contains("iphone") || device.toLowerCase().contains("ipad"))) {
-            if (device.contains(":")) {
-                String args[] = device.split(":");
-                //validate to make sure we only get 2 parameters
-                if (args == null || args.length !=2) {
-                    throw new IllegalArgumentException(errorMessage);
-                }
-                platformVersion = args[1];
-                device = args[0];
+        if (device.contains("android") || device.contains("iphone") || device.contains("ipad")) {
+            if (StringUtils.contains(device, ":")) {
+                platformVersion = StringUtils.split(this.device, ":")[1];
+                device = StringUtils.split(this.device, ":")[0];
             }
             return device;
         } else {
-            throw new IllegalArgumentException(errorMessage);
+            throw new IllegalArgumentException("The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
+                    + " 'android:17', 'android:18', etc.");
         }
     }
 
@@ -113,7 +106,7 @@ public class MobileTestSession extends AbstractTestSession {
     @Override
     public SeLionSession startSesion() {
         logger.entering();
-        BrowserFlavors flavor;
+        BrowserFlavors flavor = null;
         try {
             flavor = BrowserFlavors.getBrowser(this.appName);
         } catch (IllegalArgumentException ex) {

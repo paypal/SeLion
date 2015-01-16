@@ -42,20 +42,17 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         initCapabilities();
         DesiredCapabilities caps = null;
 
-        if (this.device.toLowerCase().contains("ipad") || this.device.toLowerCase().contains("iphone")) {
+        if (StringUtils.isNotBlank(device) && StringUtils.contains(this.device, ":")) {
+          this.platformVersion = StringUtils.split(this.device, ":")[1];
+        }
+
+        if (this.device.contains("ipad") || this.device.contains("iphone")) {
             caps = new IOSCapabilities();
 
             String appVersion = null;
             if (StringUtils.isNotBlank(appName) && StringUtils.contains(this.appName, ":")) {
-                String[] args = StringUtils.split(this.appName,":");
-                //check to make sure only we only get 2 params
-                if (args == null || args.length != 2) {
-                    throw new IllegalArgumentException("The appName should either be provided as 'app:version'. " +
-                            "Ex 'Safari:7.0', 'ebay:2.0'.");
-                }
-
-                appVersion = args[1];
-                appName = args[0];
+                appVersion = StringUtils.split(this.appName, ":")[1];
+                appName = StringUtils.split(this.appName, ":")[0];
             }
 
             caps.setCapability(IOSCapabilities.DEVICE, device);
@@ -75,8 +72,13 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             caps = SelendroidCapabilities.android();
             caps.setBrowserName("selendroid");
             caps.setCapability(SelendroidCapabilities.AUT, appName);
-            caps.setCapability(SelendroidCapabilities.PLATFORM_VERSION, platformVersion);
             caps.setCapability(SelendroidCapabilities.LOCALE, this.locale);
+            if(this.deviceType != null && !this.deviceType.isEmpty()) {
+              caps.setCapability(SelendroidCapabilities.MODEL, deviceType);
+            }
+            if(this.platformVersion != null && !this.platformVersion.isEmpty()) {
+              caps.setCapability(SelendroidCapabilities.PLATFORM_VERSION, platformVersion);
+            }
             if(!this.deviceSerial.isEmpty()) {
                 caps.setCapability(SelendroidCapabilities.SERIAL, this.deviceSerial);
             }
