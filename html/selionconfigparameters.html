@@ -1,24 +1,28 @@
 <div class="selion-content-div">
   <h1 class="page-header">Configuration Parameters</h1>
   <!-- Docs page layout Starts-->
-  <p>SeLion provides rich set of config parameters for configuring its various features. All the SeLion config parameters can be configured via TestNG
-    formatted testng-suite.xml file or via JVM Command line arguments. Configuring these parameters via <code>Testng-suite.xml</code> file or JVM Command Line
-      arguments will override the default values, so only the parameters you want to modify from default values should be specified in
-      the suite configuration file or passed via JVM Command line arguments. Any config parameter not found in the testng-suite.xml file
-      (and) JVM Command line arguments, will use the built-in defaults. Some config parameters are global-only in scope which means any value set for these applies to all tests
-    executed from suite.</p>
-  <h2>Config Parameters Scope</h2>
-    <p>Config parameters scope can be applicable to all the test cases that are running from the TestNG Suite file or can applicable
-      specific to a particular TestNG test <code>&lt;test&gt;</code> in suite.
-  <ul>
-    <li>Config parameters defined at suite level are called as global or suite scope parameters
-    <li>Config parameters defined at <code>&lt;test&gt;</code> level are called local or per <code>&lt;test&gt;</code> scope parameters.
-  </ul>
-  <p>All the config parameters specified for <code>&lt;test&gt;</code> are effective to all test methods of that <code>&lt;test&gt;</code>
-    alone and will override the global suite config parameters defined.</p>
+  <p class="lead">SeLion provides rich set of configuration parameters for configuring its various features. Furthermore, configuration can be done via a TestNG
+    formatted <code>testng-suite.xml</code> file, Java system properties, environment variables, or via code.</p>
 
-  <p>Following are the config parameters for SeLion. Parameters that can be applicable to GLOBAL or suite level scope are defined as
-    <b>GLOBAL</b> and parameters which can be configured to both global and local are defined as <b>GLOBAL, LOCAL</b>.</p>
+  <h2>Configuration Parameter Scope</h2>
+
+  <p>Configuring these parameters will override any default values. So, you should only specify the parameters you want to modify.
+    Some configuration properties are <b>global-only</b> in scope which means any value set will apply to <i>all</i> tests executed in
+    the test suite. Furthermore, you should not (and unless you insist, you can not) override any <b>global-only</b> value at the
+    <code>&lt;test&gt;</code> level.</p>
+
+  <p>Parameter scope can apply to all test cases running from a TestNG <code>&lt;suite&gt;</code> or can apply
+       to a particular <code>&lt;test&gt;</code> in the <code>&lt;suite&gt;</code>.
+  <ul>
+    <li>Parameters defined at the <code>&lt;suite&gt;</code> level are called global or per <code>&lt;suite&gt;</code> parameters.</li>
+    <li>Parameters defined at the <code>&lt;test&gt;</code> level are called local or per <code>&lt;test&gt;</code> parameters.</li>
+    <li>Any configuration parameters specified for a <code>&lt;test&gt;</code> apply to all test methods of that <code>&lt;test&gt;</code>
+      and will override any global <code>&lt;suite&gt;</code> values defined unless the configuration property is <b>global-only</b></li>
+  </ul>
+  </p>
+
+  <p>Below are the configuration parameters for SeLion. Parameters that are <b>global-only</b> are noted as
+    <b>GLOBAL</b> in the scope column. Parameters which can be configured to both global and local are defined as <b>GLOBAL, LOCAL</b>.</p>
   <br>
   <div style="overflow: auto; height: 500px; width: 95%; border: 1px solid #ccc; FONT-SIZE: 0.8em; FONT-FAMILY: Verdana, Arial, sans serif;">
     <table class="table table-striped table-condensed">
@@ -364,12 +368,12 @@
     to specific <code>&lt;test&gt;</code> section(<span>GLOBAL, LOCAL</span>).</p>
 
   <h2>Configuring Parameters as JVM Command Line Arguments</h2>
-  <p>Config parameters can be configured via JVM command line arguments and you can configure
-    GLOBAL scope config parameters via this way. An example of passing the SeLion config parameters
-    is as follows.</p>
-  <code>-DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_BROWSER="*firefox"</code>.
-  <p>Config parameters configured from JVM command line arguments will override the parameters
-    defined in the TestNG suite.</p>
+  <p>Configuration parameters can be specified as Java system properties on the command line.
+    For example:
+  <pre><code>mvn test -DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_BROWSER="*firefox"</code></pre></p>
+
+  <p>Configuration parameters specified as Java system properties or environment variables will override any values
+    specified for the same configuration setting in the TestNG suite.</p>
 </div>
 
 <script src="../js/prismjs-min.js"></script>

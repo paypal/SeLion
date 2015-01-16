@@ -1,18 +1,18 @@
 <div class="selion-content-div">
-  <h1 class="page-header">Understanding WebDriverSessionHandler</h1>
+  <h1 class="page-header">WebDriver Session Handler</h1>
   <p class="lead">
-    WebDriverSessionHandler is a utility to manage a particular WebDriver session when a test mixes <em>web</em> and <em>non-web</em>
+    WebDriver Session Handler is a utility to manage a particular WebDriver session when a test mixes <em>web</em> and <em>non-web</em>
     operations.</p>
   <p>By default, the WebDriver session will timeout based on the <code>timeout</code> value specified
-    in the grid configuration. WebDriverSessionHandler is useful in cases where you are performing a non-web operation in
+    in the grid configuration. WebDriver Session Handler is useful in cases where you are performing a non-web operation in
     your test case (i.e. an API call, a SQL operation, or other) that may cause your WebDriver session to timeout -- often
-    throwing a RuntimeException with the message "Session timed out." WebDriverSessionHandler helps to overcome this problem
+    throwing a RuntimeException with the message "Session timed out." WebDriver Session Handler helps to overcome this problem
     by keeping the WebDriver session alive.
   </p>
 
-  <h2>How WebDriverSessionHandler Works</h2>
+  <h2>How WebDriver Session Handler Works</h2>
 
-  <p>WebDriverSessionHandler has two methods:</p>
+  <p>The class <code>WebDriverSessionHandler</code> has two methods:</p>
   <ul>
     <li><code>start()</code> - Begins polling the current WebDriver session to prevent it from timing out.
     <li><code>stop()</code> - Stops the polling.

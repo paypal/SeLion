@@ -9,6 +9,23 @@
   <version>1.0-SNAPSHOT</version>
   <name>Sample</name>
   <url>http://maven.apache.org</url>
+
+  <!-- you need this to pull SeLion SNAPSHOT artifacts from the global repo -->
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+  </repositories>
+
+  <!-- you need this to pull SeLion SNAPSHOT plugin artifacts from the global repo -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <dependencies>
     <dependency>
       <groupId>com.paypal.selion</groupId>
@@ -16,6 +33,7 @@
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>

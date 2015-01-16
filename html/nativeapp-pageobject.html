@@ -1,20 +1,22 @@
 <div class="selion-content-div">
-  <h1 class="page-header">SeLion PageObject model for automating iOS Native App</h1>
+  <h1 class="page-header">iOS App Automation from SeLion Generated Page Objects</h1>
 
-<h2>iOS Native App automation using SeLion PageObject Model</h2>
-  <p>Before using the PageObject Model for automating iOS Native Apps please refer <a href="#nativepageyaml">SeLion PageYaml For Native App</a>.
-     Once the yaml file is customized as mentioned in the previous link , we are all set to use the page generated for automation purpose.</p>
+  <p class="lead">This section focuses on using SeLion generated page objects for interacting with a mobile specific application on the iOS platform.
+    Make sure you understand the content from the section <a href="#nativepageyaml">SeLion PageYaml for iOS Apps</a> first.
     <ul>
-    <li>First the <code>@Test</code> annotated test method needs to be annotated additionally with the annotation <code>@MobileTest</code>. This basically indicates to SeLion that an iOS simulator needs to be spawned before hand and kept ready.</li>
-      <li> The Yaml file used by the test would look like below. <strong>Note:</strong> The yaml file name is NativeAppTestPage.yaml
+    <li> The YAML file used by the below <code>@Test</code> method would look like the following and it's content would
+      reside in a file named <b>NativeAppTestPage.yaml</b>
       <pre data-src="../sample-files/yamlpage-nativeapp.yaml" class="language-markup"></pre>
     </li>
-    <li>A typical test would look like below
+    <li>First the <code>@Test</code> annotated method needs to also be annotated with <code>@MobileTest</code>.
+      This indicates to SeLion that the <code>@Test</code> code will be performed against a mobile device or emulator.</li>
+    <li>A typical test would look like this;
       <pre data-src="../sample-files/nativeapp-pageobject.java"></pre>
     </li>
     </ul>   
   
-  <p> Refer <a href="#getting-started-mobile">Native App automation with SeLion</a> for details on parameters and also the different ways of passing the parameters with respect to Native app automation.
+  <p> Refer to <a href="#getting-started-mobile">Native App automation with SeLion</a> for additional details including
+  available parameters.
   
 </div>
 

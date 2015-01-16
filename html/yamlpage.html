@@ -1,12 +1,14 @@
 <div class="selion-content-div">
-  <h1 class="page-header">SeLion PageYaml</h1>
+  <h1 class="page-header">PageYAML</h1>
 
-  <p class="lead">YAML pages in the SeLion world are equivalent to object repositories. They help in abstracting away all
-    of the locator information, the location strategy to be used to identify an element, the challenges with handling
-    localization etc., and help keep the test code clean.</p>
+  <p class="lead">YAML files in SeLion are are used to abstract away all of the locator/selector information,
+    the location strategy to be used to identify an element, localization concerns, and help keep test code clean.
+    We call these files <i>PageYAML</i> because when they are processed by <a href="#what-is-code-generator">SeLion's Code Generator</a>,
+    a corresponding Page Object in the form of a Java class is created and added to you project source.</p>
+
   <p>They contain the following information with respect to a given
     page and represent a particular page as an Object, so that test code can leverage them to interact with
-    the specific page. </p>
+    the specific page.</p>
   <ul>
     <li> The Java class from which the newly generated page should extend itself from.
     <li> The title of the page
@@ -15,28 +17,30 @@
     <li> A set of validators that can be used to trigger validations on a given page once it is loaded as a result of an
       operation on the page.
   </ul>
-  <h2>PageYaml Contents</h2>
+
+  <p class="alert-info"><b>Note:</b> Although YAML is used for both, PageYAML files differ from those used by
+    <a href="#yaml-data-provider">SeLion's YAML DataProvider</a></p>
+
+  <h2>PageYAML Contents</h2>
 
   <p>A YAML page that represents page related information, would essentially have the below mentioned contents in
     it:</p>
   <ul>
     <li><code>baseClass</code> - The value for this key represents the fully qualified package name of a class that will
-      serve as the base class from which
-      all common abilities that any page in the SeLion world would possess. If your page is totally new and is not
+      serve as the base class to inherit attributes and/or capabilities from. If your page is new and is not
       customizing an existing page (for example, a login page which extends a header page ), then you
-      should be specifying the value for this key as <code>com.paypal.selion.testcomponents.BasicPageImpl</code> because
-      by default this is the class within SeLion that provides for all the basic operations that are associated with a
-      given page, including logic pertaining to instantiation of the page as well.
+      should specify the value <code>com.paypal.selion.testcomponents.BasicPageImpl</code> which
+      by default is the class within SeLion that provides all the basic operations that are required for any given web page,
+      including instantiation logic.
     </li>
-    <li><code>pageTitle</code> - The value for this key is a set of key/value pairs wherein you would like to capture
-      the page titles for various different combinations (locales, for example).
+    <li><code>pageTitle</code> - The value for this key is a set of key/value pairs where you define
+      the different page titles that exist for the page. Titles can be specified for different locales.
     </li>
-    <li><code>elements</code> - The value for this key is a set of key/value pairs that represents the below information
-      pertaining to html elements in the page.
+    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent html elements in a page.
     </li>
     <ul>
-      <li> The name to be given to identifying the locator. This name would end up serving as the data member in the
-        generated class which represents this element. The rules for naming the locator are as below :
+      <li> The name to be given to identifying the locator/selector. This name would end up serving as the data member in the
+        generated class and maps to the html element specified. The rules for naming locators/selectors are as follows:
         <ul>
           <li> <var>&lt;prefix&gt;</var>Button Is a Button html element.
           <li> <var>&lt;prefix&gt;</var>CheckBox Is a Check Box html element.
@@ -55,17 +59,35 @@
           would give to your element, mapping it to the html element on
           the page.</p></li>
       <li><code>locators:</code> - This key represents the set of values that map to the element name.</li>
-      <li><b>Locator</b> - Values for the locators which represents a key/value pair of locale and the actual locator for the
-        html element. Example: <code>US: "//div[@id='apiOption1']/p[3]/a"</code>
-
+      <li><b>Localized locator</b> - Values for the locators/selectors which are comprised of a key/value pairs -- the
+        locale the html element will exist in and the actual locator/selector to find the html element by.
+        For example; <code>US: "//div[@id='apiOption1']/p[3]/a"</code>. This equates to -- For the US version of the page,
+        there should exist an <code>&lt;a&gt;</code> element that is positioned within the third <code>&lt;p&gt;</code>
+        of the <code>&lt;div&gt;</code> with the id <code>apiOption1</code> on the page this file represents. Locators can
+        be separated by the <code>|</code> character to indicate an OR condition.
       </li>
     </ul>
-  </ul>
-  <!-- Docs page layout Starts-->
+    <li><code>pageValidators:</code> - A list of validations to perform when a page is loaded. The validations are used to
+      confirm the test has landed on a page that at least in part looks like the page expected. If the page loaded fails
+      these validations, an exception occurs. Valid validations which can be performed are;
+      <ul>
+        <li><code>isPresent</code> - Fails if the element is not present. This is the default validation that is run on
+          an element if nothing is specified.</li>
+        <li><code>isVisible</code> - Fails if the element is not visible.</li>
+        <li><code>isEnabled</code> - Fails if the element is not enabled.</li>
+      </ul>
+      If you do not wish to include any validators, you can leave it empty <code>[]</code></li>
+    </li>
+    <li><code>defaultLocale:</code> - The default locale to use if the PageYAML does not explicitly define a locale specific
+      value. For example; A value of <code>US</code> will require US definitions in the PageYAML but if a test is currently
+      running against the German version of a site and the <code>DE</code> definition does not exist for the queried
+      attribute, then the US version will be used.
+    </li>
+    </ul>
 
   <h2>An Example PageYaml File</h2>
   <pre data-src="../sample-files/yamlpage-sample1.yaml" class="language-markup"></pre>
-  <p>Some important things to note here:</p>
+  <p>Some important things to reiterate and note from this example:</p>
   <ul>
     <li>Notice how all the elements end with type of the element that we already mentioned.</li>
     <li>For example, if we consider <code>addOrEditAPIPermissionsLink</code> you will notice that we are giving a
@@ -89,21 +111,12 @@
     </li>
     <li>The element <code>pageValidators</code> contain the list of elements that are supposed to be
       validated when your test performs a <code>click(Object..)</code> (or) <code>clickAndExpectOneOf(Object..)</code>
-      operation on a page. The validations are one of the following :
-      <ul>
-        <li><code>isPresent</code> - This is the default validation that is run on an element if nothing is specified.
-        </li>
-        <li><code>isVisible</code></li>
-        <li><code>isEnabled</code></li>
-      </ul>
-      So from our above example, SeLion checks if the element represented by
+      operation on a page. So from our above example, SeLion checks if the element represented by
       <code>grantAPIPermissionLink</code> is <code>visible</code> because we explicitly requested for that validation.
       It would also check if the element represented by <code>viewAPISignatureLink</code> is <b>present</b> or not.
-      If you do not wish to include any validators, you can leave it empty <code>[]</code></li>
     <li>We also have a special kind of an element called <code>headerContainer</code>. To read more about Container
-      elements please take a look <a href="#containers">Introducing the Container Element</a> page.
+      elements please take a look at the section -- <a href="#containers">PageYAML and Container Elements</a>.
     </li>
-
   </ul>
 </div>
 

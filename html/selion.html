@@ -26,18 +26,21 @@
   </p>
   <h2>What's in SeLion?</h2>
   <p>
-      SeLion uses <b>WebDriver</b>, <b><a href="http://ios-driver.github.io/ios-driver/">IOS-Driver</a></b>, <b><a href="http://selendroid.io/">Selendroid</a></b>, <b>Maven</b> and <b>TestNG</b> underneath the
-      hood (we have plans to make it JUnit compatible too.)
+      SeLion uses Selenium <b><a href="http://docs.seleniumhq.org/projects/webdriver/">WebDriver</a></b>,
+      <b><a href="http://ios-driver.github.io/ios-driver/">ios-driver</a></b>,
+      <b><a href="http://selendroid.io/">Selendroid</a></b>,
+      <b><a href="http://maven.apache.org">Maven</a></b> and
+      <b><a href="http://testng.org/doc/index.html">TestNG</a></b> underneath the hood.
   </p>
   <h2>How SeLion works and the philosophy behind it.</h2>
   <p>
       SeLion uses Page Objects as a base methodology, which is commonly recommended by the Selenium community.
       In essence, don't hard-code your page element identifiers in your test cases. Build them in a way that you can
-      make one change in one location, and suddenly all your test cases change with it. SeLion does this by taking a YAML
-      page definition file and turning it into a Java class you can refer to in your test cases. If your page element
-      changes, the classes get regenerated. If you have multiple teams accessing the same classes, they don't have
-      to change anything in their test case code. It has certainly worked for us at a large scale, and we don't have
-      to re-write or maintain the base page classes.
+      make one change in one location, and suddenly all your test cases change with it. SeLion does this by taking a
+      <a href="http://www.yaml.org">YAML</a> page definition file and turning it into a Java class you can refer to in
+      your test cases. If your page element changes, the classes get regenerated. If you have multiple teams accessing
+      the same classes, they don't have to change anything in their test case code. It has certainly worked for us at a
+      large scale, and we don't have to re-write or maintain the base page classes.
   </p>
 </div>
 

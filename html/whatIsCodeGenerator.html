@@ -1,6 +1,6 @@
 <div class="selion-content-div">
   <h1 class="page-header">Code Generator Maven Plugin</h1>
-  <p class="lead">SeLion's Code Generator Maven Plugin will auto-generate Java PageObject class files from YAML
+  <p class="lead">SeLion's Code Generator Maven Plugin will auto-generate Java PageObject class files from <a href="#pageyaml">PageYAML</a>
     during the Maven <code>generate-sources</code> phase.</p>
   <h2 id="benefits">Benefits of Using the SeLion Code Generator Maven Plugin</h2>
   <p>
@@ -35,9 +35,8 @@
       <pre data-src="../sample-files/whatIsCodeGenerator-sample3.xml"></pre>
     </li>
     <li>After adding this plugin, if you get the error <b>"Plugin execution not covered by lifecycle configuration"</b>,
-      please refer to the document
-      <a href="#fix-plugin-execution">Fixing Plugin execution not covered by lifecycle configuration error with Maven 3
-        plug-in</a>.
+      please refer to the section --
+      <a href="#fix-plugin-execution">Fixing Plugin execution errors in Eclipse</a>.
     </li>
   </ol>
   </p>
@@ -60,7 +59,7 @@
   </ul>
   <h2>Put the SeLion Code Generator in Action</h2>
   <ol>
-    <li>First, create a YAML file that represents the actual page. Refer to <a href="#pageyaml">the SeLion PageYAML documentation</a></li>
+    <li>First, create a <a href="#pageyaml">PageYAML</a> file that represents the actual page.</li>
     <li>Once created, move the file into the directory
       <code>src/main/resources/GUIData</code></li>
     <li>If you prefer to use the Maven command prompt, simply run the

@@ -1,5 +1,5 @@
 <div class="selion-content-div">
-  <h1 id="getting-started-with-seLion" class="page-header">Getting Started with Mobile Automation</h1>
+  <h1 id="getting-started-with-seLion" class="page-header">Mobile Automation</h1>
 
   <p class="lead">How to create a mobile test using SeLion.</p>
 
@@ -8,15 +8,18 @@
   <ol>
       <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java JDK 1.7</a></li>
       <li><a href="http://maven.apache.org/download.html">Maven 3</a></li>
-      <li>Xcode (Mac installs only, required for iOS tests)</li>
-      <li><a href="#buildingSelion">SeLion installed into your local Maven Repository</a></li>
+      <li>Xcode 5.1.1+ (Mac installs only, required for iOS tests) or the Android SDK (for Android tests)
+        <ul>
+          <li>For full details on how to setup your Mac for iOS testing with ios-driver refer to the
+            <a href="http://ios-driver.github.io/ios-driver/?page=setup#tech">project site.</a></li>
+          <li>For full details on how to setup your machine for Android testing with Selendroid refer to the
+            <a href="http://selendroid.io/setup.html">project site.</a></li>
+        </ul>
+      </li>
   </ol>
 
-  <p>
-      For full details on how to setup your Mac to work with ios-driver refer to the
-      <a href="http://ios-driver.github.io/ios-driver/?page=setup#tech">ios-driver
-          project site.</a>
-  </p>
+  <p class="alert-info">Note: the example below is iOS oriented. However, after you complete the prerequisites, the
+    approach is the same. Android specific documentation is in the works.</p>
 
   <h2 id="project-creation">Create a Sample Project</h2>
   <p class="alert-info">Note: this step is optional and does not need to be completed if you already have a Maven project.</p>
@@ -31,9 +34,10 @@
   <h2>Update the POM File</h2>
   <p>Update the pom.xml file as below:</p>
   <ol>
+    <li>Add the Sonatype nexus snapshot repository information</li>
     <li>Add SeLion in the dependency section</li>
     <li>Add Maven surefire plugin in the build section</li>
-    <li>Remove the JUnit dependency (it's not needed at this point).</li>
+    <li>Remove the JUnit dependency (it is not needed).</li>
   </ol>
 
   <p>Here is how your POM file would look like after all the above mentioned updates have been done.</p>
@@ -72,16 +76,17 @@
 
   <h2>Additional Considerations for a @MobileTest</h2>
   <p>As seen from the above sample, a test can specify the application that it is trying to automate.
-    There are a couple of things that can be specified via the <code>@MobileTest</code> annotation. They are:</p>
+    There are a couple of things that can be specified via the <code>@MobileTest</code> annotation. For example:</p>
     <ol>
       <li><code>appName</code> - The native application against which the automation test needs to be run.</li>
-      <li><code>device</code> - The device type to be used. For e.g., an iPhone (or) an iPad.</li>
+      <li><code>device</code> - The device type to be used. E.g. - an iPhone, an iPad, an Android device, etc</li>
       <li><code>language</code> - The application's language that is to be used.</li>
       <li><code>locale</code> - The application's locale that is to be used.</li>
     </ol>
+  <p>Refer to the SeLion <a href="java-docs/client-apis/index.html">client javadocs</a> for the complete list of annotation parameters.</p>
 
-  <p>All the above mentioned attributes of the <code>@MobileTest</code> annotation can also be provided via either JVM
-    arguments (or) via TestNG suite parameters. Please refer to the below table:</p>
+  <p>Some of the defaults attributes for the <code>@MobileTest</code> annotation can be influenced via Java
+    system properties, environment variables, or via TestNG suite parameters. </p>
     <table class="table table-bordered table-hover table-condensed">
       <thead>
       <tr>
@@ -89,7 +94,7 @@
           TestNG Suite parameter
         </th>
         <th>
-          JVM argument
+          JVM System Property / Environment Variable
         </th>
         <th>
           Description
@@ -98,24 +103,28 @@
       </thead>
       <tbody>
       <tr>
-        <td><code>&lt;parameter name="appFolder" value="" /&gt;</code></td>
+        <td><code>appFolder</code></td>
         <td><code>SELION_SELENIUM_NATIVE_APP_FOLDER</code></td>
-        <td>Represents the location of the folder which contains the Native App. <b>This is applicable only for local runs</b>.</td>
+        <td>Represents the location of a folder which contains the mobile applications (.app and .apk files) under test.
+          <b>This is applicable only for local runs</b>.</td>
       </tr>
       <tr>
-        <td><code>&lt;parameter name="appName" value="" /&gt;</code></td>
+        <td><code>appName</code></td>
         <td><code>SELION_SELENIUM_NATIVE_APP_NAME</code></td>
-        <td>Represents the name of the application that is to be used for running the tests against.</td>
+        <td>Override the default name of the application that is to be used for running tests. If nothing is specified, it
+          defaults to <code>""</code></td>
       </tr>
       <tr>
-        <td><code>&lt;parameter name="appLanguage" value="" /&gt;</code></td>
+        <td><code>appLanguage</code></td>
         <td><code>SELION_SELENIUM_NATIVE_APP_LANGUAGE</code></td>
-        <td>Represents the language to be used for running the tests against. If nothing is specified it defaults to <code>en</code> (English) </td>
+        <td>Override the default language to be used for running tests. If nothing is specified, it defaults to
+          <code>en</code> (English)</td>
       </tr>
       <tr>
-        <td><code>&lt;parameter name="appLocale" value="" /&gt;</code></td>
+        <td><code>appLocale</code></td>
         <td><code>SELION_SELENIUM_NATIVE_APP_LOCALE</code></td>
-        <td>Represents the locale to be used for running the tests against. If nothing is specified it defaults to <code>en_US</code> (US English)</td>
+        <td>Override the default locale to be used for running tests. If nothing is specified, it defaults to
+          <code>en_US</code> (US English)</td>
       </tr>
       </tbody>
     </table>

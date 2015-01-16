@@ -5,10 +5,12 @@
 
   <h2 id="introduction">Introduction</h2>
   <p>
-    SeLion "client" is compatible with any <a href="https://code.google.com/p/selenium/wiki/Grid2">Selenium Grid2</a>,
-      however we've added a few plug-ins to make managing the grid a bit easier.
+    The SeLion client component is compatible with any <a href="https://code.google.com/p/selenium/wiki/Grid2">Selenium Grid2</a>.
+      That said, we have also published our own enhanced grid as the server component of SeLion. At a high level in includes a
+      few plug-ins to make managing and setting up your own grid a bit easier.
   </p>
   <ol>
+    <li>Dependency Downloader - Download Selenium dependencies -- the jars, various drivers, etc at startup.</li>
     <li>Auto Upgrade Nodes – Upgrade the Selenium, IE Driver, Chrome Driver,
         PhantomJS binary in each node without impacting existing test case execution.</li>
     <li>Force Restart Node – Forcibly restart the node without logging in to the
@@ -22,9 +24,10 @@
   <p>Install the following software on your grid machines:</p>
   <ol>
     <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java
-      JDK 1.7</a> and configure the JAVA_HOME environment variable in your system</li>
-    <li><a href="#buildingSelion">SeLion compiled locally on your machine</a></li>
-    <li>Copy the zip of SeLion's Enhanced Grid from <code>server/target/SeLion-Grid.zip</code> and extract it to your working folder
+      JDK 1.7</a> and configure the <code>JAVA_HOME</code> environment variable on your system</li>
+    <li>If you <a href="#buildingSelion">compiled SeLion</a> locally, copy the <code>SeLion-Grid</code> zip or tarball of
+      SeLion's Enhanced Grid from <code>server/target/</code> and extract it to your working folder. Otherwise, you can obtain it
+      <a href="https://oss.sonatype.org/content/repositories/snapshots/com/paypal/selion/SeLion-Grid/1.0.0-SNAPSHOT/">here</a>.
     </li>
   </ol>
 

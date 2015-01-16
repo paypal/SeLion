@@ -10,6 +10,7 @@ com.paypal.selion.platform.grid
 com.paypal.selion.platform.grid.browsercapabilities
 com.paypal.selion.platform.html
 com.paypal.selion.platform.html.support
+com.paypal.selion.platform.html.support.events
 com.paypal.selion.platform.remote
 com.paypal.selion.platform.utilities
 com.paypal.selion.platform.web
@@ -23,3 +24,4 @@ com.paypal.selion.reports.reporter.services
 com.paypal.selion.reports.runtime
 com.paypal.selion.testcomponents
 com.paypal.test.utilities.logging
+org.openqa.grid.web

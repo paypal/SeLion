@@ -32,3 +32,4 @@ pageValidators: [
   grantAPIPermissionLink.isVisible,
   viewAPISignatureLink
   ]
+defaultLocale: "US"
