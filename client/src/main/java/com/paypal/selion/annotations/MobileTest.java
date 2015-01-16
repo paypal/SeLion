@@ -69,12 +69,12 @@ public @interface MobileTest {
     String locale() default "en_US";
 
     /**
-     * Device Serial to be used. Defaults to device/emulator chosen by Selendroid
+     * Device Serial to be used. Defaults to device/emulator chosen by Selendroid / iosDriver
      */
     String deviceSerial() default "";
 
     /**
-     * Establish the type of device to be used (Nexus5, iPhone6, iPadAir, etc).
+     * Establish the type of device to be used (Nexus5, Iphone5s, etc).
      * Defaults to device/emulator chosen by Selendroid / iosDriver
      */
     String deviceType() default "";
