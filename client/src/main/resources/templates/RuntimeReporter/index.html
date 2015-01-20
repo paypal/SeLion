@@ -1,4 +1,18 @@
 <!DOCTYPE html>
+<!---------------------------------------------------------------------------------------------------------------------
+|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+---------------------------------------------------------------------------------------------------------------------->
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -264,14 +278,14 @@
         <table class="table table-striped table-hover" id="paginationTextCaseTable">
             <thead>
                 <tr>
-                    <th style="width:5%">#</th>
-                    <th style="width:13%">Suite</th>
-                    <th style="width:10%">Test</th>
-                    <th style="width:15%">Package</th>
-                    <th style="width:15%">Class</th>
-                    <th style="width:15%">Method</th>
-                    <th style="width:18%">Parameters</th>
-                    <th style="width:9%"><th>
+                    <th style="width:5%" data-index="nil">#</th>
+                    <th style="width:13%;cursor: pointer;" data-index="suite">Suite</th>
+                    <th style="width:10%;cursor: pointer;" data-index="test">Test</th>
+                    <th style="width:15%;cursor: pointer;" data-index="packageInfo">Package</th>
+                    <th style="width:15%;cursor: pointer;" data-index="className">Class</th>
+                    <th style="width:15%;cursor: pointer;" data-index="methodName">Method</th>
+                    <th style="width:18%;cursor: pointer;" data-index="parameters">Parameters</th>
+                    <th style="width:9%" data-index="nil"><th>
                 </tr>
             </thead>
             <tbody>
@@ -302,14 +316,14 @@
         <table class="table table-striped table-hover " id="paginationTextConfigTable">
             <thead>
                 <tr>
-                    <th style="width:5%">#</th>
-                    <th style="width:15%">Suite</th>
-                    <th style="width:15%">Test</th>
-                    <th style="width:17%">Package</th>
-                    <th style="width:16%">Class</th>
-                    <th style="width:15%">Method</th>
-                    <th style="width:10%">Type</th>
-                    <th style="width:7%"><th>
+                    <th style="width:5%" data-index="nil">#</th>
+                    <th style="width:15%;cursor: pointer;" data-index="suite">Suite</th>
+                    <th style="width:15%;cursor: pointer;" data-index="test">Test</th>
+                    <th style="width:17%;cursor: pointer;" data-index="packageInfo">Package</th>
+                    <th style="width:16%;cursor: pointer;" data-index="className">Class</th>
+                    <th style="width:15%;cursor: pointer;" data-index="methodName">Method</th>
+                    <th style="width:10%;cursor: pointer;" data-index="type">Type</th>
+                    <th style="width:7%" data-index="nil"><th>
                 </tr>
             </thead>
             <tbody>
@@ -434,6 +448,8 @@
                     var index = 1, configIndex = 1;
                     var total, configTotal;
                     var noOfPage, configNoOfPage;
+                    var sortedRecords, sortingDirection = {suite: "1", test: "1", packageInfo: "1", className: "1", methodName: "1", parameters : "1" };
+                    var configSortedRecords, configSortingDirection = {suite: "1", test: "1", packageInfo: "1", className: "1", methodName: "1", type : "1" };
                     var filterSearch, configFilterSearch;
                     var autoRefresh;
                     var timeRefresh = 300 * 1000;//300 seconds refresh interval
@@ -494,23 +510,25 @@
                         }
 
                         //Pagination for Test case table
-                        filterSearch = reports.testmethods;
+                        sortedRecords = reports.testmethods;
+                        filterSearch = sortedRecords;
                         total = filterSearch.length;
                         noOfPage = Math.ceil(total/pageSize);
 
                         renderPageCombo("#", ".pageSizeCombo");
-                        renderSearch("#", "#testCaseSearch", reports.testmethods);
+                        renderSearch("#", "#testCaseSearch", sortedRecords);
                         renderPageNumbers("#", 1, noOfPage);
                         renderPagination("#", noOfPage);
                         renderTable("#", filterSearch,index,pageSize);
 
                         //Pagination for Config Test case table
-                        configFilterSearch = reports.configurationmethods;
+                        configSortedRecords = reports.configurationmethods;
+                        configFilterSearch = configSortedRecords;
                         configTotal = configFilterSearch.length;
                         configNoOfPage = Math.ceil(configTotal/configPageSize);
 
                         renderPageCombo("#config-", ".config-pageSizeCombo");
-                        renderSearch("#config-", "#config-testCaseSearch", reports.configurationmethods);
+                        renderSearch("#config-", "#config-testCaseSearch", configSortedRecords);
                         renderPageNumbers("#config-", 1, configNoOfPage);
                         renderPagination("#config-", configNoOfPage);
                         renderTable("#config-", configFilterSearch, configIndex, configPageSize);
@@ -584,6 +602,30 @@
                        });
                     }
 
+                    function renderSorting(pageAdditionalId, tableId, records) {
+
+                        $(tableId + ' thead tr th').click(function() {
+                            var col = $(this).attr('data-index');
+                            if(col != 'nil') {
+                                var direction = getSortingDirection(pageAdditionalId);
+                                var asc = direction[col];
+                                direction[col] = -1 * asc;
+                                setSortingDirection(pageAdditionalId, direction);
+                                records.sort(function(a, b){
+                                    return (a[col] == b[col]) ? 0 : ((a[col] > b[col]) ? asc : -1 * asc);
+                                });
+                                renderTable(pageAdditionalId, getFilterSearch(pageAdditionalId), getIndex(pageAdditionalId), getPageSize(pageAdditionalId));
+
+                                var arrowDirection = '';
+                                if(asc == "1") {
+                                    arrowDirection = 'dropup';
+                                }
+                                $(tableId + " thead tr th[data-index$=" + col + "]").html($(tableId + " thead tr th[data-index$=" + col + "]").text() + "<span class='order "+ arrowDirection + "'><span class='caret' style='margin: 10px 5px;'></span></span>");
+                            }
+                       });
+
+                     }
+
                     function renderSearch(pageAdditionalId, searchBoxId, records) {
 
                        $(searchBoxId).keyup(function() {
@@ -599,6 +641,7 @@
                            }
 
                           setFilterSearch(pageAdditionalId, searchArray);
+                          setSortedRecords(pageAdditionalId, searchArray);
                           setIndex(pageAdditionalId, 1);
                           setNoOfPage(pageAdditionalId, Math.ceil(getFilterSearch(pageAdditionalId).length / getPageSize(pageAdditionalId)));
 
@@ -687,8 +730,10 @@
 
                       if(pageAdditionalId == '#') {
                         afterRender(filterResult, '');
+                        renderSorting("#", "#paginationTextCaseTable", sortedRecords);
                       } else {
                         afterRender(filterResult, '-config');
+                        renderSorting("#config-", "#paginationTextConfigTable", configSortedRecords);
                       }
 
                       if(filterSearch.length <= (endIndex - rtIndex)) {
@@ -854,6 +899,7 @@
                      return configPageSize;
                    }
                  }
+
                  function setFilterSearch(pageAdditionalId, val) {
                    if(pageAdditionalId == '#') {
                      filterSearch = val;
@@ -868,6 +914,38 @@
                    } else {
                      return configFilterSearch;
                    }
+                 }
+
+                 function setSortedRecords(pageAdditionalId, val) {
+                     if(pageAdditionalId == '#') {
+                       sortedRecords = val;
+                     } else {
+                       configSortedRecords = val;
+                     }
+                 }
+
+                 function getSortedRecords(pageAdditionalId) {
+                     if(pageAdditionalId == '#') {
+                       return sortedRecords;
+                     } else {
+                       return configSortedRecords;
+                     }
+                 }
+
+                 function setSortingDirection(pageAdditionalId, val) {
+                     if(pageAdditionalId == '#') {
+                       sortingDirection = val;
+                     } else {
+                       configSortingDirection = val;
+                     }
+                 }
+
+                 function getSortingDirection(pageAdditionalId) {
+                     if(pageAdditionalId == '#') {
+                       return sortingDirection;
+                     } else {
+                       return configSortingDirection;
+                     }
                  }
             </script>
     </body>
