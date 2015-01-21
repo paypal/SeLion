@@ -13,7 +13,7 @@
         "maxInstances": 10
     }, {
         "browserName": "internet explorer",
-        "maxInstances": 1,
+        "maxInstances": 1
     }],
     "configuration": {
         "cleanUpCycle": 30000,
