@@ -16,12 +16,9 @@
 package com.paypal.selion.reports.reporter.runtimereport;
 
 import java.io.PrintWriter;
-
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Modifier;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,6 +34,7 @@ import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.reports.model.AbstractLog;
 import com.paypal.selion.reports.model.AppLog;
 import com.paypal.selion.reports.model.WebLog;
+import com.paypal.selion.reports.reporter.services.ReporterDateFormatter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 @SuppressWarnings("unused")
@@ -77,12 +75,11 @@ public class MethodInfo {
             this.status = "Running";
         }
 
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(result.getStartMillis());
-        this.startTime = formatter.format(c.getTime());
+        this.startTime = ReporterDateFormatter.getISO8601String(c.getTime());
         c.setTimeInMillis(result.getEndMillis());
-        this.endTime = formatter.format(c.getTime());
+        this.endTime = ReporterDateFormatter.getISO8601String(c.getTime());
 
         if (result.getMethod().getDescription() != null) {
             this.description = result.getMethod().getDescription();

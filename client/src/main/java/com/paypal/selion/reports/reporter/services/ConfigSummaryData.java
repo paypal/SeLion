@@ -15,7 +15,6 @@
 
 package com.paypal.selion.reports.reporter.services;
 
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,14 +42,12 @@ public final class ConfigSummaryData {
      * Initialize the config summary map with Current Date.
      */
     public static void initConfigSummary() {
-        addConfigSummary("Current Date",
-                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date()));
+        addConfigSummary(ReporterDateFormatter.CURRENTDATE, ReporterDateFormatter.getISO8601String(new Date()));
     }
 
     public static void initLocalConfigSummary(String testName) {
         Map<String, String> testLocalMap = new HashMap<String, String>();
-        testLocalMap.put("Current Date",
-                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date()));
+        testLocalMap.put(ReporterDateFormatter.CURRENTDATE, ReporterDateFormatter.getISO8601String(new Date()));
         localConfigsMap.put(testName, testLocalMap);
     }
 

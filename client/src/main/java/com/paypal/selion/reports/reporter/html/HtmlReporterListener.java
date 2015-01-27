@@ -62,6 +62,7 @@ import com.paypal.selion.reports.reporter.html.splitters.ByPackageSplitter;
 import com.paypal.selion.reports.reporter.html.splitters.ByTestNameSplitter;
 import com.paypal.selion.reports.reporter.html.splitters.Line;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
+import com.paypal.selion.reports.reporter.services.ReporterDateFormatter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -511,7 +512,8 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
             VelocityContext context = new VelocityContext();
             StringBuilder output = new StringBuilder();
             for (Entry<String, String> temp : ConfigSummaryData.getConfigSummary().entrySet()) {
-                output.append(temp.getKey()).append(" : <b>").append(temp.getValue()).append("</b><br>");
+                Entry<String, String> formattedTemp = ReporterDateFormatter.formatReportDataForBrowsableReports(temp);
+                output.append(formattedTemp.getKey()).append(" : <b>").append(formattedTemp.getValue()).append("</b><br>");
             }
 
             context.put("configSummary", output.toString());

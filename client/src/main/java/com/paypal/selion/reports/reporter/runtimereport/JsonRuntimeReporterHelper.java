@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,11 +45,12 @@ import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.reports.reporter.html.ReporterException;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
+import com.paypal.selion.reports.reporter.services.ReporterDateFormatter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * JsonRuntimeReporterHelper will provide methods to create JSON file which contains information about list of test
- * methods and configuration methods executed and there corresponding status.
+ * methods and configuration methods executed with their corresponding status.
  * 
  */
 public class JsonRuntimeReporterHelper {
@@ -125,8 +125,8 @@ public class JsonRuntimeReporterHelper {
             Map<String, String> testLocalConfigValues = ConfigSummaryData.getLocalConfigSummary(testName);
             JsonObject json = new JsonObject();
             if (testLocalConfigValues == null) {
-                json.addProperty("Current Date",
-                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date()));
+                json.addProperty(ReporterDateFormatter.CURRENTDATE,
+                		ReporterDateFormatter.getISO8601String(new Date()));
             } else {
                 for (Entry<String, String> temp : testLocalConfigValues.entrySet()) {
                     json.addProperty(temp.getKey(), temp.getValue());
@@ -366,10 +366,10 @@ public class JsonRuntimeReporterHelper {
         }
 
         JsonObject reporter = new JsonObject();
-        reporter.add("testmethods", testObjects);
-        reporter.add("configurationmethods", configObjects);
-        reporter.add("configsummary", generateConfigSummary());
-        reporter.add("localconfigsummary", testJsonLocalConfigSummary);
+        reporter.add("testMethods", testObjects);
+        reporter.add("configurationMethods", configObjects);
+        reporter.add("configSummary", generateConfigSummary());
+        reporter.add("localConfigSummary", testJsonLocalConfigSummary);
 
         logger.exiting(reporter);
 
