@@ -4,18 +4,17 @@
   <p class="lead">YAML files in SeLion are are used to abstract away all of the locator/selector information,
     the location strategy to be used to identify an element, localization concerns, and help keep test code clean.
     We call these files <i>PageYAML</i> because when they are processed by <a href="#what-is-code-generator">SeLion's Code Generator</a>,
-    a corresponding Page Object in the form of a Java class is created and added to you project source.</p>
+    a corresponding Page Object in the form of a Java class is created and added to your project source.</p>
 
-  <p>They contain the following information with respect to a given
-    page and represent a particular page as an Object, so that test code can leverage them to interact with
-    the specific page.</p>
+  <p>These files map to an individual web page and consist of:</p>
   <ul>
     <li> The Java class from which the newly generated page should extend itself from.
     <li> The title of the page
-    <li> The set of elements, the ways of locating them (lets call this as locating strategies) and the actual locators
+    <li> The set of elements, the means of locating them (location strategy), and the actual locators
       themselves.
-    <li> A set of validators that can be used to trigger validations on a given page once it is loaded as a result of an
-      operation on the page.
+    <li>Locale specific considerations for localized content.</li>
+    <li> A set of validations to perform on the page once it is loaded as a result of a load
+      operation -- usually from a previous <code>click()</code> operation.
   </ul>
 
   <p class="alert-info"><b>Note:</b> Although YAML is used for both, PageYAML files differ from those used by
@@ -23,8 +22,7 @@
 
   <h2>PageYAML Contents</h2>
 
-  <p>A YAML page that represents page related information, would essentially have the below mentioned contents in
-    it:</p>
+  <p>A PageYAML file that represents a web page is made up of the following parts:</p>
   <ul>
     <li><code>baseClass</code> - The value for this key represents the fully qualified package name of a class that will
       serve as the base class to inherit attributes and/or capabilities from. If your page is new and is not
