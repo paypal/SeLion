@@ -61,14 +61,16 @@
 
   <h2>Create a TestNG Suite file</h2>
   <p>
-    Currently, SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. To execute a test suite you should create
-    a TestNG Suite file. Create the file <samp>SampleSuite.xml</samp> under the folder <code>{project}/src/test/resources</code>
-    and copy the below contents:
+    Currently, SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. To execute a test suite you
+    should create a TestNG Suite file. First, create the folder <code>{project}/src/test/resources</code>. Then,
+    create the file <samp>SampleSuite.xml</samp> under the folder <code>{project}/src/test/resources</code> and copy the
+    below contents:
+  </p>
   </p>
 
   <pre data-src="../sample-files/gettingstartedmobile-sample1.xml"></pre>
   <h2>Execute the Test</h2>
-  <p>To execute the test, run the following command in the project directory path from a command prompt.</p>
+  <p>To execute the test, run the following command from the <code>{project}</code> directory.</p>
   <pre><code class="language-sh">mvn clean test -DsuiteXmlFile=src/test/resources/SampleSuite.xml</code></pre>
 
   <br>
