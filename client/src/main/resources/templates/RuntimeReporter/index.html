@@ -27,7 +27,7 @@
     </head>
     <body>
         <!-- Header Begin -->
-        <div class="navbar" style="border-radius: 0px;">
+        <div class="navbar" style="border-radius: 0px; margin:5px;">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse"> 
                     <span class="icon-bar">
@@ -38,21 +38,16 @@
                     </span>
                 </button>
                 <div>
-                    <img src="../images/selion-horiz-notag.svg" style="width:478px; height:74px;" alt="SeLion Logo, horizontal, without a tag line" border="0">
+                    <img src="../images/selion-horiz-notag.svg" style="width:478px; height:80px;" alt="SeLion Logo, horizontal, without a tag line" border="0">
                 </div>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
-                <form class="navbar-form navbar-left">
-                </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                     <a href="javascript:;" id="config-popover" data-placement="bottom" data-html="true" data-toggle="popover" title="Configuration Summary">Configuration</a>
                     </li>
                     <li>
-                    <a href="javascript:;" class="btn-auto-update">Auto Update<span class="label label-success">On</span></a>
-                    </li>
-                    <li>
-                    <a href="#">Help</a>
+                    <a href="javascript:;" class="btn-auto-update">Auto Update <span class="label label-success">On</span></a>
                     </li>
                 </ul>
             </div>
@@ -60,7 +55,7 @@
         <!-- Header End -->
         <div class="container">
             <!-- Statistics Begin -->
-            <div style="clear: both;" id="statistics-data">
+            <div style="clear: both;cursor: pointer;" id="statistics-data">
                 <div id="statistics-data-passed" class="text-center text-success" style="float: left;">
                 </div>
                 <div id="statistics-data-failed" class="text-center text-danger" style="float: left;">
@@ -70,7 +65,7 @@
                 <div id="statistics-data-running" class="text-center text-info" style="float: left;">
                 </div>
             </div>
-            <div class="progress" style="clear: both;">
+            <div class="progress" style="clear: both;cursor: pointer;">
                 <div id="statistics-progress-passed" class="progress-bar progress-bar-success">
                 </div>
                 <div id="statistics-progress-failed" class="progress-bar progress-bar-danger">
@@ -317,13 +312,13 @@
             <thead>
                 <tr>
                     <th style="width:5%" data-index="nil">#</th>
-                    <th style="width:15%;cursor: pointer;" data-index="suite">Suite</th>
-                    <th style="width:15%;cursor: pointer;" data-index="test">Test</th>
+                    <th style="width:17%;cursor: pointer;" data-index="suite">Suite</th>
+                    <th style="width:16%;cursor: pointer;" data-index="test">Test</th>
                     <th style="width:17%;cursor: pointer;" data-index="packageInfo">Package</th>
                     <th style="width:16%;cursor: pointer;" data-index="className">Class</th>
                     <th style="width:15%;cursor: pointer;" data-index="methodName">Method</th>
                     <th style="width:10%;cursor: pointer;" data-index="type">Type</th>
-                    <th style="width:7%" data-index="nil"><th>
+                    <th style="width:4%" data-index="nil"><th>
                 </tr>
             </thead>
             <tbody>

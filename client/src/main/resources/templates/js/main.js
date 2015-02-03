@@ -339,7 +339,12 @@
     if(filterSearch.length <= (endIndex - rtIndex)) {
       endIndex = rtFilterSearch.length;
     }
-    $(pageAdditionalId + 'testcase-page-info').html("Showing " + rtIndex + " to " + endIndex + " of " + rtFilterSearch.length + " rows");
+
+    if(getPageSize(pageAdditionalId) >= rtFilterSearch.length) {
+      $(pageAdditionalId + 'testcase-page-info').html("Showing all rows");
+    } else {
+      $(pageAdditionalId + 'testcase-page-info').html("Showing " + rtIndex + " to " + endIndex + " of " + rtFilterSearch.length + " rows");
+    }
 
     $(pageAdditionalId + 'testcase-pagination ul .page-number').click(function() {
       var mIndex = ((parseInt($(this).attr('data-index')) - 1) * rtPageSize) + 1;
