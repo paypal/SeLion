@@ -44,11 +44,7 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
      */
     public static final String ENABLE_RUNTIME_REPORTER_LISTENER = "enable.runtime.reporter.listener";
 
-    private static volatile boolean bInitConfig = false;
-
-    static void markConfigAsInitialized() {
-        bInitConfig = true;
-    }
+    boolean bInitConfig = false;
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -261,7 +257,7 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
         }
 
         if (!bInitConfig) {
-            markConfigAsInitialized();
+            bInitConfig = true;
             File outFile = new File(suite.getOutputDirectory());
             outputDirectory = outFile.getParent() + File.separator + "RuntimeReporter";
             logger.info("Runtime Report : " + outputDirectory + File.separator + "index.html");
