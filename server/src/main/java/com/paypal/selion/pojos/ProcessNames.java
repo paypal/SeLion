@@ -53,8 +53,6 @@ public enum ProcessNames {
     /**
      * Utility method to return the executable names for the specified platform.
      * 
-     * @param platform
-     *            - The {@link Platform}
      * @return {@link List} of {@link String} containing the executable file names.
      */
     public static List<String> getExecutableNames() {

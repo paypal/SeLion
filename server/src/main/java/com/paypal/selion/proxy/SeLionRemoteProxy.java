@@ -42,6 +42,7 @@ import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.pojos.ArtifactDetails;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.pojos.ArtifactDetails.URLChecksumEntity;
 import com.paypal.selion.utils.ConfigParser;
 import com.paypal.selion.utils.ConfigParser.ConfigParserException;
@@ -98,7 +99,8 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         StringBuffer info = new StringBuffer();
         maxSessionsAllowed = getUniqueSessionCount();
         machine = getRemoteHost().getHost();
-        logFile = new File("logs/" + machine + ".log");
+        String logFileName = SeLionGridConstants.LOGS_FOLDER_PATH + machine + ".log";
+        logFile = new File(logFileName);
         if (logFile.exists()) {
             FileUtils.deleteQuietly(logFile);
         }

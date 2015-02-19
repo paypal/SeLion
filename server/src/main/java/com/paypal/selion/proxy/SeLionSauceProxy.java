@@ -138,8 +138,9 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
 
     /**
      * Get the number of test cases running in sauce labs for the sauce labs subaccount/user
+     * 
      * @param user
-     * @return
+     * @return number of test case running
      */
     public int getNumberOfTCRunningForUser(String user) {
         try {

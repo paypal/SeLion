@@ -28,6 +28,7 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
 import com.paypal.selion.grid.internal.SeLionSauceCapabilityMatcher;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.AuthenticationHelper;
 import com.paypal.selion.utils.ServletHelper;
 
@@ -123,10 +124,10 @@ public class LoginServlet extends RegistryBasedServlet {
                 req.getSession().setAttribute("userId", userid);
                 req.getSession().setAttribute("password", password);
 
-                String page = "/grid/resources/pages/gridHomePage.html";
+                String page = SeLionGridConstants.GRID_HOME_PAGE;
                 CapabilityMatcher matcher = getRegistry().getCapabilityMatcher();
                 if (matcher instanceof SeLionSauceCapabilityMatcher) {
-                    page = "/grid/resources/pages/sauceGridHomePage.html";
+                    page = SeLionGridConstants.SAUCE_GRID_HOME_PAGE;
                 }
 
                 resp.sendRedirect(page);
@@ -148,7 +149,7 @@ public class LoginServlet extends RegistryBasedServlet {
     }
 
     public void login(HttpServletResponse resp, String msg) throws IOException {
-        resp.sendRedirect("/grid/resources/pages/gridLoginPage.html");
+        resp.sendRedirect(SeLionGridConstants.GRID_LOGIN_PAGE);
     }
 
     @Override

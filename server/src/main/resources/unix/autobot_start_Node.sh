@@ -66,8 +66,20 @@ else
     exit 1
 fi
 
+CURRENT_DIR=$( cd "$( dirname $0)" && pwd )
+JAR_DIR=$(dirname $CURRENT_DIR)
+export PROJECT_HOME=$(dirname $JAR_DIR)
+echo "Project_Home:$PROJECT_HOME"
 
-export CURRENT_DIR=`pwd`
-export PATH=$JAVA_HOME/jre/bin:$JAVA_HOME/bin:$CURRENT_DIR:$PATH
+CONFIG_PATH="$PROJECT_HOME/config";
+UNIX_CONFIG_PATH="$CONFIG_PATH/unix"
+
+#Updating the the logs path  the logging.properties
+sedCommandParams=('s/^(java\.util\.logging\.FileHandler\.pattern=).*/\1'${PROJECT_HOME//\//\\/}'\/logs\/selion-grid-%g.log/')
+echo "Params for sed command:${sedCommandParams[*]}"
+
+sed -E ${sedCommandParams[*]} $CONFIG_PATH/logging.properties > temp.properties && mv temp.properties $CONFIG_PATH/logging.properties && rm -rf temp.properties
+
+export PATH=$JAVA_HOME/jre/bin:$JAVA_HOME/bin:$PROJECT_HOME:$CURRENT_DIR:$PATH
 export HUB_URL=http://127.0.0.1:4444/grid/register
-java -DSeLionConfig=SeLionConfigNonWindows.json -cp *:. com.paypal.selion.utils.JarSpawner  "java -DSeLionConfig=SeLionConfigNonWindows.json -Djava.util.logging.config.file=logs/logging.properties -cp *:. com.paypal.selion.grid.SeLionGridLauncher -role node -hub $HUB_URL -port 5556 -nodeConfig nodeConfigNonWindows.json -browserTimeout 60 -servlets com.paypal.selion.node.servlets.NodeAutoUpgradeServlet,com.paypal.selion.node.servlets.NodeForceRestartServlet,com.paypal.selion.node.servlets.LogServlet"
+java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfigNonWindows.json -cp $JAR_DIR/*:. com.paypal.selion.utils.JarSpawner  "java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfigNonWindows.json -Djava.util.logging.config.file=$CONFIG_PATH/logging.properties -cp $JAR_DIR/*:. com.paypal.selion.grid.SeLionGridLauncher -role node -hub $HUB_URL -port 5556 -nodeConfig $UNIX_CONFIG_PATH/nodeConfigNonWindows.json -browserTimeout 60 -servlets com.paypal.selion.node.servlets.NodeAutoUpgradeServlet,com.paypal.selion.node.servlets.NodeForceRestartServlet,com.paypal.selion.node.servlets.LogServlet"

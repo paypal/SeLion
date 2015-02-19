@@ -16,24 +16,42 @@
                 <include>**/*.json</include>
             </includes>
         </fileSet>
+       <fileSet>
+              <directory>${project.build.directory}</directory>
+              <outputDirectory>/downloads/</outputDirectory>
+              <fileMode>0755</fileMode>
+              <excludes>
+                     <exclude>**/*</exclude>
+              </excludes>
+       </fileSet>
+       <fileSet>
+              <directory>${project.build.directory}</directory>
+              <outputDirectory>/logs/</outputDirectory>
+              <fileMode>0755</fileMode>
+              <excludes>
+                     <exclude>**/*</exclude>
+              </excludes>
+       </fileSet>
         <fileSet>
             <directory>${project.build.directory}</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/bin/</outputDirectory>
+	    <fileMode>0644</fileMode>
             <includes>
                 <include>SeLion-Grid.jar</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/main/resources</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/bin/</outputDirectory>
             <includes>
                 <include>**/*.bat</include>
             </includes>
             <lineEnding>dos</lineEnding>
+	    <fileMode>0744</fileMode>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/main/resources</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/bin/</outputDirectory>
             <includes>
                 <include>**/*.sh</include>
             </includes>
@@ -47,7 +65,7 @@
                 <include>**/*.html</include>
             </includes>
             <lineEnding>unix</lineEnding>
-            <fileMode>0744</fileMode>
+            <fileMode>0644</fileMode>
         </fileSet>
     </fileSets>
 </assembly>

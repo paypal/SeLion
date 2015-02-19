@@ -39,6 +39,7 @@ import com.google.gson.JsonObject;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.SauceConfigReader;
 import com.paypal.selion.utils.ServletHelper;
 
@@ -75,7 +76,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     }
 
     private void loadSauceConfigPage(PrintWriter writer) throws IOException {
-        File file = new File("pages/updateSauceConfigPage.html");
+        File file = new File(SeLionGridConstants.UPDATE_SAUCE_CONFIG_PAGE);
         String finalHtml = FileUtils.readFileToString(file);
         writer.write(finalHtml);
     }
@@ -94,7 +95,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
         String key = req.getParameter("username") + ":" + req.getParameter("accessKey");
         String authKey = new String(Base64.encodeBase64(key.getBytes()));
 
-        Path path = Paths.get(SauceConfigReader.SAUCE_CONFIG);
+        Path path = Paths.get(SeLionGridConstants.SAUCE_CONFIG);
         boolean isUpdateSuccess = false;
 
         try (BufferedWriter bw = Files.newBufferedWriter(path, Charset.defaultCharset())) {

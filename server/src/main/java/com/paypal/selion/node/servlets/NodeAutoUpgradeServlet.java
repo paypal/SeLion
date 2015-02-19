@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.paypal.selion.pojos.PropsKeys;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ServletHelper;
 
 /**
@@ -60,7 +61,7 @@ public class NodeAutoUpgradeServlet extends HttpServlet {
                     prop.setProperty(eachKey.getKey(), value.trim());
                 }
             }
-            FileOutputStream f = new FileOutputStream("download.properties");
+            FileOutputStream f = new FileOutputStream(SeLionGridConstants.DOWNLOAD_FILE_PATH);
             prop.store(f, null);
             f.close();
         } catch (IOException ex) {

@@ -126,9 +126,7 @@ public class ArtifactDetails {
 
     /**
      * Utility method to return the {@link ArtifactDetails} as a {@link Map} specific to {@link Platform}
-     * 
-     * @param platform
-     *            {@link Platform} mentioning the platform
+     *
      * @param props
      *            {@link Properties} containing the artifact details
      * @return A {@link Map} containing the URL and CheckSum with Keys for the map from {@link PropsKeys}

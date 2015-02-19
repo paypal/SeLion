@@ -66,13 +66,26 @@ else
     exit 1
 fi
 
-HUB_CONFIG="hubConfig.json"
+CURRENT_DIR=$( cd "$( dirname $0)" && pwd )
+JAR_DIR=$(dirname $CURRENT_DIR)
+export PROJECT_HOME=$(dirname $JAR_DIR)
+echo "Project_Home:$PROJECT_HOME"
+
+CONFIG_PATH="$PROJECT_HOME/config";
+UNIX_CONFIG_PATH="$CONFIG_PATH/unix"
+
+HUB_CONFIG=$CONFIG_PATH/"hubConfig.json"
 
 if [ "$1" = "sauce" ]
 then
-HUB_CONFIG="hubSauceConfig.json"
+HUB_CONFIG=$CONFIG_PATH/"hubSauceConfig.json"
 fi
 
-export CURRENT_DIR=`pwd`
-export PATH=$JAVA_HOME/jre/bin:$JAVA_HOME/bin:$CURRENT_DIR:$PATH
-java -DSeLionConfig=SeLionConfigNonWindows.json -cp *:. com.paypal.selion.utils.JarSpawner "java -DSeLionConfig=SeLionConfigNonWindows.json -Djava.util.logging.config.file=logs/logging.properties -cp *:. com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig $HUB_CONFIG"
+#Updating the the logs path  the logging.properties
+sedCommandParams=('s/^(java\.util\.logging\.FileHandler\.pattern=).*/\1'${PROJECT_HOME//\//\\/}'\/logs\/selion-grid-%g.log/')
+echo "Params for sed command:${sedCommandParams[*]}"
+
+sed -E ${sedCommandParams[*]} $CONFIG_PATH/logging.properties > temp.properties && mv temp.properties $CONFIG_PATH/logging.properties && rm -rf temp.properties
+
+export PATH=$JAVA_HOME/jre/bin:$JAVA_HOME/bin:$PROJECT_HOME:$PATH
+java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfigNonWindows.json -cp $JAR_DIR/*:. com.paypal.selion.utils.JarSpawner "java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfigNonWindows.json -Djava.util.logging.config.file=$CONFIG_PATH/logging.properties -cp $JAR_DIR/*:. com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig $HUB_CONFIG"

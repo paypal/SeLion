@@ -25,6 +25,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
  * A configuration utility that is internally used by SeLion to parse sauce configuration json file.
@@ -33,7 +34,6 @@ public class SauceConfigReader {
 
     private static final Logger LOG = Logger.getLogger(SauceConfigReader.class.getName());
     private static SauceConfigReader reader = new SauceConfigReader();
-    public static final String SAUCE_CONFIG = "sauceConfig.json";
 
     private String authKey;
     private String sauceURL;
@@ -57,7 +57,7 @@ public class SauceConfigReader {
      */
     public void loadConfig() {
         try {
-            JsonObject jsonObject = JSONConfigurationUtils.loadJSON(SAUCE_CONFIG);
+            JsonObject jsonObject = JSONConfigurationUtils.loadJSON(SeLionGridConstants.SAUCE_CONFIG);
 
             authKey = getAttributeValue(jsonObject, "authenticationKey");
 
@@ -85,24 +85,36 @@ public class SauceConfigReader {
             }
         }
         
-        throw new GridConfigurationException("Invalid property " + key + " in " + SAUCE_CONFIG);
+        throw new GridConfigurationException("Invalid property " + key + " in " + SeLionGridConstants.SAUCE_CONFIG);
     }
 
+    /**
+     * @return the access key associated with the saucelabs account
+     */
     public String getAuthenticationKey() {
         LOG.info("authKey: " + authKey);
         return authKey;
     }
 
+    /**
+     * @return the sauceURL specified in the configuration file
+     */
     public String getSauceURL() {
         LOG.info("sauceURL: " + sauceURL);
         return sauceURL;
     }
 
+    /**
+     * @return the sauce labs user name
+     */
     public String getUserName() {
         LOG.info("userName: " + userName);
         return userName;
     }
 
+    /**
+     * @return the fully qualified sauce url
+     */
     public String getURL() {
         LOG.info("url: " + url);
         return url;

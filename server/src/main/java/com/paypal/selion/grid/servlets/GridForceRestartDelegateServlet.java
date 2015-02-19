@@ -82,8 +82,11 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             }
             ServletHelper.displayMessageOnRedirect(writer,"All nodes were forcibly restarted.");
         } else {
-            ServletHelper.displayHeader(writer, "SeLion Grid Marimba - Force Restart on Nodes");
+            ServletHelper.displayHeader(writer);
             writer.write("<div id='form_container'>");
+            writer.write("<h1>");
+            writer.write("<a>" + "SeLion Grid Marimba - Force Restart on Nodes" + "</a>");
+            writer.write("</h1>");
             writer.write("<form id='myForm' name='myForm' class='appnitro' method='post' action='"
                     + GridForceRestartDelegateServlet.class.getSimpleName() + "' >");
             writer.write("<div class='form_description'>");

@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.AuthenticationHelper;
 import com.paypal.selion.utils.ServletHelper;
 
@@ -41,7 +42,7 @@ public class PasswordChangeServlet extends HttpServlet {
     }
 
     private void askForCredentialsPage(PrintWriter writer) throws IOException {
-        File file = new File("pages/changePageGetDetails.html");
+        File file = new File(SeLionGridConstants.PASSWORD_CHANGE_GET_DETAILS);
         String changePasswordMessage = "Enter the old and New password to change the password";
 
         String template = FileUtils.readFileToString(file);

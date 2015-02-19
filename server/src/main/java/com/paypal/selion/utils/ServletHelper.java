@@ -186,10 +186,8 @@ public final class ServletHelper {
      * 
      * @param writer
      *            - The {@link PrintWriter} object that corresponds to a response
-     * @param headerMessage
-     *            - The message to display on the page
      */
-    public static void displayHeader(PrintWriter writer, String headerMessage) {
+    public static void displayHeader(PrintWriter writer) {
         writer.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
         writer.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
         writer.write("<head>");
@@ -200,9 +198,6 @@ public final class ServletHelper {
         writer.write("</head>");
         writer.write("<body id='main_body'>");
         writer.write("<img id='top' src='/grid/resources/form/top.png' alt='' >");
-        writer.write("<h1>");
-        writer.write("<a>" + headerMessage + "</a>");
-        writer.write("</h1>");
     }
     
 }

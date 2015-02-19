@@ -41,6 +41,7 @@ import com.google.common.base.Preconditions;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.ArtifactDetails;
 import com.paypal.selion.pojos.ArtifactDetails.URLChecksumEntity;
+import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
  * File downloader is used to Cleanup already downloaded files and download all the files specified in the
@@ -75,21 +76,21 @@ public final class FileDownloader {
      * download.properties
      */
     public static void checkForDownloads() {
-        if (lastModifiedTime == new File("download.properties").lastModified()) {
+        if (lastModifiedTime == new File(SeLionGridConstants.DOWNLOAD_FILE_PATH).lastModified()) {
             return;
         }
-        lastModifiedTime = new File("download.properties").lastModified();
+        lastModifiedTime = new File(SeLionGridConstants.DOWNLOAD_FILE_PATH).lastModified();
 
         cleanup();
 
         Properties prop = new Properties();
 
         try {
-            FileInputStream f = new FileInputStream("download.properties");
-            prop.load(new FileInputStream("download.properties"));
+            FileInputStream f = new FileInputStream(SeLionGridConstants.DOWNLOAD_FILE_PATH);
+            prop.load(new FileInputStream(SeLionGridConstants.DOWNLOAD_FILE_PATH));
             f.close();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.SEVERE, "Unable to open download properties file", e);
             throw new RuntimeException(e);
         }
         
@@ -164,10 +165,18 @@ public final class FileDownloader {
 
     }
 
+    private static String decideFilePath(String fileName) {
+        if (fileName.endsWith(".jar")) {
+            return new StringBuffer().append(SeLionGridConstants.BIN_FOLDER_PATH).append(fileName).toString();
+        } else {
+            // Encountered a archive type: at this point it is sure the valid archive types come in
+            return new StringBuffer().append(SeLionGridConstants.ARTIFACT_FOLDER_PATH).append(fileName).toString();
+        }
+    }
     private static String downloadFile(String url, String checksum, String algorithm) {
 
-        String filename = url.substring(url.lastIndexOf("/") + 1);
-
+        
+        String filename =  decideFilePath(url.substring(url.lastIndexOf("/") + 1));
         if (new File(filename).exists()) {
             // local file exist. no need to download
             if (checkLocalFile(filename, checksum, algorithm)) {
