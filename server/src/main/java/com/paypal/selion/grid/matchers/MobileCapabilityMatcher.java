@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.grid.internal;
+package com.paypal.selion.grid.matchers;
 
 import io.selendroid.common.SelendroidCapabilities;
 import io.selendroid.grid.SelendroidCapabilityMatcher;

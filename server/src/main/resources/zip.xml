@@ -67,5 +67,14 @@
             <lineEnding>unix</lineEnding>
             <fileMode>0644</fileMode>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <outputDirectory>/repository</outputDirectory>
+            <excludes>
+                <exclude>**/*</exclude>
+            </excludes>
+            <lineEnding>unix</lineEnding>
+            <fileMode>0744</fileMode>
+        </fileSet>
     </fileSets>
 </assembly>

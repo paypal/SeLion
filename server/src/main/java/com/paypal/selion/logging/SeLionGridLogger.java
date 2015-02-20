@@ -22,10 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import com.paypal.selion.utils.JarSpawner;
-
 /**
- * A Simple utils logger that will be used by {@link JarSpawner}
+ * A simple java utils logger that is used in SeLion enhanced grid
  * 
  */
 public class SeLionGridLogger {
@@ -40,7 +38,7 @@ public class SeLionGridLogger {
         logger = Logger.getLogger(CONSOLE_LOGGER_NAME);
         Handler handler = null;
         try {
-            handler = new FileHandler("jar-spawner.log", true);
+            handler = new FileHandler("selion-grid.log", true);
             handler.setFormatter(new SimpleFormatter());
             handler.setLevel(Level.FINE);
             logger.addHandler(handler);
@@ -65,7 +63,7 @@ public class SeLionGridLogger {
     }
 
     /**
-     * Function entry log convenience method with additional parm.
+     * Function entry log convenience method with additional param.
      * 
      * @param object
      *            additional parm

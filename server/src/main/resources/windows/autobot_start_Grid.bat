@@ -16,6 +16,7 @@ echo "Current dir:%currentDir%"
 set WIN_CONFIG_PREFIX=%archiveDir%/config/windows/
 set HUB_CONFIG=%archiveDir%/config/hubConfig.json
 set HUB_TYPE=Grid
+set CLASS_PATH=%jarDir%/*;.
  
 if "%1" equ "sauce" (
 set HUB_CONFIG=%archiveDir%/config/hubSauceConfig.json
@@ -25,6 +26,7 @@ set HUB_TYPE=SauceGrid
 if "%1" equ "mobile" (
 set HUB_CONFIG=%archiveDir%/config/hubMobileConfig.json
 set HUB_TYPE=MobileGrid
+set CLASS_PATH=%archiveDir%repository;%CLASS_PATH%
 )
  
 ::Script to dynamically substitute the archive dir path within logging.properties
@@ -53,4 +55,4 @@ FOR /F "USEBACKQ tokens=*" %%A IN (`FIND /V "" ^<"%FILE%.bak"`) DO (
 
 set PATH=%JAVA_HOME%\jre\bin;%JAVA_HOME%\bin;%PATH%
 
-start "SeLion %HUB_TYPE% Hub" java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfig.json -cp %jarDir%/*;. com.paypal.selion.utils.JarSpawner "java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfig.json -Djava.util.logging.config.file=%archiveDir%/config/logging.properties -cp \"%jarDir%/*;.\" com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig %HUB_CONFIG%"
+start "SeLion %HUB_TYPE% Hub" java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfig.json -cp %CLASS_PATH% com.paypal.selion.utils.JarSpawner "java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfig.json -Djava.util.logging.config.file=%archiveDir%/config/logging.properties -cp \"%CLASS_PATH%\" com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig %HUB_CONFIG%"

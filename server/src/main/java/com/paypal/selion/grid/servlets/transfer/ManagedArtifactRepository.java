@@ -1,0 +1,297 @@
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
+
+package com.paypal.selion.grid.servlets.transfer;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import com.paypal.selion.logging.SeLionGridLogger;
+import com.paypal.selion.utils.ConfigParser;
+
+/**
+ * <code>ManagedArtifactRepository</code> is an implementation of {@link ServerRepository} for {@link ManagedArtifact}
+ * and {@link Criteria}. The class is essentially a Singleton pattern. The class implements a {@link Timer} task that
+ * will run a cleaner thread that runs every hour to clean the artifacts inside the repository folder. All artifacts
+ * that have {@link ManagedArtifact#isExpired()} returning true are considered for removal during the cleaning cycle.
+ */
+public class ManagedArtifactRepository implements ServerRepository<ManagedArtifact, Criteria> {
+
+    /*
+     * System property for server home
+     */
+    private static final String SERVER_HOME_PROPERTY = "archiveHome";
+
+    /*
+     * The folder used for storing artifacts. Make sure this folder is available in the classpath or this string is
+     * represented as a system property
+     */
+    private static final String REPO_FOLDER_NAME = "repository";
+
+    /*
+     * Configuration property name for custom managed artifacts
+     */
+    private static final String ARTIFACT_CONFIG_PROPERTY = "managedArtifact";
+
+    private static final Logger logger = SeLionGridLogger.getLogger();
+
+    private static ManagedArtifactRepository instance = new ManagedArtifactRepository();
+
+    private File repoFolder = null;
+
+    /*
+     * Lock used for synchronizing reading and deletion cycles
+     */
+    private Lock repositorySynchronizationLock = null;
+
+    /*
+     * Cleaner thread timer
+     */
+    private Timer timer = null;
+
+    public static synchronized ManagedArtifactRepository getInstance() {
+        return instance;
+    }
+
+    private ManagedArtifactRepository() {
+        repoFolder = new File(getPathToRepoFolder());
+        repositorySynchronizationLock = new ReentrantLock();
+        timer = new Timer();
+
+        // Schedule the cleaner one hour from now and every hour thereafter
+        // Can be made configurable - weighing the advantage of making it so over the complexity
+        // of adding a new parameter into the config files and reading it in here?
+        timer.scheduleAtFixedRate(new RepositoryCleaner(), 60 * 60 * 1000, 60 * 60 * 1000);
+    }
+
+    @Override
+    public ManagedArtifact saveContents(UploadedArtifact uploadedArtifact) {
+        synchronized (getMutex(uploadedArtifact)) {
+            SeLionGridLogger.entering(uploadedArtifact);
+            File file = createFileUsing(uploadedArtifact);
+            try {
+                FileUtils.writeByteArrayToFile(file, uploadedArtifact.getArtifactContents());
+                ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
+                SeLionGridLogger.exiting(managedArtifact);
+                return managedArtifact;
+            } catch (IOException e) {
+                throw new ArtifactUploadException("IOException in writing file contents", e);
+            }
+        }
+    }
+
+    @Override
+    public boolean isArtifactPresent(Criteria requestedCriteria) {
+
+        /*
+         * This method returns true if the artifact is present and not expired at the very instant the method is called.
+         * The other equivalent getArtifact() method may still throw an ArtifactDownloadException if the artifact has
+         * expired or deleted by the cleaner thread after this method is called. The method can give some guarantee for
+         * an artifact by caching the request for an artifact for a particular time (use cache of guava lib).
+         */
+        boolean artifactPresent = false;
+        try {
+            repositorySynchronizationLock.lock();
+            SeLionGridLogger.entering(requestedCriteria);
+            ManagedArtifact managedArtifact = getMatch(requestedCriteria);
+            artifactPresent = !managedArtifact.isExpired();
+            SeLionGridLogger.exiting(artifactPresent);
+        } catch (ArtifactDownloadException exe) {
+
+            // Log and return false
+            logger.log(Level.WARNING, "No matching artifact", exe);
+        } finally {
+            repositorySynchronizationLock.unlock();
+        }
+        return artifactPresent;
+    }
+
+    @Override
+    public ManagedArtifact getArtifact(Criteria requestedCriteria) {
+
+        /*
+         * This method does not guarantee the presence of an artifact after isArtifactPresent() is called on an
+         * artifact. This is because the cleaner thread could have deleted a expired artifact in between the calls.
+         */
+        try {
+            repositorySynchronizationLock.lock();
+            SeLionGridLogger.entering(requestedCriteria);
+            ManagedArtifact managedArtifact = getMatch(requestedCriteria);
+            if (managedArtifact.isExpired()) {
+                throw new ArtifactDownloadException("The requested artifact: " + managedArtifact.getArtifactName()
+                        + " has expired");
+            }
+            SeLionGridLogger.exiting(managedArtifact);
+            return managedArtifact;
+        } finally {
+            repositorySynchronizationLock.unlock();
+        }
+    }
+
+    private String getMutex(UploadedArtifact uploadedArtifact) {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(uploadedArtifact.getUserId());
+        if (!StringUtils.isBlank(uploadedArtifact.getApplicationFolderName())) {
+            stringBuffer.append(uploadedArtifact.getApplicationFolderName());
+        }
+        return stringBuffer.toString().intern();
+    }
+
+    private ManagedArtifact getMatch(final Criteria criteria) {
+        List<File> files = (List<File>) FileUtils.listFiles(repoFolder, TrueFileFilter.INSTANCE,
+                TrueFileFilter.INSTANCE);
+        for (File file : files) {
+            ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
+            if (managedArtifact.matches(criteria)) {
+                return managedArtifact;
+            }
+        }
+        throw new ArtifactDownloadException("No artifact found for criteria, name: " + criteria.getArtifactName()
+                + ", userId: " + criteria.getUserId() + ", applicationFolder: " + criteria.getApplicationFolder());
+    }
+
+    private File createFileUsing(UploadedArtifact uploadedArtifact) {
+        String fileName = null;
+        try {
+            fileName = uploadedArtifact.getArtifactPartName();
+            File file = createUserFolder(uploadedArtifact.getUserId());
+            if (!StringUtils.isBlank(uploadedArtifact.getApplicationFolderName())) {
+                file = createApplicationFolder(file, uploadedArtifact.getApplicationFolderName());
+            }
+            file = new File(file, fileName);
+            if (!(file.exists() || file.createNewFile())) {
+                throw new ArtifactUploadException("Cannot create file with name: " + fileName);
+            }
+            return file;
+        } catch (IOException e) {
+            throw new ArtifactUploadException("IOException in creating file: " + fileName, e);
+        }
+    }
+
+    private File createUserFolder(String userId) {
+        File userFolder = new File(repoFolder, userId);
+        userFolder.mkdirs();
+        return userFolder;
+    }
+
+    private File createApplicationFolder(File userFolder, String applicationFolderName) {
+        File applicationFolder = new File(userFolder, applicationFolderName);
+        applicationFolder.mkdirs();
+        return applicationFolder;
+    }
+
+    private String getPathToRepoFolder() {
+        if (System.getProperty(REPO_FOLDER_NAME) != null) {
+            return getRepoFolderFromSystemProperty();
+        }
+        String serverHomeFolderPath = System.getProperty(SERVER_HOME_PROPERTY);
+        if (serverHomeFolderPath == null || serverHomeFolderPath.isEmpty()) {
+            throw new RuntimeException(SERVER_HOME_PROPERTY + " property not set properly ");
+        }
+        String pathToRepoFolder = serverHomeFolderPath + File.separator + REPO_FOLDER_NAME;
+        return pathToRepoFolder;
+    }
+
+    private String getRepoFolderFromSystemProperty() {
+        File file = new File(System.getProperty(REPO_FOLDER_NAME));
+        if (!file.exists() && !file.mkdirs()) {
+            throw new RuntimeException(System.getProperty(REPO_FOLDER_NAME) + " does not exists/cannot be created");
+        }
+        String repoFolderPath = file.getAbsolutePath();
+        return repoFolderPath;
+    }
+
+    @SuppressWarnings("unchecked")
+    private ManagedArtifact getManagedArtifact(String pathName) {
+        ManagedArtifact managedArtifact = null;
+        try {
+            String managedArtifactClassName = ConfigParser.getInstance().getString(ARTIFACT_CONFIG_PROPERTY);
+            if (logger.isLoggable(Level.FINE)) {
+                logger.log(Level.FINE, "ManagedArtifact class name configured in grid: " + managedArtifactClassName);
+            }
+            Class<? extends ManagedArtifact> managedArtifactClass = (Class<? extends ManagedArtifact>) this.getClass()
+                    .getClassLoader().loadClass(managedArtifactClassName);
+            managedArtifact = managedArtifactClass.getConstructor(new Class[] { String.class }).newInstance(
+                    new Object[] { pathName });
+            return managedArtifact;
+        } catch (InvocationTargetException exe) {
+            throw new ArtifactUploadException(exe.getCause().getMessage(), exe);
+        } catch (Exception exe) {
+            throw new ArtifactUploadException(exe.getClass().getSimpleName() + " in creating ManagedArtifact : "
+                    + ConfigParser.getInstance().getString(ARTIFACT_CONFIG_PROPERTY), exe);
+        }
+    }
+
+    /**
+     * RepositoryCleaner cleans repository every hour. Recursively finds directories that are empty and deletes it.
+     */
+    private class RepositoryCleaner extends TimerTask {
+
+        @Override
+        public void run() {
+            try {
+                repositorySynchronizationLock.lock();
+                deleteExpiredFiles();
+                deleteEmptyDirectories(repoFolder);
+            } finally {
+                repositorySynchronizationLock.unlock();
+            }
+        }
+
+        private void deleteExpiredFiles() {
+            List<File> files = (List<File>) FileUtils.listFiles(repoFolder, TrueFileFilter.INSTANCE,
+                    TrueFileFilter.INSTANCE);
+            for (File file : files) {
+                ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
+                if (managedArtifact.isExpired() && !file.delete()) {
+                    logger.log(Level.WARNING, "File: " + file.getName() + " not deleted from repository");
+                }
+            }
+        }
+
+        private void deleteEmptyDirectories(File directory) {
+            for (File file : directory.listFiles()) {
+                if (file.isDirectory()) {
+                    if (!isDirectoryEmpty(file)) {
+                        deleteEmptyDirectories(file);
+                    }
+                    if (isDirectoryEmpty(file)) {
+                        if (!file.delete()) {
+                            logger.log(Level.WARNING, "Directory: " + file.getName() + " not deleted from repository");
+                        }
+                    }
+                }
+            }
+        }
+
+        private boolean isDirectoryEmpty(File directory) {
+            return directory.list().length == 0;
+        }
+
+    }
+
+}

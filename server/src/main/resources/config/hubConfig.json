@@ -4,7 +4,8 @@
         "com.paypal.selion.grid.servlets.ListAllNodes",
         "com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet",
         "com.paypal.selion.grid.servlets.GridForceRestartDelegateServlet",
-        "com.paypal.selion.grid.servlets.PasswordChangeServlet"
+        "com.paypal.selion.grid.servlets.PasswordChangeServlet",
+        "com.paypal.selion.grid.servlets.TransferServlet"
     ],
     "browserTimeout": 180000
 }

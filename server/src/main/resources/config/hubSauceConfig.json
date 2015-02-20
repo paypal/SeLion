@@ -7,5 +7,5 @@
     ],
     "browserTimeout": 180000,
     "newSessionWaitTimeout": 1800000,
-    "capabilityMatcher": "com.paypal.selion.grid.internal.SeLionSauceCapabilityMatcher"
+    "capabilityMatcher": "com.paypal.selion.grid.matchers.SeLionSauceCapabilityMatcher"
 }

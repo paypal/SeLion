@@ -27,7 +27,7 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
-import com.paypal.selion.grid.internal.SeLionSauceCapabilityMatcher;
+import com.paypal.selion.grid.matchers.SeLionSauceCapabilityMatcher;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.AuthenticationHelper;
 import com.paypal.selion.utils.ServletHelper;

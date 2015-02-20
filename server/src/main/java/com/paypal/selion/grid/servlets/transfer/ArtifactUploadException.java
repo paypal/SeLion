@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,23 +13,29 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.grid.internal;
-
-import java.util.Map;
-
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+package com.paypal.selion.grid.servlets.transfer;
 
 /**
- * This is a {@link CapabilityMatcher} based extension of {@link DefaultCapabilityMatcher} that nullifies the 
- * capabilities of the internal {@link DefaultCapabilityMatcher} which resides in the Grid.
- * This is essentially done to ensure that all of the {@link CapabilityMatcher} capabilities are delegated
- * to the one that dwells in the Sauce Labs cloud.
- * 
+ * <code>ArtifactUploadException</code> extends RuntimeException and is used for all artifact upload related exeptions
+ * from the server.
  */
-public class SeLionSauceCapabilityMatcher extends DefaultCapabilityMatcher {
-    @Override
-    public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
-        return true;
+public class ArtifactUploadException extends RuntimeException {
+
+    /**
+     * Serialization ID
+     */
+    private static final long serialVersionUID = 522943620266513559L;
+
+    public ArtifactUploadException(String message) {
+        super(message);
     }
+
+    public ArtifactUploadException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ArtifactUploadException(Throwable cause) {
+        super(cause);
+    }
+
 }

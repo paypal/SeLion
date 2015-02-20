@@ -75,7 +75,7 @@ CONFIG_PATH="$PROJECT_HOME/config";
 UNIX_CONFIG_PATH="$CONFIG_PATH/unix"
 
 HUB_CONFIG=$CONFIG_PATH/"hubConfig.json"
-
+CLASS_PATH=$JAR_DIR/*:.
 if [ "$1" = "sauce" ]
 then
 HUB_CONFIG=$CONFIG_PATH/"hubSauceConfig.json"
@@ -84,6 +84,7 @@ fi
 if [ "$1" = "mobile" ]
 then
 HUB_CONFIG=$CONFIG_PATH/"hubMobileConfig.json"
+CLASS_PATH=$PROJECT_HOME/repository:$CLASS_PATH
 fi
 
 #Updating the the logs path  the logging.properties
@@ -93,4 +94,4 @@ echo "Params for sed command:${sedCommandParams[*]}"
 sed -E ${sedCommandParams[*]} $CONFIG_PATH/logging.properties > temp.properties && mv temp.properties $CONFIG_PATH/logging.properties && rm -rf temp.properties
 
 export PATH=$JAVA_HOME/jre/bin:$JAVA_HOME/bin:$PROJECT_HOME:$PATH
-java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfig.json -cp $JAR_DIR/*:. com.paypal.selion.utils.JarSpawner "java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfig.json -Djava.util.logging.config.file=$CONFIG_PATH/logging.properties -cp $JAR_DIR/*:. com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig $HUB_CONFIG"
+java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfig.json -cp $CLASS_PATH com.paypal.selion.utils.JarSpawner "java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfig.json -Djava.util.logging.config.file=$CONFIG_PATH/logging.properties -cp $CLASS_PATH com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig $HUB_CONFIG"
