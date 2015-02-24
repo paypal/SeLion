@@ -51,6 +51,7 @@ import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.internal.utils.TestNGUtils;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
+import com.paypal.selion.reports.reporter.services.ReporterConfigMetadata;
 import com.paypal.selion.reports.runtime.WebReporter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -283,6 +284,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         // Nothing should query for SeLionConfig values before this point.
         Config.initConfig(suite);
         ConfigSummaryData.initConfigSummary();
+        ReporterConfigMetadata.initReporterMetadata();
 
         // Printing the JVM information.
         // This info will help us when it comes to debugging issues on fusion

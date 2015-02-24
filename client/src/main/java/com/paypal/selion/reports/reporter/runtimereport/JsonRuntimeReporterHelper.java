@@ -45,6 +45,7 @@ import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.reports.reporter.html.ReporterException;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
+import com.paypal.selion.reports.reporter.services.ReporterConfigMetadata;
 import com.paypal.selion.reports.reporter.services.ReporterDateFormatter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -108,7 +109,7 @@ public class JsonRuntimeReporterHelper {
 
         return jsonConfigSummary;
     }
-
+    
     /**
      * This method will generate local Configuration summary by fetching the details from ReportDataGenerator
      * 
@@ -344,6 +345,7 @@ public class JsonRuntimeReporterHelper {
         }
         logger.exiting();
     }
+    
 
     /**
      * Construct the JSON report for report generation
@@ -364,12 +366,15 @@ public class JsonRuntimeReporterHelper {
         for (ConfigMethodInfo temp : runningConfig) {
             configObjects.add(gson.fromJson (temp.toJson(), JsonElement.class));
         }
-
+        
+        JsonElement reportMetadata = gson.fromJson(ReporterConfigMetadata.toJsonAsString(), JsonElement.class);
+        
         JsonObject reporter = new JsonObject();
         reporter.add("testMethods", testObjects);
         reporter.add("configurationMethods", configObjects);
         reporter.add("configSummary", generateConfigSummary());
         reporter.add("localConfigSummary", testJsonLocalConfigSummary);
+        reporter.add("reporterMetadata", reportMetadata);
 
         logger.exiting(reporter);
 

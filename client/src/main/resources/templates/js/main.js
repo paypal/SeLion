@@ -28,6 +28,8 @@
   var timeRefresh = 300 * 1000;//300 seconds refresh interval
   var localConfigMap = new Object();
   var reports = window.reports;
+  var reportMetaData = reports.reporterMetadata;
+  var DISPLAY_LABEL = "displayLabel";
 
   var dateFormatOptions = {
       year: "numeric", month: "short", day: "numeric",
@@ -44,13 +46,15 @@
           return val;
         }
       },
-      formatDateKey : function(key) {
-        switch (key) {
-        case "currentDate":
-          return "Current Date";
-        default:
-          return key;
+      formatDisplayName : function(key) {
+        var labelToRender = key;
+        if (reportMetaData.hasOwnProperty(key)) {
+          var configProperty = reportMetaData[key];
+          if (configProperty.hasOwnProperty(DISPLAY_LABEL)) {
+            labelToRender = configProperty.displayLabel;
+          }
         }
+        return labelToRender;
       }
   };
 
@@ -63,13 +67,13 @@
     //Prepare configuration summary content
     $('#config-popover').popover();
     var configData = $.map(reports.configSummary, function(value, key) {
-      return {value: helpers.formatDateValue(value, key), key: helpers.formatDateKey(key)}});
+      return {value: helpers.formatDateValue(value, key), key: helpers.formatDisplayName(key)}});
     $('#config-popover').attr('data-content', $('#configImpl').render({'results' : configData}));
 
     //Prepare local config summary map
     $.each(reports.localConfigSummary, function(idx, obj) {
       localConfigMap[obj.test] = $.map(obj, function(value, key) {
-        return {value: helpers.formatDateValue(value, key), key: helpers.formatDateKey(key)}}); 
+        return {value: helpers.formatDateValue(value, key), key: helpers.formatDisplayName(key)}}); 
     });
 
     autoRefresh = setInterval(reloadPage,timeRefresh);
