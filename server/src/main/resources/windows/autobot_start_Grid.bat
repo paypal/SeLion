@@ -21,6 +21,11 @@ if "%1" equ "sauce" (
 set HUB_CONFIG=%archiveDir%/config/hubSauceConfig.json
 set HUB_TYPE=SauceGrid
 )
+
+if "%1" equ "mobile" (
+set HUB_CONFIG=%archiveDir%/config/hubMobileConfig.json
+set HUB_TYPE=MobileGrid
+)
  
 ::Script to dynamically substitute the archive dir path within logging.properties
 SETLOCAL ENABLEDELAYEDEXPANSION

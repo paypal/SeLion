@@ -81,6 +81,11 @@ then
 HUB_CONFIG=$CONFIG_PATH/"hubSauceConfig.json"
 fi
 
+if [ "$1" = "mobile" ]
+then
+HUB_CONFIG=$CONFIG_PATH/"hubMobileConfig.json"
+fi
+
 #Updating the the logs path  the logging.properties
 sedCommandParams=('s/^(java\.util\.logging\.FileHandler\.pattern=).*/\1'${PROJECT_HOME//\//\\/}'\/logs\/selion-grid-%g.log/')
 echo "Params for sed command:${sedCommandParams[*]}"
