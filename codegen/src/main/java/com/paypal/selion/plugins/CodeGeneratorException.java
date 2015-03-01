@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,34 +13,20 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reader;
+package com.paypal.selion.plugins;
 
-import com.paypal.selion.plugins.CodeGeneratorException;
+public class CodeGeneratorException extends RuntimeException {
+    private static final long serialVersionUID = -2887053135314509648L;
 
-import java.io.IOException;
-
-/**
- * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either
- * process YAML V1 format (or) V2 format.
- * 
- */
-public final class YamlReaderFactory {
-    private YamlReaderFactory() {
-        // Utility class. Hide constructor.
+    public CodeGeneratorException() {
+        super();
     }
 
-    public static AbstractYamlReader createInstance(String fileName) throws IOException {
-        if (!fileName.endsWith("yaml")) {
-            throw new IllegalArgumentException("Data file not supported : " + fileName);
-        }
-        AbstractYamlReader provider = new YamlV2Reader(fileName);
-        if (!provider.processed()) {
-            provider = new YamlV1Reader(fileName);
-        }
-        if (!provider.processed()) {
-            throw new CodeGeneratorException("Error parsing document. Please check file contents for syntax errors.");
-        }
-        return provider;
+    public CodeGeneratorException(String message) {
+        super(message);
     }
 
+    public CodeGeneratorException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

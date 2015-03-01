@@ -133,7 +133,7 @@ public class WebTestSession extends AbstractTestSession {
 
         // for un-named sessions that may want to stay open or connect to an
         // existing session default to this session name in most cases
-        this.sessionNameToUse = "unamed-sesssion-on-thread" + Thread.currentThread().getId();
+        this.sessionNameToUse = "unnamed-session-on-thread" + Thread.currentThread().getId();
 
         // dynamically generate a session name, if the user wants a new
         // session and wants to keep it open. session name will be "pacakge.class.method" name
@@ -145,7 +145,7 @@ public class WebTestSession extends AbstractTestSession {
 
         // catch openNewSession=false when there are no dependent methods specified
         if ((!this.openNewSession) && (!hasDependentMethods())) {
-            throw new IllegalArgumentException("Can not have an unamed session without dependent methods and use"
+            throw new IllegalArgumentException("Can not have an unnamed session without dependent methods and use"
                     + " an existing session. Error in " + SESSION_PREFIX + this.methodName);
         }
 
@@ -176,7 +176,7 @@ public class WebTestSession extends AbstractTestSession {
             // multiple in-flight sessions and dependent methods specified
             // that matched...
             if (foundSessions.size() > 1) {
-                throw new IllegalStateException("Ambiguos match. Found more than one session that "
+                throw new IllegalStateException("Ambiguous match. Found more than one session that "
                         + "matched selection criteria " + foundSessions.toString());
             }
 
@@ -203,6 +203,10 @@ public class WebTestSession extends AbstractTestSession {
         // method. So lets check if its still blank and if yes, we default it to the global config value.
         if (StringUtils.isBlank(this.browser)) {
             this.browser = Config.getConfigProperty(ConfigProperty.BROWSER);
+        }
+        // All of our browser values need to start with the magic char "*"
+        if (!StringUtils.startsWith(this.browser, "*")) {
+            this.browser = "*".concat(this.browser);
         }
         logger.exiting(this.browser);
         return this.browser;
@@ -334,7 +338,7 @@ public class WebTestSession extends AbstractTestSession {
         try {
             closeSession();
         } catch (RuntimeException e) {
-            logger.log(Level.FINER, "An exception occured while closing the web session", e);
+            logger.log(Level.FINER, "An exception occurred while closing the web session", e);
         }
         logger.exiting();
     }
@@ -403,22 +407,17 @@ public class WebTestSession extends AbstractTestSession {
             return;
         }
         try {
-            // lets attempt to capture a screenshot if there was a failure.
+            // let's attempt to capture a screenshot if there was a failure.
             // That way a user can see the how the page looked like
             // when a test failed.
             if (!method.isTestResultSuccess()) {
                 warnUserOfTestFailures(method);
             }
-        } catch (WebSessionException e) {
-            logger.warning(e.getMessage() + " gobbling the WebSessionException as it is not due to test case failure");
-            // do nothing
-        } catch (UnsupportedOperationException e) {
-            logger.warning(e.getMessage()
-                    + " gobbling the UnsupportedOperationException as it is not due to test case failure");
         } catch (Exception e) {
-            String warning = "An exception occured after the test method invocation. "
+            String warning = "An exception occurred after the test method invocation. "
                     + "Gobbling it as the test case itself did not fail";
-            logger.log(Level.WARNING, warning, e);
+            logger.log(Level.FINEST, warning, e);
+            // do nothing, the failure contains the details that we need displayed to the end-user
         } finally {
             closeCurrentSessionAndRemoveFromMap(sessionMap);
         }

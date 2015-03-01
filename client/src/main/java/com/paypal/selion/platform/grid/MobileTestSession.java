@@ -60,7 +60,7 @@ public class MobileTestSession extends AbstractTestSession {
         logger.entering();
         if (StringUtils.isBlank(appName)) {
             throw new IllegalArgumentException(
-                    "Please specify the application name either via the @AppTest annotation or via the SeLion configuration parameter");
+                    "Please specify the application name either via the @MobileTest annotation or via the SeLion configuration parameter");
         }
         logger.exiting(appName);
         return appName;

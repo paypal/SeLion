@@ -26,7 +26,7 @@ import com.paypal.selion.reader.AbstractYamlReader;
 import com.paypal.selion.reader.YamlReaderFactory;
 
 /**
- * This class provides basic methods the read the data from the yaml file.
+ * This class provides basic methods the read the data from the YAML file.
  * 
  */
 public class DataReader {

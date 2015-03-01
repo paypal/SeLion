@@ -24,31 +24,33 @@ import com.paypal.selion.annotations.MobileTest;
  * An enum class that represents the browser flavors supported by SeLion
  */
 public enum BrowserFlavors {
-    GENERIC("*generic"), 
-    FIREFOX("*firefox"), 
-    INTERNET_EXPLORER("*iexplore"), 
-    HTMLUNIT("*htmlunit"), 
-    CHROME("*chrome"),
+    GENERIC("*generic", true),
+    FIREFOX("*firefox", false),
+    INTERNET_EXPLORER("*iexplore", false),
+    HTMLUNIT("*htmlunit", false),
+    CHROME("*chrome", false),
     /**
      * @deprecated SeLion is moving away from IPhoneDriver and now starting to use IOS-Driver. In order to be able to
      *             run tests on an iPad simulator (or) device using the Safari browser, please use
      *             {@link MobileTest#device()} equal to "iphone" and {@link MobileTest#appName()} equal to "Safari"
      */
-    IPHONE("*iphone"),
+    IPHONE("*iphone", true),
     /**
      * @deprecated SeLion is moving away from IPhoneDriver and now starting to use IOS-Driver. In order to be able to
      *             run tests on an iPad simulator (or) device using the Safari browser, please use
      *             {@link MobileTest#device()} equal to "ipad" and {@link MobileTest#appName()} equal to "Safari"
      */
-    IPAD("*ipad"), 
-    SAFARI("*safari"), 
-    OPERA("*opera"), 
-    PHANTOMJS("*phantomjs");
+    IPAD("*ipad", true),
+    SAFARI("*safari", false),
+    OPERA("*opera", false),
+    PHANTOMJS("*phantomjs", false);
 
     private String browser;
+    private boolean internalOnly;
 
-    private BrowserFlavors(String browser) {
+    private BrowserFlavors(String browser, boolean internalOnly) {
         this.browser = browser;
+        this.internalOnly = internalOnly;
     }
 
     /**
@@ -61,6 +63,15 @@ public enum BrowserFlavors {
     }
 
     /**
+     * Return whether the browser flavor is internal to SeLion
+     *
+     * @return A boolean value <code>true</code> or <code>false</code>
+     */
+    public boolean isInternalOnly() {
+        return this.internalOnly;
+    }
+
+    /**
      * This method returns all the browser flavors that are supported by the SeLion framework as a String with each
      * value delimited by a comma.
      * 
@@ -70,7 +81,9 @@ public enum BrowserFlavors {
         StringBuilder buffer = new StringBuilder();
         String delimiter = ",";
         for (BrowserFlavors flavor : BrowserFlavors.values()) {
-            buffer.append(flavor.getBrowser()).append(delimiter);
+            if (!flavor.isInternalOnly()) {
+                buffer.append(flavor.getBrowser()).append(delimiter);
+            }
         }
         buffer.deleteCharAt(buffer.length() - 1);
         return buffer.toString();
@@ -91,7 +104,7 @@ public enum BrowserFlavors {
         StringBuilder errorMsg = new StringBuilder();
         errorMsg.append("Browser name \'");
         errorMsg.append(browser).append("\' did not match any browser flavors supported by SeLion.\n");
-        errorMsg.append("Current Supported Browser flavors are : [").append(BrowserFlavors.getSupportedBrowsersAsCSV())
+        errorMsg.append("Supported Browser flavors are : [").append(BrowserFlavors.getSupportedBrowsersAsCSV())
                 .append("].");
 
         IllegalArgumentException e = new IllegalArgumentException(errorMsg.toString());

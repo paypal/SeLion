@@ -44,9 +44,9 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
     //consider a field in the yaml file which looks like this : fxBankRadioButton
     //if we have Button ahead of RadioButton, then our code would end up matching this above key with
     //Button instead of matching it against RadioButton. This is the ONLY case wherein the order is very important
-    
-    private static HtmlSeLionElement[] values = {TEXT_FIELD, TABLE, SELECT_LIST, RADIO_BUTTON,BUTTON,LINK,LABEL,IMAGE,FORM,
-        DATE_PICKER,CHECK_BOX,CONTAINER,BASE_CLASS,PAGE_TITLE
+
+    private static HtmlSeLionElement[] values = {TEXT_FIELD, TABLE, SELECT_LIST, RADIO_BUTTON, BUTTON, LINK, LABEL,
+            IMAGE, FORM, DATE_PICKER, CHECK_BOX, CONTAINER, BASE_CLASS, PAGE_TITLE
     };
 
     @Override
@@ -73,7 +73,7 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
 
     /**
      * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElement} and whose
-     * {@link HtmlSeLionElement#isHtmlElement()} returns true.
+     * {@link HtmlSeLionElement#isUIElement()} returns true.
      * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValidHtmlElement(String element) {
@@ -117,29 +117,29 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
      *            -keys for which {@link GUIObjectDetails} is to be created.
      * @return
      */
-    public static List<GUIObjectDetails> getGUIObjectList(List<String> keys){
+    public static List<GUIObjectDetails> getGUIObjectList(List<String> keys) {
         String DELIMITER = "#";
         List<GUIObjectDetails> htmlObjectDetailsList = new ArrayList<GUIObjectDetails>();
 
         for (String key : keys) {
-               String parent = null;
-               // If the key contains a delimiter, then html object has a parent
-               if (key.contains(DELIMITER)) {
-                   parent = key.split(DELIMITER)[0];
-                   key = key.split(DELIMITER)[1];
-               }
+            String parent = null;
+            // If the key contains a delimiter, then html object has a parent
+            if (key.contains(DELIMITER)) {
+                parent = key.split(DELIMITER)[0];
+                key = key.split(DELIMITER)[1];
+            }
 
-               HtmlSeLionElement element = HtmlSeLionElement.findMatch(key);
-               if (element != null && element.isUIElement()) {
-                   GUIObjectDetails htmlObjectDetails = null;
-                   if (element.canHaveParent()) {
-                       htmlObjectDetails = new GUIObjectDetails(element.stringify(), key, parent);
-                   } else {
-                       htmlObjectDetails = new GUIObjectDetails(element.stringify(), key);
-                   }
-                   htmlObjectDetailsList.add(htmlObjectDetails);
-               }
-           }
+            HtmlSeLionElement element = HtmlSeLionElement.findMatch(key);
+            if (element != null && element.isUIElement()) {
+                GUIObjectDetails htmlObjectDetails = null;
+                if (element.canHaveParent()) {
+                    htmlObjectDetails = new GUIObjectDetails(element.stringify(), key, parent);
+                } else {
+                    htmlObjectDetails = new GUIObjectDetails(element.stringify(), key);
+                }
+                htmlObjectDetailsList.add(htmlObjectDetails);
+            }
+        }
         return htmlObjectDetailsList;
     }
 

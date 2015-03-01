@@ -36,7 +36,7 @@ class YamlV1Reader extends AbstractYamlReader {
     private static final String ELEMENTS = "Elements";
 
     /**
-     * This is a public constructor to create an input stream & Yaml instance for the input file.
+     * This is a public constructor to create an input stream and YAML instance for the input file.
      * 
      * @param fileName
      *            the name of the YAML data file.
@@ -50,12 +50,13 @@ class YamlV1Reader extends AbstractYamlReader {
     }
 
     @Override
+    // TODO PageYAML V1 only needs to support platform = "web". As a result, this method needs re-factoring.
     public void processPage(FileSystemResource resource) throws IOException {
         boolean platformDefined = false;
         String fileName = resource.getFileName();
         InputStream is = resource.getInputStream();
-        // Try to load PageYaml v1
-        Logger.getLogger().debug(String.format("++ Processing %s as PageYaml V1", fileName));
+        // Try to load PageYAML v1
+        Logger.getLogger().debug(String.format("++ Attempting to process %s as PageYAML V1", fileName));
 
         Iterable<Object> allObjects = getYaml().loadAll(new BufferedReader(new InputStreamReader(is, "UTF-8")));
         try {
@@ -70,7 +71,7 @@ class YamlV1Reader extends AbstractYamlReader {
 
                 if ("baseClass".equals(map.get(KEY))) {
                     Logger.getLogger().debug(
-                            String.format("++ Retrieved [%s] as the base class in [%s] PageYaml V1.", map.get("Value"),
+                            String.format("++ Retrieved [%s] as the base class in [%s] PageYAML V1.", map.get("Value"),
                                     fileName));
                     setBaseClassName((String) map.get("Value"));
                 }
@@ -114,7 +115,7 @@ class YamlV1Reader extends AbstractYamlReader {
 
                 appendKey(key);
 
-                // TODO: Container support for IOS element still needs to analyzed
+                // TODO Container support for IOS element still needs to analyzed
                 if (canHaveContainers(currentPlatform, key, map)) {
                     @SuppressWarnings("unchecked")
                     ArrayList<Object> allElements = (ArrayList<Object>) map.get(ELEMENTS);
@@ -125,8 +126,12 @@ class YamlV1Reader extends AbstractYamlReader {
                     }
                 }
             }
-        } catch (NullPointerException e) {// NOSONAR
-            // Gobbling the exception but doing nothing with it.
+            setProcessed(true);
+        } catch (Exception e) {// NOSONAR
+            // Just log a debug message. The input is probably not a V1 PageYAML
+            Logger.getLogger().debug(
+                    String.format("Unable to process %s as PageYAML V1.\n\t %s", resource.getFileName(),
+                            e.getLocalizedMessage()));
         }
     }
     

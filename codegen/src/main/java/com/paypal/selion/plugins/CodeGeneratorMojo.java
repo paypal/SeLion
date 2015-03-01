@@ -40,28 +40,28 @@ public class CodeGeneratorMojo extends AbstractMojo {
     /**
      * Project the plugin is called from.
      * 
-     * @parameter expression="${project}"
+     * @parameter property="project"
      */
     private MavenProject project;
 
     /**
      * Represents the base package used for generated java classes.
      * 
-     * @parameter expression="${selion-code-generator.basePackage}" default-value="com.paypal.selion.testcomponents"
+     * @parameter property="selion-code-generator.basePackage" default-value="com.paypal.selion.testcomponents"
      */
     private String basePackage;
 
     /**
      * Represents the base folder used for reading page asset files such as PageYaml.
      * 
-     * @parameter expression="${selion-code-generator.baseFolder}" default-value="GUIData"
+     * @parameter property="selion-code-generator.baseFolder" default-value="GUIData"
      */
     private String baseFolder;
 
     /**
      * List of "domains" to exclude during code generation.
      * 
-     * @parameter expression="${selion-code-generator.excludeDomains}"
+     * @parameter property="selion-code-generator.excludeDomains"
      */
     private List<String> excludeDomains;
 
@@ -69,7 +69,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * Represents the location for the code generator plug-in to create a <code>SeLionPageDetails.txt</code> text file. \
      * This text file will contain the file path of every resource file processed.
      * 
-     * @parameter expression="${selion-code-generator.detailedTextOutputLocation}" default-value="${project.build.directory}";
+     * @parameter property="selion-code-generator.detailedTextOutputLocation" default-value="${project.build.directory}";
      */
     private File detailedTextOutputLocation;
 
@@ -139,33 +139,31 @@ public class CodeGeneratorMojo extends AbstractMojo {
         createSeLionPageDetailsFile(allDataFiles);
         CodeGenerator helper = new CodeGenerator(generatedSourceDir);
 
-        for (File eachDataFile : allDataFiles) {
+        for (File dataFile : allDataFiles) {
             try {
-                String folder = pathToFolder(eachDataFile);
+                String folder = pathToFolder(dataFile);
                 String domain = folder.replace(File.separator, "/");
                 folder = folder.replace(File.separator, ".");
 
                 if (excludeDomains.contains(domain)) {
-                    logger.info("Excluded code generation for YAML file [" + eachDataFile.getName()
+                    logger.info("Excluded code generation for YAML file [" + dataFile.getName()
                             + "] as the corresponding domain [" + domain + "] is available in excludeDomains list");
                     continue;
                 }
 
                 String relativePath = relativePath(folder);
 
-                File extendedFile = extendedFileLoc(sourceDir, relativePath, eachDataFile);
-                File baseFile = baseFileLoc(generatedSourceDir, relativePath, eachDataFile);
-                if (generateJavaCode(baseFile, eachDataFile, extendedFile)) {
-
-                    logger.info("Generating java file for YAML file [" + eachDataFile.getName() + "] in domain ["
+                File extendedFile = extendedFileLoc(sourceDir, relativePath, dataFile);
+                File baseFile = baseFileLoc(generatedSourceDir, relativePath, dataFile);
+                if (generateJavaCode(baseFile, dataFile, extendedFile)) {
+                    logger.info("Generating java file for YAML file [" + dataFile.getName() + "] in domain ["
                             + domain + "]");
                     String tempPackage = basePackage + "." + folder;
-                    helper.generateNewCode(eachDataFile, relativePath, tempPackage, domain);
-
+                    helper.generateNewCode(dataFile, relativePath, tempPackage, domain);
                 }
 
             } catch (Exception e) {
-                String errorMsg = " \n SeLion code generator failed when generating code for " + eachDataFile.getName()
+                String errorMsg = " \n SeLion code generator failed when generating code for " + dataFile.getAbsolutePath()
                         + "\n" + "Root Cause : \n" + e.toString();
                 throw new MojoExecutionException(errorMsg, e);
             }

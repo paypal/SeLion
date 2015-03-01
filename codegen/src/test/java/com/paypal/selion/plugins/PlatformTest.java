@@ -17,8 +17,6 @@ package com.paypal.selion.plugins;
 
 import static org.testng.Assert.assertTrue;
 
-import java.io.IOException;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -28,11 +26,9 @@ import org.testng.annotations.Test;
 public class PlatformTest {
 
     class DummyMojo extends AbstractMojo {
-
         @Override
         public void execute() throws MojoExecutionException, MojoFailureException {
         }
-
     }
 
     @BeforeClass
@@ -41,28 +37,26 @@ public class PlatformTest {
     }
 
     @Test
-    public void testWebPlatform() throws IOException {
+    public void testWebPlatform() throws Exception {
         // When no platform is specified the default should be WEB
         TestPlatform currentPlatform = getPlatformToTest("src/test/resources/PayPalAbstractPage.yaml");
         assertTrue(currentPlatform == TestPlatform.WEB);
     }
 
     @Test
-    public void testIOSPlatform() throws IOException {
+    public void testIOSPlatform() throws Exception {
         // For IOS platform, the value must be specified
         TestPlatform currentPlatform = getPlatformToTest("src/test/resources/IOSInteractionPage.yaml");
         assertTrue(currentPlatform == TestPlatform.IOS);
-
     }
 
-    @Test(expectedExceptions = { IllegalArgumentException.class })
-    public void testInvalidPlatform() throws IOException {
+    @Test(expectedExceptions = { CodeGeneratorException.class })
+    public void testInvalidPlatform() throws Exception {
         // Testing the datareader for a negative condition with a invalid platform name
         getPlatformToTest("src/test/resources/InvalidBasePage.yaml");
-
     }
 
-    private TestPlatform getPlatformToTest(String resourceFile) throws IOException {
+    private TestPlatform getPlatformToTest(String resourceFile) throws Exception {
         DataReader reader = new DataReader(resourceFile);
         return reader.platform();
     }

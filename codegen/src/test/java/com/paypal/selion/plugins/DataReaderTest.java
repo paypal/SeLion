@@ -18,7 +18,6 @@ package com.paypal.selion.plugins;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -28,17 +27,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.elements.HtmlSeLionElement;
-import com.paypal.selion.plugins.DataReader;
-import com.paypal.selion.plugins.GUIObjectDetails;
-import com.paypal.selion.plugins.Logger;
 
 public class DataReaderTest {
     class DummyMojo extends AbstractMojo {
-
         @Override
         public void execute() throws MojoExecutionException, MojoFailureException {
         }
-
     }
 
     @BeforeClass
@@ -47,28 +41,28 @@ public class DataReaderTest {
     }
 
     @Test
-    public void getKeys_v1() throws IOException {
+    public void getKeys_v1() throws Exception {
         DataReader r = new DataReader("src/test/resources/PayPalAbstractPage.yaml");
         List<String> keys = r.getKeys();
         assertTrue(keys.contains("messageBoxConfirmationLabel"));
     }
 
     @Test
-    public void getKeys_v2() throws IOException {
+    public void getKeys_v2() throws Exception {
         DataReader r = new DataReader("src/test/resources/SampleV2YamlPage.yaml");
         List<String> keys = r.getKeys();
         assertTrue(keys.contains("requestAPICredentialsLink"));
     }
 
     @Test
-    public void getBaseClass_v2() throws IOException {
+    public void getBaseClass_v2() throws Exception {
         DataReader r = new DataReader("src/test/resources/SampleV2YamlPage.yaml");
         String baseClass = r.getBaseClassName();
         assertEquals(baseClass, "com.paypal.selion.testcomponents.BasicPageImpl");
     }
 
     @Test
-    public void getHtmlObjectDetails() throws IOException {
+    public void getHtmlObjectDetails() throws Exception {
         DataReader r = new DataReader("src/test/resources/SampleV2YamlPage.yaml");
         List<String> keys = r.getKeys();
         List<GUIObjectDetails> objects = GUIObjectDetails.transformKeys(keys);

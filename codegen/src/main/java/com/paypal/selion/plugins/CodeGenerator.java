@@ -31,8 +31,7 @@ import org.apache.velocity.app.Velocity;
 
 /**
  * This class houses the core logic which is responsible for transforming a yaml file that houses locators into
- * corresponding .java files.
- * It leverages Velocity templates under the hoods to get this done.
+ * corresponding .java files. It leverages Velocity templates under the hoods to get this done.
  * 
  */
 public class CodeGenerator {
@@ -42,7 +41,7 @@ public class CodeGenerator {
     public CodeGenerator(String baseDirectory) {
         this.baseDirectory = baseDirectory;
     }
-    
+
     /**
      * 
      * This method will generate .java file based on the a yaml file contents.
@@ -56,7 +55,8 @@ public class CodeGenerator {
      * 
      * @throws IOException
      */
-    public void generateNewCode(File dataFile, String filePath, String packageName, String domain) throws IOException {
+    public void generateNewCode(File dataFile, String filePath, String packageName, String domain) throws IOException,
+            CodeGeneratorException {
         BufferedReader br = null;
         String newFilePath = baseDirectory + filePath;
         File newFile = new File(newFilePath);
@@ -65,18 +65,18 @@ public class CodeGenerator {
         DataReader dataReader = new DataReader(dataFile.getAbsolutePath());
         try {
             List<String> keys = dataReader.getKeys();
-            
+
             TestPlatform currentPlatform = dataReader.platform();
-            
+
             String baseClass = dataReader.getBaseClassName();
-            
+
             String baseClassName = baseClass.substring(baseClass.lastIndexOf(".") + 1);
-            
-            //Validating the keys in data file before proceeding with the code generation
+
+            // Validating the keys in data file before proceeding with the code generation
             GUIObjectDetails.validateKeysInDataFile(keys, dataFile.getName(), currentPlatform);
-            
-            List<GUIObjectDetails> htmlObjectDetailsList = GUIObjectDetails.transformKeys(keys,currentPlatform);
-            
+
+            List<GUIObjectDetails> htmlObjectDetailsList = GUIObjectDetails.transformKeys(keys, currentPlatform);
+
             Set<String> set = new HashSet<String>();
             for (GUIObjectDetails htmlObjectDetails : htmlObjectDetailsList) {
                 set.add(htmlObjectDetails.getMemberType());
@@ -98,13 +98,13 @@ public class CodeGenerator {
             context.put("package", packageName);
             context.put("baseclasspackage", baseClass);
             context.put("domain", domain);
-            
+
             context.put("baseclass", baseClassName);
-            
+
             String resourceToLoad = currentPlatform.getVelocityTemplateToUse();
-            InputStream is = getClass().getResourceAsStream("/"+resourceToLoad);
+            InputStream is = getClass().getResourceAsStream("/" + resourceToLoad);
             br = new BufferedReader(new InputStreamReader(is));
-            
+
             BufferedWriter writer = new BufferedWriter(new FileWriter(newFilePath + "/" + className + ".java"));
             Velocity.evaluate(context, writer, "code generator", br);
             writer.flush();

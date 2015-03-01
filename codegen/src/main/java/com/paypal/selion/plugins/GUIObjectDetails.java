@@ -54,7 +54,7 @@ public class GUIObjectDetails {
     }
     
     //This method is used by the velocity template and has reference in Class.vm
-    //DONOT tamper with this method
+    //DO NOT tamper with this method
     public String returnArg(String key) {
         HtmlSeLionElement element = HtmlSeLionElement.findMatch(key);
         if (element == null) {
@@ -67,7 +67,7 @@ public class GUIObjectDetails {
     }
 
     //This method is used by the velocity template and has reference in Class.vm
-    //DONOT tamper with this method
+    //DO NOT tamper with this method
     public String firstToUpperCase(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
@@ -91,7 +91,6 @@ public class GUIObjectDetails {
             htmlObjectDetailsList = HtmlSeLionElement.getGUIObjectList(keys);
             break;
         }
-
         case IOS: {
             htmlObjectDetailsList = IOSSeLionElement.getGUIObjectList(keys);
             break;
@@ -102,14 +101,13 @@ public class GUIObjectDetails {
     
 
     /**
-     * A overloaded version of transformKeys method which internally specifies {@link TestPlatform.WEB} as the {@link TestPlatform}
+     * A overloaded version of transformKeys method which internally specifies {@link TestPlatform#WEB} as the {@link TestPlatform}
      * @param keys
-     * 			- keys for which {@link GUIObjectDetails} is to be created.
+     *            - keys for which {@link GUIObjectDetails} is to be created.
      * @return
      */
     public static List<GUIObjectDetails> transformKeys(List<String> keys){
-    	return transformKeys(keys,TestPlatform.WEB);
-    	
+        return transformKeys(keys,TestPlatform.WEB);
     }
     
     /**
@@ -141,9 +139,9 @@ public class GUIObjectDetails {
                 /*
                  * For Yaml V1 the non-html elements are added to the List of keys(EG: pageTitle) whereas for V2 it does
                  * not. As a result, if a user specifies wrong name for pageTitle we first check it to be valid name and
-                 * then proceed with the usual check of validating if its a html element TODO: This is a hack to be
-                 * removed when V1 is fully deprecated
+                 * then proceed with the usual check of validating if its a html element
                  */
+                 // TODO: This is a hack to be removed when V1 is fully deprecated.
                 if (!(HtmlSeLionElement.isValid(currentKey))) {
                     throw new IllegalArgumentException(String.format(
                             "Detected an invalid key [%s] in data file %s for Platform: WEB", currentKey, dataFileName));

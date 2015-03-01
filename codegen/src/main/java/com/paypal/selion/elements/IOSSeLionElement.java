@@ -93,7 +93,7 @@ public class IOSSeLionElement extends AbstractSeLionElement {
     /**
      * @param element
      *            - The element that needs to be tested for being a valid {@link IOSSeLionElement} and whose
-     *            {@link IOSSeLionElement#isHtmlElement()} returns true.
+     *            {@link IOSSeLionElement#isUIElement()} returns true.
      * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValidUIElement(String element) {

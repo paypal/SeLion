@@ -30,12 +30,12 @@ import com.paypal.selion.plugins.PageFactory;
 import com.paypal.selion.plugins.TestPlatform;
 
 /**
- * Concrete Yaml reader that is capable of reading Yaml v2 format file.
+ * Concrete YAML reader that is capable of reading YAML V2 format file.
  */
 class YamlV2Reader extends AbstractYamlReader {
 
     /**
-     * This is a public constructor to create an input stream & Yaml instance for the input file.
+     * This is a public constructor to create an input stream and YAML instance for the input file.
      * 
      * @param fileName
      *            the name of the YAML data file.
@@ -53,16 +53,15 @@ class YamlV2Reader extends AbstractYamlReader {
             String fileName = resource.getFileName();
             Page page = PageFactory.getPage(is);
             setBaseClassName(page.getBaseClass());
-            Logger.getLogger().debug(String.format("++ Processing %s as PageYaml V2", fileName));
-            
-            TestPlatform currentPlatform = TestPlatform.identifyPlatform(page.getPlatform());
+            Logger.getLogger().debug(String.format("++ Attempting to process %s as PageYAML V2", fileName));
 
+            TestPlatform currentPlatform = TestPlatform.identifyPlatform(page.getPlatform());
             if (currentPlatform == null) {
                 throw new IllegalArgumentException("Missing or invalid platform specified in " + fileName);
             }
 
             setPlatform(currentPlatform);
-            
+
             for (Entry<String, GUIElement> eachElement : page.getElements().entrySet()) {
                 if (!eachElement.getKey().isEmpty()) {
 
@@ -82,11 +81,11 @@ class YamlV2Reader extends AbstractYamlReader {
                 }
             }
             setProcessed(true);
-        } catch (Exception ex) { // NOSONAR
-            // Just log a debug message. The input is probably not a V2 PageYaml
+        } catch (Exception e) { // NOSONAR
+            // Just log an debug message. The input is probably not a V2 PageYAML
             Logger.getLogger().debug(
-                    String.format("Unable to process %s as PageYaml V2.\n\t %s", resource.getFileName(),
-                            ex.getLocalizedMessage()));
+                    String.format("Unable to process %s as PageYAML V2.\n\t %s", resource.getFileName(),
+                            e.getLocalizedMessage()));
         }
     }
 }

@@ -15,7 +15,6 @@
 
 package com.paypal.selion.plugins;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +26,9 @@ import org.testng.annotations.Test;
 
 public class GUIObjectDetailsTest {
     class DummyMojo extends AbstractMojo {
-
         @Override
         public void execute() throws MojoExecutionException, MojoFailureException {
         }
-
     }
 
     @BeforeClass
@@ -40,7 +37,7 @@ public class GUIObjectDetailsTest {
     }
 
     @Test
-    public void validateWebElements() throws IOException {
+    public void validateWebElements() throws Exception {
         String dataFile = "src/test/resources/SampleV2YamlPage.yaml";
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
@@ -48,7 +45,7 @@ public class GUIObjectDetailsTest {
     }
 
     @Test
-    public void validateIOSElements() throws IOException {
+    public void validateIOSElements() throws Exception {
         String dataFile = "src/test/resources/IOSInteractionPage.yaml";
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
@@ -56,7 +53,7 @@ public class GUIObjectDetailsTest {
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class })
-    public void testInvalidElement() throws IOException {
+    public void testInvalidElement() throws Exception {
         String dataFile = "src/test/resources/SampleV2YamlPage.yaml";
         DataReader reader = new DataReader(dataFile);
         // Note: forcing to load a WEaB platform YAML using IOS platform
