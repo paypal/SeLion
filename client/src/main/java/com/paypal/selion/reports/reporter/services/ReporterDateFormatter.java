@@ -72,7 +72,7 @@ public class ReporterDateFormatter {
     /**
      * Return an reader friendly date from ISO 8601 combined date and time string.
      * 
-     * @param date
+     * @param dateISOString
      *            String for date in ISO format.
      * @return String with format "yyyy-MM-dd'T'HH:mm:ss.SSS+XXXX where XXXX corresponds to the host's time zone."
      */
@@ -94,7 +94,7 @@ public class ReporterDateFormatter {
      * 
      * @param entryItem
      *      A single key value Entry to be formatted.
-     * @return
+     * @return The formatted key value Entry or the original Entry, if no formatting is required
      */
     public static Entry<String, String> formatReportDataForBrowsableReports(Entry<String, String> entryItem) {
         String key = entryItem.getKey();

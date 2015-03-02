@@ -87,7 +87,7 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
         args.add(" http://127.0.0.1:" + Config.getIntConfigProperty(ConfigProperty.SELENIUM_PORT) + "/grid/register");
         args.add(" -port ");
         args.add(Integer.toString(port));
-        String autFolder = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
+        String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
         if (autFolder != null && !autFolder.trim().isEmpty()) {
             args.add(" -folder ");
             args.add(autFolder);

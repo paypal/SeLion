@@ -45,7 +45,7 @@ public class MobileTestSession extends AbstractTestSession {
     MobileTestSession() {
         super();
         // go ahead and init global-only config properties
-        appLocation = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
+        appLocation = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
     }
 
     public String getAppLocale() {
@@ -140,9 +140,9 @@ public class MobileTestSession extends AbstractTestSession {
         MobileTest deviceTestAnnotation = method.getAnnotation(MobileTest.class);
 
         // First load these from the <test> local config
-        appLocale = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_LOCALE);
-        appLanguage = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_LANGUAGE);
-        appName = getLocalConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_NAME);
+        appLocale = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LOCALE);
+        appLanguage = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE);
+        appName = getLocalConfigProperty(ConfigProperty.MOBILE_APP_NAME);
         deviceSerial = getLocalConfigProperty(ConfigProperty.SELENDROID_DEVICE_SERIAL);
 
         // Override values when supplied via the annotation

@@ -100,7 +100,7 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         args.add(Integer.toString(Config.getIntConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT)));
 
         // Specify the aut folder so its contents will be monitored and read by Selendroid.
-        String autFolder = Config.getConfigProperty(ConfigProperty.SELENIUM_NATIVE_APP_FOLDER);
+        String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
         if ((autFolder != null) && (!autFolder.trim().isEmpty())) {
             args.add("-folder");
             args.add(autFolder);
