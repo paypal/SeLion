@@ -55,40 +55,36 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * &lt;parameter name="seleniumhost" value="" /&gt;
  * &lt;!-- optional, defaults to 4444 (GLOBAL) --&gt;
  * &lt;parameter name="seleniumport" value="" /&gt;
- * &lt;!-- optional, defaults to 8080 (GLOBAL) --&gt
- * &lt;parameter name="selendroidServerPort" value="" /&gt;
- * &lt;!-- optional, defaults to Selendroid's emulator/device (GLOBAL)--&gt
- * &lt;parameter name="selendroidDeviceSerial" value="" /&gt;
  * &lt;!-- optional, defaults to *firefox  --&gt;
  * &lt;parameter name="browser" value="*firefox" /&gt;
  * &lt;!-- optional, defaults to false  (GLOBAL) --&gt;
  * &lt;parameter name="runLocally" value="true" /&gt;
  * &lt;!-- optional, turns automatic screen shots for click handlers on/off, defaults to true (GLOBAL) --&gt;
  * &lt;parameter name="autoScreenShot" value="true" /&gt;
- * &lt;!-- optional, used when runLocally is true, defaults to 'defaulßt' --&gt;
- * &lt;parameter name="profileName" value="SeleniumProfile" /&gt;     *
+ * &lt;!-- optional, used when runLocally is true, defaults to 'default' --&gt;
+ * &lt;parameter name="profileName" value="SeleniumProfile" /&gt;     
  * 
- *            SELION FILES LOCATION
+ * &lt;!-- SELION FILES LOCATION --&gt;
  * 
  * &lt;!-- optional, default to selionFiles (GLOBAL) --&gt;
  * &lt;parameter name="basedir" value=""  /&gt;
  * &lt;!-- optional, default to ${selionFiles.basedir}/selionLogs (GLOBAL) --&gt;
  * &lt;parameter name="workDir"  value="" /&gt;
  * </pre>
+ *
+ * <strong>All other configuration settings can be set in a similar fashion.</strong><br>
  * 
- * System properties and/or environment variables can also be used to configure SeLion. The values used should always
+ * <br>
+ * Also, system properties and/or environment variables can also be used to configure SeLion. The values used should always
  * start with "SELION_" and end with the value you would like the set. The variable equals the {@link ConfigProperty}
- * variable name, so for instance, to set the execution_timeout to "180000", the following system property or
+ * variable name. So, for instance, to set the execution_timeout to "180000", the following system property or
  * environment variable should be set prior to initializing SeLion:
  * 
  * <pre>
  * SELION_EXECUTION_TIMEOUT = 180000
  * </pre>
  * 
- * 
- * Any other system or environment variables can be set in a similar fashion.<br>
- * <br>
- * <h4>The order of initialization here for Config values is</h4>
+ * <h4>The order of initialization for Configuration values is</h4>
  * <ol>
  * <li>System properties (Highest Precedence)
  * <li>Environment variables</li>
@@ -436,9 +432,7 @@ public final class Config {
         /**
          * This configuration parameter represents a custom capability provider which can be passed into SeLion. The
          * value for this parameter would be the fully qualified class name which is a sub-class of
-         * {@link DefaultCapabilitiesBuilder}. This parameter would typically be used when working with the IOS-Driver
-         * for automating native apps, since in these conditions SeLion wouldn't know how to construct the capabilities
-         * object before it can be passed on to the locally spawned Grid. You can plug-in multiple capability providers
+         * {@link DefaultCapabilitiesBuilder}. You can plug-in multiple capability providers
          * by feeding them as "comma separated values".
          */
         SELENIUM_CUSTOM_CAPABILITIES_PROVIDER("customCapabilities", "", true),
@@ -460,32 +454,35 @@ public final class Config {
         SELENIUM_RUN_LOCALLY("runLocally", "false", true),
 
         /**
-         * This parameter represents the folder which would contain the IOS app. This parameter is currently only useful
+         * This parameter represents the folder which would contain the mobile app. This parameter is currently only useful
          * for local runs. This is the folder from which applications would be searched for by SeLion when it comes to
-         * iOS automation in local runs. So please ensure that all the built applications reside in this folder. This is
-         * a mandatory value without which iOS native automation would not work. If no value is provided, SeLion assumes
-         * that the application is available under a directory named "Applications" in the current working directory.
+         * mobile automation in local runs. Please ensure that all the built applications reside in this folder.
+         * If no value is provided, SeLion assumes that the application is available under a directory named
+         * "Applications" in the current working directory.
          */
-        SELENIUM_NATIVE_APP_FOLDER("appFolder", System.getProperty("user.dir") + File.separator + "Applications", true),
+        MOBILE_APP_FOLDER("mobileAppFolder", System.getProperty("user.dir") + File.separator + "Applications", true),
 
         /**
-         * This parameter represents the name of the app that is to be spawned. Merely specifying the name of the native
-         * app should suffice.
+         * This parameter represents the name of the app that is to be spawned. Specifying the name of the mobile app
+         * should suffice.
+         *
+         * <b>Note:</b> Use of this parameter is not recommended for test suites which test different mobile applications
+         * or different versions of the same mobile applications.
          */
-        SELENIUM_NATIVE_APP_NAME("appName", "", false),
+        MOBILE_APP_NAME("mobileAppName", "", false),
 
         /**
          * This parameter represents the language to be used. By default it is always <code>English</code> represented
          * as <code>en</code>
          */
-        SELENIUM_NATIVE_APP_LANGUAGE("appLanguage", "en", false),
+        MOBILE_APP_LANGUAGE("mobileAppLanguage", "en", false),
 
         /**
          * This parameter represents the locale to be used. By default it is always <code>US English</code> represented
          * as <code>en_US</code>
          */
-        SELENIUM_NATIVE_APP_LOCALE("appLocale", "en_US", false),
-        
+        MOBILE_APP_LOCALE("mobileAppLocale", "en_US", false),
+
         /**
          * Use this parameter to provide SeLion with a custom element listener that implements 
          * {@link ElementEventListener}. SeLion will invoke the custom implementation when the relevant events happen. 

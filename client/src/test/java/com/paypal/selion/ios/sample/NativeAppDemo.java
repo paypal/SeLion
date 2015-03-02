@@ -37,7 +37,7 @@ public class NativeAppDemo {
     @BeforeClass
     public void setup() {
         URL url = NativeAppDemo.class.getResource(appFolder);
-        Config.setConfigProperty(Config.ConfigProperty.SELENIUM_NATIVE_APP_FOLDER, url.getPath());
+        Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, url.getPath());
     }
 
 
@@ -127,8 +127,8 @@ public class NativeAppDemo {
 
     @AfterClass
     public void teardown() {
-        Config.setConfigProperty(Config.ConfigProperty.SELENIUM_NATIVE_APP_FOLDER,
-                Config.ConfigProperty.SELENIUM_NATIVE_APP_FOLDER.getDefaultValue());
+        Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER,
+                Config.ConfigProperty.MOBILE_APP_FOLDER.getDefaultValue());
     }
 
 }

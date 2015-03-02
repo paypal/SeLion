@@ -18,8 +18,7 @@ package com.paypal.selion.reports.reporter.runtimereport;
 import org.testng.ITestResult;
 
 /**
- * This class transforms a Configuration Method information into a JSON format so that it can be used by
- * {@link RuntimeReporter}
+ * This class transforms a Configuration Method information into a JSON format so that it can be used by RuntimeReporter
  * 
  */
 @SuppressWarnings("unused")
