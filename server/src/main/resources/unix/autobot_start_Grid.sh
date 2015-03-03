@@ -88,4 +88,4 @@ echo "Params for sed command:${sedCommandParams[*]}"
 sed -E ${sedCommandParams[*]} $CONFIG_PATH/logging.properties > temp.properties && mv temp.properties $CONFIG_PATH/logging.properties && rm -rf temp.properties
 
 export PATH=$JAVA_HOME/jre/bin:$JAVA_HOME/bin:$PROJECT_HOME:$PATH
-java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfigNonWindows.json -cp $JAR_DIR/*:. com.paypal.selion.utils.JarSpawner "java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfigNonWindows.json -Djava.util.logging.config.file=$CONFIG_PATH/logging.properties -cp $JAR_DIR/*:. com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig $HUB_CONFIG"
+java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfig.json -cp $JAR_DIR/*:. com.paypal.selion.utils.JarSpawner "java -DarchiveHome=$PROJECT_HOME -DSeLionConfig=$UNIX_CONFIG_PATH/SeLionConfig.json -Djava.util.logging.config.file=$CONFIG_PATH/logging.properties -cp $JAR_DIR/*:. com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig $HUB_CONFIG"

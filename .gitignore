@@ -11,3 +11,5 @@ selionFiles/
 logs/
 *.DS_Store
 client/ios-driver.log
+.idea/
+*.iml

@@ -48,4 +48,4 @@ FOR /F "USEBACKQ tokens=*" %%A IN (`FIND /V "" ^<"%FILE%.bak"`) DO (
 
 set PATH=%JAVA_HOME%\jre\bin;%JAVA_HOME%\bin;%PATH%
 
-start "SeLion %HUB_TYPE% Hub" java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfigWindows.json -cp %jarDir%/*;. com.paypal.selion.utils.JarSpawner "java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfigWindows.json -Djava.util.logging.config.file=%archiveDir%/config/logging.properties -cp \"%jarDir%/*;.\" com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig %HUB_CONFIG%"
+start "SeLion %HUB_TYPE% Hub" java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfig.json -cp %jarDir%/*;. com.paypal.selion.utils.JarSpawner "java -DarchiveHome=%archiveDir% -DSeLionConfig=%WIN_CONFIG_PREFIX%SeLionConfig.json -Djava.util.logging.config.file=%archiveDir%/config/logging.properties -cp \"%jarDir%/*;.\" com.paypal.selion.grid.SeLionGridLauncher -role hub -hubConfig %HUB_CONFIG%"
