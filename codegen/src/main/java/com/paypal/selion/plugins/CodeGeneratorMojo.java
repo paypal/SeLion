@@ -40,28 +40,28 @@ public class CodeGeneratorMojo extends AbstractMojo {
     /**
      * Project the plugin is called from.
      * 
-     * @parameter property="project"
+     * @parameter expression="${project}"
      */
     private MavenProject project;
 
     /**
      * Represents the base package used for generated java classes.
      * 
-     * @parameter property="selion-code-generator.basePackage" default-value="com.paypal.selion.testcomponents"
+     * @parameter expression="${selion-code-generator.basePackage}" default-value="com.paypal.selion.testcomponents"
      */
     private String basePackage;
 
     /**
      * Represents the base folder used for reading page asset files such as PageYaml.
      * 
-     * @parameter property="selion-code-generator.baseFolder" default-value="GUIData"
+     * @parameter expression="${selion-code-generator.baseFolder}" default-value="GUIData"
      */
     private String baseFolder;
 
     /**
      * List of "domains" to exclude during code generation.
      * 
-     * @parameter property="selion-code-generator.excludeDomains"
+     * @parameter expression="${selion-code-generator.excludeDomains}"
      */
     private List<String> excludeDomains;
 
@@ -69,7 +69,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * Represents the location for the code generator plug-in to create a <code>SeLionPageDetails.txt</code> text file. \
      * This text file will contain the file path of every resource file processed.
      * 
-     * @parameter property="selion-code-generator.detailedTextOutputLocation" default-value="${project.build.directory}";
+     * @parameter expression="${selion-code-generator.detailedTextOutputLocation}" default-value="${project.build.directory}";
      */
     private File detailedTextOutputLocation;
 
