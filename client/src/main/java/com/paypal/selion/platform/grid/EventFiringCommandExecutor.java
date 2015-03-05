@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,41 +13,44 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reports.runtime;
+package com.paypal.selion.platform.grid;
 
-import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.model.AbstractLog;
-import com.paypal.selion.reports.model.AppLog;
+import java.io.IOException;
+import java.util.List;
+
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.Response;
 
 /**
- * Static log method allow you to create a more meaningful piece of log for a device test. It will log a message and
- * also take a screenshot.
+ * This class is a decorator for any {@link CommandExecutor} and calls the instance of{@link EventListener} before and
+ * after each command gets executed
+ * 
  */
-public class MobileReporter extends AbstractReporter {
+public class EventFiringCommandExecutor implements CommandExecutor {
+    List<EventListener> listeners;
+    CommandExecutor commandExecutor;
 
-    /**
-     * Generates log entry with message provided
-     * 
-     * @param message
-     *            Entry description
-     * @param takeScreenshot
-     *            <b>true/false</b> take or not and save screenshot
-     */
-    public static void log(String message, boolean takeScreenshot) {
-        MobileReporter reporter = new MobileReporter();
-        reporter.driver = Grid.driver();
-        AppLog currentLog = new AppLog();
-        currentLog.setMsg(message);
-        // TODO: Point to ponder.
-        // Does this matter if I set the type as Web or App ?
-        // What should the report be tweaked for type as WEB ?
-        currentLog.setType("WEB");
-        reporter.setLog(currentLog);
-         reporter.generateLog(takeScreenshot, false);
+    public EventFiringCommandExecutor(CommandExecutor commandExecutor, List<EventListener> listeners) {
+        this.listeners = listeners;
+        this.commandExecutor = commandExecutor;
     }
 
-    @Override
-    protected AbstractLog createLog(boolean takeScreenshot, boolean saveSrc) {
-        return getLog();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.openqa.selenium.remote.CommandExecutor#execute(org.openqa.selenium.remote.Command)
+     */
+    public Response execute(Command command) throws IOException {
+        for (EventListener temp : listeners) {
+            temp.beforeEvent(command);
+        }
+        Response res = commandExecutor.execute(command);
+
+        for (EventListener temp : listeners) {
+            temp.afterEvent(command);
+        }
+
+        return res;
     }
 }

@@ -18,6 +18,7 @@ package com.paypal.selion.platform.grid;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
@@ -113,7 +114,7 @@ public class MobileTestSession extends AbstractTestSession {
             flavor = BrowserFlavors.GENERIC;
         }
 
-        ScreenShotRemoteWebDriver driver = ScreenShotRemoteWebDriver.createInstance(flavor);
+        RemoteWebDriver driver = DriverFactory.createInstance(flavor);
 
         SeLionSession session = new SeLionSession(driver);
         Grid.getThreadLocalWebDriver().set(session.getWebDriver());

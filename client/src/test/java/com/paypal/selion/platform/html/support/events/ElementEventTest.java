@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -33,12 +32,11 @@ public class ElementEventTest {
     @WebTest
     public void testClickEvents() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new ElementListenerTestImpl());
+        Grid.getTestSession().getElementEventListeners().add(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -51,12 +49,11 @@ public class ElementEventTest {
     @WebTest
     public void testHoverEvents() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
 
-        Grid.driver().register(new ElementListenerTestImpl());
+        Grid.getTestSession().getElementEventListeners().add(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -69,12 +66,11 @@ public class ElementEventTest {
     @WebTest
     public void testTypeEvents() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new ElementListenerTestImpl());
+        Grid.getTestSession().getElementEventListeners().add(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -87,12 +83,11 @@ public class ElementEventTest {
     @WebTest
     public void testSelectEvents() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new ElementListenerTestImpl());
+        Grid.getTestSession().getElementEventListeners().add(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -108,12 +103,11 @@ public class ElementEventTest {
     @WebTest
     public void testCheckEvents() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
         
-        Grid.driver().register(new ElementListenerTestImpl());
+        Grid.getTestSession().getElementEventListeners().add(new ElementListenerTestImpl());
 
         TestPage page = new TestPage("US");
 
@@ -132,7 +126,8 @@ public class ElementEventTest {
         page.getXRadioButton().check();
         
         Assert.assertEquals(page.getLogLabel().getProperty("data-before-check"), "true", "beforeCheck method was not triggered.");
-        Assert.assertEquals(page.getLogLabel().getProperty("data-after-check"), "true", "afterType method was not triggered.");
+        Assert.assertEquals(page.getLogLabel().getProperty("data-after-check"), "true",
+                "afterType method was not triggered.");
     }
 
     private String getScript() throws IOException {

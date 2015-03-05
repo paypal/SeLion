@@ -15,25 +15,20 @@
 
 package com.paypal.selion.platform.grid;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
+import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.ExtendedConfig;
-import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.grid.SauceLabsHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
 import com.paypal.test.utilities.logging.SimpleLogger;
+import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.util.*;
 
 /**
  * A class for loading and representing the {@link WebTest}/{@link MobileTest} annotation basic parameters. Also
@@ -50,7 +45,6 @@ public abstract class AbstractTestSession {
     private boolean handlesSessions = false;
     protected String xmlTestName = "";
     protected List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
-
 
     public final boolean handleSessions() {
         return this.handlesSessions;
@@ -211,8 +205,7 @@ public abstract class AbstractTestSession {
     public abstract void initializeTestSession(InvokedMethodInformation method);
 
     /**
-     * A method that helps in closing off the current session in conjunction with a {@link Map} of
-     * {@link SeLionSession}
+     * A method that helps in closing off the current session in conjunction with a {@link Map} of {@link SeLionSession}
      * 
      * @param sessionMap
      *            - A {@link Map} of {@link SeLionSession}s.
@@ -241,11 +234,11 @@ public abstract class AbstractTestSession {
     public final void closeSession() {
         logger.entering();
         new SauceLabsHelper().embedSauceLabsJobUrlToTestReport();
-        ScreenShotRemoteWebDriver driver = Grid.driver();
-        if (driver != null) {
+        if (Grid.driver() != null) {
+            Grid.driver().quit();
             Grid.getThreadLocalWebDriver().set(null);
             Grid.getThreadLocalTestSession().set(null);
-            driver.quit();
+
         }
         logger.exiting();
 
@@ -265,7 +258,7 @@ public abstract class AbstractTestSession {
     public final String getXmlTestName() {
         return this.xmlTestName;
     }
-    
+
     /**
      * @return a {@link List} of {@link ElementEventListener}s attached to the test session.
      */

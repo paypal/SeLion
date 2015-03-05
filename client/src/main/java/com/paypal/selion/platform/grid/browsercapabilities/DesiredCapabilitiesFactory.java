@@ -17,10 +17,8 @@ package com.paypal.selion.platform.grid.browsercapabilities;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.BrowserFlavors;
-import com.paypal.selion.platform.grid.Grid;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -47,37 +45,38 @@ public final class DesiredCapabilitiesFactory {
         logger.entering(browser);
         // By default lets create a FF Capability and then overwrite it based on the actual browser.
         // This is to ensure that sonar doesnt trigger a warning saying "Possible null pointer dereference
-        DefaultCapabilitiesBuilder capabilitiesBuilder = new FireFoxCapabilitiesBuilder();
+        DesiredCapabilities capabilities = null;
 
         switch (browser) {
         case FIREFOX:
+            capabilities = new FireFoxCapabilitiesBuilder().createCapabilities();
             break;
         case CHROME:
-            capabilitiesBuilder = new ChromeCapabilitiesBuilder();
+            capabilities = new ChromeCapabilitiesBuilder().createCapabilities();
             break;
         case INTERNET_EXPLORER:
-            capabilitiesBuilder = new IECapabilitiesBuilder();
+            capabilities = new IECapabilitiesBuilder().createCapabilities();
             break;
         case HTMLUNIT:
-            capabilitiesBuilder = new HtmlUnitCapabilitiesBuilder();
+            capabilities = new HtmlUnitCapabilitiesBuilder().createCapabilities();
             break;
         case IPHONE:
-            capabilitiesBuilder = new IPhoneCapabilitiesBuilder();
+            capabilities = new IPhoneCapabilitiesBuilder().createCapabilities();
             break;
         case IPAD:
-            capabilitiesBuilder = new IPadCapabilitiesBuilder();
+            capabilities = new IPadCapabilitiesBuilder().createCapabilities();
             break;
         case OPERA:
-            capabilitiesBuilder = new OperaCapabilitiesBuilder();
+            capabilities = new OperaCapabilitiesBuilder().createCapabilities();
             break;
         case PHANTOMJS:
-            capabilitiesBuilder = new PhantomJSCapabilitiesBuilder();
+            capabilities = new PhantomJSCapabilitiesBuilder().createCapabilities();
             break;
         case SAFARI:
-            capabilitiesBuilder = new SafariCapabilitiesBuilder();
+            capabilities = new SafariCapabilitiesBuilder().createCapabilities();
             break;
         case GENERIC:
-            capabilitiesBuilder = new GenericCapabilitiesBuilder();
+            capabilities = new GenericCapabilitiesBuilder().createCapabilities();
             break;
         default:
             // There is never a chance that we reach here, because we are being controlled by the
@@ -85,21 +84,7 @@ public final class DesiredCapabilitiesFactory {
             break;
         }
 
-        DesiredCapabilities capability = capabilitiesBuilder.createCapabilities();
-
-        capability.setCapability(ExtendedConfig.TEST_NAME.getConfig(), Grid.getTestSession().getTestName());
-
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capability.merge(eachCaps);
-        }
-
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capability.merge(eachCaps);
-        }
-
-        logger.exiting(capability);
-        return capability;
+        logger.exiting(new UserCapabilitiesBuilder().getCapabilities(capabilities));
+        return capabilities;
     }
 }

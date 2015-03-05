@@ -28,24 +28,16 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 
-import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
-import org.uiautomation.ios.client.uiamodels.impl.augmenter.IOSDriverAugmenter;
-
-import io.selendroid.client.SelendroidDriver;
-
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.remote.SeLionDriverAugmenter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -54,7 +46,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public final class Grid {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
-    private static ThreadLocal<ScreenShotRemoteWebDriver> threadLocalWebDriver = new ThreadLocal<ScreenShotRemoteWebDriver>();
+    private static ThreadLocal<RemoteWebDriver> threadLocalWebDriver = new ThreadLocal<RemoteWebDriver>();
     private static ThreadLocal<AbstractTestSession> threadTestSession = new ThreadLocal<AbstractTestSession>();
 
     static {
@@ -65,42 +57,12 @@ public final class Grid {
         // Utility class. So hide the constructor
     }
 
-    static ThreadLocal<ScreenShotRemoteWebDriver> getThreadLocalWebDriver() {
+    static ThreadLocal<RemoteWebDriver> getThreadLocalWebDriver() {
         return threadLocalWebDriver;
     }
 
     static ThreadLocal<AbstractTestSession> getThreadLocalTestSession() {
         return threadTestSession;
-    }
-
-    /**
-     * @return A {@link RemoteIOSDriver} object which can be used in the case of IOS {@link MobileTest}s
-     */
-    public static RemoteIOSDriver iOSDriver() {
-        return IOSDriverAugmenter.getIOSDriver((RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver());
-    }
-
-    /**
-     * @return A {@link SelendroidDriver} object which can be used in the case of Android {@link MobileTest}s
-     */
-    public static SelendroidDriver selendroidDriver() {
-        RemoteWebDriver driver = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
-        return SeLionDriverAugmenter.getSelendroidDriver(driver);
-    }
-
-    /**
-     * @return A {@link RemoteWebDriver} object which can be used in the case of {@link MobileTest}s and 
-     *         {@link WebTest}s
-     */
-    public static RemoteWebDriver wrappedDriver() {
-        WebDriverPlatform platform = Grid.getTestSession().getPlatform();
-        RemoteWebDriver rwd = (RemoteWebDriver) threadLocalWebDriver.get().getWrappedDriver();
-        if (platform == WebDriverPlatform.ANDROID) {
-            return SeLionDriverAugmenter.getSelendroidDriver(rwd);
-        } else if (platform == WebDriverPlatform.IOS) {
-            return IOSDriverAugmenter.getIOSDriver(rwd);
-        }
-        return rwd;
     }
 
     /**
@@ -116,10 +78,10 @@ public final class Grid {
     }
 
     /**
-     * @return A  {@link ScreenShotRemoteWebDriver} object which can be used in the case of {@link MobileTest} and
+     * @return A {@link ScreenShotRemoteWebDriver} object which can be used in the case of {@link MobileTest} and
      *         {@link WebTest}s
      */
-    public static ScreenShotRemoteWebDriver driver() {
+    public static RemoteWebDriver driver() {
         return threadLocalWebDriver.get();
     }
 

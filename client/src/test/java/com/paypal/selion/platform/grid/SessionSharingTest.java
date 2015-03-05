@@ -19,7 +19,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.Test;
 
@@ -30,7 +29,7 @@ import com.paypal.selion.reports.runtime.WebReporter;
 import com.paypal.test.utilities.server.TestServerUtils;
 
 public class SessionSharingTest {
-	
+
     /**
      * Test dynamically named session across three dependent test methods
      **/
@@ -38,12 +37,12 @@ public class SessionSharingTest {
     @WebTest(keepSessionOpen = true)
     public void testDynamicallyNamedSessionAcrossThreeTestMethods_part1() {
         Grid.open(TestServerUtils.getTestEditableURL());
-        
+
         WebReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
     }
-    
+
     private SessionId getSessionId() {
-        return ((RemoteWebDriver) Grid.driver().getWrappedDriver()).getSessionId();
+        return Grid.driver().getSessionId();
     }
 
     @Test(groups = { "sessionWebTests" }, dependsOnMethods = "testDynamicallyNamedSessionAcrossThreeTestMethods_part1")
@@ -51,7 +50,8 @@ public class SessionSharingTest {
     public void testDynamicallyNamedSessionAcrossThreeTestMethods_part2() throws IOException {
         // should already be on test Page
         WebReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
-        assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"), "shuold be on Sample Unit Test Page already with this session");
+        assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
+                "shuold be on Sample Unit Test Page already with this session");
         Grid.open(TestServerUtils.getTestEditableURL());
         WebReporter.log("Sample Unit Test Page", true, true);
     }
@@ -71,7 +71,8 @@ public class SessionSharingTest {
 
     /**
      * Test named session across two dependent test methods
-     * @throws IOException 
+     * 
+     * @throws IOException
      **/
     @Test(groups = { "sessionWebTests" }, dependsOnMethods = "testDynamicallyNamedSessionAcrossThreeTestMethods_part3")
     @WebTest(sessionName = "paypal-help-flow", keepSessionOpen = true)

@@ -26,31 +26,31 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A utility class to represent SeLion web sessions
  */
 final class SeLionSession {
-    private ScreenShotRemoteWebDriver webDriver;
+    private RemoteWebDriver driver;
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    protected SeLionSession(ScreenShotRemoteWebDriver webDriver) {
-        this.webDriver = webDriver;
+    protected SeLionSession(RemoteWebDriver webDriver) {
+        this.driver = webDriver;
     }
 
-    protected ScreenShotRemoteWebDriver getWebDriver() {
-        return this.webDriver;
+    protected RemoteWebDriver getWebDriver() {
+        return this.driver;
     }
 
     public String toString() {
         logger.entering();
         String returnValue = null;
-        if (this.webDriver == null) {
+        if (this.driver == null) {
             returnValue = "SeLionSession {null}";
         } else {
             try {
-                RemoteWebDriver driver = (RemoteWebDriver) this.webDriver.getWrappedDriver();
+                
                 returnValue = "SeLionSession {sessionId=" + driver.getSessionId() + ", title="
                         + getPageTitle() + "}";
             } catch (WebDriverException e) {
                 if (e.getLocalizedMessage().contains("Session not available")) {
                     // session was probably killed by the HUB
-                    this.webDriver = null;
+                    this.driver = null;
                     returnValue = "SeLionSession {null}";
                 } else {
                     returnValue = super.toString();
@@ -69,10 +69,10 @@ final class SeLionSession {
      */
     private String getPageTitle() {
         try {
-            this.webDriver.switchTo().alert();
+            this.driver.switchTo().alert();
             return "{Cannot fetch Title because an alert is present}";
         } catch (NoAlertPresentException exception) {
-            return this.webDriver.getTitle();
+            return this.driver.getTitle();
         }
     }
 }

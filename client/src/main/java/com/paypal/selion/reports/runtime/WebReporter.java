@@ -60,11 +60,11 @@ public class WebReporter extends AbstractReporter {
 
     public static void log(String message, boolean takeScreenshot, boolean saveSrc) {
         WebReporter reporter = new WebReporter();
-        reporter.driver = Grid.wrappedDriver();
+        reporter.driver = Grid.driver();
         WebLog currentLog = new WebLog();
         currentLog.setMsg(message);
         currentLog.setType("WEB");
-        currentLog.setLocation(Gatherer.saveGetLocation(Grid.wrappedDriver()));
+        currentLog.setLocation(Gatherer.saveGetLocation(Grid.driver()));
         reporter.setLog(currentLog);
         reporter.generateLog(takeScreenshot, saveSrc);
         logger.exiting();

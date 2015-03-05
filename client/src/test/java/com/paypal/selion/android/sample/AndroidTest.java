@@ -29,7 +29,7 @@ public class AndroidTest {
     @Test
     @MobileTest(appName = "android", device = "android:19")
     public void testLaunch() throws Exception {
-        RemoteWebDriver driver = Grid.selendroidDriver();
+        RemoteWebDriver driver = Grid.driver();
         assertNotNull(driver);
 
         // And now use this to visit Google

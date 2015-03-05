@@ -20,6 +20,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
@@ -35,7 +36,7 @@ public abstract class DefaultCapabilitiesBuilder {
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
 
     public DesiredCapabilities createCapabilities() {
-        return getCapabilities(getDefaultCapabilities());
+        return  getCapabilities(getDefaultCapabilities());
     }
 
     public abstract DesiredCapabilities getCapabilities(DesiredCapabilities capabilities);
@@ -43,6 +44,9 @@ public abstract class DefaultCapabilitiesBuilder {
     public DesiredCapabilities getDefaultCapabilities() {
         logger.entering();
         DesiredCapabilities capability = new DesiredCapabilities();
+        
+        capability.setCapability(ExtendedConfig.TEST_NAME.getConfig(), Grid.getTestSession().getTestName());
+
 
         // Set the capability to capture screenshots based on the config property
 

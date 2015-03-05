@@ -45,7 +45,7 @@ public class NativeAppDemo {
     @Test
     public void testSDKDeviceVariation4s() throws InterruptedException {
         MobileReporter.log("My Screenshot 1", true);
-        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
         // get the 1st mountain
@@ -58,7 +58,7 @@ public class NativeAppDemo {
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
-        WebElement text = Grid.iOSDriver().findElement(selector);
+        WebElement text = Grid.driver().findElement(selector);
         System.out.println(text.getAttribute("name"));
     }
 
@@ -66,7 +66,7 @@ public class NativeAppDemo {
     @Test
     public void testSDKDeviceVariation5s() throws InterruptedException {
         MobileReporter.log("My Screenshot 1", true);
-        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
         // get the 1st mountain
@@ -79,7 +79,7 @@ public class NativeAppDemo {
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
-        WebElement text = Grid.iOSDriver().findElement(selector);
+        WebElement text = Grid.driver().findElement(selector);
         System.out.println(text.getAttribute("name"));
     }
 
@@ -87,7 +87,7 @@ public class NativeAppDemo {
     @Test
     public void testIOSDefaults() throws InterruptedException {
         MobileReporter.log("My Screenshot 1", true);
-        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
         // get the 1st mountain
@@ -100,7 +100,7 @@ public class NativeAppDemo {
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
-        WebElement text = Grid.iOSDriver().findElement(selector);
+        WebElement text = Grid.driver().findElement(selector);
         System.out.println(text.getAttribute("name"));
     }
 
@@ -108,7 +108,7 @@ public class NativeAppDemo {
     @Test
     public void testIOSDefaultsIphone6() throws InterruptedException {
         MobileReporter.log("My Screenshot 1", true);
-        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
         // get the 1st mountain
@@ -121,7 +121,7 @@ public class NativeAppDemo {
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
-        WebElement text = Grid.iOSDriver().findElement(selector);
+        WebElement text = Grid.driver().findElement(selector);
         System.out.println(text.getAttribute("name"));
     }
 

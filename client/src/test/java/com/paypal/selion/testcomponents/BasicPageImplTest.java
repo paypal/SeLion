@@ -44,9 +44,8 @@ public class BasicPageImplTest {
     public void testLoadObjectMapFromMap() throws InterruptedException, IOException {
         page = new TestPage();
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
 
         SeLionAsserts.assertEquals(page.getFieldXTextField().getValue(), "Congratulations, You have found fieldX",
@@ -61,9 +60,8 @@ public class BasicPageImplTest {
     @WebTest
     public void testContainer() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
 
         TestPage page = new TestPage("US");
@@ -78,9 +76,8 @@ public class BasicPageImplTest {
     @WebTest
     public void testPageTitle() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
 
         TestPage page = new TestPage("US");
@@ -105,9 +102,8 @@ public class BasicPageImplTest {
     @WebTest
     public void testPageValidator() throws InterruptedException, IOException {
         Grid.open("about:blank");
-        RemoteWebDriver driver = (RemoteWebDriver) Grid.driver().getWrappedDriver();
         String script = getScript();
-        driver.executeScript(script);
+        Grid.driver().executeScript(script);
         Thread.sleep(4000);
 
         TestPage page = new TestPage("US");

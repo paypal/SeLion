@@ -340,13 +340,12 @@ public class WebTestSession extends AbstractTestSession {
     private SeLionSession createSession() {
         logger.entering();
         BrowserFlavors flavor = BrowserFlavors.getBrowser(getBrowser());
-        ScreenShotRemoteWebDriver driver = ScreenShotRemoteWebDriver.createInstance(flavor);
+        RemoteWebDriver driver = DriverFactory.createInstance(flavor);
 
         if (!runLocally()) {
             String hostName = Config.getConfigProperty(ConfigProperty.SELENIUM_HOST);
             int port = Integer.parseInt(Config.getConfigProperty(ConfigProperty.SELENIUM_PORT));
-            RemoteWebDriver rwd = (RemoteWebDriver)driver.getWrappedDriver();
-            RemoteNodeInformation node = Grid.getRemoteNodeInfo(hostName, port, rwd.getSessionId());
+            RemoteNodeInformation node = Grid.getRemoteNodeInfo(hostName, port, driver.getSessionId());
             if (node != null) {
                 logger.info(node.toString());
             }
@@ -370,7 +369,7 @@ public class WebTestSession extends AbstractTestSession {
     private SeLionSession switchSession(SeLionSession session) {
         logger.entering(session);
         // First save the current WebDriver instance.
-        ScreenShotRemoteWebDriver activeWebDriver = Grid.driver();
+        RemoteWebDriver activeWebDriver = Grid.driver();
         // Now push the WebDriver instance from the session object into our ThreadLocal variable.
         Grid.getThreadLocalWebDriver().set(session.getWebDriver());
         Grid.getThreadLocalTestSession().set(this);

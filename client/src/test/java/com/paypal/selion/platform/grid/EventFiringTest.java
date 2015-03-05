@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,52 +15,40 @@
 
 package com.paypal.selion.platform.grid;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
+import static com.paypal.selion.platform.asserts.SeLionAsserts.assertTrue;
+
+import org.openqa.selenium.remote.Command;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.platform.asserts.SeLionAsserts;
-import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.configuration.Config;
 
-public class ScreenshotRemoteWebDriverWithListenerTest {
+public class EventFiringTest {
 
-    @Test
     @WebTest
-    public void testEventTriggeringMechanism() {
-        Grid.driver().get("http://www.google.com");
-        SeLionAsserts.assertTrue(MyEventListener.getInstance().getWasListenerInvoked(), "Testing listener invocation");
+    @Test()
+    public void testCommandExecutorInstance() {
+        assertTrue(Grid.driver().getCommandExecutor() instanceof EventFiringCommandExecutor);
+    }
+}
 
+class EventFiringListener implements EventListener{
+
+    @Override
+    public void beforeEvent(Command command) {
+        // TODO Auto-generated method stub
+        System.out.println("Before Event:"+command);
+        
     }
 
-    //This is really an ugly way of getting hold of the instance of the webdriver event listener
-    //There aren't any getter methods defined in EventFiringWebDriver
-    public static class MyEventListener extends AbstractWebDriverEventListener {
-        private boolean wasListenerInvoked = false;
-        private static MyEventListener instanceTracker = null;
-
-        public MyEventListener() {
-            setInstance(this);
-        }
-
-        private static void setInstance(MyEventListener listener) {
-            instanceTracker = listener;
-        }
-
-        public static MyEventListener getInstance() {
-            return instanceTracker;
-        }
-
-        @Override
-        public void beforeNavigateTo(String url, WebDriver driver) {
-            super.beforeNavigateTo(url, driver);
-            wasListenerInvoked = true;
-        }
-
-        public boolean getWasListenerInvoked() {
-            return wasListenerInvoked;
-        }
-
+    @Override
+    public void afterEvent(Command command) {
+        // TODO Auto-generated method stub
+        System.out.println("After Event:"+command);
+        
     }
 
 }
+

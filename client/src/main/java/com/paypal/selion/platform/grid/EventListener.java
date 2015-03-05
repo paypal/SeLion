@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,41 +13,17 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reports.runtime;
+package com.paypal.selion.platform.grid;
 
-import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.model.AbstractLog;
-import com.paypal.selion.reports.model.AppLog;
+import org.openqa.selenium.remote.Command;
 
 /**
- * Static log method allow you to create a more meaningful piece of log for a device test. It will log a message and
- * also take a screenshot.
+ * This class is invoked by {@link EventFiringCommandExecutor} when ever selenium command gets executed.
+ * 
  */
-public class MobileReporter extends AbstractReporter {
+public interface EventListener {
 
-    /**
-     * Generates log entry with message provided
-     * 
-     * @param message
-     *            Entry description
-     * @param takeScreenshot
-     *            <b>true/false</b> take or not and save screenshot
-     */
-    public static void log(String message, boolean takeScreenshot) {
-        MobileReporter reporter = new MobileReporter();
-        reporter.driver = Grid.driver();
-        AppLog currentLog = new AppLog();
-        currentLog.setMsg(message);
-        // TODO: Point to ponder.
-        // Does this matter if I set the type as Web or App ?
-        // What should the report be tweaked for type as WEB ?
-        currentLog.setType("WEB");
-        reporter.setLog(currentLog);
-         reporter.generateLog(takeScreenshot, false);
-    }
+    public void beforeEvent(Command command);
 
-    @Override
-    protected AbstractLog createLog(boolean takeScreenshot, boolean saveSrc) {
-        return getLog();
-    }
+    public void afterEvent(Command command);
 }

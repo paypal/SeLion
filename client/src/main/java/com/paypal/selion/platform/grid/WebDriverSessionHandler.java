@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
-import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -64,7 +64,7 @@ public class WebDriverSessionHandler {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    private ScreenShotRemoteWebDriver driver;
+    private RemoteWebDriver driver;
     private Future<String> result;
     private WebDriverCaller webDriverCaller;
 
@@ -77,8 +77,7 @@ public class WebDriverSessionHandler {
             logger.entering();
             try {
                 while (bStartSession) {
-                    FindsByTagName findsBy = (FindsByTagName) driver.getWrappedDriver();
-                    findsBy.findElementByTagName("*");
+                    driver.findElementByTagName("*");
                     Thread.sleep(1000 * 10);
                 }
             } catch (InterruptedException e) {
@@ -96,7 +95,7 @@ public class WebDriverSessionHandler {
      * @param driver
      *            need to pass ScreenShotRemoteWebDriver instance [Grid.driver()]
      */
-    public WebDriverSessionHandler(ScreenShotRemoteWebDriver driver) {
+    public WebDriverSessionHandler(RemoteWebDriver driver) {
 
         if (driver == null) {
             throw new IllegalArgumentException("ScreenShotRemoteWebDriver instance is null");

@@ -60,9 +60,9 @@ public class HtmlElementUtils {
         logger.entering(locator);
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By locatorBy = resolveByType(locator);
-        RemoteWebDriver rwd = (RemoteWebDriver) Grid.driver().getWrappedDriver();
+       
 
-        RemoteWebElement element = (RemoteWebElement) rwd.findElement(locatorBy);
+        RemoteWebElement element = (RemoteWebElement) Grid.driver().findElement(locatorBy);
         logger.exiting(element);
 
         return element;
@@ -102,7 +102,7 @@ public class HtmlElementUtils {
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By locatorBy = resolveByType(locator);
 
-        RemoteWebDriver rwd = (RemoteWebDriver) Grid.driver().getWrappedDriver();
+        RemoteWebDriver rwd = (RemoteWebDriver) Grid.driver();
         List<WebElement> webElementsFound = rwd.findElements(locatorBy);
         // if element is empty list then throw exception since unlike
         // findElement() findElements() always returns a list

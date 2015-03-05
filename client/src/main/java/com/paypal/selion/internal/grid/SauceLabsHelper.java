@@ -111,7 +111,7 @@ public class SauceLabsHelper {
             logger.exiting(null);
             return null;
         }
-        String sessionId = ((RemoteWebDriver) Grid.driver().getWrappedDriver()).getSessionId().toString();
+        String sessionId = Grid.driver().getSessionId().toString();
         logger.exiting(sessionId);
         return sessionId;
     }

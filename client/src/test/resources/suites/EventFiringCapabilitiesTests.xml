@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="EventFiringWebDriverSuite" parallel="false" verbose="2">
+<suite name="EventFiringSuite" parallel="false" verbose="2">
     <!-- This suite is separate because the EventFiringWebDriver capabilities is a global only
     configuration and hence it makes sense to have it in a separate suite file -->
     <parameter name="webDriverEventListener"
-               value="com.paypal.selion.platform.grid.ScreenshotRemoteWebDriverWithListenerTest$MyEventListener"/>
+               value="com.paypal.selion.platform.grid.EventFiringListener"/>
 
     <parameter name="runLocally" value="false" />
     <parameter name="browser" value="*chrome" />
 
-    <test name="EventFiringWebDriverTest">
+    <test name="EventFiringTest">
         <classes>
-            <class name="com.paypal.selion.platform.grid.ScreenshotRemoteWebDriverWithListenerTest"/>
+            <class name="com.paypal.selion.platform.grid.EventFiringTest"/>
         </classes>
     </test>
 </suite>
