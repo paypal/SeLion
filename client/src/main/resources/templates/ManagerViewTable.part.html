@@ -49,36 +49,36 @@
 
 #foreach ($line in $lines)
 
-	#if ( $odd==1 ) <tr class="odd"> #set($odd=0)
-	#else	<tr class="even">	#set($odd=1)
-	#end
-	
-	
-	<td class="first clickable" content_id=$line.getId() >$line.getLabel() </td>
-	<td>$line.getTotalMethods()</td>
-	#set ($total = $total + $line.getTotalMethods())
-	
-	
-	#set ($passed = $line.getInstancePassed())
-	
-	
-	<td title="$passed tests">
-	$passed 	
-	</td>
-	
-	#set ($failed = $line.getInstanceFailed())
-	
-	<td title="$failed tests">
-	$failed 	
-	</td>
-	
-	<td>$line.getInstanceSkipped()
-	</td>
-	</tr>
-	
-	
+    #if ( $odd==1 ) <tr class="odd"> #set($odd=0)
+    #else   <tr class="even">   #set($odd=1)
+    #end
+    
+    
+    <td class="first clickable" content_id=$line.getId() >$line.getLabel() </td>
+    <td>$line.getTotalMethods()</td>
+    #set ($total = $total + $line.getTotalMethods())
+    
+    
+    #set ($passed = $line.getInstancePassed())
+    
+    
+    <td title="$passed tests">
+    $passed     
+    </td>
+    
+    #set ($failed = $line.getInstanceFailed())
+    
+    <td title="$failed tests">
+    $failed     
+    </td>
+    
+    <td>$line.getInstanceSkipped()
+    </td>
+    </tr>
+    
+    
 #end
-		
+        
 
 
 <tr class="even"> 
@@ -86,33 +86,33 @@
 
   <td><b>$total</b></td>
   
-	#set ($all = $view.getSplitter().getTotalInstancePassed())
-	
-	<td title="$all tests envt checks">
-		<b>
-			$all 	
-		</b>
-	</td>
+    #set ($all = $view.getSplitter().getTotalInstancePassed())
+    
+    <td title="$all tests envt checks">
+        <b>
+            $all    
+        </b>
+    </td>
   
-	#set ($all = $view.getSplitter().getTotalInstanceFailed())
-	
-	<td title="$all tests envt checks">
-		<b>
-			$all 	
-		</b>
-	</td>
-	
+    #set ($all = $view.getSplitter().getTotalInstanceFailed())
+    
+    <td title="$all tests envt checks">
+        <b>
+            $all    
+        </b>
+    </td>
+    
   
   
-	#set ($all = $view.getSplitter().getTotalInstanceSkipped())
-	
-	<td title="$all tests envt checks">
-		<b>
-			$all 	
-		</b>
-	</td>
+    #set ($all = $view.getSplitter().getTotalInstanceSkipped())
+    
+    <td title="$all tests envt checks">
+        <b>
+            $all    
+        </b>
+    </td>
 </tr>
-		    
+            
 </tbody>
 <!-- //end table body -->
   
