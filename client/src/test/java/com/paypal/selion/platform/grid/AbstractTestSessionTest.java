@@ -15,14 +15,15 @@
 
 package com.paypal.selion.platform.grid;
 
-import static com.paypal.selion.platform.asserts.SeLionAsserts.*;
+import static com.paypal.selion.platform.asserts.SeLionAsserts.assertEquals;
+import static com.paypal.selion.platform.asserts.SeLionAsserts.assertNotNull;
+import static com.paypal.selion.platform.asserts.SeLionAsserts.assertNull;
+import static com.paypal.selion.platform.asserts.SeLionAsserts.assertTrue;
 
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
-import com.paypal.selion.platform.grid.AbstractTestSession;
-import com.paypal.selion.platform.grid.Grid;
 
 /**
  * This class is used to test the methods implemented within the abstract class AbstractTestSession
@@ -36,9 +37,6 @@ public class AbstractTestSessionTest {
     @Test(groups = "functional")
     public void testHandleSessions() {
         Grid.open("about:blank");
-        AbstractTestSession session = Grid.getTestSession();
-        assertTrue(session.handleSessions(), "verify that the sesion handling is true by default for WebTestSession");
-
     }
 
     @WebTest(additionalCapabilities = { "key1:value1", "key2:value2" })
@@ -57,8 +55,10 @@ public class AbstractTestSessionTest {
     @WebTest
     @Test(groups = "functional")
     public void testCloseSession() {
+        Grid.driver();
         Grid.getTestSession().closeSession();
-        assertNull(Grid.driver(), "verify that the driver has been shut down");
+        assertNull(Grid.getThreadLocalWebDriver().get(), "verify that the driver has been shut down");
+        Grid.getThreadLocalTestSession().set(new BasicTestSession());
     }
 
     @Test(groups = "functional")

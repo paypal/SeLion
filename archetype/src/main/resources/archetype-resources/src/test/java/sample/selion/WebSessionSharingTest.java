@@ -25,14 +25,14 @@ import static org.testng.Assert.assertTrue;
 /**
  * This test class how to share the same web browser instance between multiple test methods.
  */
+@Test(singleThreaded = true)
+@WebTest
 public class WebSessionSharingTest {
 
     private String sessionId;
-
-    @Test
-    //We indicate to SeLion that the browser window is NOT to be closed by setting the
-    // keepSessionOpen attribute to true in the @WebTest annotation.
-    @WebTest(keepSessionOpen = true)
+    //need to set priority for each test method. 
+    //priority is used to determine the order of execution of each test methods within this class
+    @Test(priority = 1)
     public void testMethodA () {
         Grid.driver().get("http://www.paypal.com");
         //Session ID is WebDriver's way of tracking a specific browser instance.
@@ -42,14 +42,7 @@ public class WebSessionSharingTest {
         assertTrue(Grid.driver().getTitle() != null);
     }
 
-    //For web session sharing to work properly, we need to add a dependency on the method which
-    //is going to leave the browser session as is. So in this case, the method is "testMethodA"
-    @Test(dependsOnMethods = {"testMethodA"})
-    //We now need to indicate to SeLion that it shouldn't open up a new browser instance, but
-    //it should instead use the browser that was left open by the method on which the current
-    //test method depends on viz., "testMethodA". We do this by setting the openNewSession
-    //attribute to false.
-    @WebTest(openNewSession = false)
+    @Test(priority = 2)
     public void testMethodB () {
         Grid.driver().get("http://www.ebay.com");
         assertEquals(Grid.driver().getSessionId().toString(), sessionId);

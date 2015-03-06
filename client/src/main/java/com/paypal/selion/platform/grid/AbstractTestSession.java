@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -36,22 +36,29 @@ import java.util.*;
  * 
  */
 public abstract class AbstractTestSession {
+    private boolean isStarted = false;
     protected String methodName = "";
     protected String className = "";
     protected DesiredCapabilities additionalCapabilities = new DesiredCapabilities();
     protected String parameters;
     protected String[] dependsOnMethods = new String[] {};
     protected static SimpleLogger logger = SeLionLogger.getLogger();
-    private boolean handlesSessions = false;
     protected String xmlTestName = "";
     protected List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
 
-    public final boolean handleSessions() {
-        return this.handlesSessions;
+    /**
+     * @return whether the session is started <code>true</code> or <code>false</code>
+     */
+    public boolean isStarted(){
+        return isStarted;
     }
 
-    public final void enableSessionHandling() {
-        this.handlesSessions = true;
+    /**
+     * Set the session to started.
+     * @param started <code>true</code> or <code>false</code>
+     */
+    protected final void setStarted(boolean started) {
+        this.isStarted = started;
     }
 
     public final DesiredCapabilities getAdditionalCapabilities() {
@@ -88,7 +95,6 @@ public abstract class AbstractTestSession {
         this.methodName = method.getCurrentMethodName();
         this.parameters = getParamsInfo(method);
         this.xmlTestName = method.getCurrentTestName();
-
     }
 
     protected void initializeAdditionalCapabilities(String[] additionalCapabilities, InvokedMethodInformation method) {
@@ -165,62 +171,22 @@ public abstract class AbstractTestSession {
             testName = testName + ":" + parameters;
         }
         return testName;
-
     }
 
-    /**
-     * A Method to start a new session taking into account a map of already existing sessions.
-     * 
-     * @param sessions
-     *            - A {@link Map} of already created {@link SeLionSession} sessions.
-     * @return - A new {@link SeLionSession} object that represents the newly created session.
-     */
-    public abstract SeLionSession startSession(Map<String, SeLionSession> sessions);
 
     /**
      * A Method to start a new session.
-     * 
-     * @return - A new {@link SeLionSession} object that represents the newly created session.
      */
-    public abstract SeLionSession startSesion();
+    public abstract void startSesion();
+
 
     /**
      * A initializer that initializes the sub-class of {@link AbstractTestSession} based on the annotation.
      * 
      * @param method
      *            - An {@link InvokedMethodInformation} object that represents the currently invoked method.
-     * @param sessionMap
-     *            - A {@link Map} of {@link SeLionSession} to be considered. This method is typically invoked when the
-     *            annotation is capable of session management.
-     */
-    public abstract void initializeTestSession(InvokedMethodInformation method, Map<String, SeLionSession> sessionMap);
-
-    /**
-     * A initializer that initializes the sub-class of {@link AbstractTestSession} based on the annotation.
-     * 
-     * @param method
-     *            - An {@link InvokedMethodInformation} object that represents the currently invoked method. This method
-     *            is typically invoked when the annotation doesn't deal with session management.
      */
     public abstract void initializeTestSession(InvokedMethodInformation method);
-
-    /**
-     * A method that helps in closing off the current session in conjunction with a {@link Map} of {@link SeLionSession}
-     * 
-     * @param sessionMap
-     *            - A {@link Map} of {@link SeLionSession}s.
-     * @param result
-     *            - The {@link InvokedMethodInformation} object that represents the currently invoked method.
-     */
-    public abstract void closeCurrentSession(Map<String, SeLionSession> sessionMap, InvokedMethodInformation result);
-
-    /**
-     * A method that helps in closing off all the sessions in the given {@link Map} of {@link SeLionSession}s.
-     * 
-     * @param sessionMap
-     *            - A {@link Map} of {@link SeLionSession}s.
-     */
-    public abstract void closeAllSessions(Map<String, SeLionSession> sessionMap);
 
     /**
      * @return - A {@link WebDriverPlatform} object that represents the current platform.
@@ -228,8 +194,7 @@ public abstract class AbstractTestSession {
     public abstract WebDriverPlatform getPlatform();
 
     /**
-     * A method that helps in closing off the current session. This method is typically used in cases wherein the
-     * annotation doesnt support session management.
+     * A method that helps in closing off the current session.
      */
     public final void closeSession() {
         logger.entering();
@@ -241,7 +206,6 @@ public abstract class AbstractTestSession {
 
         }
         logger.exiting();
-
     }
 
     public final boolean hasDependentMethods() {

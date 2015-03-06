@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -81,6 +81,9 @@ public final class Grid {
      * @return A {@link RemoteWebDriver} object which can be used in the case of {@link MobileTest} and {@link WebTest}s
      */
     public static RemoteWebDriver driver() {
+        if (! getTestSession().isStarted()) {
+            getTestSession().startSesion();
+        }
         return threadLocalWebDriver.get();
     }
 

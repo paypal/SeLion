@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,7 +25,9 @@ import java.lang.annotation.Target;
 
 /**
  * Interface creates annotation WebTest and specified parameters<br>
- * Annotation @Webtest will let Grid know to open browser instance and start a session
+ * Annotation @Webtest will let Grid know to open browser instance and start a session. This can be used both in the
+ * Test method and the Test Class. When used in the class, then all the tests within the class share the same session
+ * (Session Sharing)
  */
 @Retention(RUNTIME)
 @Target({ CONSTRUCTOR, METHOD, TYPE })
@@ -43,54 +45,6 @@ public @interface WebTest {
      * </pre>
      */
     String browser() default "";
-
-    /**
-     * Keep the session open or not <code>true/false</code> <b>default</b>: false</br> <b>Example</b>
-     * 
-     * <pre>
-     * &#064;Test()
-     * &#064;WebTest(keepSessionOpen = false)
-     * public void webtest2() {
-     *     Grid.selenium().open(&quot;http://paypal.com&quot;);
-     * }
-     * </pre>
-     */
-    boolean keepSessionOpen() default false;
-
-    /**
-     * Force a new session to open or not <code>true/false</code> <b>default</b>: true</br>
-     * 
-     * <pre>
-     * &#064;Test()
-     * &#064;WebTest(openNewSession = false)
-     * public void webtest2() {
-     *     Grid.selenium().open(&quot;http://paypal.com&quot;);
-     * }
-     * </pre>
-     */
-    boolean openNewSession() default true;
-
-    /**
-     * Establish a name for this browser session or switch to a session left open with the same name. By default, a
-     * dynamic name will be assigned. Use this in conjunction with {@link #keepSessionOpen()} and
-     * {@link #openNewSession()}. Session names are class aware. In other words, you can not share sessions across
-     * different classes.
-     * 
-     * <pre>
-     * &#064;Test()
-     * &#064;WebTest(sessionName = &quot;buyerSession&quot;, keepSessionOpen = true)
-     * public void testNavigateToPayPal() {
-     *     Grid.driver().get(&quot;https://paypal.com&quot;);
-     * }
-     * 
-     * &#064;Test()
-     * &#064;WebTest(sessionName = &quot;buyerSession&quot;, openNewSession = false)
-     * public void testBuyerLoginToPayPal() {
-     *     // Do PayPal login steps
-     * }
-     * </pre>
-     */
-    String sessionName() default "";
 
     /**
      * Provide additional capabilities that you may wish to add as a name value pair. Values of true or false will be

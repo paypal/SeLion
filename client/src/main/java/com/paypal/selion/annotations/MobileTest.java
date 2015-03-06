@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,7 +25,9 @@ import java.lang.annotation.Target;
 
 /**
  * Interface creates annotation MobileTest and specified parameters<br>
- * Annotation @MobileTest will let Grid know to open a session on a mobile device/simulator
+ * Annotation @MobileTest will let Grid know to open a session on a mobile device/simulator. This can be used both in
+ * the Test method and the Test Class. When used in the class, then all the tests within the class share the same
+ * session (Session Sharing)
  */
 @Retention(RUNTIME)
 @Target({ CONSTRUCTOR, METHOD, TYPE })

@@ -23,21 +23,16 @@ import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.platform.html.TestObjectRepository;
-import com.paypal.selion.platform.html.TextField;
 import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.test.utilities.server.TestServerUtils;
 
+@WebTest
+@Test(singleThreaded=true)
 public class SessionSharingTest {
 
-    /**
-     * Test dynamically named session across three dependent test methods
-     **/
-    @Test(groups = { "sessionWebTests" })
-    @WebTest(keepSessionOpen = true)
-    public void testDynamicallyNamedSessionAcrossThreeTestMethods_part1() {
+    @Test(groups = { "unit" },priority=1)
+    public void testSessionSharing_part1() {
         Grid.open(TestServerUtils.getTestEditableURL());
-
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
     }
 
@@ -45,49 +40,12 @@ public class SessionSharingTest {
         return Grid.driver().getSessionId();
     }
 
-    @Test(groups = { "sessionWebTests" }, dependsOnMethods = "testDynamicallyNamedSessionAcrossThreeTestMethods_part1")
-    @WebTest(openNewSession = false, keepSessionOpen = true)
-    public void testDynamicallyNamedSessionAcrossThreeTestMethods_part2() throws IOException {
+    @Test(groups = { "unit" }, priority=2)
+    public void testSessionSharing_part2() throws IOException {
         // should already be on test Page
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
         assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
                 "shuold be on Sample Unit Test Page already with this session");
-        Grid.open(TestServerUtils.getTestEditableURL());
-        SeLionReporter.log("Sample Unit Test Page", true, true);
     }
 
-    @Test(groups = { "sessionWebTests" }, dependsOnMethods = {
-            "testDynamicallyNamedSessionAcrossThreeTestMethods_part1",
-            "testDynamicallyNamedSessionAcrossThreeTestMethods_part2" })
-    @WebTest(openNewSession = false)
-    public void testDynamicallyNamedSessionAcrossThreeTestMethods_part3() {
-        // should already be on apple.com
-        SeLionReporter.log("Sample Unit Test Page (" + getSessionId() + ")", true, true);
-        assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
-                "should be on editable Test page already with this session");
-        TextField normalTextField = new TextField(TestObjectRepository.TEXTFIELD_LOCATOR.getValue());
-        normalTextField.type("Test");
-    }
-
-    /**
-     * Test named session across two dependent test methods
-     * 
-     * @throws IOException
-     **/
-    @Test(groups = { "sessionWebTests" }, dependsOnMethods = "testDynamicallyNamedSessionAcrossThreeTestMethods_part3")
-    @WebTest(sessionName = "paypal-help-flow", keepSessionOpen = true)
-    public void testNamedSessionAcrossTwoDependentTestMethods_part1() throws IOException {
-        Grid.open(TestServerUtils.getTestEditableURL());
-        SeLionReporter.log("Sample Unit Test Page (" + getSessionId() + ")", true, true);
-    }
-
-    @Test(groups = { "sessionWebTests" }, dependsOnMethods = "testNamedSessionAcrossTwoDependentTestMethods_part1")
-    @WebTest(sessionName = "paypal-help-flow", openNewSession = false)
-    public void testNamedSessionAcrossTwoDependentTestMethods_part2() {
-        SeLionReporter.log("Sample Unit Test Page (" + getSessionId() + ")", true, true);
-        assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
-                "should be on Sample Unit Test already with this session");
-        TextField normalTextField = new TextField(TestObjectRepository.TEXTFIELD_LOCATOR.getValue());
-        normalTextField.type("Test");
-    }
 }

@@ -34,46 +34,6 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
  */
 public class WebTestTest {
 
-    /*
-     * Threaded and named session tests
-     */
-
-    /**
-     * Test un-named session that thinks it wants to use an existing session
-     **/
-    @Test(groups = { "functional" }, expectedExceptions = IllegalArgumentException.class, enabled = false)
-    @WebTest(openNewSession = false)
-    public void testUnnamedSessionWithoutDependentMethodOpenNewSession_false() {
-        // An IllegalArgumentException should have occurred by now
-        // TODO : Fix this test.
-        // IllegalArgumentException is being thrown by afterInvocation(). TestNG doesnt seem to consider
-        // the exceptions that are being thrown by afterInvocation, when it evaluates expectedExceptions
-        // This test would have to be plugged out to prevent false triggers
-    }
-
-    /**
-     * Test ambiguous dynamically named session - a Test with multiple dependencies where both leave sessions open
-     **/
-    @Test(groups = { "functional" })
-    @WebTest(keepSessionOpen = true)
-    public void testDynamicallyNamedSessionWithAmbiguosDependency_part1() {
-        // just spawn a session and leave it open for dependent methods
-    }
-
-    @Test(groups = { "functional" }, dependsOnMethods = "testDynamicallyNamedSessionWithAmbiguosDependency_part1")
-    @WebTest(keepSessionOpen = true)
-    public void testDynamicallyNamedSessionWithAmbiguosDependency_part2() {
-        // just spawn a session and leave it open for dependent methods
-    }
-
-    @Test(groups = { "functional" }, expectedExceptions = IllegalStateException.class, dependsOnMethods = {
-            "testDynamicallyNamedSessionWithAmbiguosDependency_part1",
-            "testDynamicallyNamedSessionWithAmbiguosDependency_part2" })
-    @WebTest(openNewSession = false)
-    public void testDynamicallyNamedSessionWithAmbiguosDependency_part3() {
-        // An IllegalStateException should have occurred by now
-    }
-
     /**
      * Test support of TestNG's {@link Test} capabilities for multi-threading
      **/
@@ -81,17 +41,6 @@ public class WebTestTest {
     @WebTest
     public void testUnamedSessionMultipleThreadsAndInvocations() {
         SeLionReporter.log("Browser start page", true, true);
-    }
-
-    @Test(groups = { "functional" })
-    @WebTest(sessionName = "errorFlow", keepSessionOpen = true)
-    public void dummySessionCreator() {
-
-    }
-
-    @Test(groups = { "functional" }, expectedExceptions = { RuntimeException.class }, dependsOnMethods = "dummySessionCreator")
-    @WebTest(sessionName = "errorFlow", keepSessionOpen = true)
-    public void testOpenSessionWithExistingSessionName() {
     }
 
     @Test(groups = "functional")

@@ -17,6 +17,8 @@ package com.paypal.selion.platform.grid;
 
 import java.lang.reflect.Method;
 
+import org.testng.IInvokedMethod;
+
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
 
@@ -31,22 +33,24 @@ class TestSessionFactory {
      *            - A {@link Method} object that represents the currently invoked method.
      * @return - A subclass of {@link AbstractTestSession} which represents the annotation object and its capabilities.
      * 
-     *         This method returns an instance of {@link BasicTestSession} if the {@link IInvokedMethod} method doesnt have either
-     *         This method returns <code>null</code> if the {@link Method} method doesnt have either
+     *         This method returns an instance of {@link BasicTestSession} if the {@link IInvokedMethod} method doesn't
+     *         have either
      *         <ul>
      *         <li>{@literal @}{@link WebTest} (or)
      *         <li>{@literal @}{@link MobileTest} annotation.
      *         </ul>
      */
-    public static AbstractTestSession newInstance(Method method) {
+    public static AbstractTestSession newInstance(IInvokedMethod method) {
         if (method == null) {
             return null;
         }
-        boolean webTest = method.getAnnotation(WebTest.class) != null;
+        boolean webTest = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(WebTest.class) != null
+                || method.getTestMethod().getInstance().getClass().getAnnotation(WebTest.class) != null;
         if (webTest) {
             return new WebTestSession();
         }
-        boolean appTest = method.getAnnotation(MobileTest.class) != null;
+        boolean appTest = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(MobileTest.class) != null
+                || method.getTestMethod().getInstance().getClass().getAnnotation(MobileTest.class) != null;
         if (appTest) {
             return new MobileTestSession();
         }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,10 +19,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
@@ -109,33 +107,11 @@ public class MobileTestSession extends AbstractTestSession {
     }
 
     @Override
-    public SeLionSession startSesion() {
+    public void startSesion() {
         logger.entering();
-        BrowserFlavors flavor = null;
-        try {
-            flavor = BrowserFlavors.getBrowser(this.appName);
-        } catch (IllegalArgumentException ex) {
-            flavor = BrowserFlavors.GENERIC;
-        }
-
-        RemoteWebDriver driver = DriverFactory.createInstance(flavor);
-
-        SeLionSession session = new SeLionSession(driver);
-        Grid.getThreadLocalWebDriver().set(session.getWebDriver());
-        logger.exiting(session);
-        return session;
-    }
-
-    @Override
-    public SeLionSession startSession(Map<String, SeLionSession> sessions) {
-        throw new UnsupportedOperationException(
-                "Session management is not supported for tests running on devices/simulators.");
-    }
-
-    @Override
-    public void initializeTestSession(InvokedMethodInformation method, Map<String, SeLionSession> sessionMap) {
-        throw new UnsupportedOperationException(
-                "Session management is not supported for tests running on devices/simulators.");
+        Grid.getThreadLocalWebDriver().set(DriverFactory.createInstance(BrowserFlavors.GENERIC));
+        setStarted(true);
+        logger.exiting();
     }
 
     @Override
@@ -214,7 +190,8 @@ public class MobileTestSession extends AbstractTestSession {
 
         checkArgument(
                 StringUtils.isNotBlank(appName) ^ StringUtils.isNotBlank(appPath),
-                "Either you have provided both appPath and appName or you have not specifed both. Please specify either appPath or appName");
+                "Either you have provided both appPath and appName or you have not specifed both. Please specify either "
+                + "appPath or appName");
 
         checkArgument(isDeviceDefined(),
                 "The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
@@ -257,16 +234,5 @@ public class MobileTestSession extends AbstractTestSession {
         }
     }
 
-    @Override
-    public void closeCurrentSession(Map<String, SeLionSession> sessionMap, InvokedMethodInformation methodInfo) {
-        throw new UnsupportedOperationException(
-                "Session management is not supported for tests running on devices/simulators.");
-    }
-
-    @Override
-    public void closeAllSessions(Map<String, SeLionSession> sessionMap) {
-        throw new UnsupportedOperationException(
-                "Session management is not supported for tests running on devices/simulators.");
-    }
 
 }

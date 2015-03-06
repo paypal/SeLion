@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,29 +18,26 @@ package com.paypal.selion.platform.grid;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.logging.Level;
 
-import org.openqa.selenium.WebDriverException;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
-import org.testng.IResultMap;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
-import org.testng.ITestClass;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
-import org.testng.Reporter;
+import org.testng.annotations.Test;
 
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.AbstractConfigInitializer;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.ConfigManager;
@@ -60,10 +57,6 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListener, ITestListener {
 
-    // used to track browser sessions across all threads
-    // data structure format <HashMap<String "sessionName", SeLionSession>
-    private volatile Map<String, SeLionSession> sessionMap;
-
     /**
      * This String constant represents the JVM argument that can be used to enable/disable {@link SeleniumGridListener}
      */
@@ -81,14 +74,12 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
      * <b>sample</b><br>
      * 
      * &#064;webtest(<b>browser="*firefox"</b>)<br>
-     * Identifies if test case wants to open new session <br>
-     * <b>sample</b><br>
-     * &#064;webtest(browser="*firefox", <b>openNewSession = true</b>)
      * 
      * @see org.testng.IInvokedMethodListener#beforeInvocation(org.testng.IInvokedMethod, org.testng.ITestResult)
      */
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+
         logger.entering(new Object[] { method, testResult });
         if (ListenerManager.executeCurrentMethod(this) == false) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
@@ -96,130 +87,86 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         }
 
         if (!method.isTestMethod()) {
-            logger.exiting();
             return;
         }
 
-        if (!noFailedConfigurations(method, testResult)) {
-            logger.exiting();
-            return;
+        boolean isWebTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(WebTest.class) != null;
+        boolean isMobileTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(MobileTest.class) != null;
+
+        if ((isWebTestClass || isMobileTestClass)) {
+            if (isLowPriority(method)) {
+                // For session sharing tests, Need to create new session only for Test (Web or Mobile) with lowest
+                // priority (first test) in the class.
+                testSessionSharingRules(method);
+            } else {
+                return;
+            }
         }
 
-        Method invokedMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
-        AbstractTestSession testSession = TestSessionFactory.newInstance(invokedMethod);
+        AbstractTestSession testSession = TestSessionFactory.newInstance(method);
         Grid.getThreadLocalTestSession().set(testSession);
         InvokedMethodInformation methodInfo = TestNGUtils.getInvokedMethodInformation(method, testResult);
-        if (WebDriverPlatform.UNDEFINED == testSession.getPlatform()) {
-            // We perhaps encountered a regular @Test annotated test method which doesn't warrant anything extra
-            // to be done.
-            testSession.initializeTestSession(methodInfo);
-            logger.exiting();
-            return;
-        }
-
-        if (testSession.handleSessions()) {
-            testSession.initializeTestSession(methodInfo, sessionMap);
-        } else {
-            testSession.initializeTestSession(methodInfo);
-        }
-
-        LocalGridManager.spawnLocalHub(testSession);
-
-        try {
-            if (testSession.handleSessions()) {
-                testSession.startSession(sessionMap);
-            } else {
-                testSession.startSesion();
-            }
-
-        } catch (WebDriverException e) {
-            // We are looking for any additional unchecked exceptions that Grid may have thrown
-            String errorMsg = "An error occured while setting up the test environment. \nRoot cause: ";
-            Reporter.log(errorMsg + e.getMessage(), true);
-            // Tell TestNG the exception occurred in beforeInvocation
-            WebSessionException webSessionException = new WebSessionException(errorMsg, e);
-            testResult.setThrowable(webSessionException);
-            // Time to raise an Exception to let TestNG know that the configuration method failed
-            // so that it doesn't start executing the test methods.
-            throw webSessionException;
+        testSession.initializeTestSession(methodInfo);
+        if (!(testSession instanceof BasicTestSession)) {
+            // BasicTestSession are non selenium tests. So no need to start the Local hub.
+            LocalGridManager.spawnLocalHub(testSession);
         }
 
         logger.exiting();
     }
 
-    /**
-     * Check whether the configuration methods of current test method passed.
-     * 
-     * @param currentInvokedMethod
-     * @param testResult
-     * @return - <code>true</code> if there are no configuration failures detected.
-     */
-    private boolean noFailedConfigurations(IInvokedMethod currentInvokedMethod, ITestResult testResult) {
+    private void testSessionSharingRules(IInvokedMethod method) {
 
-        // if configfailurepolicy="continue" is set into suite, testNG will continue to execute the remaining tests
-        // in the suite if an @Before* method fails, in this case, browser need to be launched.
-        String configFailurePolicyValue = testResult.getTestContext().getSuite().getXmlSuite().getConfigFailurePolicy();
-        if ("continue".equals(configFailurePolicyValue)) {
-            return true;
-        }
+        Test t = method.getTestMethod().getInstance().getClass().getAnnotation(Test.class);
 
-        List<ITestResult> allUnSuccessFulConfigs = new ArrayList<ITestResult>();
-
-        IResultMap failedConfigurations = testResult.getTestContext().getFailedConfigurations();
-        allUnSuccessFulConfigs.addAll(failedConfigurations.getAllResults());
-
-        IResultMap skippedConfigurations = testResult.getTestContext().getSkippedConfigurations();
-        allUnSuccessFulConfigs.addAll(skippedConfigurations.getAllResults());
-
-        String invokedMethodName = currentInvokedMethod.getTestMethod().getConstructorOrMethod().getName();
-
-        List<String> groupsToWhichCurrentInvokedMethodBelongsTo = Arrays.asList(currentInvokedMethod.getTestMethod()
-                .getGroups());
-
-        // check @BeforeSuite, @BeforeTest and @BeforeGroups for failures
-        for (ITestResult eachUnsuccessFulConfig : allUnSuccessFulConfigs) {
-
-            ITestNGMethod testMethod = eachUnsuccessFulConfig.getMethod();
-            String testMethodName = testMethod.getConstructorOrMethod().getName();
-
-            if (testMethod.isBeforeSuiteConfiguration() || testMethod.isBeforeTestConfiguration()) {
-                logger.warning(String.format("The @Before(Suite/Test) method [%s] failed. So [%s] will be skipped.",
-                        testMethodName, invokedMethodName));
-                return false;
-            }
-            if (testMethod.isBeforeGroupsConfiguration()) {
-                for (String confGroup : testMethod.getGroups()) {
-                    if (groupsToWhichCurrentInvokedMethodBelongsTo.contains(confGroup)) {
-                        logger.warning(String.format("The @BeforeGroups method [%s] failed. So [%s] will be skipped.",
-                                testMethodName, invokedMethodName));
-                        return false;
-                    }
-                }
-                return true;
+        if (t != null && t.singleThreaded()) {
+            if (!isPriorityUnique(method)) {
+                throw new IllegalStateException(
+                        "All the session sharing test methods within the same class should have a unique priority.");
+            } else {
+                return;
             }
         }
-        // Check @BeforeClass and @BeforeTest
-        List<ITestNGMethod> allConfigMethodsOfTestClass = new ArrayList<ITestNGMethod>();
+        throw new IllegalStateException(
+                "Session sharing test should have a class level @Test annotation with the property singleThreaded = true defined.");
+    }
 
-        ITestClass currentInvokedMethodTestClass = currentInvokedMethod.getTestMethod().getTestClass();
+    private boolean isLowPriority(IInvokedMethod method) {
+        int low = method.getTestMethod().getPriority();
 
-        allConfigMethodsOfTestClass.addAll(Arrays.asList(currentInvokedMethodTestClass.getBeforeClassMethods()));
-        allConfigMethodsOfTestClass.addAll(Arrays.asList(currentInvokedMethodTestClass.getBeforeTestMethods()));
-
-        for (ITestNGMethod eachConfigMethodOfTestClass : allConfigMethodsOfTestClass) {
-            boolean hasFailedConfig = (!failedConfigurations.getResults(eachConfigMethodOfTestClass).isEmpty());
-            boolean hasSkippedConfig = (!skippedConfigurations.getResults(eachConfigMethodOfTestClass).isEmpty());
-
-            String configMethodName = eachConfigMethodOfTestClass.getConstructorOrMethod().getName();
-
-            if (hasFailedConfig || hasSkippedConfig) {
-                logger.warning(String.format("The @Before(Class/Test) method [%s] failed. So [%s] will be skipped.",
-                        configMethodName, invokedMethodName));
+        for (ITestNGMethod test : method.getTestMethod().getTestClass().getTestMethods()) {
+            if (test.getPriority() < low) {
                 return false;
             }
         }
         return true;
 
+    }
+
+    private boolean isHighPriority(IInvokedMethod method) {
+        int high = method.getTestMethod().getPriority();
+
+        for (ITestNGMethod test : method.getTestMethod().getTestClass().getTestMethods()) {
+            if (test.getPriority() > high) {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    private boolean isPriorityUnique(IInvokedMethod method) {
+        // Logic to check priorities of all test methods are unique. This is used in Session Sharing.
+
+        Set<Integer> check = new HashSet<Integer>();
+        int length = method.getTestMethod().getTestClass().getTestMethods().length;
+        for (int i = 0; i < length; i++) {
+            check.add(method.getTestMethod().getTestClass().getTestMethods()[i].getPriority());
+            if (check.size() != i + 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -240,30 +187,20 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
-
         if (!method.isTestMethod()) {
             return;
         }
+        boolean isWebTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(WebTest.class) != null;
+        boolean isMobileTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(MobileTest.class) != null;
+
+        if ((isWebTestClass || isMobileTestClass) && !isHighPriority(method)) {
+            // For session sharing tests, Need to close session only for Test (Web or Mobile) with highest priority
+            // (last test) in the class.
+            return;
+        }
+
         AbstractTestSession testSession = Grid.getTestSession();
-
-        // TestConfig would be a Null only under the following conditions (of course because of us throwing an
-        // exception) [ for @WebTest annotated tests ]
-        // a. If the test-case with same session name already exists.
-        // b. If we are unable to find an already existing session with name provided
-        // c. Session with the session name is already closed.
-
-        if (testSession == null) {
-            return;
-        }
-        if (WebDriverPlatform.UNDEFINED == testSession.getPlatform()) {
-            return;
-        }
-        InvokedMethodInformation methodInfo = TestNGUtils.getInvokedMethodInformation(method, testResult);
-        if (testSession.handleSessions()) {
-            testSession.closeCurrentSession(sessionMap, methodInfo);
-        } else {
-            testSession.closeSession();
-        }
+        testSession.closeSession();
 
         logger.exiting();
     }
@@ -327,22 +264,6 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
-        if (sessionMap != null && !sessionMap.isEmpty()) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE, "Thread " + Thread.currentThread().getId() + " finished Suite, Open Sessions = "
-                        + sessionMap.toString());
-            }
-            // This is NOT an optimal solution. But we need to find out some way to clear out all those sessions
-            // which we ended up persisting or else the browser instances wont be cleaned up.
-            Class<?>[] supportedAnnotations = TestSessionFactory.getSupportedAnnotations();
-            for (Class<?> eachAnnotation : supportedAnnotations) {
-                AbstractTestSession config = TestSessionFactory.newInstance(eachAnnotation);
-                if (config.handleSessions()) {
-                    config.closeAllSessions(sessionMap);
-                }
-            }
-        }
-
         LocalGridManager.shutDownHub();
         logger.exiting();
     }
@@ -373,7 +294,6 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             return;
         }
 
-        sessionMap = new HashMap<String, SeLionSession>();
         String testName = context.getCurrentXmlTest().getName();
         // initializing the ConfigSummaryData before initializers so that config details can be added.
         ConfigSummaryData.initLocalConfigSummary(testName);

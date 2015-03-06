@@ -18,29 +18,12 @@ package com.paypal.selion.platform.grid;
 import static com.paypal.selion.platform.asserts.SeLionAsserts.assertEquals;
 import static com.paypal.selion.platform.asserts.SeLionAsserts.assertNull;
 
-import java.lang.reflect.Method;
-
-import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.platform.grid.BasicTestSession;
-import com.paypal.selion.platform.grid.MobileTestSession;
-import com.paypal.selion.platform.grid.TestSessionFactory;
-import com.paypal.selion.platform.grid.WebTestSession;
 
 public class TestSessionFactoryTest {
-
-    @Test(groups = "unit")
-    @WebTest
-    public void testNewInstanceByMethod() {
-        Method method = null;
-        assertNull(TestSessionFactory.newInstance(method));
-        method = Reporter.getCurrentTestResult().getMethod().getConstructorOrMethod().getMethod();
-        TestSessionFactory.newInstance(method);
-        assertEquals(TestSessionFactory.newInstance(method).getClass(), WebTestSession.class);
-    }
 
     @Test(groups = "unit")
     public void testGetSupportedAnnotations() {
@@ -56,6 +39,6 @@ public class TestSessionFactoryTest {
                 "verify a MobileTestSession instance is returned");
         assertEquals(TestSessionFactory.newInstance(Test.class).getClass(), BasicTestSession.class,
                 "verify a BasicTestSession instance is returned");
-        
+
     }
 }
