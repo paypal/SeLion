@@ -94,7 +94,8 @@ public @interface WebTest {
     String sessionName() default "";
 
     /**
-     * Provide additional capabilities that you may wish to add as a name value pair.
+     * Provide additional capabilities that you may wish to add as a name value pair. Values of true or false will be
+     * treated as Boolean capabilities unless you surround the value with '
      * 
      * <pre>
      * {@literal @}Test
