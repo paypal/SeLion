@@ -21,11 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.grid.SauceLabsHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
@@ -95,12 +97,38 @@ public abstract class AbstractTestSession {
 
     }
 
-    protected final Map<String, String> parseIntoCapabilities(String[] capabilities) {
-        Map<String, String> capabilityMap = new HashMap<String, String>();
+    protected void initializeAdditionalCapabilities(String[] additionalCapabilities, InvokedMethodInformation method) {
+        Object additionalCaps = method.getTestAttribute(ExtendedConfig.CAPABILITIES.getConfig());
+        if (additionalCaps instanceof DesiredCapabilities) {
+            this.additionalCapabilities.merge((DesiredCapabilities) additionalCaps);
+        }
+        if (additionalCapabilities.length != 0) {
+            Map<String, Object> capabilityMap = parseIntoCapabilities(additionalCapabilities);
+            // We found some capabilities. Lets merge them.
+            this.additionalCapabilities.merge(new DesiredCapabilities(capabilityMap));
+        }
+    }
+
+    protected final Map<String, Object> parseIntoCapabilities(String[] capabilities) {
+        Map<String, Object> capabilityMap = new HashMap<String, Object>();
         for (String eachCapability : capabilities) {
-            String[] keyValuePair = eachCapability.split(":");
+            //split into key/value at the ':' character
+            String[] keyValuePair = eachCapability.split(":", 2);
             if (keyValuePair.length == 2) {
-                capabilityMap.put(keyValuePair[0], keyValuePair[1]);
+                String value = keyValuePair[1];
+                Object desiredCapability = value;
+                //treat true/false values surrounded with ' marks as strings
+                if (value.startsWith("'") && value.endsWith("'")) {
+                    String trimmedValue = StringUtils.mid(value, 1, value.length() - 2);
+                    if (trimmedValue.equalsIgnoreCase("true")) {
+                        desiredCapability = "true";
+                    } else if (trimmedValue.equalsIgnoreCase("false")) {
+                        desiredCapability = "false";
+                    }
+                } else if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+                    desiredCapability = Boolean.parseBoolean(value);
+                }
+                capabilityMap.put(keyValuePair[0], desiredCapability);
             } else {
                 StringBuffer errMsg = new StringBuffer();
                 errMsg.append("Capabilities are to be provided as name value pair separated by colons. ");

@@ -95,15 +95,23 @@ public class WebTestTest {
     }
 
     @Test(groups = "functional")
-    @WebTest(additionalCapabilities = { "useCaps:true" })
+    @WebTest(additionalCapabilities = { "useBooleanCaps:true","useStringCaps:'true'" })
     public void testCapabilityViaAnnotation() {
-        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useCaps"), "true");
+        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useBooleanCaps"), Boolean.TRUE);
+        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useStringCaps"), "true");
+    }
+    
+    @Test(groups = "functional")
+    @WebTest(additionalCapabilities = { "name:a:b"})
+    public void testCapabilityWithColonInValue() {
+        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("name"), "a:b");
     }
 
     @Test(testName = "testCapabilityViaTestResult", groups = "functional")
     @WebTest
     public void testCapabilityViaTestResult() {
-        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useCaps"), "true");
+        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useBooleanDCCaps"), Boolean.TRUE);
+        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useStringDCCaps"), "true");
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -111,7 +119,8 @@ public class WebTestTest {
         Test test = method.getAnnotation(Test.class);
         if (test != null && test.testName().equalsIgnoreCase("testCapabilityViaTestResult")) {
             DesiredCapabilities dc = new DesiredCapabilities();
-            dc.setCapability("useCaps", "true");
+            dc.setCapability("useStringDCCaps", "true");
+            dc.setCapability("useBooleanDCCaps", Boolean.TRUE);
             testResult.setAttribute(ExtendedConfig.CAPABILITIES.getConfig(), dc);
         }
     }

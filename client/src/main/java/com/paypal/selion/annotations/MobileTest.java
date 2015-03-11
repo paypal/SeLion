@@ -79,4 +79,17 @@ public @interface MobileTest {
      */
     String deviceType() default "";
 
+    /**
+     * Provide additional capabilities that you may wish to add as a name value pair. Values of true or false will be
+     * treated as Boolean capabilities unless you surround the value with '
+     * 
+     * <pre>
+     * {@literal @}Test
+     * {@literal @}MobileTest(additionalCapabilities={"key1:value1","key2:value2"})
+     * public void testMethod(){
+     *     // flow
+     * }
+     * </pre>
+     */
+    String[] additionalCapabilities() default {};
 }

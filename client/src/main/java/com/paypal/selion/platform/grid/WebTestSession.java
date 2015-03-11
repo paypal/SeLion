@@ -22,13 +22,11 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.IInvokedMethod;
 
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.reports.runtime.WebReporter;
@@ -62,7 +60,7 @@ public class WebTestSession extends AbstractTestSession {
     @Override
     public void initializeTestSession(InvokedMethodInformation method, Map<String, SeLionSession> sessionMap) {
         logger.entering(new Object[] { method, sessionMap });
-        this.initTestSession(method);
+        initTestSession(method);
         WebTest webTestAnnotation = method.getAnnotation(WebTest.class);
         // Setting the browser value
         this.browser = getLocalConfigProperty(ConfigProperty.BROWSER);
@@ -72,15 +70,6 @@ public class WebTestSession extends AbstractTestSession {
             }
             this.openNewSession = webTestAnnotation.openNewSession();
             this.keepSessionOpen = webTestAnnotation.keepSessionOpen();
-            if (webTestAnnotation.additionalCapabilities().length != 0) {
-                Map<String, String> capabilityMap = parseIntoCapabilities(webTestAnnotation.additionalCapabilities());
-                // We found some capabilities. Lets merge them.
-                this.additionalCapabilities.merge(new DesiredCapabilities(capabilityMap));
-            }
-            Object additionalCaps = method.getTestAttribute(ExtendedConfig.CAPABILITIES.getConfig());
-            if (additionalCaps instanceof DesiredCapabilities) {
-                this.additionalCapabilities.merge((DesiredCapabilities) additionalCaps);
-            }
 
             if (webTestAnnotation.browserHeight() > 0 && webTestAnnotation.browserWidth() > 0) {
                 this.browserHeight = webTestAnnotation.browserHeight();
@@ -89,6 +78,7 @@ public class WebTestSession extends AbstractTestSession {
                 warnUserOfInvalidBrowserDimensions(webTestAnnotation);
             }
 
+            initializeAdditionalCapabilities(webTestAnnotation.additionalCapabilities(), method);
         }
 
         setSessionName(sessionMap, method);

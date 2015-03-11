@@ -136,7 +136,7 @@ public class MobileTestSession extends AbstractTestSession {
     @Override
     public void initializeTestSession(InvokedMethodInformation method) {
         logger.entering(method);
-        this.initTestSession(method);
+        initTestSession(method);
         MobileTest deviceTestAnnotation = method.getAnnotation(MobileTest.class);
 
         // First load these from the <test> local config
@@ -166,6 +166,8 @@ public class MobileTestSession extends AbstractTestSession {
                 this.deviceType = deviceTestAnnotation.deviceType();
             }
         }
+
+        initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities(), method);
         logger.exiting();
     }
 

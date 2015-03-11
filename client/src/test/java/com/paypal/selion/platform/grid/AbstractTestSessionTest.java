@@ -50,7 +50,8 @@ public class AbstractTestSessionTest {
         assertNotNull(session.getAdditionalCapabilities(), "verify that the additional capabilities are not null");
         assertEquals(session.getAdditionalCapabilities().getCapability("key1"), "value1",
                 "verify the capability is read correctly");
-
+        assertEquals(session.getAdditionalCapabilities().getCapability("key2"), "value2",
+                "verify the capability is read correctly");
     }
 
     @WebTest

@@ -63,7 +63,7 @@ public class CapabilitiesHelperTest {
         for (DesiredCapabilities eachItem : list) {
             if (eachItem.is("is-oss")) {
                 found = true;
-                assertEquals(eachItem.getCapability("is-oss"), "true");
+                assertEquals(eachItem.getCapability("is-oss"), Boolean.TRUE);
                 break;
             }
         }
