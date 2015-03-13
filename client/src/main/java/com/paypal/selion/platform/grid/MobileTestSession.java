@@ -18,9 +18,11 @@ package com.paypal.selion.platform.grid;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
@@ -136,7 +138,7 @@ public class MobileTestSession extends AbstractTestSession {
     @Override
     public void initializeTestSession(InvokedMethodInformation method) {
         logger.entering(method);
-        this.initTestSession(method);
+        initTestSession(method);
         MobileTest deviceTestAnnotation = method.getAnnotation(MobileTest.class);
 
         // First load these from the <test> local config
@@ -166,6 +168,8 @@ public class MobileTestSession extends AbstractTestSession {
                 this.deviceType = deviceTestAnnotation.deviceType();
             }
         }
+
+        initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities(), method);
         logger.exiting();
     }
 
