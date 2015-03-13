@@ -23,7 +23,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Reporter;
 
 import com.paypal.selion.configuration.Config;

@@ -16,17 +16,34 @@ package com.paypal.selion.android.sample;
 
 import static org.testng.Assert.*;
 
+import java.io.File;
+import java.net.URL;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.selion.reports.runtime.WebReporter;
 
+/*
+ * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
+ */
 public class AndroidTest {
-    @Test
+    private static final String appFolder = "/apps";
+
+    @BeforeClass
+    public void setup() {
+        URL url = AndroidTest.class.getResource(appFolder);
+        Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
+    }
+
+    @Test(groups = {"functional-mobile, selendroid"})
     @MobileTest(appName = "android", device = "android:19")
     public void testLaunch() throws Exception {
         RemoteWebDriver driver = Grid.driver();
@@ -48,5 +65,16 @@ public class AndroidTest {
 
         // Check the title of the page
         System.out.println("Page title is: " + driver.getTitle());
+    }
+
+    @Test(groups = {"functional-mobile, selendroid"})
+    @MobileTest(appName = "io.selendroid.testapp:0.15.0", device = "android:19")
+    public void testNative() {
+        RemoteWebDriver driver = Grid.driver();
+        WebDriverWaitUtils.waitUntilElementIsVisible("//EditText[@id='my_text_field']");
+        WebElement inputField = driver.findElement(By.xpath("//EditText[@id='my_text_field']"));
+        assertEquals(inputField.getAttribute("enabled"), "true");
+        inputField.sendKeys("Selendroid");
+        assertEquals(inputField.getText(), "Selendroid");
     }
 }

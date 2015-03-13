@@ -14,9 +14,9 @@
     <properties>
         <compileSource>1.7</compileSource>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>2.44.0</selenium.version>
+        <selenium.version>2.45.0</selenium.version>
         <iosdriver.version>0.6.6-SNAPSHOT</iosdriver.version>
-        <selendroid.version>0.13.0</selendroid.version>
+        <selendroid.version>0.15.0</selendroid.version>
         <testng.version>6.8.7</testng.version>
         <project.bom.version>${project.version}</project.bom.version>
     </properties>
@@ -58,14 +58,14 @@
     <distributionManagement>
         <repository>
             <id>sonatype-nexus-staging</id>
-            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url> 
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
- 
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/paypal/SeLion/issues</url>
@@ -107,7 +107,7 @@
             </roles>
         </developer>
     </developers>
-    
+
     <contributors>
         <contributor>
             <organization>SeLion Commiters</organization>
@@ -133,10 +133,10 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- this plugin is a maven plugin designed to hold meta data to communicate with eclipse m2e plugin 
-                when it processes a maven pom.xml. Without this, children of this pom file will get the warning "maven-
-                enforcer-plugin (goal enforce) is ignored by m2e" because there is no connector that tells m2e how to 
-                integrate the maven plugin into eclipse. -->
+                <!-- this plugin is a maven plugin designed to hold meta data to communicate with eclipse m2e plugin when 
+                    it processes a maven pom.xml. Without this, children of this pom file will get the warning 
+                    "maven-enforcer-plugin (goal enforce) is ignored by m2e" because there is no connector that tells 
+                    m2e how to integrate the maven plugin into eclipse. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -189,7 +189,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
@@ -280,7 +280,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <reporting>
         <plugins>
             <plugin>

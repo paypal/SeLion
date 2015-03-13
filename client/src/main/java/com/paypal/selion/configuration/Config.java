@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
 import org.testng.ITestContext;
@@ -33,7 +34,6 @@ import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventListener;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
-import com.thoughtworks.selenium.CommandProcessor;
 
 /**
  * A configuration object that contains properties needed throughout SeLion. These options can be configured via the
@@ -440,7 +440,7 @@ public final class Config {
 
         /**
          * Use this parameter to provide SeLion with a custom listener which can be plugged into {@link RemoteWebDriver}
-         * {@link CommandProcessor}. If the fully qualified class implements {@link EventListener} then
+         * {@link CommandExecutor}. If the fully qualified class implements {@link EventListener} then
          * SeLion will invoke the custom implementation provided by you as and when the relevant
          * events happen. If more than one custom listeners are to be provided please separate the fully qualified class
          * names with commas.

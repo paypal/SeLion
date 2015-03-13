@@ -29,8 +29,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.uiautomation.ios.grid.IOSCapabilityMatcher;
 
 /**
- * This capability matches for nodes of type 'selendroid', 'ios-driver', or 'appium' when the capability 
- * 'mobileNodeType' is included in the {@link DesiredCapabilities}. Otherwise, this matcher will delegate to 
+ * This capability matches for nodes of type 'selendroid', 'ios-driver', or 'appium' when the capability
+ * 'mobileNodeType' is included in the {@link DesiredCapabilities}. Otherwise, this matcher will delegate to
  * {@link DefaultCapabilityMatcher}
  */
 public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
@@ -44,9 +44,11 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
     public MobileCapabilityMatcher() {
         super();
 
+        // Appium specific considerations
         toConsider.add("platformName");
         toConsider.add("platformVersion");
         toConsider.add("deviceName");
+        toConsider.add(MOBILE_NODE_TYPE);
     }
 
     @Override
@@ -61,20 +63,37 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
                 // See io.selendroid.server.grid.SelfRegisteringRemote#getNodeConfig() for more on this problem
                 Map<String, Object> augmentedRequestedCapabilities = new HashMap<String, Object>(requestedCapability);
                 augmentedRequestedCapabilities.remove(SelendroidCapabilities.AUT);
-                return new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities);
+                return (new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities))
+                        && (matchAgainstMobileNodeType(nodeCapability, mobileNodeType));
             }
             case "ios-driver": {
-                return new IOSCapabilityMatcher().matches(nodeCapability, requestedCapability);
+                return (new IOSCapabilityMatcher().matches(nodeCapability, requestedCapability))
+                        && (matchAgainstMobileNodeType(nodeCapability, mobileNodeType));
             }
             case "appium": {
-                return verifyAppiumCapabilities(nodeCapability, requestedCapability);
-            }
-            default: {
-                return super.matches(nodeCapability, requestedCapability);
+                return (verifyAppiumCapabilities(nodeCapability, requestedCapability))
+                        && (matchAgainstMobileNodeType(nodeCapability, mobileNodeType));
             }
             }
         }
+        // TODO what if the user does not care about which mobileNodeType they are routed to and instead they
+        // simply want ANY node with android or ios support
         return super.matches(nodeCapability, requestedCapability);
+    }
+
+    /**
+     * Matches requested mobileNodeType against node capabilities.
+     */
+    private boolean matchAgainstMobileNodeType(Map<String, Object> nodeCapability, String mobileNodeType) {
+        String nodeValue = (String) nodeCapability.get(MOBILE_NODE_TYPE);
+        // Match against the required toConsider capabilities
+        if (StringUtils.isBlank(nodeValue)) {
+            return false;
+        }
+        if (!nodeValue.equalsIgnoreCase(mobileNodeType)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -86,8 +105,7 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
      * @return
      */
     private boolean verifyAppiumCapabilities(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
-        for (int i = 0; i < toConsider.size(); i++) {
-            String capabilityName = toConsider.get(i);
+        for (String capabilityName : toConsider) {
             String capabilityValue = (String) requestedCapability.get(capabilityName);
 
             if (StringUtils.isNotBlank(capabilityValue)

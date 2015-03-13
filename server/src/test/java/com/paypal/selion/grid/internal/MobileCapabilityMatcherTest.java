@@ -19,6 +19,7 @@ public class MobileCapabilityMatcherTest {
         Map<String, Object> nodeCapability = new HashMap<String, Object>();
         nodeCapability.put("platformName", "Android");
         nodeCapability.put("platformVersion", "4.4.2");
+        nodeCapability.put("mobileNodeType", "appium");
 
         //Success scenario1
         Map<String, Object> requestedCapability = new HashMap<String, Object>();
@@ -49,6 +50,7 @@ public class MobileCapabilityMatcherTest {
 
         Map<String, Object> nodeCapability = new HashMap<String, Object>();
         nodeCapability.put(CapabilityType.BROWSER_NAME, "selendroid");
+        nodeCapability.put("mobileNodeType", "selendroid");
 
         //Success scenario
         Map<String, Object> requestedCapability = new HashMap<String, Object>();

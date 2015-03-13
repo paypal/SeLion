@@ -21,6 +21,9 @@ import com.paypal.selion.reports.runtime.MobileReporter;
 
 import org.testng.annotations.Test;
 
+/*
+ * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
+ */
 public class IOSTest {
     @MobileTest(appName = "Safari")
     @Test

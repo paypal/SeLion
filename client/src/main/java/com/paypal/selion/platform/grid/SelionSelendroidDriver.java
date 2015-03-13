@@ -22,7 +22,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.CommandExecutor;
 
 /**
- * This class provide facility to add custom {@link CommandExecutor}
+ * This class provide facility to add custom {@link CommandExecutor} to {@link SelendroidDriver}
  *
  */
 public class SelionSelendroidDriver extends SelendroidDriver {

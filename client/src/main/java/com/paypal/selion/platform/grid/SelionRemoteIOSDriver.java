@@ -20,7 +20,7 @@ import org.uiautomation.ios.IOSCapabilities;
 import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 
 /**
- * This class provide facility to add custom {@link CommandExecutor}
+ * This class provide facility to add custom {@link CommandExecutor} to {@link RemoteIOSDriver}
  *
  */
 public class SelionRemoteIOSDriver extends RemoteIOSDriver {

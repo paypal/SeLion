@@ -12,5 +12,6 @@
 *.plist binary
 *.nib binary
 *.strings binary
+*.apk binary
 
 

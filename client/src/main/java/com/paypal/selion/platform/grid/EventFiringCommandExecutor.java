@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.Response;
 
 /**
- * This class is a decorator for any {@link CommandExecutor} and calls the instance of{@link EventListener} before and
+ * This class is a decorator for any {@link CommandExecutor} and calls the instance of {@link EventListener} before and
  * after each command gets executed
  * 
  */
