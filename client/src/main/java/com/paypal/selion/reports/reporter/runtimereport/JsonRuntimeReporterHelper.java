@@ -172,11 +172,6 @@ public class JsonRuntimeReporterHelper {
             return;
         }
 
-        if (result.getStatus() == ITestResult.SKIP) {
-            appendFile(jsonCompletedTest, test1.toJson().concat(",\n"));
-            return;
-        }
-
         for (TestMethodInfo temp : runningTest) {
             if (temp.getResult().equals(result)) {
                 runningTest.remove(temp);
