@@ -320,7 +320,7 @@ public class DatePicker extends AbstractElement {
      */
     public void reset() {
         this.getElement().clear();
-        Grid.driver().findElement(By.tagName("html")).click();
+        Grid.driver().findElement(By.tagName("body")).click();
         this.calendar = Calendar.getInstance();
         this.getElement().click();
     }
