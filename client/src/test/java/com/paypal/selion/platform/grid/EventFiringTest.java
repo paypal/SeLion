@@ -18,6 +18,7 @@ package com.paypal.selion.platform.grid;
 import static com.paypal.selion.platform.asserts.SeLionAsserts.assertTrue;
 
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DriverCommand;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -25,29 +26,39 @@ import org.testng.annotations.Test;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
 
+import java.util.List;
+
 public class EventFiringTest {
 
     @WebTest
-    @Test()
+    @Test
     public void testCommandExecutorInstance() {
         assertTrue(Grid.driver().getCommandExecutor() instanceof EventFiringCommandExecutor);
+        String msgs = EventFiringListener.getMessage();
+        assertTrue(msgs.contains("beforeEvent"));
+        assertTrue(msgs.contains("afterEvent"));
     }
 }
 
 class EventFiringListener implements EventListener{
+    static StringBuilder messages = new StringBuilder();
 
     @Override
     public void beforeEvent(Command command) {
-        // TODO Auto-generated method stub
-        System.out.println("Before Event:"+command);
-        
+        if (command.getName().equalsIgnoreCase(DriverCommand.NEW_SESSION)) {
+            messages.append("beforeEvent");
+        }
     }
 
     @Override
     public void afterEvent(Command command) {
-        // TODO Auto-generated method stub
-        System.out.println("After Event:"+command);
-        
+        if (command.getName().equalsIgnoreCase(DriverCommand.NEW_SESSION)) {
+            messages.append("afterEvent");
+        }
+    }
+
+    public static String getMessage() {
+        return messages.toString();
     }
 
 }

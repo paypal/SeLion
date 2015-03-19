@@ -93,12 +93,12 @@ public class WebDriverSessionHandler {
      * This constructor creates WebDriverSessionHandler instance.
      * 
      * @param driver
-     *            need to pass ScreenShotRemoteWebDriver instance [Grid.driver()]
+     *            need to pass RemoteWebDriver instance [Grid.driver()]
      */
     public WebDriverSessionHandler(RemoteWebDriver driver) {
 
         if (driver == null) {
-            throw new IllegalArgumentException("ScreenShotRemoteWebDriver instance is null");
+            throw new IllegalArgumentException("RemoteWebDriver instance is null");
         }
         this.driver = driver;
         webDriverCaller = new WebDriverCaller();

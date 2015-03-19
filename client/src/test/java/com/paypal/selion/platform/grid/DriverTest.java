@@ -34,7 +34,7 @@ import com.paypal.selion.platform.html.TestObjectRepository;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.test.utilities.server.TestServerUtils;
 
-public class ScreenShotRemoteWebDriverTest {
+public class DriverTest {
 
     private static final int NEW_BROWSER_HEIGHT = 500;
     private static final int NEW_BROWSER_WIDTH = 700;

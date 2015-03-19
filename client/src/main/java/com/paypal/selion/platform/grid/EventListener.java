@@ -19,11 +19,27 @@ import org.openqa.selenium.remote.Command;
 
 /**
  * This class is invoked by {@link EventFiringCommandExecutor} when ever selenium command gets executed.
- * 
  */
 public interface EventListener {
+    /**
+     * This method will be called by {@link EventFiringCommandExecutor} BEFORE executing each selenium command.
+     *
+     * @param command - A {@link org.openqa.selenium.remote.Command} that represents the command being executed by
+     *                Selenium.
+     *                In order to filter out specific commands you may extract the actual command via
+     *                {@link org.openqa.selenium.remote.Command#getName()} and then compare it with the predefined set of
+     *                commands available as strings in {@link org.openqa.selenium.remote.DriverCommand}
+     */
+    void beforeEvent(Command command);
 
-    public void beforeEvent(Command command);
-
-    public void afterEvent(Command command);
+    /**
+     * This method will be called by {@link EventFiringCommandExecutor} AFTER executing each selenium command.
+     *
+     * @param command - A {@link org.openqa.selenium.remote.Command} that represents the command being executed by
+     *                Selenium.
+     *                In order to filter out specific commands you may extract the actual command via
+     *                {@link org.openqa.selenium.remote.Command#getName()} and then compare it with the predefined set of
+     *                commands available as strings in {@link org.openqa.selenium.remote.DriverCommand}
+     */
+    void afterEvent(Command command);
 }

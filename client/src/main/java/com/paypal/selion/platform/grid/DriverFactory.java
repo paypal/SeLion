@@ -23,12 +23,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+
+import net.sf.uadetector.OperatingSystem;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -62,11 +69,10 @@ public final class DriverFactory {
      * @return A {@link RemoteWebDriver} instance based on the browser type
      */
     public static RemoteWebDriver createInstance(BrowserFlavors browser) {
-
         DesiredCapabilities capability = DesiredCapabilitiesFactory.getCapabilities(browser);
 
         logger.log(Level.FINE, "Spawning a browser with the following capabilities : " + showCapabilities(capability));
-
+        RemoteWebDriver driver = null;
         switch (browser) {
         case FIREFOX:
         case CHROME:
@@ -77,23 +83,21 @@ public final class DriverFactory {
         case OPERA:
         case PHANTOMJS:
         case SAFARI:
-            return createDriverInstance(getURL(), capability);
-
+            driver = createDriverInstance(getURL(), capability);
+            break;
         case GENERIC:
             if (Grid.getMobileTestSession().getDevice().contains("ipad")
                     || Grid.getMobileTestSession().getDevice().contains("iphone")) {
-
-                return createIOSDriverInstance(getURL(), capability);
-
+                driver = createIOSDriverInstance(getURL(), capability);
             } else if (Grid.getMobileTestSession().getDevice().contains("android")) {
-                return createSelendroidInstance(getURL(), capability);
+                driver = createSelendroidInstance(getURL(), capability);
             }
-
+            break;
         default:
             break;
         }
-        return null;
-
+        printDebugInfoForUser(driver);
+        return driver;
     }
 
     private static SelendroidDriver createSelendroidInstance(URL url, DesiredCapabilities capability) {
@@ -107,7 +111,7 @@ public final class DriverFactory {
                 return new SelendroidDriver(url, capability);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
     }
 
@@ -247,6 +251,48 @@ public final class DriverFactory {
             throw (new IllegalArgumentException(
                     "Both the height and the width of the browser window should be greater than zero"));
         }
+    }
+    
+    private static void printDebugInfoForUser(RemoteWebDriver driver) {
+        Properties props = new Properties();
+        props.put("Selenium Version", new org.openqa.selenium.internal.BuildInfo().getReleaseLabel());
+        props.put("Client OS", System.getProperty("os.name") + " " + System.getProperty("os.version"));
+
+        String currentBrowser = BrowserFlavors.GENERIC.getBrowser();
+
+        if (WebDriverPlatform.WEB.equals(Grid.getTestSession().getPlatform())) {
+            currentBrowser = Grid.getWebTestSession().getBrowser();
+        }
+
+        if (BrowserFlavors.isHeadLessBrowser(BrowserFlavors.getBrowser(currentBrowser))) {
+            props.put("Browser", StringUtils.capitalize(currentBrowser.substring(1)));
+        } else if (WebDriverPlatform.IOS.equals(Grid.getTestSession().getPlatform()) ||
+                (WebDriverPlatform.ANDROID.equals(Grid.getTestSession().getPlatform()))) {
+            props.put("Device" , Grid.getMobileTestSession().getDevice().toString());
+        }
+        else {
+            String userAgent = (String) driver.executeScript("return navigator.userAgent", "");
+            String browserFlavor = "UNKNOWN browser";
+            if (StringUtils.isNotBlank(userAgent)) {
+                browserFlavor = extractBrowserInfo(userAgent);
+            }
+            props.put("Browser", browserFlavor);
+        }
+        logger.log(Level.INFO, "Running on: " + props.toString());
+        
+    }
+
+    private static String extractBrowserInfo(String userAgent) {
+        
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(userAgent);
+        OperatingSystem os = agent.getOperatingSystem();
+        StringBuilder sb = new StringBuilder();
+        sb.append(agent.getName());
+        sb.append(" ").append(agent.getVersionNumber().toVersionString());
+        sb.append(" running on ").append(os.getName()).append(" ").append(os.getVersionNumber().toVersionString());
+        return sb.toString();
+
     }
 
 }

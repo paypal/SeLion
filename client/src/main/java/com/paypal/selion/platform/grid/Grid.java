@@ -78,7 +78,7 @@ public final class Grid {
     }
 
     /**
-     * @return A {@link ScreenShotRemoteWebDriver} object which can be used in the case of {@link MobileTest} and
+     * @return A {@link RemoteWebDriver} object which can be used in the case of {@link MobileTest} and
      *         {@link WebTest}s
      */
     public static RemoteWebDriver driver() {
