@@ -17,8 +17,6 @@ package ${package}.sample.selion;
 
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
-
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -40,8 +38,7 @@ public class WebSessionSharingTest {
         //Session ID is WebDriver's way of tracking a specific browser instance.
         // Lets save that to the class's data member so that we can run an assert in the next
         // method to prove that its the same browser session.
-        RemoteWebDriver rwd = (RemoteWebDriver) Grid.driver().getWrappedDriver();
-        sessionId = rwd.getSessionId().toString();
+        sessionId = Grid.driver().getSessionId().toString();
         assertTrue(Grid.driver().getTitle() != null);
     }
 
@@ -55,7 +52,6 @@ public class WebSessionSharingTest {
     @WebTest(openNewSession = false)
     public void testMethodB () {
         Grid.driver().get("http://www.ebay.com");
-        RemoteWebDriver rwd = (RemoteWebDriver) Grid.driver().getWrappedDriver();
-        assertEquals(rwd.getSessionId().toString(), sessionId);
+        assertEquals(Grid.driver().getSessionId().toString(), sessionId);
     }
 }

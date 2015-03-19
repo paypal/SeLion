@@ -43,7 +43,7 @@ public class IOSNativeAppDemoTest {
         MobileReporter.log("My Screenshot 1", true);
         //To gain access to the IOSRemoteWebDriver, we use the thread safe helper method Grid.iOSDriver() which provides
         //an instance of IOSRemoteWebDriver for the current Test method. 
-        List<WebElement> cells = Grid.iOSDriver().findElements(By.className("UIATableCell"));
+        List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         assertEquals(9, cells.size());
 
         // get the 1st mountain
@@ -56,7 +56,7 @@ public class IOSNativeAppDemoTest {
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
-        WebElement text = Grid.iOSDriver().findElement(selector);
+        WebElement text = Grid.driver().findElement(selector);
         Reporter.log(text.getAttribute("name"),true);
     }
 }
