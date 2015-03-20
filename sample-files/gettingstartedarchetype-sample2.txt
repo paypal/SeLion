@@ -1,0 +1,10 @@
+Sample/
+├── pom.xml
+├── src/main/java
+│            ├── Application code available here
+├── src/main/resources
+│            ├── Application resources available here
+├── src/test/java
+│            ├── Test code available here
+├── src/test/resources
+│            ├── Test resources available here

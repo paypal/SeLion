@@ -1,0 +1,35 @@
+<div class="selion-content-div">
+    <h1 id="getting-started-with-seLion" class="page-header">Automation Sample Project Using SeLion Archetype</h1>
+
+    <p class="lead">How to create a project from SeLion archetype.</p>
+
+    <h2 id="prerequisites">Prerequisites</h2>
+    <p>Make sure to install the required software on your machine before you start using SeLion:</p>
+    <ol>
+        <li><a href="documentation.html#getting-started">Browser automation prerequisites</a></li>
+        <li><a href="documentation.html#getting-started-mobile">Mobile automation prerequisites</a></li>
+    </ol>
+
+    <h2 id="project-creation">Create Project from SeLion archetype</h2>
+    <p>Once you have satisfied all of the prerequisites, open a command prompt and navigate to the directory where you
+        want your project to be located, and run:</p>
+
+    <pre data-src="../sample-files/gettingstartedarchetype-sample1.sh"></pre>
+    <br>
+    <p>The sample project will automatically be generated from the SeLion archetype. You will see something like this:</p>
+
+    <pre data-src="../sample-files/gettingstartedarchetype-sample2.txt"></pre>
+    <p>Now run the following command in the project directory path from a command prompt.</p>
+    <pre><code class="language-sh">mvn dependency:resolve</code></pre>
+    <p>This command causes Maven to start downloading all of the required jar files.</p>
+    <p>Now run the following command in the project directory path from a command prompt.</p>
+    <pre><code class="language-sh">mvn clean test</code></pre>
+    <p>This command cleans the project temporary resources and runs the tests in the TestNG suite file <samp>SampleSuite.xml</samp> from the folder <code>{project}/src/test/resources</code>.
+        This suite file is configured to run only the non user interface tests from the project.</p>
+
+    <br>
+    <p><b>Congratulations! You just created the project from SeLion archetype and executed the tests!</b></p>
+    <p>Check out the sample web and mobile tests in the project you created.</p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>
