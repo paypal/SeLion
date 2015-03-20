@@ -15,15 +15,17 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import java.io.File;
+
 import io.selendroid.common.SelendroidCapabilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.uiautomation.ios.IOSCapabilities;
+import org.uiautomation.ios.communication.device.DeviceVariation;
 
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.MobileTestSession;
-import org.uiautomation.ios.communication.device.DeviceVariation;
 
 class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private String appName = null;
@@ -33,6 +35,7 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private String locale = null;
     private String deviceSerial = null;
     private String platformVersion = null;
+    private String appLocation = null;
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
@@ -70,7 +73,14 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             }
         } else if (this.device.toLowerCase().contains("android")) {
             caps = SelendroidCapabilities.android();
-            caps.setBrowserName("selendroid");
+            // check if apk exists for native app to set BrowserName to 'selendroid'
+            // else set it to 'android'
+            if ((new File(this.appLocation).exists())
+                && ((new File(this.appLocation + File.separator + this.appName)).exists())) {
+                caps.setBrowserName("selendroid");
+            } else {
+                caps.setBrowserName("android");
+            }
             caps.setCapability(SelendroidCapabilities.AUT, appName);
             caps.setCapability(SelendroidCapabilities.LOCALE, this.locale);
             if(this.deviceType != null && !this.deviceType.isEmpty()) {
@@ -96,6 +106,7 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             this.deviceSerial = config.getdeviceSerial();
             this.deviceType = config.getDeviceType();
             this.platformVersion = config.getPlatformVersion();
+            this.appLocation = config.getAppLocation();
         }
     }
 }
