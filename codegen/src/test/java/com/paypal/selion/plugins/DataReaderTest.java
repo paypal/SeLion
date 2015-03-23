@@ -42,7 +42,7 @@ public class DataReaderTest {
 
     @Test
     public void getKeys_v1() throws Exception {
-        DataReader r = new DataReader("src/test/resources/PayPalAbstractPage.yaml");
+        DataReader r = new DataReader("src/test/resources/PayPalAbstractPage.yml");
         List<String> keys = r.getKeys();
         assertTrue(keys.contains("messageBoxConfirmationLabel"));
     }

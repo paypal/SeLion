@@ -39,7 +39,7 @@ public class PlatformTest {
     @Test
     public void testWebPlatform() throws Exception {
         // When no platform is specified the default should be WEB
-        TestPlatform currentPlatform = getPlatformToTest("src/test/resources/PayPalAbstractPage.yaml");
+        TestPlatform currentPlatform = getPlatformToTest("src/test/resources/PayPalAbstractPage.yml");
         assertTrue(currentPlatform == TestPlatform.WEB);
     }
 

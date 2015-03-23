@@ -54,13 +54,16 @@ public final class GuiMapReaderFactory {
         String guiDataDir = Config.getConfigProperty(ConfigProperty.GUI_DATA_DIR);
         String rawDataFile = guiDataDir + "/" + pageDomain + "/" + pageClassName;
         String yamlFile = rawDataFile + ".yaml";
+        String ymlFile = rawDataFile + ".yml";
 
         if (getFilePath(yamlFile) != null) {
             dataProvider = YamlReaderFactory.createInstance(yamlFile);
+        } else if (getFilePath(ymlFile) != null) {
+            dataProvider = YamlReaderFactory.createInstance(ymlFile);
         } else {
             // Should be a FileNotFoundException?
-            FileNotFoundException e = new FileNotFoundException("Data File does not exist for " + rawDataFile
-                    + ". Supported file extensions: yaml.");
+            FileNotFoundException e = new FileNotFoundException("Data file does not exist for " + rawDataFile
+                    + ". Supported file extensions: yaml, yml.");
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw e;
         }

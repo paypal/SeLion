@@ -240,7 +240,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
             for (File eachFile : files) {
                 if (eachFile.isDirectory()) {
                     dataFile.addAll(loadFiles(eachFile));
-                } else if (eachFile.getName().endsWith(".yaml")) {
+                } else if (eachFile.getName().endsWith(".yaml") || eachFile.getName().endsWith(".yml")) {
                     dataFile.add(eachFile);
                 }
 

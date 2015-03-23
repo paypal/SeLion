@@ -30,7 +30,7 @@ public final class YamlReaderFactory {
     }
 
     public static AbstractYamlReader createInstance(String fileName) throws IOException {
-        if (!fileName.endsWith("yaml")) {
+        if (!fileName.endsWith("yaml") && !fileName.endsWith("yml")) {
             throw new IllegalArgumentException("Data file not supported : " + fileName);
         }
         AbstractYamlReader provider = new YamlV2Reader(fileName);
