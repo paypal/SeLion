@@ -120,7 +120,7 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         logger.entering(caps);
         String sauceUserName = Config.getConfigProperty(ConfigProperty.SAUCELAB_USER_NAME);
         String sauceApiKey = Config.getConfigProperty(ConfigProperty.SAUCELAB_API_KEY);
-        String tunnelUserId = Config.getConfigProperty(ConfigProperty.TUNNEL_USER_ID);
+        String tunnelUserId = Config.getConfigProperty(ConfigProperty.SAUCELAB_TUNNEL_USER_ID);
 
         if (sauceUserName != null && sauceApiKey != null) {
             caps.setCapability(USER_NAME, sauceUserName);

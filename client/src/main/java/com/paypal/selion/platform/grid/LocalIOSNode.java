@@ -54,10 +54,16 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
 
     public void boot(AbstractTestSession testSession) {
         logger.entering(testSession.getPlatform());
-        if (testSession instanceof MobileTestSession
-                && ((MobileTestSession) testSession).getMobileNodeType() != MobileNodeType.IOS_DRIVER) {
+
+        // don't allow non-mobile test case to spawn the ios-driver node
+        if ((testSession.getPlatform() != WebDriverPlatform.IOS) && !(testSession instanceof MobileTestSession)) {
             return;
         }
+        // don't allow an appium test case to spawn the ios-driver node
+        if (((MobileTestSession) testSession).getMobileNodeType() != MobileNodeType.IOS_DRIVER) {
+            return;
+        }
+
         if (isRunning) {
             logger.exiting();
             return;
@@ -76,7 +82,6 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new GridException("Failed to start a local iOS Node", e);
         }
-
     }
 
     private void startIOSDriverNode(int port) throws Exception {

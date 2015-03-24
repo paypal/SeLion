@@ -15,6 +15,8 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import java.io.File;
+
 import io.selendroid.common.SelendroidCapabilities;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,13 +29,23 @@ class SelendroidCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     private String MOBILE_NODE_TYPE = "mobileNodeType";
     private String SELENDROID = "selendroid";
-    
+    private String ANDROID = "android";
+
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
         MobileTestSession mobileSession = Grid.getMobileTestSession();
         capabilities = SelendroidCapabilities.android();
-        capabilities.setBrowserName(SELENDROID);
+
+        // check if apk exists for native app to set BrowserName to 'selendroid'
+        // else set it to 'android'
+        if ((new File(mobileSession.getAppLocation()).exists())
+                && ((new File(mobileSession.getAppLocation() + File.separator + mobileSession.getAppName())).exists())) {
+            capabilities.setBrowserName(SELENDROID);
+        } else {
+            capabilities.setBrowserName(ANDROID);
+        }
+
         capabilities.setCapability(MOBILE_NODE_TYPE, SELENDROID);
         capabilities.setCapability(SelendroidCapabilities.AUT, mobileSession.getAppName());
         capabilities.setCapability(SelendroidCapabilities.LOCALE, mobileSession.getAppLocale());

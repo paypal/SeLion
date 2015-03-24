@@ -63,6 +63,7 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
+        Assert.assertNotNull(text.getAttribute("name"));
     }
 
     @MobileTest(appName = "InternationalMountains:1.3", device = "iphone:7.1", deviceType = "iPhone5s")
@@ -83,6 +84,7 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
+        Assert.assertNotNull(text.getAttribute("name"));
     }
 
     @MobileTest(appName = "InternationalMountains", device = "iphone")
@@ -103,6 +105,7 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
+        Assert.assertNotNull(text.getAttribute("name"));
     }
 
     @MobileTest(appName = "InternationalMountains:1.3", device = "iphone", deviceType = "iPhone6")
@@ -123,6 +126,7 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
+        Assert.assertNotNull(text.getAttribute("name"));
     }
 
     @AfterClass

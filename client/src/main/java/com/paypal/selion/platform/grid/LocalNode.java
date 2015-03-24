@@ -33,7 +33,6 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
-import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;

@@ -49,10 +49,15 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
     public void boot(AbstractTestSession testSession) {
         logger.entering(testSession.getPlatform());
 
-        if (testSession instanceof MobileTestSession
-                && ((MobileTestSession) testSession).getMobileNodeType() != MobileNodeType.SELENDROID) {
+        // don't allow non-mobile test case to spawn the selendroid node
+        if ((testSession.getPlatform() != WebDriverPlatform.ANDROID) && !(testSession instanceof MobileTestSession)) {
             return;
         }
+        // don't allow an appium test case to spawn the selendroid node
+        if (((MobileTestSession) testSession).getMobileNodeType() != MobileNodeType.SELENDROID) {
+            return;
+        }
+
         if (isRunning) {
             logger.exiting();
             return;

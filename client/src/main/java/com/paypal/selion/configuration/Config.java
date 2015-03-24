@@ -517,7 +517,7 @@ public final class Config {
         /**
          * This parameter is used to pass SauceLabs parent tunnel user id
          */
-        TUNNEL_USER_ID("tunnelUserId", "", true),
+        SAUCELAB_TUNNEL_USER_ID("sauceTunnelUserId", "", true),
 
         /**
          * Directory with page asset files to read info about GUI controls from.<br>

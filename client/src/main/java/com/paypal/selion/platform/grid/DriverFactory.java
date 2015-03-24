@@ -97,9 +97,9 @@ public final class DriverFactory {
                 if (mobileSession.getPlatform() == WebDriverPlatform.IOS) {
                     driver = createAppiumIOSInstance(getURL(), capability);
                 }
-            }else if (mobileNodeType == MobileNodeType.IOS_DRIVER) {
+            } else if (mobileNodeType == MobileNodeType.IOS_DRIVER) {
                 driver = createIOSDriverInstance(getURL(), capability);
-            }else if (mobileNodeType == MobileNodeType.SELENDROID) {
+            } else if (mobileNodeType == MobileNodeType.SELENDROID) {
                 driver = createSelendroidInstance(getURL(), capability);
             }
             break;

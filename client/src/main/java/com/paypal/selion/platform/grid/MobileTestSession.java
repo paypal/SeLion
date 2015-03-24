@@ -230,7 +230,6 @@ public class MobileTestSession extends AbstractTestSession {
     }
 
     private String getSelionHubStorageUrl(String selionHubappPath) {
-
         String COLON = ":";
         String SLASH = "/";
         String appPathTokens[] = StringUtils.split(selionHubappPath, ":");
