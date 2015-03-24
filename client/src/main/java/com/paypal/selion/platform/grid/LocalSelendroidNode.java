@@ -46,13 +46,14 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
     private SimpleLogger logger = SeLionLogger.getLogger();
 
     @Override
-    public void boot(WebDriverPlatform platform) {
-        logger.entering(platform);
-        if (isRunning) {
-            logger.exiting();
+    public void boot(AbstractTestSession testSession) {
+        logger.entering(testSession.getPlatform());
+
+        if (testSession instanceof MobileTestSession
+                && ((MobileTestSession) testSession).getMobileNodeType() != MobileNodeType.SELENDROID) {
             return;
         }
-        if (platform != WebDriverPlatform.ANDROID) {
+        if (isRunning) {
             logger.exiting();
             return;
         }
@@ -63,7 +64,8 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         try {
             int port = new LocalGridConfigFileParser().getPort() + 2;
             startSelendroidDriverNode(port);
-            waitForNodeToComeUp(port, "Encountered problems when attempting to register the Selendroid Node to the local Grid");
+            waitForNodeToComeUp(port,
+                    "Encountered problems when attempting to register the Selendroid Node to the local Grid");
             isRunning = true;
             logger.log(Level.INFO, "Attached SelendroidDriver node to local hub " + registrationUrl);
         } catch (Exception e) {
@@ -120,16 +122,17 @@ class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
         args.add("-host");
         args.add("127.0.0.1");
 
-        Boolean selendroidForceReinstall = Config.getBoolConfigProperty(ConfigProperty.SELENDROID_SERVER_FORCE_REINSTALL);
+        Boolean selendroidForceReinstall = Config
+                .getBoolConfigProperty(ConfigProperty.SELENDROID_SERVER_FORCE_REINSTALL);
         if (selendroidForceReinstall) {
-              args.add("-forceReinstall");
+            args.add("-forceReinstall");
         }
 
         sconfig = SelendroidConfiguration.create(args.toArray(new String[args.size()]));
         server = new SelendroidLauncher(sconfig);
 
-        //HACK :: put the RootLogger back into the original state
-         // remove all handlers first
+        // HACK :: put the RootLogger back into the original state
+        // remove all handlers first
         Handler[] handlers = Logger.getLogger("").getHandlers();
         Level level = Logger.getLogger("").getLevel();
 

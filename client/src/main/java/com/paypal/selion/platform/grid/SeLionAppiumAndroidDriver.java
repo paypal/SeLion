@@ -13,26 +13,28 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.grid.browsercapabilities;
+package com.paypal.selion.platform.grid;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
+import io.appium.java_client.android.AndroidDriver;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+import java.net.URL;
 
-    @Override
-    public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.CommandExecutor;
 
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capabilities.merge(eachCaps);
-        }
+/**
+ * This class provide facility to add custom {@link CommandExecutor} to {@link AndroidDriver}
+ * 
+ */
+public class SeLionAppiumAndroidDriver extends AndroidDriver {
 
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capabilities.merge(eachCaps);
-        }
-        return capabilities;
+    public SeLionAppiumAndroidDriver(URL url, Capabilities caps) {
+        super(url, caps);
+    }
 
+    public SeLionAppiumAndroidDriver(CommandExecutor commandExecutor, Capabilities caps, URL url) {
+        super(url, caps);
+        setCommandExecutor(commandExecutor);
     }
 
 }

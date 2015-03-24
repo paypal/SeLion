@@ -83,8 +83,8 @@ public final class DesiredCapabilitiesFactory {
             // enum and it takes care of throwing exceptions whenever a user passes an invalid browser name
             break;
         }
-
-        logger.exiting(new UserCapabilitiesBuilder().getCapabilities(capabilities));
+        capabilities = new UserCapabilitiesBuilder().getCapabilities(capabilities);
+        logger.exiting(capabilities);
         return capabilities;
     }
 }

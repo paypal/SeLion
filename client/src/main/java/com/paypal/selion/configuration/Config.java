@@ -32,6 +32,7 @@ import org.testng.ITestContext;
 
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventListener;
+import com.paypal.selion.platform.grid.MobileNodeType;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
 
@@ -72,14 +73,14 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * &lt;!-- optional, default to ${selionFiles.basedir}/selionLogs (GLOBAL) --&gt;
  * &lt;parameter name="workDir"  value="" /&gt;
  * </pre>
- *
+ * 
  * <strong>All other configuration settings can be set in a similar fashion.</strong><br>
  * 
  * <br>
- * Also, system properties and/or environment variables can also be used to configure SeLion. The values used should always
- * start with "SELION_" and end with the value you would like the set. The variable equals the {@link ConfigProperty}
- * variable name. So, for instance, to set the execution_timeout to "180000", the following system property or
- * environment variable should be set prior to initializing SeLion:
+ * Also, system properties and/or environment variables can also be used to configure SeLion. The values used should
+ * always start with "SELION_" and end with the value you would like the set. The variable equals the
+ * {@link ConfigProperty} variable name. So, for instance, to set the execution_timeout to "180000", the following
+ * system property or environment variable should be set prior to initializing SeLion:
  * 
  * <pre>
  * SELION_EXECUTION_TIMEOUT = 180000
@@ -431,19 +432,24 @@ public final class Config {
         SELENIUM_USE_SAUCELAB_GRID("useSauceLabGrid", "false", true),
 
         /**
+         * Use this parameter to execute mobile test cases using respective mobile driver. The valid values are
+         * {@link MobileNodeType}
+         */
+        MOBILE_NODE_TYPE("mobileNodeType", "", false),
+
+        /**
          * This configuration parameter represents a custom capability provider which can be passed into SeLion. The
          * value for this parameter would be the fully qualified class name which is a sub-class of
-         * {@link DefaultCapabilitiesBuilder}. You can plug-in multiple capability providers
-         * by feeding them as "comma separated values".
+         * {@link DefaultCapabilitiesBuilder}. You can plug-in multiple capability providers by feeding them as
+         * "comma separated values".
          */
         SELENIUM_CUSTOM_CAPABILITIES_PROVIDER("customCapabilities", "", true),
 
         /**
          * Use this parameter to provide SeLion with a custom listener which can be plugged into {@link RemoteWebDriver}
-         * {@link CommandExecutor}. If the fully qualified class implements {@link EventListener} then
-         * SeLion will invoke the custom implementation provided by you as and when the relevant
-         * events happen. If more than one custom listeners are to be provided please separate the fully qualified class
-         * names with commas.
+         * {@link CommandExecutor}. If the fully qualified class implements {@link EventListener} then SeLion will
+         * invoke the custom implementation provided by you as and when the relevant events happen. If more than one
+         * custom listeners are to be provided please separate the fully qualified class names with commas.
          */
         SELENIUM_WEBDRIVER_EVENT_LISTENER("webDriverEventListener", "", true),
 
@@ -455,10 +461,10 @@ public final class Config {
         SELENIUM_RUN_LOCALLY("runLocally", "false", true),
 
         /**
-         * This parameter represents the folder which would contain the mobile app. This parameter is currently only useful
-         * for local runs. This is the folder from which applications would be searched for by SeLion when it comes to
-         * mobile automation in local runs. Please ensure that all the built applications reside in this folder.
-         * If no value is provided, SeLion assumes that the application is available under a directory named
+         * This parameter represents the folder which would contain the mobile app. This parameter is currently only
+         * useful for local runs. This is the folder from which applications would be searched for by SeLion when it
+         * comes to mobile automation in local runs. Please ensure that all the built applications reside in this
+         * folder. If no value is provided, SeLion assumes that the application is available under a directory named
          * "Applications" in the current working directory.
          */
         MOBILE_APP_FOLDER("mobileAppFolder", System.getProperty("user.dir") + File.separator + "Applications", true),
@@ -466,11 +472,18 @@ public final class Config {
         /**
          * This parameter represents the name of the app that is to be spawned. Specifying the name of the mobile app
          * should suffice.
-         *
-         * <b>Note:</b> Use of this parameter is not recommended for test suites which test different mobile applications
-         * or different versions of the same mobile applications.
+         * 
+         * <b>Note:</b> Use of this parameter is not recommended for test suites which test different mobile
+         * applications or different versions of the same mobile applications.
          */
         MOBILE_APP_NAME("mobileAppName", "", false),
+
+        /**
+         * This parameter represents the fully qualified path of the app that is to be spawned. For app exist in the
+         * local disk this should be an absolute path, for app exist in the remote location it should be http URL and
+         * for app exist in sauce cloud it can be sauce storage like "sauce-storage:testApp.apk".
+         */
+        MOBILE_APP_PATH("appPath", "", false),
 
         /**
          * This parameter represents the language to be used. By default it is always <code>English</code> represented
@@ -485,11 +498,11 @@ public final class Config {
         MOBILE_APP_LOCALE("mobileAppLocale", "en_US", false),
 
         /**
-         * Use this parameter to provide SeLion with a custom element listener that implements 
-         * {@link ElementEventListener}. SeLion will invoke the custom implementation when the relevant events happen. 
+         * Use this parameter to provide SeLion with a custom element listener that implements
+         * {@link ElementEventListener}. SeLion will invoke the custom implementation when the relevant events happen.
          * If more than one custom listeners is needed, please separate the fully qualified class names with commas.
          */
-        ELEMENT_EVENT_LISTENER("elementEventListener","",true),
+        ELEMENT_EVENT_LISTENER("elementEventListener", "", true),
 
         /**
          * This parameter is used to pass SauceLabs user name
@@ -500,6 +513,11 @@ public final class Config {
          * This parameter is used to pass SauceLabs user name
          */
         SAUCELAB_API_KEY("sauceApiKey", "", true),
+
+        /**
+         * This parameter is used to pass SauceLabs parent tunnel user id
+         */
+        TUNNEL_USER_ID("tunnelUserId", "", true),
 
         /**
          * Directory with page asset files to read info about GUI controls from.<br>
@@ -585,19 +603,19 @@ public final class Config {
          * Selendroid Server port to use.<br>
          * Defaults to the value used by Selendroid (<b>8080</b>)
          */
-        SELENDROID_SERVER_PORT("selendroidServerPort", "8080", true), 
+        SELENDROID_SERVER_PORT("selendroidServerPort", "8080", true),
 
         /**
          * Device Serial to use.<br>
          * Default is selected automatically by Selendroid
          */
-        SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial" , "", true),
-        
+        SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial", "", true),
+
         /**
          * Force Reinstall the Selendroid Server and AUT.<br>
          * Default is set to <b>false</b>
          */
-        SELENDROID_SERVER_FORCE_REINSTALL("selendroidServerForceReinstall" ,"false", true),
+        SELENDROID_SERVER_FORCE_REINSTALL("selendroidServerForceReinstall", "false", true),
 
         /**
          * Maximum duration of a session duration in milliseconds. Session will be forcefully terminated if it takes
@@ -624,9 +642,10 @@ public final class Config {
         /**
          * Maximum time interval in milliseconds between consecutive commands in a single session. Session will be
          * forcefully terminated if a command is received beyond this time limit.<br>
-         * The value of this parameter is used as the value of <b>maxIdleBetweenCommands</b> for ios-driver.<br>This
-         * configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY} is set
-         * to true.<br>The unit is milliseconds.<br>
+         * The value of this parameter is used as the value of <b>maxIdleBetweenCommands</b> for ios-driver.<br>
+         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
+         * is set to true.<br>
+         * The unit is milliseconds.<br>
          * Default is set to <b>60000</b> milliseconds.<br>
          */
         IOSDRIVER_COMMAND_INTERVAL("maxIdleBetweenCommands", "60000", false),

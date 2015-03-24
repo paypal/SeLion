@@ -45,7 +45,6 @@ public class NativeAppDemo {
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 
-
     @MobileTest(appName = "InternationalMountains", device = "iphone:7.1", deviceType = "iPhone4s")
     @Test
     public void testSDKDeviceVariation4s() throws InterruptedException {
@@ -64,7 +63,6 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
-        System.out.println(text.getAttribute("name"));
     }
 
     @MobileTest(appName = "InternationalMountains:1.3", device = "iphone:7.1", deviceType = "iPhone5s")
@@ -85,7 +83,6 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
-        System.out.println(text.getAttribute("name"));
     }
 
     @MobileTest(appName = "InternationalMountains", device = "iphone")
@@ -106,7 +103,6 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
-        System.out.println(text.getAttribute("name"));
     }
 
     @MobileTest(appName = "InternationalMountains:1.3", device = "iphone", deviceType = "iPhone6")
@@ -127,7 +123,6 @@ public class NativeAppDemo {
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
-        System.out.println(text.getAttribute("name"));
     }
 
     @AfterClass

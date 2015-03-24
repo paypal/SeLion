@@ -27,6 +27,7 @@ import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.platform.grid.LocalGridManager;
 import com.paypal.selion.platform.grid.WebDriverPlatform;
 
@@ -44,9 +46,52 @@ public class LocalGridManagerTest {
         String runLocally = Config.getConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY);
         Config.setConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY, "true");
 
+        AbstractTestSession testSession = new AbstractTestSession() {
+            
+            @Override
+            public SeLionSession startSession(Map<String, SeLionSession> sessions) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+            @Override
+            public SeLionSession startSesion() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+            @Override
+            public void initializeTestSession(InvokedMethodInformation method) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void initializeTestSession(InvokedMethodInformation method, Map<String, SeLionSession> sessionMap) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public WebDriverPlatform getPlatform() {
+                return WebDriverPlatform.WEB;
+            }
+            
+            @Override
+            public void closeCurrentSession(Map<String, SeLionSession> sessionMap, InvokedMethodInformation result) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void closeAllSessions(Map<String, SeLionSession> sessionMap) {
+                // TODO Auto-generated method stub
+                
+            }
+        };
         String msg = "proxy found";
         try {
-            LocalGridManager.spawnLocalHub(WebDriverPlatform.WEB);
+            LocalGridManager.spawnLocalHub(testSession);
             assertTrue(getHubStatus(), "The Hub should have started locally");
             JSONObject nodeStatus = getNodeStatus();
             assertNotNull(nodeStatus, "The node status should not have been null");

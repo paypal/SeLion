@@ -52,7 +52,7 @@ class LocalGrid implements LocalServerComponent {
     }
 
     @Override
-    public synchronized void boot(WebDriverPlatform platform) {
+    public synchronized void boot(AbstractTestSession testSession) {
         if (isRunning) {
             return;
         }

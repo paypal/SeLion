@@ -38,6 +38,10 @@ import com.paypal.selion.platform.utilities.FileAssistant;
  */
 public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
+    private static String USER_NAME = "username";
+    private static String ACCESS_KEY = "access-key";
+    private static String PARENT_TUNNEL = "parent-tunnel";
+
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
         logger.entering(capabilities);
@@ -116,9 +120,12 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         logger.entering(caps);
         String sauceUserName = Config.getConfigProperty(ConfigProperty.SAUCELAB_USER_NAME);
         String sauceApiKey = Config.getConfigProperty(ConfigProperty.SAUCELAB_API_KEY);
+        String tunnelUserId = Config.getConfigProperty(ConfigProperty.TUNNEL_USER_ID);
+
         if (sauceUserName != null && sauceApiKey != null) {
-            caps.setCapability("sauceUserName", sauceUserName);
-            caps.setCapability("sauceApiKey", sauceApiKey);
+            caps.setCapability(USER_NAME, sauceUserName);
+            caps.setCapability(ACCESS_KEY, sauceApiKey);
+            caps.setCapability(PARENT_TUNNEL, tunnelUserId);
         }
         logger.exiting(caps);
         return caps;

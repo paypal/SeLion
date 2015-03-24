@@ -15,6 +15,8 @@
 
 package com.paypal.selion.platform.grid;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import io.selendroid.client.SelendroidCommandExecutor;
 import io.selendroid.client.SelendroidDriver;
 
@@ -23,8 +25,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import net.sf.uadetector.OperatingSystem;
@@ -86,10 +88,18 @@ public final class DriverFactory {
             driver = createDriverInstance(getURL(), capability);
             break;
         case GENERIC:
-            if (Grid.getMobileTestSession().getDevice().contains("ipad")
-                    || Grid.getMobileTestSession().getDevice().contains("iphone")) {
+            MobileTestSession mobileSession = Grid.getMobileTestSession();
+            MobileNodeType mobileNodeType = mobileSession.getMobileNodeType();
+            if (mobileNodeType == MobileNodeType.APPIUM) {
+                if (mobileSession.getPlatform() == WebDriverPlatform.ANDROID) {
+                    driver = createAppiumAndroidInstance(getURL(), capability);
+                }
+                if (mobileSession.getPlatform() == WebDriverPlatform.IOS) {
+                    driver = createAppiumIOSInstance(getURL(), capability);
+                }
+            }else if (mobileNodeType == MobileNodeType.IOS_DRIVER) {
                 driver = createIOSDriverInstance(getURL(), capability);
-            } else if (Grid.getMobileTestSession().getDevice().contains("android")) {
+            }else if (mobileNodeType == MobileNodeType.SELENDROID) {
                 driver = createSelendroidInstance(getURL(), capability);
             }
             break;
@@ -98,6 +108,36 @@ public final class DriverFactory {
         }
         printDebugInfoForUser(driver);
         return driver;
+    }
+
+    private static AndroidDriver createAppiumAndroidInstance(URL url, DesiredCapabilities capability) {
+        try {
+            List<EventListener> listeners = getSeLionEventListeners();
+
+            if (listeners.size() > 0) {
+                return new SeLionAppiumAndroidDriver(new EventFiringCommandExecutor(new HttpCommandExecutor(url),
+                        listeners), capability, url);
+            } else {
+                return new SeLionAppiumAndroidDriver(url, capability);
+            }
+        } catch (Exception e) {
+            throw new WebDriverException(e);
+        }
+    }
+
+    private static IOSDriver createAppiumIOSInstance(URL url, DesiredCapabilities capability) {
+        try {
+            List<EventListener> listeners = getSeLionEventListeners();
+
+            if (listeners.size() > 0) {
+                return new SeLionAppiumIOSDriver(
+                        new EventFiringCommandExecutor(new HttpCommandExecutor(url), listeners), capability, url);
+            } else {
+                return new SeLionAppiumIOSDriver(url, capability);
+            }
+        } catch (Exception e) {
+            throw new WebDriverException(e);
+        }
     }
 
     private static SelendroidDriver createSelendroidInstance(URL url, DesiredCapabilities capability) {
@@ -147,7 +187,7 @@ public final class DriverFactory {
         StringBuilder capabilitiesAsString = new StringBuilder();
         Map<String, ?> capabilityMap = dc.asMap();
         capabilityMap.entrySet();
-        
+
         for (Entry<String, ?> eachEntry : capabilityMap.entrySet()) {
             String key = eachEntry.getKey();
             capabilitiesAsString.append(key).append(":");
@@ -191,7 +231,7 @@ public final class DriverFactory {
 
         return eventListeners;
     }
-    
+
     private static void registerElementEventListeners() {
         String listeners = Config.getConfigProperty(ConfigProperty.ELEMENT_EVENT_LISTENER).trim();
 
@@ -204,7 +244,7 @@ public final class DriverFactory {
             try {
                 Object listener = Class.forName(eachEventListener.trim()).newInstance();
                 if (ElementEventListener.class.isAssignableFrom(listener.getClass())) {
-                    Grid.getTestSession().getElementEventListeners().add((ElementEventListener)listener);
+                    Grid.getTestSession().getElementEventListeners().add((ElementEventListener) listener);
                     logger.info("Registered [" + eachEventListener + "] as a selion element event listener.");
                 }
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -237,7 +277,7 @@ public final class DriverFactory {
         }
         return url;
     }
-    
+
     private static void setWindowSize(WebDriver driver) {
         WebTestSession config = Grid.getWebTestSession();
         if (config == null) {
@@ -252,7 +292,7 @@ public final class DriverFactory {
                     "Both the height and the width of the browser window should be greater than zero"));
         }
     }
-    
+
     private static void printDebugInfoForUser(RemoteWebDriver driver) {
         Properties props = new Properties();
         props.put("Selenium Version", new org.openqa.selenium.internal.BuildInfo().getReleaseLabel());
@@ -266,11 +306,10 @@ public final class DriverFactory {
 
         if (BrowserFlavors.isHeadLessBrowser(BrowserFlavors.getBrowser(currentBrowser))) {
             props.put("Browser", StringUtils.capitalize(currentBrowser.substring(1)));
-        } else if (WebDriverPlatform.IOS.equals(Grid.getTestSession().getPlatform()) ||
-                (WebDriverPlatform.ANDROID.equals(Grid.getTestSession().getPlatform()))) {
-            props.put("Device" , Grid.getMobileTestSession().getDevice().toString());
-        }
-        else {
+        } else if (WebDriverPlatform.IOS.equals(Grid.getTestSession().getPlatform())
+                || (WebDriverPlatform.ANDROID.equals(Grid.getTestSession().getPlatform()))) {
+            props.put("Device", Grid.getMobileTestSession().getDevice().toString());
+        } else {
             String userAgent = (String) driver.executeScript("return navigator.userAgent", "");
             String browserFlavor = "UNKNOWN browser";
             if (StringUtils.isNotBlank(userAgent)) {
@@ -279,11 +318,11 @@ public final class DriverFactory {
             props.put("Browser", browserFlavor);
         }
         logger.log(Level.INFO, "Running on: " + props.toString());
-        
+
     }
 
     private static String extractBrowserInfo(String userAgent) {
-        
+
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
         ReadableUserAgent agent = parser.parse(userAgent);
         OperatingSystem os = agent.getOperatingSystem();

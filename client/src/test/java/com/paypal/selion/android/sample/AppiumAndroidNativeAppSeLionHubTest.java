@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,64 +15,42 @@
 package com.paypal.selion.android.sample;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
-import java.io.File;
-import java.net.URL;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
-import com.paypal.selion.reports.runtime.WebReporter;
 
-/*
- * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
- */
-public class AndroidTest {
-    private static final String appFolder = "/apps";
+public class AppiumAndroidNativeAppSeLionHubTest {
 
-    @BeforeClass
-    public void setup() {
-        URL url = AndroidTest.class.getResource(appFolder);
-        Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
-    }
+    @Test
+    @MobileTest(appPath = "selion-hub-storage:userName:folderName:selendroid-test-app-0.15.0.apk", device = "android:5.0.1", deviceType = "Android Emulator")
+    public void testWithNativeAppWithSelionHubAppNameProvidedWithfolderName() {
 
-    @Test(groups = {"functional-mobile, selendroid"})
-    @MobileTest(appName = "android", device = "android:19")
-    public void testLaunch() throws Exception {
         RemoteWebDriver driver = Grid.driver();
-        assertNotNull(driver);
-        // And now use this to visit Google
-        driver.get("http://www.google.com");
-
-        // Find the text input element by its name
-        WebElement element = driver.findElement(By.name("q"));
-
-        // Enter something to search for
-        element.sendKeys("Cheese!");
-
-        // Now submit the form. WebDriver will find the form for us from the element
-        element.submit();
-
-        WebReporter.log("cheese!", true, true);
+        WebDriverWaitUtils.waitUntilElementIsVisible("io.selendroid.testapp:id/my_text_field");
+        WebElement textField = driver.findElement(By.id("io.selendroid.testapp:id/my_text_field"));
+        assertEquals("true", textField.getAttribute("enabled"));
+        textField.sendKeys("Appium Android Native Test");
+        assertEquals("Appium Android Native Test", textField.getText());
 
     }
-    
-    @Test(groups = {"functional-mobile, selendroid"})
-    @MobileTest(appName = "io.selendroid.testapp:0.15.0", device = "android:19")
-    public void testNative() {
+
+    @Test
+    @MobileTest(appPath = "selion-hub-storage:userName:selendroid-test-app-0.15.0.apk", device = "android:5.0.1", deviceType = "Android Emulator")
+    public void testWithNativeAppWithSelionHubAppNameProvided() {
+
         RemoteWebDriver driver = Grid.driver();
-        WebDriverWaitUtils.waitUntilElementIsVisible("//EditText[@id='my_text_field']");
-        WebElement inputField = driver.findElement(By.xpath("//EditText[@id='my_text_field']"));
-        assertEquals(inputField.getAttribute("enabled"), "true");
-        inputField.sendKeys("Selendroid");
-        assertEquals(inputField.getText(), "Selendroid");
+        WebDriverWaitUtils.waitUntilElementIsVisible("io.selendroid.testapp:id/my_text_field");
+        WebElement textField = driver.findElement(By.id("io.selendroid.testapp:id/my_text_field"));
+        assertEquals("true", textField.getAttribute("enabled"));
+        textField.sendKeys("Appium Android Native Test");
+        assertEquals("Appium Android Native Test", textField.getText());
+
     }
+
 }

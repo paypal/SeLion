@@ -15,24 +15,42 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import io.appium.java_client.remote.MobileCapabilityType;
+
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.grid.MobileTestSession;
+import com.paypal.selion.platform.grid.WebDriverPlatform;
+
+class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
+
+    private String APPIUM_ANDROID_PLATFORM_TYPE = "ANDROID";
+    private String APPIUM_IOS_PLATFORM_TYPE = "iOS";
+    private String MOBILE_NODE_TYPE = "mobileNodeType";
+    private String APPIUM = "appium";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capabilities.merge(eachCaps);
+        MobileTestSession mobileSession = Grid.getMobileTestSession();
+
+        capabilities.setCapability(MobileCapabilityType.APP, mobileSession.getAppName());
+        if (StringUtils.isBlank(mobileSession.getAppName())) {
+            capabilities.setCapability(MobileCapabilityType.APP, mobileSession.getAppPath());
         }
 
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capabilities.merge(eachCaps);
+        capabilities.setCapability(MOBILE_NODE_TYPE, APPIUM);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, mobileSession.getDeviceType());
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, mobileSession.getPlatformVersion());
+        if (mobileSession.getPlatform() == WebDriverPlatform.ANDROID) {
+            capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, APPIUM_ANDROID_PLATFORM_TYPE);
         }
+        if (mobileSession.getPlatform() == WebDriverPlatform.IOS) {
+            capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, APPIUM_IOS_PLATFORM_TYPE);
+        }
+
         return capabilities;
-
     }
-
 }

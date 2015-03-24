@@ -15,24 +15,38 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.uiautomation.ios.IOSCapabilities;
+import org.uiautomation.ios.communication.device.DeviceVariation;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.grid.MobileTestSession;
 
+class IOSDriverCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
+
+    private String MOBILE_NODE_TYPE = "mobileNodeType";
+    private String IOS_DRIVER = "ios-driver";
+    
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capabilities.merge(eachCaps);
+        MobileTestSession mobileSession = Grid.getMobileTestSession();
+        capabilities.setCapability(IOSCapabilities.DEVICE, mobileSession.getDevice());
+        capabilities.setCapability(IOSCapabilities.LANGUAGE, mobileSession.getAppLanguage());
+        capabilities.setCapability(IOSCapabilities.LOCALE, mobileSession.getAppLocale());
+        capabilities.setCapability(IOSCapabilities.BUNDLE_NAME, mobileSession.getAppName());
+        capabilities.setCapability(MOBILE_NODE_TYPE, IOS_DRIVER);
+        if (StringUtils.isNotBlank(mobileSession.getAppVersion())) {
+            capabilities.setCapability(IOSCapabilities.BUNDLE_VERSION, mobileSession.getAppVersion());
         }
-
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capabilities.merge(eachCaps);
+        if (StringUtils.isNotBlank(mobileSession.getPlatformVersion())) {
+            capabilities.setCapability(IOSCapabilities.UI_SDK_VERSION, mobileSession.getPlatformVersion());
+        }
+        if (StringUtils.isNotBlank(mobileSession.getDeviceType())) {
+            capabilities.setCapability(IOSCapabilities.VARIATION,
+                    DeviceVariation.valueOf(mobileSession.getDeviceType()));
         }
         return capabilities;
-
     }
-
 }

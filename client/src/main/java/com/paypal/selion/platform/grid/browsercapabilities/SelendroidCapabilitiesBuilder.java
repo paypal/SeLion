@@ -15,24 +15,37 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import io.selendroid.common.SelendroidCapabilities;
+
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.grid.MobileTestSession;
 
+class SelendroidCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
+
+    private String MOBILE_NODE_TYPE = "mobileNodeType";
+    private String SELENDROID = "selendroid";
+    
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capabilities.merge(eachCaps);
+        MobileTestSession mobileSession = Grid.getMobileTestSession();
+        capabilities = SelendroidCapabilities.android();
+        capabilities.setBrowserName(SELENDROID);
+        capabilities.setCapability(MOBILE_NODE_TYPE, SELENDROID);
+        capabilities.setCapability(SelendroidCapabilities.AUT, mobileSession.getAppName());
+        capabilities.setCapability(SelendroidCapabilities.LOCALE, mobileSession.getAppLocale());
+        if (StringUtils.isNotBlank(mobileSession.getDeviceType())) {
+            capabilities.setCapability(SelendroidCapabilities.MODEL, mobileSession.getDeviceType());
         }
-
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capabilities.merge(eachCaps);
+        if (StringUtils.isNotBlank(mobileSession.getPlatformVersion())) {
+            capabilities.setCapability(SelendroidCapabilities.PLATFORM_VERSION, mobileSession.getPlatformVersion());
+        }
+        if (StringUtils.isNotBlank(mobileSession.getdeviceSerial())) {
+            capabilities.setCapability(SelendroidCapabilities.SERIAL, mobileSession.getdeviceSerial());
         }
         return capabilities;
-
     }
-
 }

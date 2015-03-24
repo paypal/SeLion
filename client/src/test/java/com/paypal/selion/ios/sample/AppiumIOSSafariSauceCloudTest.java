@@ -12,27 +12,38 @@
 |  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
+package com.paypal.selion.ios.sample;
 
-package com.paypal.selion.platform.grid.browsercapabilities;
+import static org.testng.Assert.assertNotNull;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.Test;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.reports.runtime.MobileReporter;
 
-    @Override
-    public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+public class AppiumIOSSafariSauceCloudTest {
 
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capabilities.merge(eachCaps);
-        }
+    @Test
+    @MobileTest(appName = "safari", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    public void testWithSafari() {
+        RemoteWebDriver driver = Grid.driver();
+        assertNotNull(driver);
 
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capabilities.merge(eachCaps);
-        }
-        return capabilities;
+        // And now use this to visit Google
+        driver.get("http://www.google.com");
 
+        // Find the text input element by its name
+        WebElement element = driver.findElement(By.name("q"));
+        // Enter something to search for
+        element.sendKeys("Cheese!");
+        // Now submit the form. WebDriver will find the form for us from the element
+        element.submit();
+
+        MobileReporter.log("cheese!", true);
     }
 
 }

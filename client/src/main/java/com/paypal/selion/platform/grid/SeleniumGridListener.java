@@ -123,7 +123,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             testSession.initializeTestSession(methodInfo);
         }
 
-        LocalGridManager.spawnLocalHub(testSession.getPlatform());
+        LocalGridManager.spawnLocalHub(testSession);
 
         try {
             if (testSession.handleSessions()) {

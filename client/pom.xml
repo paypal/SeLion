@@ -173,11 +173,10 @@
         </dependency>
 
         <!-- IOS Driver dependencies. -->
-         <dependency>
+        <dependency>
             <groupId>org.uiautomation</groupId>
             <artifactId>standalone-no-selenium</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.uiautomation</groupId>
             <artifactId>ios-grid</artifactId>
@@ -191,6 +190,12 @@
                     <artifactId>selenium-remote-driver</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- Appium java client dependency -->
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
         </dependency>
 
         <!-- A utility for parsing user agent strings -->

@@ -189,6 +189,13 @@
                 </exclusions>
             </dependency>
 
+            <!-- Appium java client dependency -->
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${appium.version}</version>
+            </dependency>
+            
             <!-- A utility for parsing user agent strings -->
             <dependency>
                 <groupId>net.sf.uadetector</groupId>

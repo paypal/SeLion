@@ -33,6 +33,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
+import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
@@ -62,8 +63,8 @@ class LocalNode implements LocalServerComponent {
     }
 
     @Override
-    public void boot(WebDriverPlatform platform) {
-        logger.entering(platform);
+    public void boot(AbstractTestSession testSession) {
+        logger.entering(testSession.getPlatform());
         if (isRunning) {
             logger.exiting();
             return;
@@ -72,9 +73,7 @@ class LocalNode implements LocalServerComponent {
             logger.exiting();
             return;
         }
-        // TODO: Figure out if this is still a valid statement
-        // We shouldn't spawn a local node when user wants an ios-driver node or android node
-        if (((platform == WebDriverPlatform.IOS) || (platform == WebDriverPlatform.ANDROID)) || (platform != WebDriverPlatform.WEB)) {
+        if (!(testSession instanceof WebTestSession)) {
             logger.exiting();
             return;
         }

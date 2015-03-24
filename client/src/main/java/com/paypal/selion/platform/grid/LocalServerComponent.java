@@ -22,10 +22,10 @@ interface LocalServerComponent {
     /**
      * Brings up the node/hub based on the platform.
      * 
-     * @param platform
-     *            A {@link WebDriverPlatform} that represents the platform.
+     * @param testSession
+     *            A {@link AbstractTestSession} that represents the test session.
      */
-    public void boot(WebDriverPlatform platform);
+    public void boot(AbstractTestSession testSession);
 
     /**
      * Shuts down the node/hub running locally.

@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 @Target({ CONSTRUCTOR, METHOD, TYPE })
 public @interface MobileTest {
     /**
-     * Establish application name to use. <b>Example</b>
+     * Establish application name to use. This is mandatory for all defaults apps. <b>Example</b>
      * 
      * <pre>
      * &#064;Test()
@@ -40,7 +40,9 @@ public @interface MobileTest {
      *     Grid.open(&quot;http://paypal.com&quot;);
      * }
      * </pre>
+     * 
      * App version can be specified as part of the appName as:
+     * 
      * <pre>
      * appName = &quot;Safari:7.0&quot;
      * </pre>
@@ -48,8 +50,9 @@ public @interface MobileTest {
     String appName() default "";
 
     /**
-     * Establish the type of device to be used. Default's to <code>iphone</code>
-     * Platform version can be specified as part of the device as:
+     * Establish the type of device to be used(android, iphone, etc). Default's to <code>iphone</code> Platform version
+     * can be specified as part of the device as:
+     * 
      * <pre>
      * device = &quot;iphone:7.1&quot;
      * </pre>
@@ -74,8 +77,8 @@ public @interface MobileTest {
     String deviceSerial() default "";
 
     /**
-     * Establish the type of device to be used (Nexus5, Iphone5s, etc).
-     * Defaults to device/emulator chosen by Selendroid / iosDriver
+     * Establish the type of device to be used (Nexus5, Iphone5s, etc). Defaults to device/emulator chosen by Selendroid
+     * / iosDriver /Appium
      */
     String deviceType() default "";
 
@@ -92,4 +95,24 @@ public @interface MobileTest {
      * </pre>
      */
     String[] additionalCapabilities() default {};
+
+    /**
+     * This parameter represents the fully qualified path of the app that is to be spawned. For app exist in the local
+     * disk this should be an absolute path, for app exist in the remote location it should be http URL and for app
+     * exist in sauce cloud it can be sauce storage "sauce-storage:testApp.apk". This is mandatory for installable apps
+     * running on appium. appPath cannot be used along with the appName.
+     * 
+     * <pre>
+     *  for app in local disk it can be like appPath = C:\\test\\testApp.apk;
+     * or for app in http location it can be like appPath = http://server/downloads/testApp.apk
+     * or for app in sauce cloud it can be like appPath = sauce-storage:testApp.zip
+     * </pre>
+     */
+    String appPath() default "";
+    
+    /**
+     * This parameter specifies to execute mobile test cases using respective mobile driver.
+     */
+    String mobileNodeType() default "";
+
 }

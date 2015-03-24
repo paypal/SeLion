@@ -17,6 +17,7 @@
         <selenium.version>2.45.0</selenium.version>
         <iosdriver.version>0.6.6-SNAPSHOT</iosdriver.version>
         <selendroid.version>0.15.0</selendroid.version>
+        <appium.version>2.1.0</appium.version>
         <testng.version>6.8.7</testng.version>
         <project.bom.version>${project.version}</project.bom.version>
     </properties>

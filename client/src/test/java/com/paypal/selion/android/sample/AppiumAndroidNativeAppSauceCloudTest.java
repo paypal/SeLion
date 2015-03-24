@@ -12,26 +12,31 @@
 |  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
+package com.paypal.selion.android.sample;
 
-package com.paypal.selion.platform.grid.browsercapabilities;
+import static org.testng.Assert.assertEquals;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.Test;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
-    @Override
-    public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+public class AppiumAndroidNativeAppSauceCloudTest {
 
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capabilities.merge(eachCaps);
-        }
+    @Test
+    @MobileTest(appPath = "sauce-storage:selendroid-test-app-0.14.0.apk", device = "android:4.3", deviceType = "Android Emulator")
+    public void testWithNativeApp() throws Exception {
 
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capabilities.merge(eachCaps);
-        }
-        return capabilities;
+        RemoteWebDriver driver = Grid.driver();
+        WebDriverWaitUtils.waitUntilElementIsVisible("io.selendroid.testapp:id/my_text_field");
+        WebElement textField = driver.findElement(By.id("io.selendroid.testapp:id/my_text_field"));
+        assertEquals("true", textField.getAttribute("enabled"));
+        textField.sendKeys("Appium Android Native Test");
+        assertEquals("Appium Android Native Test", textField.getText());
 
     }
 

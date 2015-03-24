@@ -12,27 +12,33 @@
 |  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
+package com.paypal.selion.ios.sample;
 
-package com.paypal.selion.platform.grid.browsercapabilities;
+import java.util.List;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.reports.runtime.MobileReporter;
 
-    @Override
-    public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+public class AppiumIOSNativeAppSauceCloudTest {
 
-        // Lets check if the user provided more capabilities via the Configuration parameter and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsObjects()) {
-            capabilities.merge(eachCaps);
-        }
-
-        // Lets check if the user provided more capabilities via ServiceLoaders and add them
-        for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
-            capabilities.merge(eachCaps);
-        }
-        return capabilities;
-
+    @Test
+    @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", device = "iphone:8.1", deviceType = "iPhone Simulator", additionalCapabilities = {
+            "appiumVersion:1.3.4" })
+    public void testWithNativeApp() throws InterruptedException {
+        MobileReporter.log("My Screenshot 1", true);
+        List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
+        Assert.assertEquals(9, cells.size());
+        // get the 1st mountain
+        WebElement first = cells.get(0);
+        first.click();
+        Thread.sleep(10 * 1000);
+        MobileReporter.log("My Screenshot 2", true);
     }
 
 }

@@ -66,8 +66,8 @@ final class LocalGridManager {
      *            iOS node or an android node is to be additionally spawned and hooked to the Grid.]
      * 
      */
-    public static synchronized void spawnLocalHub(WebDriverPlatform platform) {
-        logger.entering(platform);
+    public static synchronized void spawnLocalHub(AbstractTestSession testSession) {
+        logger.entering(testSession.getPlatform());
         if (!isRunLocally()) {
             logger.exiting();
             return;
@@ -75,7 +75,7 @@ final class LocalGridManager {
         initializeServerList();
         for (LocalServerComponent eachItem : toBoot) {
             try {
-                eachItem.boot(platform);
+                eachItem.boot(testSession);
             } catch (GridException e) {
                 // If either the Grid or the Node or the IOS-Node for that matter failed to start at the first attempt
                 // then there is NO point in trying to keep restarting it for every iteration. So lets log a severe

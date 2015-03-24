@@ -33,8 +33,7 @@ import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local ios driver 
- * node.
+ * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local ios driver node.
  */
 class LocalIOSNode extends AbstractNode implements LocalServerComponent {
     protected boolean isRunning = false;
@@ -53,13 +52,13 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
         }
     }
 
-    public void boot(WebDriverPlatform platform) {
-        logger.entering(platform);
-        if (isRunning) {
-            logger.exiting();
+    public void boot(AbstractTestSession testSession) {
+        logger.entering(testSession.getPlatform());
+        if (testSession instanceof MobileTestSession
+                && ((MobileTestSession) testSession).getMobileNodeType() != MobileNodeType.IOS_DRIVER) {
             return;
         }
-        if (platform != WebDriverPlatform.IOS) {
+        if (isRunning) {
             logger.exiting();
             return;
         }
@@ -70,7 +69,7 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
         try {
             int port = new LocalGridConfigFileParser().getPort() + 1;
             startIOSDriverNode(port);
-            waitForNodeToComeUp(port,"Encountered problems when attempting to register the IOS Node to the local Grid");
+            waitForNodeToComeUp(port, "Encountered problems when attempting to register the IOS Node to the local Grid");
             isRunning = true;
             logger.log(Level.INFO, "Attached iOSDriver node to local hub " + registrationUrl);
         } catch (Exception e) {
@@ -108,13 +107,13 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
         Handler[] handlers = Logger.getLogger("").getHandlers();
         Level level = Logger.getLogger("").getLevel();
 
-        //add an option to skip ios default logger
+        // add an option to skip ios default logger
         args.add(" -skipLoggerConfiguration");
         args.add(Boolean.TRUE.toString());
 
         IOSServerConfiguration config = IOSServerConfiguration.create(args.toArray(new String[args.size()]));
         server = new IOSServer(config);
-        
+
         // HACK :: put the RootLogger back into the original state
         // remove all handlers first
         for (Handler handler : Logger.getLogger("").getHandlers()) {
