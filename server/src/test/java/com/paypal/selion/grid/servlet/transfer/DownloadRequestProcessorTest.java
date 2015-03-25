@@ -20,6 +20,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.testng.PowerMockTestCase;
 import org.powermock.reflect.Whitebox;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -32,7 +33,7 @@ import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.ServerRepository;
 
 @PrepareForTest({ DownloadRequestProcessor.class, ServerRepository.class })
-public class DownloadRequestProcessorTest {
+public class DownloadRequestProcessorTest extends PowerMockTestCase {
     
     @BeforeClass
     public void setUpBeforClass() {
