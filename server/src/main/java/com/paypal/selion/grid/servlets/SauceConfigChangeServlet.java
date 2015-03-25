@@ -16,7 +16,6 @@
 package com.paypal.selion.grid.servlets;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -31,14 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-
+import org.apache.commons.io.IOUtils;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.SauceConfigReader;
 import com.paypal.selion.utils.ServletHelper;
@@ -76,8 +73,8 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     }
 
     private void loadSauceConfigPage(PrintWriter writer) throws IOException {
-        File file = new File(SeLionGridConstants.UPDATE_SAUCE_CONFIG_PAGE);
-        String finalHtml = FileUtils.readFileToString(file);
+        String finalHtml = IOUtils.toString(this.getClass().getResourceAsStream(
+                SeLionGridConstants.UPDATE_SAUCE_CONFIG_PAGE), "UTF-8");
         writer.write(finalHtml);
     }
 

@@ -32,7 +32,6 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.io.IOUtils;
-import org.openqa.selenium.Platform;
 
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.ProcessNames;
@@ -107,7 +106,7 @@ class FileExtractor {
             while ((entry = archiveStream.getNextEntry()) != null) {
                 String fileNameInEntry = getFileNameFromPath(entry.getName());
                 if (!entry.isDirectory() && executableNameList.contains(fileNameInEntry.toLowerCase())) {
-                    String filename = decidePathToExtraction(getFileNameFromPath(entry.getName()));
+                    String filename = SeLionGridConstants.SELION_HOME + getFileNameFromPath(entry.getName());
                     File outputFile = new File(filename);
                     if (outputFile.exists()) {
                         outputFile.delete();
@@ -142,21 +141,5 @@ class FileExtractor {
         }
         
         return files;
-    }
-    
-    private static String decidePathToExtraction(String fileName){
-        String pathToExtract = null;
-        switch(Platform.getCurrent()){
-        case UNIX:
-        case MAC:
-        case LINUX:{
-            pathToExtract = SeLionGridConstants.UNIX_EXECUTABLES_PATH+fileName;
-            break;
-        }
-        default:
-            pathToExtract = SeLionGridConstants.WIN_EXECUTABLES_PATH+fileName;
-            break;
-        }
-        return pathToExtract;
     }
 }

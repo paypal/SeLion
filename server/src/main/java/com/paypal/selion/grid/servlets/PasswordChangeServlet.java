@@ -15,7 +15,6 @@
 
 package com.paypal.selion.grid.servlets;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -25,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.AuthenticationHelper;
@@ -42,13 +41,11 @@ public class PasswordChangeServlet extends HttpServlet {
     }
 
     private void askForCredentialsPage(PrintWriter writer) throws IOException {
-        File file = new File(SeLionGridConstants.PASSWORD_CHANGE_GET_DETAILS);
         String changePasswordMessage = "Enter the old and New password to change the password";
 
-        String template = FileUtils.readFileToString(file);
-        String finalHtml;
-        finalHtml = String.format(template, PasswordChangeServlet.class.getSimpleName(), changePasswordMessage);
-        writer.write(finalHtml);
+        String template = IOUtils.toString(this.getClass().getResourceAsStream(
+                SeLionGridConstants.PASSWORD_CHANGE_GET_DETAILS), "UTF-8");
+        writer.write(String.format(template, PasswordChangeServlet.class.getSimpleName(), changePasswordMessage));
     }
 
     @Override

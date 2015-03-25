@@ -31,6 +31,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import com.paypal.selion.logging.SeLionGridLogger;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ConfigParser;
 
 /**
@@ -40,11 +41,6 @@ import com.paypal.selion.utils.ConfigParser;
  * that have {@link ManagedArtifact#isExpired()} returning true are considered for removal during the cleaning cycle.
  */
 public class ManagedArtifactRepository implements ServerRepository<ManagedArtifact, Criteria> {
-
-    /*
-     * System property for server home
-     */
-    private static final String SERVER_HOME_PROPERTY = "archiveHome";
 
     /*
      * The folder used for storing artifacts. Make sure this folder is available in the classpath or this string is
@@ -78,7 +74,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     }
 
     private ManagedArtifactRepository() {
-        repoFolder = new File(getPathToRepoFolder());
+        repoFolder = new File(SeLionGridConstants.SELION_HOME + File.separator + REPO_FOLDER_NAME);
         repositorySynchronizationLock = new ReentrantLock();
         timer = new Timer();
 
@@ -202,27 +198,6 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
         File applicationFolder = new File(userFolder, applicationFolderName);
         applicationFolder.mkdirs();
         return applicationFolder;
-    }
-
-    private String getPathToRepoFolder() {
-        if (System.getProperty(REPO_FOLDER_NAME) != null) {
-            return getRepoFolderFromSystemProperty();
-        }
-        String serverHomeFolderPath = System.getProperty(SERVER_HOME_PROPERTY);
-        if (serverHomeFolderPath == null || serverHomeFolderPath.isEmpty()) {
-            throw new RuntimeException(SERVER_HOME_PROPERTY + " property not set properly ");
-        }
-        String pathToRepoFolder = serverHomeFolderPath + File.separator + REPO_FOLDER_NAME;
-        return pathToRepoFolder;
-    }
-
-    private String getRepoFolderFromSystemProperty() {
-        File file = new File(System.getProperty(REPO_FOLDER_NAME));
-        if (!file.exists() && !file.mkdirs()) {
-            throw new RuntimeException(System.getProperty(REPO_FOLDER_NAME) + " does not exists/cannot be created");
-        }
-        String repoFolderPath = file.getAbsolutePath();
-        return repoFolderPath;
     }
 
     @SuppressWarnings("unchecked")

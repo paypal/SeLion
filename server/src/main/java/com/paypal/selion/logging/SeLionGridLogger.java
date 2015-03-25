@@ -15,12 +15,15 @@
 
 package com.paypal.selion.logging;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
  * A simple java utils logger that is used in SeLion enhanced grid
@@ -38,7 +41,8 @@ public class SeLionGridLogger {
         logger = Logger.getLogger(CONSOLE_LOGGER_NAME);
         Handler handler = null;
         try {
-            handler = new FileHandler("selion-grid.log", true);
+            new File(SeLionGridConstants.LOGS_FOLDER_PATH).mkdirs();
+            handler = new FileHandler(SeLionGridConstants.LOGS_FOLDER_PATH + "selion-jar-spawner.log", true);
             handler.setFormatter(new SimpleFormatter());
             handler.setLevel(Level.FINE);
             logger.addHandler(handler);

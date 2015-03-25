@@ -76,10 +76,13 @@ public final class FileDownloader {
      * download.properties
      */
     public static void checkForDownloads() {
-        if (lastModifiedTime == new File(SeLionGridConstants.DOWNLOAD_FILE_PATH).lastModified()) {
+
+        File downloadFile = new File(SeLionGridConstants.DOWNLOAD_FILE_PATH);
+
+        if (lastModifiedTime == downloadFile.lastModified()) {
             return;
         }
-        lastModifiedTime = new File(SeLionGridConstants.DOWNLOAD_FILE_PATH).lastModified();
+        lastModifiedTime = downloadFile.lastModified();
 
         cleanup();
 
@@ -167,10 +170,10 @@ public final class FileDownloader {
 
     private static String decideFilePath(String fileName) {
         if (fileName.endsWith(".jar")) {
-            return new StringBuffer().append(SeLionGridConstants.BIN_FOLDER_PATH).append(fileName).toString();
+            return new StringBuffer().append(SeLionGridConstants.SELION_HOME).append(fileName).toString();
         } else {
             // Encountered a archive type: at this point it is sure the valid archive types come in
-            return new StringBuffer().append(SeLionGridConstants.ARTIFACT_FOLDER_PATH).append(fileName).toString();
+            return new StringBuffer().append(SeLionGridConstants.DOWNLOAD_DIR_PATH).append(fileName).toString();
         }
     }
     private static String downloadFile(String url, String checksum, String algorithm) {

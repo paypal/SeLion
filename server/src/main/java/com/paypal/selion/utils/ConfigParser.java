@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
@@ -26,22 +27,34 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
  * A configuration utility that is internally used by SeLion to parse SeLion configuration json file.
  *
  */
 public final class ConfigParser {
-    private static ConfigParser parser = new ConfigParser();
+    private static ConfigParser parser = null;
     private JsonObject configuration = null;
-    private static final String CONFIG = "SeLionConfig";
+    private static String CONFIG_FILE = null;
 
     /**
      * @return - A {@link ConfigParser} object that can be used to retrieve values from the Configuration
-     * object as represented by the JSON file passed via the JVM argument <b>SeLionConfig</b>
+     * object as represented by the JSON file passed via the command line argument <b>-config</b>
      */
     public static ConfigParser getInstance() {
+        if (parser == null) {
+            parser = new ConfigParser();
+        }
         return parser;
+    }
+
+    /**
+     * Set the config file
+     * @param file
+     */
+    public static void setConfigFile(String file) {
+        CONFIG_FILE = file;
     }
 
     /**
@@ -90,18 +103,17 @@ public final class ConfigParser {
     }
 
     private void readConfigFileContents() throws IOException {
-        String configFile = System.getProperty(CONFIG);
-        if (isBlank(configFile)) {
-            System.err.println("SeLion configuration file location missing.");
-            System.err.println("It can be specified via the JVM argument: -D" + CONFIG);
-            System.err.println("You may experience unexpected behavior when using SelfHealing abilities of SeLion.");
-            return;
+        InputStream stream = null;
+        if (isBlank(CONFIG_FILE)) {
+            stream = this.getClass().getResourceAsStream(SeLionGridConstants.SELION_CONFIG);
+        } else {
+            File config = new File(CONFIG_FILE);
+            String path = config.getAbsolutePath();
+            checkArgument(config.exists(), path + " cannot be found on the local file system.");
+            checkArgument(config.isFile(), path + " is not a valid file.");
+            stream = new FileInputStream(config);
         }
-        File config = new File(configFile);
-        String path = config.getAbsolutePath();
-        checkArgument(config.exists(), path + " cannot be found on the local file system.");
-        checkArgument(config.isFile(), path + " is not a valid file.");
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(config)));
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
         StringBuilder builder = new StringBuilder();
         String line = null;
         try {

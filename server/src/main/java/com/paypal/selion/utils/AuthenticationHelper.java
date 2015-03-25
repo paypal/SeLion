@@ -29,6 +29,8 @@ import java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.io.IOUtils;
 
+import com.paypal.selion.pojos.SeLionGridConstants;
+
 /**
  * A Helper class that helps do an authentication check for the given user name password. NOTE: This class DOES NOT
  * validate the credentials against LDAP.
@@ -48,7 +50,7 @@ public final class AuthenticationHelper {
 
     }
 
-    final static String AUTH_FILE_LOCATION = ".authFile";
+    final static String AUTH_FILE_LOCATION = SeLionGridConstants.SELION_HOME + ".authFile";
 
     final static String DEFAULT_USERNAME = "admin";
 

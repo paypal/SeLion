@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.io.ByteStreams;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.FileBackedStringBuffer;
 
 /**
@@ -118,7 +119,7 @@ public class LogServlet extends HttpServlet {
         if (logsDirectory != null) {
             return logsDirectory;
         }
-        logsDirectory = new File(System.getProperty("user.dir") + File.separator + "logs");
+        logsDirectory = new File(SeLionGridConstants.LOGS_FOLDER_PATH);
 
         if (!logsDirectory.exists()) {
             logsDirectory.mkdirs();

@@ -21,13 +21,12 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.paypal.selion.grid.SeLionGridLauncher</mainClass>
-                            <packageName>com.paypal.selion.grid</packageName>
+                            <mainClass>com.paypal.selion.utils.JarSpawner</mainClass>
+                            <packageName>com.paypal.selion.utils</packageName>
                         </manifest>
                     </archive>
                     <descriptors>
                         <descriptor>src/main/resources/assembly.xml</descriptor>
-                        <descriptor>src/main/resources/zip.xml</descriptor>
                     </descriptors>
                     <finalName>SeLion-Grid</finalName>
                     <appendAssemblyId>false</appendAssemblyId>

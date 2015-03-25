@@ -36,6 +36,9 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
+import com.paypal.selion.pojos.SeLionGridConstants;
+import com.paypal.selion.utils.ConfigParser;
+
 /**
  * The SeLion version of the {@link GridLauncher}. We have intentionally duplicated the code from {@link GridLauncher}
  * because {@link GridLauncher} is meddling around with the {@link Logger} and thus preventing us from feeding in
@@ -56,7 +59,12 @@ public class SeLionGridLauncher {
   public static void main(String[] args) throws Exception {
 
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
-    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")){
+
+    if (helper.isParamPresent(SeLionGridConstants.CONFIG_NAME)) {
+        ConfigParser.setConfigFile(helper.getParamValue(SeLionGridConstants.CONFIG_NAME));
+    }
+
+    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")) {
       String separator = "\n----------------------------------\n";
       RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
       GridDocHelper.printHelp(separator+"To use in a grid environment :"+separator,false);

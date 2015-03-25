@@ -7,5 +7,6 @@
         "com.paypal.selion.grid.servlets.PasswordChangeServlet",
         "com.paypal.selion.grid.servlets.TransferServlet"
     ],
-    "browserTimeout": 180000
+    "browserTimeout": 180000,
+    "capabilityMatcher": "com.paypal.selion.grid.matchers.MobileCapabilityMatcher"
 }
