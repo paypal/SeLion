@@ -19,8 +19,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import com.paypal.selion.configuration.Config;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -29,6 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.reports.runtime.MobileReporter;
 

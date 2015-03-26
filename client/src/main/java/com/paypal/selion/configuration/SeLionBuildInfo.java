@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * A simple object which allows users to extract build time information related to SeLion. This information is
+ * <code>SeLionBuildInfo</code> allows users to extract build time information related to SeLion. This information is
  * auto-populated as part of a SeLion build.
- * 
  */
 public final class SeLionBuildInfo {
 
     private static final String BUILD_INFO_FILE = "/selionbuildinfo.properties";
+
     private static SeLionBuildInfoProperties buildProperties = null;
 
     private SeLionBuildInfo() {
@@ -33,10 +33,9 @@ public final class SeLionBuildInfo {
     }
 
     private static SeLionBuildInfoProperties getInfo() {
-        if (buildProperties != null) {
-            return buildProperties;
+        if (buildProperties == null) {
+            initInfo();
         }
-        initInfo();
         return buildProperties;
     }
 
@@ -62,6 +61,7 @@ public final class SeLionBuildInfo {
     }
 
     private static class SeLionBuildInfoProperties extends Properties {
+
         private static final long serialVersionUID = -4808947170980686563L;
 
         public SeLionBuildInfoProperties() {
@@ -75,68 +75,93 @@ public final class SeLionBuildInfo {
             }
             return returnValue;
         }
+
     }
 
     /**
      * SeLion build time properties
      */
     public static enum SeLionBuildProperty {
+
         /**
          * The version of SeLion
          */
         SELION_VERSION("selion.build.version"),
+
+        /**
+         * The build time
+         */
+        BUILD_TIME("selion.build.time"),
+
         /**
          * The user name of the person that initiated the SeLion build
          */
         USER_NAME("selion.build.user.name"),
+
         /**
          * The version of Java used for the SeLion build
          */
         JAVA_VERSION("selion.build.java.version"),
+
         /**
          * The Java vendor used for the SeLion build
          */
         JAVA_VENDOR("selion.build.java.vendor"),
+
         /**
          * The Java compiler compatibility version used for the SeLion build
          */
         JAVA_COMPILE_VERSION("selion.build.java.compile.version"),
+
         /**
          * The OS architecture used to build SeLion
          */
         OS_ARCH("selion.build.os.arch"),
+
         /**
          * The OS name used to build SeLion
          */
         OS_NAME("selion.build.os.name"),
+
         /**
          * The OS version used to build SeLion
          */
         OS_VERSION("selion.build.os.version"),
+
         /**
          * Whether tests were executed as part of the SeLion build
          */
         SKIP_TESTS("selion.build.skip.tests"),
+
         /**
          * The test suite used as part of the SeLion build
          */
         TEST_SUITE("selion.build.testsuite"),
+
         /**
          * The TestNG dependency version at the time of compilation
          */
         BUILD_DEPENDENCY_TESTNG("selion.build.dependency.testng.version"),
+
         /**
          * The Selenium dependency version at the time of compilation
          */
         BUILD_DEPENDENCY_SELENIUM_VERSION("selion.build.dependency.selenium.version"),
+
         /**
          * The ios-driver dependency version at the time of compilation
          */
         BUILD_DEPENDENCY_IOSDRIVER("selion.build.dependency.iosdriver.version"),
+
         /**
          * The Selendroid dependency version at the time of compilation
          */
-        BUILD_DEPENDENCY_SELENDROID("selion.build.dependency.selendroid.version");
+        BUILD_DEPENDENCY_SELENDROID("selion.build.dependency.selendroid.version"),
+
+        /**
+         * The Appium dependency version at the time of compilation
+         */
+        BUILD_DEPENDENCY_APPIUM("selion.build.dependency.appium.version");
 
         private SeLionBuildProperty(String value) {
             this.propertyValue = value;
@@ -167,5 +192,6 @@ public final class SeLionBuildInfo {
         public String toString() {
             return this.propertyValue;
         }
+
     }
 }

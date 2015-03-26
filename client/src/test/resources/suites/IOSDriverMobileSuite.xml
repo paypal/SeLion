@@ -2,8 +2,9 @@
 <suite thread-count="1" verbose="1" name="IOSDriver Mobile Sample Suite" skipfailedinvocationcounts="false" junit="false"
     parallel="false" data-provider-thread-count="50" annotations="JDK">
     <!-- SELENIUM CONFIGURATION -->
-    <parameter name="runLocally" value="true" />
     <parameter name="mobileNodeType" value="ios-driver" />
+    <parameter name="seleniumhost" value="localhost" />
+    <parameter name="seleniumport" value="5555" />
 
     <test verbose="2" name="IOSDriver-MobileSampleSuite" annotations="JDK">
         <classes>

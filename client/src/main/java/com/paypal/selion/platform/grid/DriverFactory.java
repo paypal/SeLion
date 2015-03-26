@@ -157,13 +157,12 @@ public final class DriverFactory {
 
     private static RemoteIOSDriver createIOSDriverInstance(URL url, DesiredCapabilities capability) {
         List<EventListener> listeners = getSeLionEventListeners();
-
         if (listeners.size() > 0) {
             return new SelionRemoteIOSDriver(new EventFiringCommandExecutor(new HttpCommandExecutor(url), listeners),
                     (IOSCapabilities) capability);
-        } else {
-            return new RemoteIOSDriver(url, (IOSCapabilities) capability);
         }
+        return new SelionRemoteIOSDriver(url, (IOSCapabilities) capability);
+
     }
 
     private static RemoteWebDriver createDriverInstance(URL url, DesiredCapabilities capability) {
