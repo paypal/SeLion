@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -124,6 +125,11 @@ public class CodeGeneratorMojo extends AbstractMojo {
      */
     public void execute() throws MojoExecutionException {
 
+        // iff basePackage is null, empty, or just whitespace reset it to the default value
+        basePackage = StringUtils.defaultString(basePackage, "com.paypal.selion.testcomponents");
+        // iff baseFolder is null, empty, or just whitespace reset it to the default value
+        baseFolder = StringUtils.defaultString(baseFolder, "GUIData");
+
         Logger.setLogger(getLog());
         Log logger = Logger.getLogger();
         if (logger.isDebugEnabled()) {
@@ -158,7 +164,11 @@ public class CodeGeneratorMojo extends AbstractMojo {
                 if (generateJavaCode(baseFile, dataFile, extendedFile)) {
                     logger.info("Generating java file for YAML file [" + dataFile.getName() + "] in domain ["
                             + domain + "]");
-                    String tempPackage = basePackage + "." + folder;
+                    
+                    String tempPackage = basePackage;
+                    if (!folder.isEmpty()) {
+                        tempPackage += "." + folder;
+                    }
                     helper.generateNewCode(dataFile, relativePath, tempPackage, domain);
                 }
 

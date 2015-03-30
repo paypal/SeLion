@@ -20,10 +20,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 
+import com.google.common.base.Preconditions;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This reader Factory returns the reader instance depending on the type of input data file. For now we support
@@ -43,19 +45,27 @@ public final class GuiMapReaderFactory {
      * @param pageDomain
      *            domain folder under which the input data files are present.
      * @param pageClassName
-     *            Page class name
+     *            Page class name. May not be <code>null</code>, empty, or whitespace.
      * @return DataProvider instance
      * @throws IOException
      */
     public static GuiMapReader getInstance(String pageDomain, String pageClassName) throws IOException {
-        logger.entering(new Object[] { pageDomain, pageClassName });
-        GuiMapReader dataProvider = null;
+        logger.entering(new Object[]{pageDomain, pageClassName});
+        Preconditions.checkArgument(StringUtils.isNotBlank(pageClassName) == true,
+                "pageClassName can not be null, empty, or whitespace");
 
         String guiDataDir = Config.getConfigProperty(ConfigProperty.GUI_DATA_DIR);
-        String rawDataFile = guiDataDir + "/" + pageDomain + "/" + pageClassName;
+
+        String processedPageDomain = StringUtils.defaultString(pageDomain, "");
+        String rawDataFile = guiDataDir + "/" + processedPageDomain  + "/" + pageClassName;
+        if (processedPageDomain.isEmpty()) {
+            rawDataFile = guiDataDir + "/" + pageClassName;
+        }
+
         String yamlFile = rawDataFile + ".yaml";
         String ymlFile = rawDataFile + ".yml";
 
+        GuiMapReader dataProvider;
         if (getFilePath(yamlFile) != null) {
             dataProvider = YamlReaderFactory.createInstance(yamlFile);
         } else if (getFilePath(ymlFile) != null) {
