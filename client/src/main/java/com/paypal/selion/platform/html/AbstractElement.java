@@ -52,7 +52,6 @@ import com.paypal.selion.platform.html.support.events.Hoverable;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.selion.reports.runtime.WebReporter;
 import com.paypal.selion.testcomponents.BasicPageImpl;
-import com.paypal.selion.testcomponents.PageYamlException;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -148,14 +147,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         // Find if page exists: This part is reached after a valid page instance is assigned to page variable. So its
         // safe to proceed!
 
-        boolean pageExists = false;
-        
-        try {
-            pageExists = page.hasExpectedPageTitle();
-        } catch(PageYamlException ex) {
-            //NOSONAR
-        }
-
+        boolean pageExists = page.hasExpectedPageTitle();
         if (!pageExists) {
             // ParentType: Page does not exist: Sending the cause along with it
             throw new ParentNotFoundException(resolvedPageName + " : With Page Title {" + page.getActualPageTitle()

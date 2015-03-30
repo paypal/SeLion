@@ -80,7 +80,7 @@ public class BasicPageImplTest {
         Thread.sleep(4000);
 
         TestPage page = new TestPage("US");
-
+        SeLionAsserts.assertTrue(page.hasExpectedPageTitle());
         SeLionAsserts.assertEquals(Grid.driver().getTitle(), page.getExpectedPageTitle(),
                 "PageTitle Yaml value retrieved successfully");
     }
