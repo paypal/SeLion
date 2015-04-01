@@ -265,7 +265,12 @@ public abstract class AbstractExcelDataProvider {
         Object objectToReturn = createObjectToUse(userObj);
         int index = 0;
         for (Field eachField : fields) {
-
+            //If the data is not present in excel sheet then skip it
+            String data = excelRowData.get(index++);
+            if (StringUtils.isEmpty(data)) {
+                continue;
+            }
+            
             Class<?> eachFieldType = eachField.getType();
 
             if (eachFieldType.isInterface()) {
@@ -276,11 +281,6 @@ public abstract class AbstractExcelDataProvider {
                 // so lets just throw an error and bail out.
                 throw new IllegalArgumentException(eachField.getName()
                         + " is an interface. Interfaces are not supported.");
-            }
-
-            String data = excelRowData.get(index++);
-            if (StringUtils.isEmpty(data)) {
-                continue;
             }
 
             eachField.setAccessible(true);
