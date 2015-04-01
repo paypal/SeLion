@@ -2,7 +2,13 @@ archetype/
 server/
 client/
 codegen/
+project-bom/
 .project
 .settings/
 .DS_Store
 .idea/
+test-output/
+*.iml
+target/
+selionFiles/
+logs/

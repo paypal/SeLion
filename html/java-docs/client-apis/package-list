@@ -11,7 +11,6 @@ com.paypal.selion.platform.grid.browsercapabilities
 com.paypal.selion.platform.html
 com.paypal.selion.platform.html.support
 com.paypal.selion.platform.html.support.events
-com.paypal.selion.platform.remote
 com.paypal.selion.platform.utilities
 com.paypal.selion.platform.web
 com.paypal.selion.reports.model
