@@ -7,9 +7,9 @@
       If you have web pages that change frequently, this is your secret sauce to scaling your test efforts!
     </p>
   <p>
-      The YAML page object file contains all the information it needs to map out a page. A change in your
+      A <a href="#pageyaml">PageYAML</a> file contains all the information to interact with a page. A change in your
       web page only requires a small change to YAML text.
-      In addition, the YAML page object file allows you to define different identifiers based on locale. </p>
+      In addition, the <a href="#pageyaml">PageYAML</a> file allows you to define different identifiers based on locale. </p>
   <p>
     Automating in different languages just got much easier!
   </p>
@@ -43,32 +43,32 @@
   <h2 id="configurePlugin">Configuration Parameters for Customizing the Code Generator Maven Plugin</h2>
   <p>
   <ul>
-    <li><code>&lt;basePackage /&gt;</code> - This configuration parameter represents the root package name for the
+    <li><code>&lt;basePackage /&gt;</code> - This configuration parameter represents the base package name for the
       project.
-      It defaults to  <samp>com.paypal.selion.testcomponents</samp>. For example, if your YAML file for the page
-      declarations is placed in <code>src/main/resources/GUIData/mycompany</code> then the corresponding generated
-      java file will be placed in the package <samp>com.paypal.selion.testcomponents.mycompany</samp>. We can modify
-      the <code>&lt;basePackage /&gt;</code> name by including the details in in the <code>&lt;configuration /&gt;</code>
-      section. Doing so, would result in something like this:
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample4.xml"></pre>
+      It defaults to <samp>com.paypal.selion.testcomponents</samp>. For example, if your <a href="#pageyaml">PageYAML</a>
+      files are placed in <code>src/main/resources/GUIData/mycompany</code> then the corresponding generated
+      java files will be placed in the package <samp>com.paypal.selion.testcomponents.mycompany</samp>. You can modify
+      the <code>&lt;basePackage /&gt;</code> by adding a <code>&lt;configuration /&gt;</code>
+      section to the SeLion Code Generator plugin definition of your project pom.xml.
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample4.xml" data-line="13-15" class="line-numbers"></pre>
     </li>
-    <li><code>&lt;excludeDomains /&gt;</code> - This configuration parameter represents the set of folders that may need to be
-      excluded. The folders to be excluded should reside under <code>src/main/resources/GUIData</code>. For example:
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample5.xml"></pre>
+    <li><code>&lt;excludeDomains /&gt;</code> - This configuration parameter represents the list of domains to exclude.
+      Each domain is represented by a directory under <code>src/main/resources/GUIData</code>.
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample5.xml" data-line="15-18" class="line-numbers"></pre>
     </li>
   </ul>
   <h2>Put the SeLion Code Generator in Action</h2>
   <ol>
     <li>First, create a <a href="#pageyaml">PageYAML</a> file that represents the actual page.</li>
-    <li>Once created, move the file into the directory
+    <li>Once created, move the file into a directory under
       <code>src/main/resources/GUIData</code></li>
     <li>If you prefer to use the Maven command prompt, simply run the
-      command <kbd>mvn clean generate-sources</kbd></li>
+      command <kbd>mvn clean generate-sources</kbd> from your project directory.</li>
     <li>If you would like to do this from Eclipse, right click your project
-      and choose <b>Maven > Update Project configuration</b></li>
+      and choose <b>Maven > Update Project configuration</b>.</li>
   </ol>
 
-  <p>That's it! You now have the code generated and available to you as part of your build path, and
+  <p>That's it! You now have the code generated, available to you as part of your build path, and
     you can start using the page object Java class.</p>
   </p>
 </div>
