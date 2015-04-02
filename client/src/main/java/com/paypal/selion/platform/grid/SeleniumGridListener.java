@@ -52,7 +52,7 @@ import com.paypal.selion.internal.utils.TestNGUtils;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
 import com.paypal.selion.reports.reporter.services.ReporterConfigMetadata;
-import com.paypal.selion.reports.runtime.WebReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -401,8 +401,8 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         String base = suite.getOutputDirectory();
         String suiteName = suite.getName();
         String rootFolder = filterOutputDirectory(base, suiteName);
-        WebReporter.setTestNGOutputFolder(rootFolder);
-        WebReporter.init();
+        SeLionReporter.setTestNGOutputFolder(rootFolder);
+        SeLionReporter.init();
         logger.exiting();
     }
 

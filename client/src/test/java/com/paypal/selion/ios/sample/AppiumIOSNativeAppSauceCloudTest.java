@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -34,14 +34,14 @@ public class AppiumIOSNativeAppSauceCloudTest {
     @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", device = "iphone:8.1", deviceType = "iPhone Simulator", additionalCapabilities = {
             "appiumVersion:1.3.4" })
     public void testWithNativeApp() throws InterruptedException {
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
         // get the 1st mountain
         WebElement first = cells.get(0);
         first.click();
         Thread.sleep(10 * 1000);
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
     }
 
 }

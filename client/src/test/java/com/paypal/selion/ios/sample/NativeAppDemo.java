@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -48,7 +48,7 @@ public class NativeAppDemo {
     @MobileTest(appName = "InternationalMountains", device = "iphone:7.1", deviceType = "iPhone4s")
     @Test
     public void testSDKDeviceVariation4s() throws InterruptedException {
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
@@ -58,7 +58,7 @@ public class NativeAppDemo {
         Thread.sleep(10 * 1000);
 
         // take a screenshot using the normal selenium api.
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
@@ -69,7 +69,7 @@ public class NativeAppDemo {
     @MobileTest(appName = "InternationalMountains:1.3", device = "iphone:7.1", deviceType = "iPhone5s")
     @Test
     public void testSDKDeviceVariation5s() throws InterruptedException {
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
@@ -79,7 +79,7 @@ public class NativeAppDemo {
         Thread.sleep(10 * 1000);
 
         // take a screenshot using the normal selenium api.
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
@@ -90,7 +90,7 @@ public class NativeAppDemo {
     @MobileTest(appName = "InternationalMountains", device = "iphone")
     @Test
     public void testIOSDefaults() throws InterruptedException {
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
@@ -100,7 +100,7 @@ public class NativeAppDemo {
         Thread.sleep(10 * 1000);
 
         // take a screenshot using the normal selenium api.
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
@@ -111,7 +111,7 @@ public class NativeAppDemo {
     @MobileTest(appName = "InternationalMountains:1.3", device = "iphone", deviceType = "iPhone6")
     @Test
     public void testIOSDefaultsIphone6() throws InterruptedException {
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
@@ -121,7 +121,7 @@ public class NativeAppDemo {
         Thread.sleep(10 * 1000);
 
         // take a screenshot using the normal selenium api.
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");

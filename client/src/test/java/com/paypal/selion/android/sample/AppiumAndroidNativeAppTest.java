@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -36,9 +37,11 @@ public class AppiumAndroidNativeAppTest {
 
         RemoteWebDriver driver = Grid.driver();
         WebDriverWaitUtils.waitUntilElementIsVisible("io.selendroid.testapp:id/my_text_field");
+        SeLionReporter.log("Main page", true, true);
         WebElement textField = driver.findElement(By.id("io.selendroid.testapp:id/my_text_field"));
         assertEquals("true", textField.getAttribute("enabled"));
         textField.sendKeys("Appium Android Native Test");
+        SeLionReporter.log("Entered text", true, true);
         assertEquals("Appium Android Native Test", textField.getText());
 
     }

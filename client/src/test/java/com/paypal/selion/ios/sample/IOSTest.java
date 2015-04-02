@@ -17,7 +17,7 @@ package com.paypal.selion.ios.sample;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 import org.testng.annotations.Test;
 
@@ -29,20 +29,20 @@ public class IOSTest {
     @Test
     public void mobileTest() {
         Grid.open("http://www.paypal.com");
-        MobileReporter.log("screenshot", true);
+        SeLionReporter.log("screenshot", true, true);
     }
 
     @MobileTest(appName = "Safari", device = "ipad")
     @Test
     public void testIOSDefaultsIpad() {
         Grid.open("http://www.paypal.com");
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
     }
 
     @MobileTest(appName = "Safari", device = "ipad", deviceType = "iPadAir")
     @Test
     public void testIOSDefaultsIpadAir() {
         Grid.open("http://www.paypal.com");
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
     }
 }
