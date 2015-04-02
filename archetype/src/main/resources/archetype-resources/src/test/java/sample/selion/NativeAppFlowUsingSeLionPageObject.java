@@ -16,7 +16,7 @@
 package ${package}.sample.selion;
 
 import org.testng.annotations.Test;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 import static org.testng.Assert.assertTrue;
 import com.paypal.selion.annotations.MobileTest;
 import ${package}.sample.NativeAppTestPage;
@@ -49,7 +49,7 @@ public class NativeAppFlowUsingSeLionPageObject {
 
         // Once landed on the Mountain 1 page, reading the text
         assertTrue(samplePage.getSampleUIAStaticText().getAttribute("name")!=null);
-        MobileReporter.log(samplePage.getSampleUIAStaticText().getAttribute("name"), true);
+        SeLionReporter.log(samplePage.getSampleUIAStaticText().getAttribute("name"), true);
     }
 
 }

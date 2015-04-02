@@ -111,12 +111,16 @@ public enum GestureOptions {
 
         private static final SimpleLogger logger = SeLionLogger.getLogger();
 
+        @SuppressWarnings("unused")
         private Integer tapCount;
 
+        @SuppressWarnings("unused")
         private Integer touchCount;
 
+        @SuppressWarnings("unused")
         private Integer duration;
 
+        @SuppressWarnings("unused")
         private TapOffset tapOffset;
 
         private Gson gson;
@@ -195,8 +199,10 @@ public enum GestureOptions {
      */
     public static class TapOffset {
 
+        @SuppressWarnings("unused")
         private double x;
 
+        @SuppressWarnings("unused")
         private double y;
 
         private Gson gson;

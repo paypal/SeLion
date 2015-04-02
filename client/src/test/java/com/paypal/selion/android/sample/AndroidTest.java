@@ -30,7 +30,7 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
-import com.paypal.selion.reports.runtime.WebReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -61,7 +61,7 @@ public class AndroidTest {
         // Now submit the form. WebDriver will find the form for us from the element
         element.submit();
 
-        WebReporter.log("cheese!", true, true);
+        SeLionReporter.log("cheese!", true, true);
 
     }
     

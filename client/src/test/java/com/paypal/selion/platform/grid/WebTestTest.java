@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.WebReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /**
  * Tests different combinations for @Webtest annotation and it's parameters
@@ -80,7 +80,7 @@ public class WebTestTest {
     @Test(groups = { "functional" }, threadPoolSize = 2, invocationCount = 2, timeOut = 10000)
     @WebTest
     public void testUnamedSessionMultipleThreadsAndInvocations() {
-        WebReporter.log("Browser start page", true, true);
+        SeLionReporter.log("Browser start page", true, true);
     }
 
     @Test(groups = { "functional" })

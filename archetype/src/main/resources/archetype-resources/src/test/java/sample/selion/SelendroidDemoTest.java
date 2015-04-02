@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
-import com.paypal.selion.reports.runtime.WebReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /**
  * This class has test cases that demonstrates how to use SeLion for running tests against android apps using selendroid.
@@ -48,7 +48,7 @@ public class SelendroidDemoTest {
         element.sendKeys("Cheese!");
         // Now submit the form. WebDriver will find the form for us from the element
         element.submit();
-        WebReporter.log("cheese!", true, true);
+        SeLionReporter.log("cheese!", true, true);
     }
 
     /**

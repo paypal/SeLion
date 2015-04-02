@@ -15,21 +15,22 @@
 
 package com.paypal.selion.reports.runtime;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.openqa.selenium.WebDriver;
 import org.testng.Reporter;
 
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.reports.model.AbstractLog;
-import com.paypal.selion.reports.model.PageContents;
+import com.paypal.selion.internal.reports.model.BaseLog;
+import com.paypal.selion.internal.reports.model.PageContents;
+import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.reports.reporter.services.LogAction;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
-abstract class AbstractReporter {
+public class SeLionReporter {
     protected static SimpleLogger logger = SeLionLogger.getLogger();
     protected volatile static List<LogAction> actionList = new ArrayList<LogAction>();
 
@@ -37,10 +38,9 @@ abstract class AbstractReporter {
     protected static DataSaver saver = null;
     protected String baseFileName = UUID.randomUUID().toString();
 
-    protected WebDriver driver;
-    private AbstractLog currentLog;
+    private BaseLog currentLog;
 
-    void setLog(AbstractLog log) {
+    void setLog(BaseLog log) {
         this.currentLog = log;
     }
 
@@ -48,12 +48,8 @@ abstract class AbstractReporter {
         return baseFileName;
     }
 
-    protected AbstractLog getLog() {
+    protected BaseLog getLog() {
         return this.currentLog;
-    }
-
-    protected WebDriver getDriver() {
-        return this.driver;
     }
 
     /**
@@ -81,27 +77,49 @@ abstract class AbstractReporter {
     }
 
     /**
-     * The actual Reporting mechanism should ensure that it provides for a specific implementation for this.
+     * Creates the log
      * 
      * @param takeScreenshot
      *            <b>true/false</b> take or not and save screenshot
      * @param saveSrc
      *            <b>true/false</b> save or not page source
-     * @return - An {@link AbstractLog} subclass that represents the actual log that was generated.
+     * @return - An {@link BaseLog} subclass that represents the actual log that was generated.
      */
-    protected abstract AbstractLog createLog(boolean takeScreenshot, boolean saveSrc);
+    protected BaseLog createLog(boolean takeScreenshot, boolean saveSrc) {
+        String href = null;
+        /**
+         * Changed html file extension to txt
+         */
+        if (!(saver instanceof SaverFileSystem)) {
+            throw new RuntimeException("Internal error. SeLionReporter expects an instance of SaverFileSystem.");
+        }
+        if (saveSrc) {
+            if (Grid.driver() != null) {
+                PageContents source = new PageContents(Grid.driver().getPageSource(), getBaseFileName());
+                saver.saveSources(source);
+            }
+            href = "sources" + File.separator + getBaseFileName() + ".source.txt";
+        }
+        BaseLog log = (BaseLog) getLog();
+        log.setHref(href);
+        for (LogAction eachAction : actionList) {
+            eachAction.perform();
+        }
+
+        return log;
+    }
 
     protected void generateLog(boolean takeScreenshot, boolean saveSrc) {
         logger.entering(new Object[] { takeScreenshot, saveSrc });
         try {
-            AbstractLog log = createLog(takeScreenshot, saveSrc);
+            BaseLog log = createLog(takeScreenshot, saveSrc);
 
             String screenshotPath = null;
             log.setScreen(null);
 
-            if (takeScreenshot && driver != null) {
+            if (takeScreenshot && Grid.driver() != null) {
                 // screenshot
-                PageContents screen = new PageContents(Gatherer.takeScreenshot(driver), baseFileName);
+                PageContents screen = new PageContents(Gatherer.takeScreenshot(Grid.driver()), baseFileName);
                 screenshotPath = saver.saveScreenshot(screen);
                 log.setScreen(screenshotPath);
             }
@@ -116,7 +134,7 @@ abstract class AbstractReporter {
     /**
      * @param action
      *            - A {@link LogAction} object that represents the custom log action to be invoked when
-     *            {@link WebReporter#log(String, boolean, boolean)} gets called.
+     *            {@link SeLionReporter#log(String, boolean, boolean)} gets called.
      * 
      */
     public static void addLogAction(LogAction action) {
@@ -124,5 +142,36 @@ abstract class AbstractReporter {
             actionList.add(action);
         }
     }
+    
+    /**
+     * Generates log entry with message provided
+     * 
+     * @param message
+     *            Entry description
+     * @param takeScreenshot
+     *            <b>true/false</b> take a screenshot
+     */
+    public static void log(String message, boolean takeScreenshot) {
+        log(message, takeScreenshot, false);
+    }
 
+    /**
+     * Generates log entry with message provided
+     * 
+     * @param message
+     *            Entry description
+     * @param takeScreenshot
+     *            <b>true/false</b> take a screenshot
+     * @param saveSrc
+     *            <b>true/false</b> save the current page source
+     */
+    public static void log(String message, boolean takeScreenshot, boolean saveSrc) {
+        SeLionReporter reporter = new SeLionReporter();
+        BaseLog currentLog = new BaseLog();
+        currentLog.setMsg(message);
+        currentLog.setLocation(Gatherer.saveGetLocation(Grid.driver()));
+        reporter.setLog(currentLog);
+        reporter.generateLog(takeScreenshot, saveSrc);
+        logger.exiting();
+    }
 }
