@@ -18,7 +18,9 @@ package com.paypal.selion.platform.dataprovider;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -29,6 +31,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -88,7 +91,7 @@ public final class JsonDataProvider {
      * 
      * <i>Test Method Signature</i>
      * 
-     * {@code public void readJsonArray(TestData arrayOfObjects)}
+     * {@code public void readJsonArray(TestData testData)}
      * </pre>
      * 
      * 
@@ -160,6 +163,39 @@ public final class JsonDataProvider {
         }
         logger.exiting(requestedData);
         return requestedData;
+    }
+
+    /**
+     * Gets JSON data from a resource by applying the given filter.
+     * 
+     * 
+     * @param jsonResource
+     *            - The {@link FileSystemResource} denoting a JSON file and the type it needs to be mapped to (if any)
+     * @param filter
+     *            an implementation class of {@link DataProviderFilter}
+     * @return A {@link Iterator<Object[]>} over a collection of Object Array as per the specified filter, parsed from
+     *         {@link FileSystemResource resource}
+     * @throws JsonDataProviderException
+     */
+    public static Iterator<Object[]> getJsonObjectByFilter(FileSystemResource jsonResource,
+            DataProviderFilter dataFilter) throws JsonDataProviderException {
+        Preconditions.checkArgument(jsonResource != null, "File resource cannot be null");
+        Preconditions.checkArgument(jsonResource.getFileName() != null,
+                "The resource must have a filename. filename cannot be null");
+        logger.entering(new Object[] { jsonResource, dataFilter });
+        Class<?> arrayType = null;
+        JsonReader reader = null;
+        try {
+            reader = new JsonReader(jsonResource.getReader());
+            arrayType = Array.newInstance(jsonResource.getCls(), 0).getClass();
+            Gson myJson = new Gson();
+            Object[] mappedData = myJson.fromJson(reader, arrayType);
+            return prepareDataAsObjectArrayList(mappedData, dataFilter).iterator();
+        } catch (Exception e) {
+            throw new JsonDataProviderException(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
     }
 
     /**
@@ -276,6 +312,20 @@ public final class JsonDataProvider {
         }
         logger.exiting(dataArray);
         return dataArray;
+    }
+
+    private static List<Object[]> prepareDataAsObjectArrayList(Object[] dataToPack, DataProviderFilter dataFilter)
+            throws DataProviderException {
+        logger.entering(dataToPack);
+        logger.fine("Entity Size to be mapped to ArrayList :" + dataToPack.length);
+        List<Object[]> list = new ArrayList<Object[]>();
+        for (Object currentData : dataToPack) {
+            if (dataFilter.filter(currentData)) {
+                list.add(new Object[] { currentData });
+            }
+        }
+        logger.exiting(list);
+        return list;
     }
 
     private static void validateResourceParams(FileSystemResource jsonResource) {

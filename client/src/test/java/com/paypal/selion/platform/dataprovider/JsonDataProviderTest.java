@@ -15,15 +15,19 @@
 
 package com.paypal.selion.platform.dataprovider;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.testng.annotations.Test;
 
 import com.google.gson.internal.LinkedTreeMap;
+import com.paypal.selion.platform.dataprovider.filter.CustomKeyFilter;
+import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.USER;
 
 public class JsonDataProviderTest {
@@ -87,8 +91,67 @@ public class JsonDataProviderTest {
         }
     }
 
+    @Test(groups = "unit")
+    public void testgetJsonDataByIndexFilter() throws JsonDataProviderException {
+        FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
+        SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1,3,4");
+        Iterator<Object[]> dataObject = JsonDataProvider.getJsonObjectByFilter(resource, filter);
+        for (int i = 0; dataObject.hasNext(); i++) {
+            USER userData = (USER) dataObject.next()[0];
+            switch (i) {
+            case 0: {
+                assertTrue(userData.getName().equals("Optimus Prime"));
+                assertTrue(userData.getBank().getAddress().getStreet().equals("1234 Some St"));
+                break;
+            }
+            case 1: {
+                assertTrue(userData.getName().equals("Alonso"));
+                assertTrue(userData.getBank().getName().equals("Bank3"));
+                break;
+            }
+            case 2: {
+                assertTrue(userData.getPhoneNumber().equals("1111111111"));
+                assertTrue(userData.getAreaCode()[1].getAreaCode().equals("area8"));
+                break;
+            }
+            }
+        }
+    }
+
+    @Test(groups = "unit")
+    public void testgetJsonDataByCustomKeyAccountNumberFilter() throws JsonDataProviderException {
+        FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
+        CustomKeyFilter filter = new CustomKeyFilter("accountNumber", "8888888888,123456789");
+        Iterator<Object[]> dataObject = JsonDataProvider.getJsonObjectByFilter(resource, filter);
+        int i = 0;
+        while (dataObject.hasNext()) {
+            USER userData = (USER) dataObject.next()[0];
+            assertTrue(userData.getAccountNumber().equals(Long.valueOf(123456789))
+                    || userData.getAccountNumber().equals(Long.valueOf(8888888888L)));
+            assertTrue(userData.getName().equals("Megatron") || userData.getName().equals("Alonso"));
+            i++;
+        }
+        assertEquals(i, 2);
+    }
+
+    @Test(groups = "unit")
+    public void testgetJsonDataByCustomKeyPhoneNumberFilter() throws JsonDataProviderException {
+        FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
+        CustomKeyFilter filter = new CustomKeyFilter("phoneNumber", "3333333333,2222222222");
+        Iterator<Object[]> dataObjects = JsonDataProvider.getJsonObjectByFilter(resource, filter);
+        int i = 0;
+        while (dataObjects.hasNext()) {
+            USER userData = (USER) dataObjects.next()[0];
+            assertTrue(userData.getAccountNumber().equals(Long.valueOf(123456789))
+                    || userData.getAccountNumber().equals(Long.valueOf(8888888888L)));
+            assertTrue(userData.getName().equals("Megatron") || userData.getName().equals("Alonso"));
+            i++;
+        }
+        assertEquals(i, 2);
+    }
+
     // Negative use cases
-    @Test(expectedExceptions={JsonDataProviderException.class},expectedExceptionsMessageRegExp="Error while parsing Json Data as a Hash table. Root cause: Unable to find a key named id. Please refer Javadoc", groups = "unit")
+    @Test(expectedExceptions = { JsonDataProviderException.class }, expectedExceptionsMessageRegExp = "Error while parsing Json Data as a Hash table. Root cause: Unable to find a key named id. Please refer Javadoc", groups = "unit")
     public void getDataAsHashTableTest_invalidKey() throws JsonDataProviderException, IOException {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile);
         JsonDataProvider.getJsonDataAsHashTable(resource);
@@ -100,7 +163,7 @@ public class JsonDataProviderTest {
         JsonDataProvider.getAllJsonData(resource);
     }
 
-    @Test(expectedExceptions = { RuntimeException.class },expectedExceptionsMessageRegExp="File Not Found", groups = "unit")
+    @Test(expectedExceptions = { RuntimeException.class }, expectedExceptionsMessageRegExp = "File Not Found", groups = "unit")
     public void negativeTestsInvalidFileName() throws IOException, JsonDataProviderException {
         FileSystemResource resource = new FileSystemResource("invalidFile.json", USER.class);
         JsonDataProvider.getAllJsonData(resource);

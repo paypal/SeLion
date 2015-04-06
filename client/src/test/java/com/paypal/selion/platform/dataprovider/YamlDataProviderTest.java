@@ -15,31 +15,22 @@
 
 package com.paypal.selion.platform.dataprovider;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.dataprovider.DataProviderException;
-import com.paypal.selion.platform.dataprovider.FileSystemResource;
-import com.paypal.selion.platform.dataprovider.YamlDataProvider;
-import com.paypal.selion.platform.dataprovider.YamlDataProviderException;
+import com.paypal.selion.platform.dataprovider.filter.CustomKeyFilter;
+import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.ADDRESS;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.AREA_CODE;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.BANK;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.USER;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static org.testng.Assert.*;
 
 public class YamlDataProviderTest {
     private static String pathName = "src/test/resources/";
@@ -514,6 +505,51 @@ public class YamlDataProviderTest {
         return data;
     }
 
+    @DataProvider(name = "getDataFilterByIndexRange")
+    public static Iterator<Object[]> dataProviderByFilterGetDataByIndex() throws IOException, DataProviderException {
+        FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
+        SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-6");
+        Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
+        return data;
+    }
+
+    @DataProvider(name = "getDataFilterByIndexRangeAndIndividual")
+    public static Iterator<Object[]> dataProviderByFilterGetDataByIndexRange() throws IOException,
+            DataProviderException {
+        FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
+        SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-2,4,5");
+        Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
+        return data;
+    }
+
+    @DataProvider(name = "getDataFilterByIndexIndividual")
+    public static Iterator<Object[]> dataProviderByFilterGetDataByIndexIndividual() throws IOException,
+            DataProviderException {
+        FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
+        SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1,3,5");
+        Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
+        return data;
+    }
+
+    @DataProvider(name = "getDataByCustomKeysFilterByAccountNumber")
+    public static Iterator<Object[]> dataProviderByFilterGetDataByCustomeByAccountNumber() throws IOException,
+            DataProviderException {
+        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
+        CustomKeyFilter filter = new CustomKeyFilter("accountNumber",
+                "123456,124567,1234567");
+        Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
+        return data;
+    }
+
+    @DataProvider(name = "getDataByCustomKeysFilterByName")
+    public static Iterator<Object[]> dataProviderByFilterGetDataByCustomeByName() throws IOException,
+            DataProviderException {
+        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
+        CustomKeyFilter filter = new CustomKeyFilter("name","Thomas,binh,suri");
+        Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
+        return data;
+    }
+
     @DataProvider(name = "getMultipleStringArguments")
     public static Object[][] dataProviderGetMultipleStringArguments() throws IOException, YamlDataProviderException {
         List<FileSystemResource> yamlResources = new ArrayList<FileSystemResource>();
@@ -652,8 +688,63 @@ public class YamlDataProviderTest {
         }
     }
 
+    @Test(groups = "unit", dataProvider = "getDataByCustomKeysFilterByAccountNumber")
+    public void testDataProviderGetDataByCustomKeysFilterByAccountNumber(USER user) {
+        assertNotNull(user);
+        if (user.getBank() != null) {
+            String bankName = user.getBank().getName();
+            assertTrue(bankName.equals(bnk1.getName()) || bankName.equals(bnk2.getName()));
+        } else {
+            assertTrue(user.getAccountNumber().equals(user5.getAccountNumber()));
+        }
+    }
+
+    @Test(groups = "unit", dataProvider = "getDataByCustomKeysFilterByName")
+    public void testDataProviderGetDataByCustomKeysFilterByName(USER user) {
+        assertNotNull(user);
+        if (user.getBank() != null) {
+            String bankName = user.getBank().getName();
+            assertTrue(bankName.equals(bnk1.getName()) || bankName.equals(bnk2.getName()));
+        } else {
+            assertTrue(user.getAccountNumber().equals(user5.getAccountNumber()));
+        }
+    }
+
     @Test(groups = "unit", dataProvider = "getDataByIndex")
     public void testDataProviderGetDataByIndex(USER user) {
+        assertNotNull(user);
+        if (user.getBank() != null) {
+            String bankName = user.getBank().getName();
+            assertTrue(bankName.equals(bnk1.getName()) || bankName.equals(bnk2.getName()));
+        } else {
+            assertTrue(user.getAccountNumber().equals(user5.getAccountNumber()));
+        }
+    }
+
+    @Test(groups = "unit", dataProvider = "getDataFilterByIndexRange")
+    public void testDataProviderGetDataByFilterByIndex(USER user) {
+        assertNotNull(user);
+        if (user.getBank() != null) {
+            String bankName = user.getBank().getName();
+            assertTrue(bankName.equals(bnk1.getName()) || bankName.equals(bnk2.getName()));
+        } else {
+            assertTrue(user.getAccountNumber().equals(user5.getAccountNumber()));
+        }
+    }
+
+    @Test(groups = "unit", dataProvider = "getDataFilterByIndexRangeAndIndividual")
+    public void testDataProviderGetDataFilterByIndexRangeAndIndividual(USER user) {
+        assertNotNull(user);
+        if (user.getBank() != null) {
+            String bankName = user.getBank().getName();
+            assertTrue(bankName.equals(bnk1.getName()) || bankName.equals(bnk2.getName()));
+        } else {
+            assertTrue(user.getAccountNumber().equals(user5.getAccountNumber()));
+        }
+    }
+
+    @Test(groups = "unit", dataProvider = "getDataFilterByIndexIndividual")
+    public void testDataProviderGetDataFilterByIndexIndividual(USER user) {
         assertNotNull(user);
         if (user.getBank() != null) {
             String bankName = user.getBank().getName();

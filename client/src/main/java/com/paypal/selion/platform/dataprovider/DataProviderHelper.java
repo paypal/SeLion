@@ -26,7 +26,8 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * {@link SimpleExcelDataProvider} and {@link YamlDataProvider}.
  * 
  */
-final class DataProviderHelper {
+//TODO: This should perhaps be moved into an internal package because this internal class now is exposed outside.
+public final class DataProviderHelper {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 

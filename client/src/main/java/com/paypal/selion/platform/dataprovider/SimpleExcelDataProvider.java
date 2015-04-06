@@ -17,21 +17,25 @@ package com.paypal.selion.platform.dataprovider;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+
+import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
 
 /**
  * This class provide several methods to retrieve test data from an Excel workbook. Users can get a single row of data
  * by providing the excel filename, the data sheet name, and they key. Or get the whole data sheet by providing excel
  * file name and the data sheet name.
  * 
- * The first column is reserved for keys which are not part of the actual test data. Read
- * <a href="http://paypal.github.io/SeLion/html/documentation.html#excel-data-provider">Excel Data Provider Documentation</a> 
- * for more information on the required format of the Excel sheet.
- *  
+ * The first column is reserved for keys which are not part of the actual test data. Read <a
+ * href="http://paypal.github.io/SeLion/html/documentation.html#excel-data-provider">Excel Data Provider
+ * Documentation</a> for more information on the required format of the Excel sheet.
+ * 
  */
 
 public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
@@ -112,7 +116,7 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      */
     public Hashtable<String, Object> getAllRowsAsHashTable(Object myObj) throws ExcelDataProviderException {
         logger.entering(myObj);
-        Hashtable<String, Object> hashTable = new Hashtable<String, Object>();
+        Hashtable<String, Object> hashTable = new Hashtable<>();
 
         Sheet sheet = excelReader.fetchSheet(myObj.getClass().getSimpleName());
         int numRows = sheet.getPhysicalNumberOfRows();
@@ -184,7 +188,7 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
     @Override
     public Object[][] getExcelRows(Object myData, String indexes) throws ExcelDataProviderException {
         logger.entering(new Object[] { myData, indexes });
-        List<Integer> arrayIndex = null;
+        List<Integer> arrayIndex;
         try {
             arrayIndex = DataProviderHelper.parseIndexString(indexes);
         } catch (DataProviderException e) {
@@ -278,7 +282,6 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
     @Override
     public Object[][] getAllExcelRows(Object myObj) throws ExcelDataProviderException {
         logger.entering(myObj);
-
         int i;
         Object[][] obj = null;
         Field[] fields = myObj.getClass().getDeclaredFields();
@@ -307,4 +310,45 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
         logger.exiting(obj);
         return obj;
     }
+
+    /**
+     * Gets data from Excel sheet by applying the given filter.
+     * 
+     * @param myObj
+     *            the user defined type object which provide details structure to this function.
+     * @param dataFilter
+     *            an implementation class of {@link DataProviderFilter}
+     * @return  An iterator over a collection of Object Array to be used with TestNG DataProvider
+     * @throws ExcelDataProviderException
+     */
+    public Iterator<Object[]> getExcelRowsByFilter(Object myObj, DataProviderFilter dataFilter)
+            throws ExcelDataProviderException {
+        logger.entering(new Object[] { myObj, dataFilter });
+        List<Object[]> objs = new ArrayList<>();
+        Field[] fields = myObj.getClass().getDeclaredFields();
+
+        // Extracting number of rows of data to read
+        // Notice that numRows is returning the actual number of non-blank rows.
+        // Thus if there are blank rows in the sheet then we will miss some last rows of data.
+        List<Row> rowToBeRead = excelReader.getAllExcelRows(myObj.getClass().getSimpleName(), false);
+        for (Row row : rowToBeRead) {
+            List<String> excelRowData = excelReader.getRowContents(row, fields.length);
+            if (excelRowData.size() != 0) {
+                try {
+                    Object temp = prepareObject(myObj, fields, excelRowData);
+                    if (dataFilter.filter(temp)) {
+                        objs.add(new Object[] { temp });
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new ExcelDataProviderException("Unable to create instance of type '"
+                            + myObj.getClass().getName() + "'", e);
+                } catch (DataProviderException e) {
+                    throw new ExcelDataProviderException(e.getMessage(), e);
+                }
+            }
+        }
+        logger.exiting(objs.iterator());
+        return objs.iterator();
+    }
+
 }

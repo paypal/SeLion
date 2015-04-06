@@ -15,25 +15,18 @@
 
 package com.paypal.selion.platform.dataprovider;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
+import com.paypal.test.utilities.logging.SimpleLogger;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.test.utilities.logging.SimpleLogger;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * This class provides several methods to retrieve test data from yaml files. Users can get data returned in an Object
@@ -242,7 +235,7 @@ public final class YamlDataProvider {
      * <br>
      * <br>
      * 
-     * @param resource
+     * @param resource - A {@link FileSystemResource} that represents a data source.
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
      * @throws IOException
      * @throws YamlDataProviderException
@@ -253,7 +246,7 @@ public final class YamlDataProvider {
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
 
-        Object yamlObject = null;
+        Object yamlObject;
 
         // Mark the input stream in case multiple documents has been detected
         // so we can reset it.
@@ -274,6 +267,98 @@ public final class YamlDataProvider {
 
         logger.exiting(objArray);
         return objArray;
+    }
+
+    /**
+     * Gets yaml data by applying the given filter.
+     * 
+     * @param resource  A {@link FileSystemResource} that represents a data source.
+     * @param dataFilter
+     *            an implementation class of {@link DataProviderFilter}
+     * @return An iterator over a collection of Object Array to be used with TestNG DataProvider
+     * @throws IOException
+     * @throws YamlDataProviderException
+     */
+    public static Iterator<Object[]> getDataByFilter(FileSystemResource resource, DataProviderFilter dataFilter)
+            throws IOException, YamlDataProviderException {
+        logger.entering(new Object[] { resource, dataFilter });
+        InputStream inputStream = resource.getInputStream();
+        Yaml yaml = constructYaml(resource.getCls());
+
+        Object yamlObject;
+
+        // Mark the input stream in case multiple documents has been detected
+        // so we can reset it.
+        inputStream.mark(100);
+
+        try {
+            yamlObject = yaml.load(inputStream);
+        } catch (ComposerException composerException) {
+            String msg = composerException.getMessage();
+            msg = (msg == null) ? "": msg;
+            if (msg.toLowerCase().contains("expected a single document")) {
+                inputStream.reset();
+                yamlObject = loadDataFromDocuments(yaml, inputStream);
+            } else {
+                throw new YamlDataProviderException("Error reading YAML data", composerException);
+            }
+        }
+        return convertToObjectIterator(yamlObject, dataFilter);
+    }
+
+    private static Iterator<Object[]> convertToObjectIterator(Object object, DataProviderFilter dataFilter)
+            throws YamlDataProviderException {
+        logger.entering(new Object[] { object, dataFilter });
+        List<Object[]> objs = new ArrayList<>();
+        Class<?> rootClass = object.getClass();
+
+        try {
+            // Convert a LinkedHashMap (Yaml Associative Array) to an Object double array.
+            if (rootClass.equals(LinkedHashMap.class)) {
+                LinkedHashMap<?, ?> objAsLinkedHashMap = (LinkedHashMap<?, ?>) object;
+                Collection<?> allValues = objAsLinkedHashMap.values();
+                for (Object eachValue : allValues) {
+                    if (dataFilter.filter(eachValue)) {
+                        objs.add(new Object[] { eachValue });
+                    }
+                }
+            } else if (rootClass.equals(ArrayList.class)) {
+                    // Converts an ArrayList (Yaml List) to an Object double array.
+                ArrayList<?> objAsArrayList = (ArrayList<?>) object;
+
+                int i = 0;
+                for (Object eachArrayListObject : objAsArrayList) {
+
+                    /*
+                     * Yaml list of an associative array will return a LinkedHashMap nested in a LinkedHashMap. Yaml
+                     * list of a list will return an ArrayList nested in a LinkedHashMap. This block removes the first
+                     * mapping since that data serves as visual organization of data within a yaml. If the parent is a
+                     * LinkedHashMap and the child is a LinkedHashMap or an ArrayList, then assign the child to the
+                     * Object double array instead of the parent.
+                     */
+                    if (dataFilter.filter(eachArrayListObject)) {
+                        objs.add(i, new Object[] { eachArrayListObject });
+                        i++;
+                    }
+
+                    if (eachArrayListObject.getClass().equals(LinkedHashMap.class)) {
+                        LinkedHashMap<?, ?> eachArrayListObjectAsHashMap = (LinkedHashMap<?, ?>) eachArrayListObject;
+                        for (Object eachEntry : eachArrayListObjectAsHashMap.values()) {
+                            if (eachEntry.getClass().equals(LinkedHashMap.class)
+                                    || eachEntry.getClass().equals(ArrayList.class)) {
+                                if (dataFilter.filter(eachEntry)) {
+                                    objs.add(i, new Object[] { eachEntry });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (DataProviderException e) {
+            throw new YamlDataProviderException(e.getMessage(), e);
+        }
+        logger.exiting(objs.iterator());
+        return objs.iterator();
     }
 
     /**
@@ -300,12 +385,12 @@ public final class YamlDataProvider {
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
      */
     public static Object[][] getDataByKeys(FileSystemResource resource, String[] keys) {
-        logger.entering(new Object[] { resource, keys });
+        logger.entering(new Object[] { resource, Arrays.toString(keys) });
 
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
 
-        HashMap<String, Object> requestedMap = new LinkedHashMap<String, Object>();
+        HashMap<String, Object> requestedMap = new LinkedHashMap<>();
         LinkedHashMap<?, ?> map = (LinkedHashMap<?, ?>) yaml.load(inputStream);
 
         for (String key : keys) {
@@ -339,7 +424,7 @@ public final class YamlDataProvider {
      *     userId: 10686627
      * </pre>
      * 
-     * @param resource
+     * @param resource  A {@link FileSystemResource} that represents a data source.
      * @return yaml data in form of a Hashtable.
      */
     public static Hashtable<String, Object> getDataAsHashtable(FileSystemResource resource) {
@@ -348,7 +433,7 @@ public final class YamlDataProvider {
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
 
-        Hashtable<String, Object> yamlHashTable = new Hashtable<String, Object>();
+        Hashtable<String, Object> yamlHashTable = new Hashtable<>();
 
         LinkedHashMap<?, ?> yamlObject = (LinkedHashMap<?, ?>) yaml.load(inputStream);
 
@@ -363,8 +448,8 @@ public final class YamlDataProvider {
     /**
      * Gets yaml data for requested indexes.
      * 
-     * @param resource
-     * @param indexes
+     * @param resource  A {@link FileSystemResource} that represents a data source.
+     * @param indexes - The indexes for which data is to be fetched
      * 
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
      * @throws IOException
@@ -416,7 +501,7 @@ public final class YamlDataProvider {
      * public void testExample(USER user1, USER user2)
      * </pre>
      * 
-     * @param resources
+     * @param resources -  A List of {@link FileSystemResource} that represents data sources.
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
      * @throws IOException
      * @throws YamlDataProviderException
@@ -424,8 +509,8 @@ public final class YamlDataProvider {
     public static Object[][] getAllDataMultipleArgs(List<FileSystemResource> resources) throws IOException,
             YamlDataProviderException {
         logger.entering(resources);
-        List<Object[][]> dataproviders = new ArrayList<Object[][]>();
-        Object[][] data = null;
+        List<Object[][]> dataproviders = new ArrayList<>();
+        Object[][] data;
 
         for (FileSystemResource r : resources) {
             Object[][] resourceData = getAllData(r);
@@ -494,14 +579,14 @@ public final class YamlDataProvider {
      * public void testExample(MyObject myObject)
      * </pre>
      * 
-     * @param yaml
-     * @param inputStream
+     * @param yaml - A {@link Yaml} object that represents a Yaml document.
+     * @param inputStream - A {@link InputStream} object.
      * @return an List containing multiple yaml documents loaded by SnakeYaml
      */
     private static List<Object> loadDataFromDocuments(Yaml yaml, InputStream inputStream) {
         logger.entering(new Object[] { yaml, inputStream });
         Iterator<?> documents = yaml.loadAll(inputStream).iterator();
-        List<Object> objList = new ArrayList<Object>();
+        List<Object> objList = new ArrayList<>();
 
         while (documents.hasNext()) {
             objList.add(documents.next());
@@ -524,7 +609,7 @@ public final class YamlDataProvider {
     /**
      * 
      * 
-     * @param object
+     * @param object - The object that has to be converted.
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
      */
     private static Object[][] convertToObjectArray(Object object) {
@@ -580,7 +665,7 @@ public final class YamlDataProvider {
     /**
      * Use this utility method to print and return a yaml string to help serialize the object passed in.
      * 
-     * @param object
+     * @param object - The Object that is to be serialised.
      * @return a yaml string representation of the object passed in
      */
     public static String serializeObjectToYamlString(Object object) {
@@ -594,7 +679,7 @@ public final class YamlDataProvider {
     /**
      * Use this utility method to print and return a yaml string to help serialize the object passed in as an ArrayList.
      * 
-     * @param objects
+     * @param objects - One or more objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsList(Object... objects) {
@@ -608,7 +693,7 @@ public final class YamlDataProvider {
      * Use this utility method to print and return a yaml string to help serialize the object passed in as a
      * LinkedHashMap.
      * 
-     * @param objects
+     * @param objects - One or more objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsDocuments(Object... objects) {
@@ -623,14 +708,14 @@ public final class YamlDataProvider {
      * Use this utility method to print and return a yaml string to help serialize the object passed in as multiple
      * documents.
      * 
-     * @param objects
+     * @param objects - The objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsMap(Object... objects) {
         logger.entering(new Object[] { objects });
-        HashMap<String, Object> objMap = new LinkedHashMap<String, Object>();
+        HashMap<String, Object> objMap = new LinkedHashMap<>();
 
-        String key = null;
+        String key;
         int i = 0;
         for (Object obj : objects) {
             key = "uniqueKey" + Integer.toString(i);
