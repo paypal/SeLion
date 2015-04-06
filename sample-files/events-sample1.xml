@@ -1,0 +1,1 @@
+<parameter name="webDriverEventListener" value="qa.tests.MyEventListener"/>
