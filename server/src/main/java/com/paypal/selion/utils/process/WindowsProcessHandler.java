@@ -18,28 +18,38 @@ package com.paypal.selion.utils.process;
 import java.io.IOException;
 import java.util.List;
 
+import com.sun.jna.platform.win32.Kernel32;
 import org.apache.commons.lang3.StringUtils;
 
 import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.pojos.ProcessNames;
 
 /**
- * This class provides for a simple implementation that aims at providing the logic to fetch processes as 
+ * This class provides for a simple implementation that aims at providing the logic to fetch processes as
  * represented by {@link ProcessNames} and also in forcibly killing them on a Windows like environment.
  *
  */
 public class WindowsProcessHandler extends AbstractProcessHandler implements ProcessHandler {
     private static final String DELIMITER = ",";
-    
+
     public WindowsProcessHandler() {
         log.info("You have chosen to use a Windows Process Handler.");
     }
 
     @Override
     public List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException {
-        String[] cmd = { "cmd.exe", "/C", "tasklist /FO CSV /NH" };
+        // Java has no platform neutral way to get our current pid.
+        int ourPid = Kernel32.INSTANCE.GetCurrentProcessId();
+
+        // Find all processes names that are our direct children using our PID as the parent pid using wmic.
+        // We want to kill only the direct child processes we have started. ("More +2" drops the csv header from output)
+        // Note that we plan to kill all child process descendants in killProcess (with /T)
+        String cmd = String.format("wmic process where (parentprocessid=%s) get name,processid /format:csv | more +2",
+                String.valueOf(ourPid));
+       // String[] cmd = { "cmd.exe", "/C", "tasklist /FO CSV /NH" };
+
         try {
-            return super.getProcessInfo(cmd, DELIMITER, OSPlatform.WINDOWS);
+            return super.getProcessInfo(new String[] { "cmd.exe", "/C", cmd }, DELIMITER, OSPlatform.WINDOWS);
         } catch (IOException | InterruptedException e) {
             throw new ProcessHandlerException(e);
         }

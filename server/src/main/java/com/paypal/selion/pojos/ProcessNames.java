@@ -27,8 +27,6 @@ import org.openqa.selenium.Platform;
  *
  */
 public enum ProcessNames {
-    JAVA_UPDATE_SCHEDULER("jusched.exe", "NOTAPPLICABLE"),
-    JAVA_UPDATE_CHECK("jucheck.exe", "NOTAPPLICABLE"),
     INTERNET_EXPLORER("iexplore.exe", "iexplore"),
     FIREFOX("firefox.exe", "firefox"),
     CHROME("chrome.exe", "chrome"),
@@ -42,7 +40,7 @@ public enum ProcessNames {
     }
     private String windowsImageName;
     private String nonWindowsImageName;
-    
+
     public String getWindowsImageName(){
         return windowsImageName;
     }
@@ -52,7 +50,7 @@ public enum ProcessNames {
 
     /**
      * Utility method to return the executable names for the specified platform.
-     * 
+     *
      * @return {@link List} of {@link String} containing the executable file names.
      */
     public static List<String> getExecutableNames() {

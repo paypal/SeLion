@@ -29,7 +29,7 @@ import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.pojos.ProcessNames;
 
 /**
- * This class captures most of the heavy lifting required in terms of finding the default set of processes which 
+ * This class captures most of the heavy lifting required in terms of finding the default set of processes which
  * are to be ear marked for cleansing and also the core part of cleaning up these processes.
  * The sub classes of this class cater to the default recycling logic that comes pre-built in SeLion.
  *
@@ -40,7 +40,6 @@ public abstract class AbstractProcessHandler {
     protected List<ProcessInfo> getProcessInfo(String[] cmd, String delimiter, OSPlatform platform) throws IOException,
             InterruptedException {
         log.info("Fetching process information using the command : " + Arrays.toString(cmd));
-        List<ProcessInfo> processToBeKilled = new ArrayList<ProcessInfo>();
         Process process = Runtime.getRuntime().exec(cmd);
         StreamGobbler output = new StreamGobbler(process.getInputStream());
         StreamGobbler error = new StreamGobbler(process.getErrorStream());
@@ -51,18 +50,19 @@ public abstract class AbstractProcessHandler {
         error.join();
         process.destroy();
 
+        List<ProcessInfo> processToBeKilled = new ArrayList<ProcessInfo>();
         for (String eachLine : output.getContents()) {
             String[] eachProcessData = eachLine.split(delimiter);
             if (eachProcessData != null && eachProcessData.length >= 2) {
                 ProcessInfo tProcess = null;
-                switch (platform) {
+                switch(platform) {
                 case NONWINDOWS:
-                    // In the output process name comes second
-                    tProcess = new ProcessInfo(eachProcessData[1], eachProcessData[0]);
+                    // The process name comes first, then pid
+                    tProcess = new ProcessInfo(eachProcessData[0], eachProcessData[1]);
                     break;
                 default:
-                    // In the output process name comes first.
-                    tProcess = new ProcessInfo(eachProcessData[0], eachProcessData[1]);
+                    // (I.e Windows) The machineName, process name, PID.
+                    tProcess = new ProcessInfo(eachProcessData[1], eachProcessData[2]);
                     break;
                 }
                 if (matches(tProcess.getProcessName())) {
@@ -79,7 +79,7 @@ public abstract class AbstractProcessHandler {
             for (ProcessInfo eachProcess : process) {
                 log.info("Killing process : " + eachProcess);
                 String[] cmd = Arrays.copyOf(killCommand, killCommand.length + 1);
-                cmd[cmd.length-1] = eachProcess.getProcessId();
+                cmd[cmd.length - 1] = eachProcess.getProcessId();
                 Process output = Runtime.getRuntime().exec(cmd);
                 int returnCode = output.waitFor();
                 if (returnCode != 0) {
@@ -107,7 +107,7 @@ public abstract class AbstractProcessHandler {
     }
 
     /**
-     * @param image - A image name that should be checked against the image names represented by 
+     * @param image - A image name that should be checked against the image names represented by
      * {@link ProcessNames} enum.
      * @return <code>true</code> if the image name matches for the given operating system.
      */

@@ -18,13 +18,15 @@ package com.paypal.selion.utils.process;
 import java.io.IOException;
 import java.util.List;
 
+import com.sun.jna.Library;
+import com.sun.jna.Native;
 import org.apache.commons.lang3.StringUtils;
 
 import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.pojos.ProcessNames;
 
 /**
- * This class provides for a simple implementation that aims at providing the logic to fetch processes as 
+ * This class provides for a simple implementation that aims at providing the logic to fetch processes as
  * represented by {@link ProcessNames} and also in forcibly killing them on a Non Windows like environment.
  *
  */
@@ -37,17 +39,15 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
 
     @Override
     public List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException {
-        // We should only attempt to filter out the processes that are being run by the current user
-        String currentUser = System.getProperty("user.name");
-        // The below command is basically trying to list out all processes run by the current user
-        // and we are specifying that we need only the pid column and the command column to be listed for us
-        // we are also saying that the command column output should use 132 columns to display information.
-        // The tail command is basically being used here to get rid of the column headers from the output
-        // of ps command and the awk column basically prints the pid and command columns delimited by the
-        // delimiter <#>
-        String cmd = String.format("ps -e -w -u %s -o pid,command | tail -n +2 | awk '{ print $1\"%s\"$2\" \"$3\" \"$4 }'",
-                currentUser, DELIMITER);
         try {
+            // Java has no direct way to get our pid.
+            int ourProcessPID = CLibrary.INSTANCE.getpid();
+
+            // Find all processes that are our direct children using our PID as the parent pid to pgrep.
+            // The pgrep command is basically getting all child processes and we are interested only in
+            // process name and PID with "<#>" as a delimiter.
+            String cmd = String.format("pgrep -P %s -l | awk '{ print $2\"%s\"$1 }'",
+                    Integer.toString(ourProcessPID), DELIMITER);
             return getProcessInfo(new String[] { "sh", "-c", cmd }, DELIMITER, OSPlatform.NONWINDOWS);
         } catch (IOException | InterruptedException e) {
             throw new ProcessHandlerException(e);
@@ -87,6 +87,11 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
             }
         }
         return false;
+    }
+
+    private interface CLibrary extends Library {
+        CLibrary INSTANCE = (CLibrary) Native.loadLibrary("c", CLibrary.class);
+        int getpid();
     }
 
 }

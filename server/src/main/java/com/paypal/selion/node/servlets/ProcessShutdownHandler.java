@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,44 +15,33 @@
 
 package com.paypal.selion.node.servlets;
 
-import java.io.IOException;
-import java.util.logging.Level;
+import com.paypal.selion.pojos.ProcessInfo;
+import com.paypal.selion.utils.process.ProcessHandler;
+import com.paypal.selion.utils.process.ProcessHandlerException;
+import com.paypal.selion.utils.process.ProcessHandlerFactory;
+
+import java.util.List;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.paypal.selion.utils.process.ProcessHandlerException;
-
 /**
- * A simple servlet which basically issues a System.exit() when invoked. This servlet would have to be injected into the
- * node [not the Grid] so that it can help in terminating the node.
- * 
+ * A helper class for shutting down of processes started on SeLion Grid node.
  */
-public class NodeForceRestartServlet extends HttpServlet {
+public class ProcessShutdownHandler {
 
-    private static final long serialVersionUID = -8308677302003045927L;
-    private static final Logger log = Logger.getLogger(NodeForceRestartServlet.class.getName());
-    private final ProcessShutdownHandler shutdownHandler = new ProcessShutdownHandler();
+    private static final Logger log = Logger.getLogger(ProcessShutdownHandler.class.getName());
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
-    }
+    /**
+     * This method terminates all Node processes that we started.
+     *
+     */
+    public void shutdownProcesses() throws ProcessHandlerException {
+        log.info("Shutting down all our node processes.");
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-        log.warning("Shutting down the node");
-        try {
-            shutdownHandler.shutdownProcesses();
-        } catch (ProcessHandlerException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            System.exit(0);
-        }
+        ProcessHandler handler = ProcessHandlerFactory.createInstance();
+        List<ProcessInfo> processes = handler.potentialProcessToBeKilled();
+        handler.killProcess(processes);
+
+        log.info("Successfully shutdown all processes");
     }
 
 }
