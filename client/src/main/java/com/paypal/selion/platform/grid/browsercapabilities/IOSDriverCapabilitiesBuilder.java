@@ -30,23 +30,24 @@ class IOSDriverCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-
         MobileTestSession mobileSession = Grid.getMobileTestSession();
-        capabilities.setCapability(IOSCapabilities.DEVICE, mobileSession.getDevice());
-        capabilities.setCapability(IOSCapabilities.LANGUAGE, mobileSession.getAppLanguage());
-        capabilities.setCapability(IOSCapabilities.LOCALE, mobileSession.getAppLocale());
-        capabilities.setCapability(IOSCapabilities.BUNDLE_NAME, mobileSession.getAppName());
-        capabilities.setCapability(MOBILE_NODE_TYPE, IOS_DRIVER);
+        
+        IOSCapabilities iosCapabilities = new IOSCapabilities(capabilities.asMap());
+        iosCapabilities.setCapability(IOSCapabilities.DEVICE, mobileSession.getDevice());
+        iosCapabilities.setCapability(IOSCapabilities.LANGUAGE, mobileSession.getAppLanguage());
+        iosCapabilities.setCapability(IOSCapabilities.LOCALE, mobileSession.getAppLocale());
+        iosCapabilities.setCapability(IOSCapabilities.BUNDLE_NAME, mobileSession.getAppName());
+        iosCapabilities.setCapability(MOBILE_NODE_TYPE, IOS_DRIVER);
         if (StringUtils.isNotBlank(mobileSession.getAppVersion())) {
-            capabilities.setCapability(IOSCapabilities.BUNDLE_VERSION, mobileSession.getAppVersion());
+            iosCapabilities.setCapability(IOSCapabilities.BUNDLE_VERSION, mobileSession.getAppVersion());
         }
         if (StringUtils.isNotBlank(mobileSession.getPlatformVersion())) {
-            capabilities.setCapability(IOSCapabilities.UI_SDK_VERSION, mobileSession.getPlatformVersion());
+            iosCapabilities.setCapability(IOSCapabilities.UI_SDK_VERSION, mobileSession.getPlatformVersion());
         }
         if (StringUtils.isNotBlank(mobileSession.getDeviceType())) {
-            capabilities.setCapability(IOSCapabilities.VARIATION,
+            iosCapabilities.setCapability(IOSCapabilities.VARIATION,
                     DeviceVariation.valueOf(mobileSession.getDeviceType()));
         }
-        return capabilities;
+        return iosCapabilities;
     }
 }
