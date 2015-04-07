@@ -1,4 +1,6 @@
+#if (!$package.equals(""))
 package $package;
+#end
 
 import $baseclasspackage;
 #foreach ($data in $control)

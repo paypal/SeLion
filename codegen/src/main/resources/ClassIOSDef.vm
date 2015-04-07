@@ -1,4 +1,6 @@
+#if (!$package.equals(""))
 package $package;
+#end
 
 import $baseclasspackage;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;

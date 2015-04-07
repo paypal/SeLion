@@ -79,7 +79,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
     }
 
     public void setDetailedTextOutputLocation(File location) {
-        this.detailedTextOutputLocation = location;
+        detailedTextOutputLocation = location;
     }
 
     public void displayProjectInformation() {
@@ -124,11 +124,8 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * @see org.apache.maven.plugin.AbstractMojo#execute()
      */
     public void execute() throws MojoExecutionException {
-
-        // iff basePackage is null, empty, or just whitespace reset it to the default value
-        basePackage = StringUtils.defaultString(basePackage, "com.paypal.selion.testcomponents");
-        // iff baseFolder is null, empty, or just whitespace reset it to the default value
-        baseFolder = StringUtils.defaultString(baseFolder, "GUIData");
+        // iff baseFolder is null or empty, reset it to the default value
+        baseFolder = StringUtils.defaultIfEmpty(baseFolder, "GUIData");
 
         Logger.setLogger(getLog());
         Log logger = Logger.getLogger();
@@ -164,10 +161,11 @@ public class CodeGeneratorMojo extends AbstractMojo {
                 if (generateJavaCode(baseFile, dataFile, extendedFile)) {
                     logger.info("Generating java file for YAML file [" + dataFile.getName() + "] in domain ["
                             + domain + "]");
-                    
+
                     String tempPackage = basePackage;
+                    // add the folder, iff it contains a value
                     if (!folder.isEmpty()) {
-                        tempPackage += "." + folder;
+                        tempPackage += tempPackage.isEmpty() ?  folder :  "." + folder;
                     }
                     helper.generateNewCode(dataFile, relativePath, tempPackage, domain);
                 }
