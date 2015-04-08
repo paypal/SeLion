@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="1" name="SelendroidMobileSuite" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="50" annotations="JDK">
+    <!-- SELENIUM CONFIGURATION -->
+    <parameter name="mobileNodeType" value="selendroid" />
+    <parameter name="runLocally" value="true" />
+    <!-- The appFolder parameter is applicable for android apps and points to the folder where apps reside -->
+    <parameter name="appFolder" value="src/test/resources/apps" />
+    <test verbose="2" name="selendroid-mobile-test" annotations="JDK">
+        <classes>
+            <class name="${package}.sample.selion.SelendroidDemoTest" />
+        </classes>
+    </test>
+</suite>
+

@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="1" name="AppiumSelionHubStorageMobileTestSuite" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="50" annotations="JDK">
+    <!-- SELENIUM CONFIGURATION -->
+    <parameter name="mobileNodeType" value="appium" />
+    <!-- appium server should be registered to the grid, which is the selenium host to be specified here -->
+    <parameter name="seleniumhost" value="10.20.30.40" />
+    <parameter name="seleniumport" value="4723"></parameter>
+    
+    <test verbose="2" name="appium-selionhubstorage-mobile-test" annotations="JDK">
+        <classes>
+            <class name="${package}.sample.selion.AppiumAndroidSeLionHubTest" />
+        </classes>
+    </test>
+</suite>
+
