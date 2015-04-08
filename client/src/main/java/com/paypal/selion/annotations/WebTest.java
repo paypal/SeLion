@@ -24,9 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * interface creates annotation WebTest and specified parameters<br>
- * Annotation @Webtest will let Grid know to open RC and browser instance, start session
- * 
+ * Interface creates annotation WebTest and specified parameters<br>
+ * Annotation @Webtest will let Grid know to open browser instance and start a session
  */
 @Retention(RUNTIME)
 @Target({ CONSTRUCTOR, METHOD, TYPE })

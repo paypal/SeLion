@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.utils;
+package com.paypal.selion.grid;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.openqa.selenium.Platform;
@@ -44,17 +43,17 @@ import com.paypal.selion.pojos.ArtifactDetails.URLChecksumEntity;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
- * File downloader is used to Cleanup already downloaded files and download all the files specified in the
+ * File downloader is used to clean up already downloaded files and download all the files specified in the
  * download.properties
- * 
  */
-public final class FileDownloader {
+final class FileDownloader {
 
-    private static final Logger logger = SeLionGridLogger.getLogger();
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(FileDownloader.class);
     private static List<String> files = new ArrayList<String>();
     private static long lastModifiedTime = 0;
-    private static List<String> supportedTypes = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR, ArchiveStreamFactory.JAR, "bz2");
-    
+    private static List<String> supportedTypes = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR,
+            ArchiveStreamFactory.JAR, "bz2");
+
     private FileDownloader() {
         // Utility class. Hide the constructor
     }
@@ -63,12 +62,15 @@ public final class FileDownloader {
      * This method is used to cleanup all the files already downloaded
      */
     public static void cleanup() {
+        LOGGER.entering();
+
         for (String temp : files) {
             new File(temp).delete();
         }
 
         // Cleaning up the files list
         files.clear();
+        LOGGER.exiting();
     }
 
     /**
@@ -76,8 +78,9 @@ public final class FileDownloader {
      * download.properties
      */
     public static void checkForDownloads() {
+        LOGGER.entering();
 
-        File downloadFile = new File(SeLionGridConstants.DOWNLOAD_FILE_PATH);
+        File downloadFile = new File(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE);
 
         if (lastModifiedTime == downloadFile.lastModified()) {
             return;
@@ -89,30 +92,30 @@ public final class FileDownloader {
         Properties prop = new Properties();
 
         try {
-            FileInputStream f = new FileInputStream(SeLionGridConstants.DOWNLOAD_FILE_PATH);
-            prop.load(new FileInputStream(SeLionGridConstants.DOWNLOAD_FILE_PATH));
+            FileInputStream f = new FileInputStream(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE);
+            prop.load(new FileInputStream(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE));
             f.close();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Unable to open download properties file", e);
+            LOGGER.log(Level.SEVERE, "Unable to open download properties file", e);
             throw new RuntimeException(e);
         }
-        
-        logger.info("Current Platform:"+Platform.getCurrent());
+
+        LOGGER.info("Current Platform: " + Platform.getCurrent());
         Map<String, URLChecksumEntity> artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatform(prop);
-        
+
         for (Entry<String, URLChecksumEntity> artifact : artifactDetails.entrySet()) {
             URLChecksumEntity entity = artifact.getValue();
             String url = entity.getUrl().getValue();
             String checksum = entity.getChecksum().getValue();
             StringBuilder msg = new StringBuilder();
             msg.append("Downloading ").append(artifact.getKey());
-            msg.append(" artifacts from URL :").append(url).append("...");
+            msg.append(" from URL: ").append(url).append("...");
             msg.append("[").append(checksum).append("] will be used for checksum validation.");
-            logger.info(msg.toString());
-            String result = null;
+            LOGGER.info(msg.toString());
+            String result;
             while ((result = downloadFile(url, checksum)) == null) {
                 // TODO: Need to add a measurable wait to skip downloading after 'n' tries
-                logger.warning("Error downloading the file : " + url + ". Retrying....");
+                LOGGER.warning("Error downloading the file " + url + ". Retrying....");
             }
             files.add(result);
             if (!result.endsWith(".jar")) {
@@ -120,7 +123,8 @@ public final class FileDownloader {
                 files.addAll(extractedFileList);
             }
         }
-        logger.info("Files after download and extract:"+files.toString());
+        LOGGER.info("Files after download and extract: " + files.toString());
+        LOGGER.exiting();
     }
 
     private static boolean checkLocalFile(String filename, String checksum, String algorithm) {
@@ -150,18 +154,18 @@ public final class FileDownloader {
             }
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (is != null) {
                     is.close();
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         if (checksum.equals(sb.toString())) {
-            logger.info("checksum matched for " + filename);
+            LOGGER.info("checksum matched for " + filename);
             return true;
         }
         return false;
@@ -170,23 +174,23 @@ public final class FileDownloader {
 
     private static String decideFilePath(String fileName) {
         if (fileName.endsWith(".jar")) {
-            return new StringBuffer().append(SeLionGridConstants.SELION_HOME).append(fileName).toString();
+            return new StringBuffer().append(SeLionGridConstants.SELION_HOME_DIR).append(fileName).toString();
         } else {
             // Encountered a archive type: at this point it is sure the valid archive types come in
-            return new StringBuffer().append(SeLionGridConstants.DOWNLOAD_DIR_PATH).append(fileName).toString();
+            return new StringBuffer().append(SeLionGridConstants.DOWNLOADS_DIR).append(fileName).toString();
         }
     }
+
     private static String downloadFile(String url, String checksum, String algorithm) {
 
-        
-        String filename =  decideFilePath(url.substring(url.lastIndexOf("/") + 1));
+        String filename = decideFilePath(url.substring(url.lastIndexOf("/") + 1));
         if (new File(filename).exists()) {
             // local file exist. no need to download
             if (checkLocalFile(filename, checksum, algorithm)) {
                 return filename;
             }
         }
-        logger.info("Downloading from " + url + " with checksum value " + checksum + "[" + algorithm + "]");
+        LOGGER.info("Downloading from " + url + " with checksum " + checksum + "[" + algorithm + "]");
         OutputStream outStream = null;
         URLConnection uCon = null;
 
@@ -221,27 +225,27 @@ public final class FileDownloader {
             }
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (is != null) {
                     is.close();
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         if (checksum.equals(sb.toString())) {
-            logger.info("checksum matched for " + url);
+            LOGGER.info("checksum matched for " + url);
             return filename;
         }
-        logger.info("checksum not matched for the file : " + url);
+        LOGGER.info("checksum did not match for " + url);
         return null;
     }
 
     /**
      * this method is used to download a file from the specified url
-     * 
+     *
      * @param artifactUrl
      *            - url of the file to be downloaded.
      * @param checksum
@@ -249,6 +253,7 @@ public final class FileDownloader {
      * @return the downloaded file path.
      */
     public static String downloadFile(String artifactUrl, String checksum) {
+        LOGGER.entering(new Object[] { artifactUrl, checksum });
         Preconditions.checkArgument(artifactUrl != null && !artifactUrl.isEmpty(),
                 "Invalid URL: Cannot be null or empty");
         Preconditions.checkArgument(checksum != null && !checksum.isEmpty(),
@@ -261,7 +266,9 @@ public final class FileDownloader {
         } else if (isValidMD5(checksum)) {
             algorithm = "MD5";
         }
-        return downloadFile(artifactUrl, checksum, algorithm);
+        String result = downloadFile(artifactUrl, checksum, algorithm);
+        LOGGER.exiting(result);
+        return result;
     }
 
     private static boolean isValidSHA1(String s) {
@@ -271,14 +278,14 @@ public final class FileDownloader {
     private static boolean isValidMD5(String s) {
         return s.matches("[a-fA-F0-9]{32}");
     }
-    
+
     private static void isValidFileType(String url) {
-        //Obtaining only the file extension
+        // Obtaining only the file extension
         String fileType = url.substring(url.lastIndexOf('.') + 1);
         if (!supportedTypes.contains(fileType)) {
-            throw new UnsupportedOperationException("Unsupported file format: " + fileType+". Supported file types are .zip,.tar and bz2");
+            throw new UnsupportedOperationException("Unsupported file format: " + fileType
+                    + ". Supported file types are .zip,.tar and bz2");
         }
     }
-    
-}
 
+}

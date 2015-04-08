@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +44,7 @@ import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.SauceConfigReader;
 import com.paypal.selion.utils.SauceConnectManager;
 
@@ -54,7 +54,7 @@ import com.paypal.selion.utils.SauceConnectManager;
  */
 public class SeLionSauceProxy extends DefaultRemoteProxy {
 
-    private static final Logger log = Logger.getLogger(SeLionSauceProxy.class.getName());
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionSauceProxy.class);
 
     private SauceConnectManager manager = new SauceConnectManager();
     private Map<String, String> apiKeys = new HashMap<String, String>();
@@ -81,7 +81,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                log.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
 
             if (getNumberOfTCRunning() <= maxTestCase) {
@@ -131,7 +131,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
             JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
             return obj.getAsJsonObject("totals").get("all").getAsInt();
         } catch (JsonSyntaxException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return maxTestCase + 1;
     }
@@ -148,7 +148,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
             JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
             return obj.getAsJsonObject("subaccounts").getAsJsonObject(user).get("all").getAsInt();
         } catch (JsonSyntaxException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return -1;
     }
@@ -164,7 +164,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
             JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
             return obj.get("concurrency").getAsInt();
         } catch (JsonSyntaxException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return 0;
     }
@@ -173,7 +173,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
         try {
             return new URL("http://ondemand.saucelabs.com:80");
         } catch (MalformedURLException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return remoteHost;
     }
@@ -207,7 +207,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
                 result = result + output;
             }
         } catch (IOException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             if (conn != null) {
                 conn.disconnect();
@@ -237,12 +237,12 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
 
         public void run() {
             int i = 0;
-            log.fine("cleanup thread starting...");
+            LOGGER.fine("cleanup thread starting...");
             while (!proxy.bKill) {
                 try {
                     Thread.sleep(30 * 1000); // will cleanup every 5 min
                 } catch (InterruptedException e) {
-                    log.severe("clean up thread died. " + e.getMessage());
+                    LOGGER.severe("clean up thread died. " + e.getMessage());
                 }
 
                 try {
@@ -264,7 +264,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
             for (String temp : set) {
                 if (getNumberOfTCRunningForUser(temp) == 0) {
 
-                    log.fine("Going to close the Tunnel For :" + temp);
+                    LOGGER.fine("Going to close the Tunnel For :" + temp);
                     if (System.currentTimeMillis() - lastTime.get(temp) > 120 * 1000) {
                         proxy.manager.closeTunnelsForPlan(temp, null);
                     }
@@ -277,14 +277,14 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
                 try {
                     temp.getValue().exitValue();
                     proxy.manager.removeUserFromTunnelMap(temp.getKey());
-                    log.fine("Proccess Check : Already Closed : " + temp.getKey());
-                    log.fine("Proccess Check : Trying to Restart : " + temp.getKey());
+                    LOGGER.fine("Proccess Check : Already Closed : " + temp.getKey());
+                    LOGGER.fine("Proccess Check : Trying to Restart : " + temp.getKey());
                     proxy.manager.openConnection(temp.getKey(), apiKeys.get(temp.getKey()), new File(
                             "Sauce-Connect.jar"), null, null, null);
                 } catch (IllegalThreadStateException e) {
-                    log.fine("Proccess Check : Working fine : " + temp.getKey());
+                    LOGGER.fine("Proccess Check : Working fine : " + temp.getKey());
                 } catch (IOException e) {
-                    log.log(Level.SEVERE, e.getMessage(), e);
+                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
         }

@@ -40,7 +40,7 @@ public class ProcessShutdownHandlerTest extends PowerMockTestCase {
                     "com.paypal.selion.utils.process.WindowsProcessHandler");
         } else {
             when(configParser.getString("customProcessHandler")).thenReturn(
-                    "com.paypal.selion.utils.process.NonWindowsProcessHandler");
+                    "com.paypal.selion.utils.process.UnixProcessHandler");
         }
     }
 

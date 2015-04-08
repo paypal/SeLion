@@ -13,58 +13,18 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.node.servlets;
+package com.paypal.selion.grid;
 
-import java.io.IOException;
-import java.io.Serializable;
+import org.testng.annotations.Test;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.paypal.selion.grid.FileDownloader;
 
-/**
- * @deprecated - This is a dummy servlet that is intended ONLY for testing purposes. Please do not hook this servlet.
- * 
- */
-public class DummyServlet extends HttpServlet {
+public class FileDownloaderTest {
 
-    private static final long serialVersionUID = 9187677490975386050L;
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.process(request, response);
+    @Test(expectedExceptions = { UnsupportedOperationException.class })
+    public void testUnsupportedFileType() {
+        // gz compression type is not supported.
+        String unsupportedFileURL = "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-i686.tar.gz";
+        FileDownloader.downloadFile(unsupportedFileURL, "123CEFRGxSdfnsfwefla");
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.process(req, resp);
-
-    }
-
-    protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        VeryLargeObject[] vla = new VeryLargeObject[1 << 12];
-        for (int i = 0; i < Integer.MAX_VALUE; ++i) {
-            vla[i] = new VeryLargeObject();
-        }
-    }
-
-    public static class VeryLargeObject implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        public static final int SIZE = 1 << 12;
-
-        public int[][] bigOne = new int[SIZE][SIZE];
-
-        public VeryLargeObject() {
-            for (int i = 0; i < SIZE; ++i) {
-                for (int j = 0; j < SIZE; ++j) {
-                    bigOne[i][j] = (int) (Math.random() * 100);
-                }
-            }
-        }
-
-    }
-
 }

@@ -24,7 +24,6 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -53,7 +52,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
      */
     private static final String ARTIFACT_CONFIG_PROPERTY = "managedArtifact";
 
-    private static final Logger logger = SeLionGridLogger.getLogger();
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ManagedArtifactRepository.class);
 
     private static ManagedArtifactRepository instance = new ManagedArtifactRepository();
 
@@ -74,7 +73,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     }
 
     private ManagedArtifactRepository() {
-        repoFolder = new File(SeLionGridConstants.SELION_HOME + File.separator + REPO_FOLDER_NAME);
+        repoFolder = new File(SeLionGridConstants.SELION_HOME_DIR + File.separator + REPO_FOLDER_NAME);
         repositorySynchronizationLock = new ReentrantLock();
         timer = new Timer();
 
@@ -87,12 +86,12 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     @Override
     public ManagedArtifact saveContents(UploadedArtifact uploadedArtifact) {
         synchronized (getMutex(uploadedArtifact)) {
-            SeLionGridLogger.entering(uploadedArtifact);
+            LOGGER.entering(uploadedArtifact);
             File file = createFileUsing(uploadedArtifact);
             try {
                 FileUtils.writeByteArrayToFile(file, uploadedArtifact.getArtifactContents());
                 ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
-                SeLionGridLogger.exiting(managedArtifact);
+                LOGGER.exiting(managedArtifact);
                 return managedArtifact;
             } catch (IOException e) {
                 throw new ArtifactUploadException("IOException in writing file contents", e);
@@ -112,14 +111,14 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
         boolean artifactPresent = false;
         try {
             repositorySynchronizationLock.lock();
-            SeLionGridLogger.entering(requestedCriteria);
+            LOGGER.entering(requestedCriteria);
             ManagedArtifact managedArtifact = getMatch(requestedCriteria);
             artifactPresent = !managedArtifact.isExpired();
-            SeLionGridLogger.exiting(artifactPresent);
+            LOGGER.exiting(artifactPresent);
         } catch (ArtifactDownloadException exe) {
 
             // Log and return false
-            logger.log(Level.WARNING, "No matching artifact", exe);
+            LOGGER.log(Level.WARNING, "No matching artifact", exe);
         } finally {
             repositorySynchronizationLock.unlock();
         }
@@ -135,13 +134,13 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
          */
         try {
             repositorySynchronizationLock.lock();
-            SeLionGridLogger.entering(requestedCriteria);
+            LOGGER.entering(requestedCriteria);
             ManagedArtifact managedArtifact = getMatch(requestedCriteria);
             if (managedArtifact.isExpired()) {
                 throw new ArtifactDownloadException("The requested artifact: " + managedArtifact.getArtifactName()
                         + " has expired");
             }
-            SeLionGridLogger.exiting(managedArtifact);
+            LOGGER.exiting(managedArtifact);
             return managedArtifact;
         } finally {
             repositorySynchronizationLock.unlock();
@@ -205,8 +204,8 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
         ManagedArtifact managedArtifact = null;
         try {
             String managedArtifactClassName = ConfigParser.getInstance().getString(ARTIFACT_CONFIG_PROPERTY);
-            if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE, "ManagedArtifact class name configured in grid: " + managedArtifactClassName);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "ManagedArtifact class name configured in grid: " + managedArtifactClassName);
             }
             Class<? extends ManagedArtifact> managedArtifactClass = (Class<? extends ManagedArtifact>) this.getClass()
                     .getClassLoader().loadClass(managedArtifactClassName);
@@ -243,7 +242,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
             for (File file : files) {
                 ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
                 if (managedArtifact.isExpired() && !file.delete()) {
-                    logger.log(Level.WARNING, "File: " + file.getName() + " not deleted from repository");
+                    LOGGER.log(Level.WARNING, "File: " + file.getName() + " not deleted from repository");
                 }
             }
         }
@@ -256,7 +255,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
                     }
                     if (isDirectoryEmpty(file)) {
                         if (!file.delete()) {
-                            logger.log(Level.WARNING, "Directory: " + file.getName() + " not deleted from repository");
+                            LOGGER.log(Level.WARNING, "Directory: " + file.getName() + " not deleted from repository");
                         }
                     }
                 }

@@ -1,6 +1,6 @@
 {
-    "defaultInterval": 60000,
-    "uniqueSessionCount": 25,
+    "restartCycle": 60000,
+    "uniqueSessionCount": 50,
     "customProcessHandler": "com.paypal.selion.utils.process.WindowsProcessHandler",
     "artifactMaxFileSize": 1073741824,
     "artifactExpiryInMilliSec": 86400000,

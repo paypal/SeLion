@@ -31,11 +31,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang.StringUtils;
+
+import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
  * Handles opening a SSH Tunnel using the Sauce Connect logic. The class maintains a cache of {@link Process } instances
@@ -44,7 +45,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class SauceConnectManager {
 
-    private static final Logger julLogger = Logger.getLogger(SauceConnectManager.class.getName());
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConnectManager.class);
     private final boolean quietMode;
     private Map<String, Process> tunnelMap = new HashMap<String, Process>();
     int port = 5000;
@@ -143,7 +144,7 @@ public class SauceConnectManager {
         if (printStream != null) {
             printStream.println(message);
         }
-        julLogger.log(Level.INFO, message);
+        LOGGER.log(Level.INFO, message);
     }
 
     private void addTunnelToMap(String userName, Object tunnel) {
@@ -221,7 +222,7 @@ public class SauceConnectManager {
                 workingDirectory = new File(getSauceConnectWorkingDirectory());
             }
             processBuilder.directory(workingDirectory);
-            julLogger.log(Level.INFO, "Launching Sauce Connect " + Arrays.toString(args));
+            LOGGER.log(Level.INFO, "Launching Sauce Connect " + Arrays.toString(args));
 
             final Process process = processBuilder.start();
             try {
@@ -309,7 +310,7 @@ public class SauceConnectManager {
         protected void processLine(String line) {
             if (!quietMode) {
                 getPrintStream().println(line);
-                julLogger.info(line);
+                LOGGER.info(line);
             }
         }
 

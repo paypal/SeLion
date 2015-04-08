@@ -57,7 +57,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
             this.uploadResponder = uploadResponder;
         }
 
-        private static final Logger logger = SeLionGridLogger.getLogger();
+        private static final Logger LOGGER = SeLionGridLogger.getLogger(AcceptHeaderEnum.class);
 
         public String getAcceptHeader() {
             return acceptHeader;
@@ -79,8 +79,8 @@ public interface UploadResponder<T extends ManagedArtifact> {
             if (acceptHeader != null) {
                 for (AcceptHeaderEnum acceptHeaderEnum : AcceptHeaderEnum.values()) {
                     if (acceptHeader.indexOf(acceptHeaderEnum.getAcceptHeader()) > -1) {
-                        if (logger.isLoggable(Level.FINE)) {
-                            logger.log(Level.FINE, "Returning: " + acceptHeaderEnum.getClass().getSimpleName()
+                        if (LOGGER.isLoggable(Level.FINE)) {
+                            LOGGER.log(Level.FINE, "Returning: " + acceptHeaderEnum.getClass().getSimpleName()
                                     + " for accept header: " + acceptHeader);
                         }
                         return acceptHeaderEnum;
@@ -200,7 +200,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
         }
 
         protected void respondFromRequestProcessor() {
-            SeLionGridLogger.entering();
+            SeLionGridLogger.getLogger(JsonUploadResponder.class).entering();
             PrintWriter out = null;
             transferContext.getHttpServletResponse().setContentType(CONTENT_TYPE_VALUE);
             try {
@@ -211,7 +211,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
                     processArtifact();
                 }
                 out.println(gson.toJson(jsonResponse));
-                SeLionGridLogger.exiting();
+                SeLionGridLogger.getLogger(JsonUploadResponder.class).exiting();
             } catch (IOException e) {
                 throw new ArtifactUploadException("IOException in retrieving HttpServletResponse's Writer", e);
             }
@@ -236,7 +236,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
 
         public static final String CONTENT_TYPE_VALUE = AcceptHeaderEnum.TEXT_PLAIN.getAcceptHeader();
 
-        private static final Logger logger = SeLionGridLogger.getLogger();
+        private static final SeLionGridLogger logger = SeLionGridLogger.getLogger(TextPlainUploadResponder.class);
 
         private StringBuffer textResponse = null;
 

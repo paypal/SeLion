@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -126,11 +125,11 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
         }
 
         public List<ManagedArtifact> getUploadedData() {
-            SeLionGridLogger.entering();
+            SeLionGridLogger.getLogger(AbstractUploadRequestProcessor.class).entering();
             if (managedArtifactList.isEmpty()) {
                 populateManagedArtifactList();
             }
-            SeLionGridLogger.exiting(managedArtifactList);
+            SeLionGridLogger.getLogger(AbstractUploadRequestProcessor.class).exiting(managedArtifactList);
             return managedArtifactList;
         }
 
@@ -242,7 +241,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
      */
     public final class MultipartUploadRequestProcessor extends AbstractUploadRequestProcessor {
 
-        private static final Logger logger = SeLionGridLogger.getLogger();
+        private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(MultipartUploadRequestProcessor.class);
 
         private ServletFileUpload servletFileUpload = null;
 
@@ -262,7 +261,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
         }
 
         private void saveUploadedData() throws FileUploadException {
-            logger.entering(this.getClass().getName(), "saveUploadedData");
+            LOGGER.entering(this.getClass().getName(), "saveUploadedData");
             int count = parseRequestAsFileItems();
             if (count > 1) {
                 throw new ArtifactUploadException("Only one file supported for upload using multipart");
@@ -279,7 +278,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
                     managedArtifactList.add(managedArtifact);
                 }
             }
-            logger.exiting(this.getClass().getName(), "saveUploadedData");
+            LOGGER.exiting(this.getClass().getName(), "saveUploadedData");
         }
 
         private int parseRequestAsFileItems() throws FileUploadException {

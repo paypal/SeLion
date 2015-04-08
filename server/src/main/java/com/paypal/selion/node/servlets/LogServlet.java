@@ -48,7 +48,7 @@ public class LogServlet extends HttpServlet {
 
         @Override
         public boolean accept(File dir, String name) {
-            return name.endsWith(EXTENSION);
+            return name.startsWith(PREFIX) && name.endsWith(EXTENSION);
         }
 
     }
@@ -56,6 +56,7 @@ public class LogServlet extends HttpServlet {
     private static final long serialVersionUID = -445566L;
     private File logsDirectory = null;
 
+    private static final String PREFIX = "selion-grid-node";
     private static final String EXTENSION = ".log";
 
     /**
@@ -79,8 +80,8 @@ public class LogServlet extends HttpServlet {
         }
 
         buffer.append("<form name ='myform' action=").append(url).append(" method= 'post'>");
-        buffer.append("<input type='hidden'").append("name ='fileName'").append("value =")
-                .append(logFileName.getName()).append(">");
+        buffer.append("<input type='hidden'").append(" name ='fileName'").append(" value ='")
+                .append(logFileName.getName()).append("'>");
         buffer.append("<a href= 'javascript: submitform();' > More Logs </a>");
         buffer.append("</form>");
         return buffer.toString();
@@ -119,11 +120,10 @@ public class LogServlet extends HttpServlet {
         if (logsDirectory != null) {
             return logsDirectory;
         }
-        logsDirectory = new File(SeLionGridConstants.LOGS_FOLDER_PATH);
+        logsDirectory = new File(SeLionGridConstants.LOGS_DIR);
 
         if (!logsDirectory.exists()) {
             logsDirectory.mkdirs();
-
         }
 
         return logsDirectory;

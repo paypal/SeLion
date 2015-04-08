@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.openqa.selenium.Platform;
 
-
 /**
  * This enum contains the list of processes that are of interest for the SeLion Grid.
  *
@@ -34,18 +33,20 @@ public enum ProcessNames {
     IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"),
     PHANTOMJS("phantomjs.exe", "phantomjs");
 
-    private ProcessNames(String windowsImageName, String nonWindowsImageName){
+    private ProcessNames(String windowsImageName, String unixImageName) {
         this.windowsImageName = windowsImageName;
-        this.nonWindowsImageName = nonWindowsImageName;
+        this.unixImageName = unixImageName;
     }
-    private String windowsImageName;
-    private String nonWindowsImageName;
 
-    public String getWindowsImageName(){
+    private String windowsImageName;
+    private String unixImageName;
+
+    public String getWindowsImageName() {
         return windowsImageName;
     }
-    public String getNonWindowsImageName() {
-        return nonWindowsImageName;
+
+    public String getUnixImageName() {
+        return unixImageName;
     }
 
     /**
@@ -54,22 +55,22 @@ public enum ProcessNames {
      * @return {@link List} of {@link String} containing the executable file names.
      */
     public static List<String> getExecutableNames() {
-        List<String> executableName = new ArrayList<String>();
+        List<String> executableNames = new ArrayList<String>();
         switch (Platform.getCurrent()) {
         case MAC:
         case UNIX:
         case LINUX: {
-            Collections.addAll(executableName, ProcessNames.PHANTOMJS.getNonWindowsImageName(),
-                    ProcessNames.CHROMEDRIVER.getNonWindowsImageName());
+            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getUnixImageName(),
+                    ProcessNames.CHROMEDRIVER.getUnixImageName());
             break;
         }
         default: {
-            Collections.addAll(executableName, ProcessNames.PHANTOMJS.getWindowsImageName(),
+            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getWindowsImageName(),
                     ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName());
             break;
         }
         }
-        return executableName;
+        return executableNames;
     }
 
 }

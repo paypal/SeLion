@@ -24,8 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * interface creates annotation AppTest and specified parameters<br>
- * Annotation @MobileTest will let Grid know to open a session on a mobile device/simulator, start session
+ * Interface creates annotation MobileTest and specified parameters<br>
+ * Annotation @MobileTest will let Grid know to open a session on a mobile device/simulator
  */
 @Retention(RUNTIME)
 @Target({ CONSTRUCTOR, METHOD, TYPE })

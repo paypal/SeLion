@@ -26,7 +26,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +42,7 @@ import com.paypal.selion.utils.ConfigParser;
  */
 public class DefaultManagedArtifact implements ManagedArtifact {
 
-    private static final Logger logger = SeLionGridLogger.getLogger();
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(DefaultManagedArtifact.class);
 
     private static final String EXPIRY_CONFIG_PROPERTY = "artifactExpiryInMilliSec";
 
@@ -67,8 +66,8 @@ public class DefaultManagedArtifact implements ManagedArtifact {
         this.filePath = pathName;
         artifactFile = new File(this.filePath);
         timeToLiveInMillis = ConfigParser.getInstance().getLong(EXPIRY_CONFIG_PROPERTY);
-        if (logger.isLoggable(Level.FINE)) {
-            logger.log(Level.FINE, "Time To Live configured in Grid: " + timeToLiveInMillis + " milli seconds.");
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Time To Live configured in Grid: " + timeToLiveInMillis + " milli seconds.");
         }
     }
 
@@ -103,17 +102,17 @@ public class DefaultManagedArtifact implements ManagedArtifact {
 
     @Override
     public <T extends Criteria> boolean matches(T criteria) {
-        SeLionGridLogger.entering(criteria);
+        LOGGER.entering(criteria);
         if (!criteria.getArtifactName().equals(getArtifactName())) {
-            SeLionGridLogger.exiting(false);
+            LOGGER.exiting(false);
             return false;
         }
         if (isApplicationFolderRequested(criteria) && applicationFolderAndUserIdMatches(criteria)) {
-            SeLionGridLogger.exiting(true);
+            LOGGER.exiting(true);
             return true;
         }
         boolean matches = !isApplicationFolderRequested(criteria) && userIdMatches(criteria);
-        SeLionGridLogger.exiting(matches);
+        LOGGER.exiting(matches);
         return matches;
     }
 
@@ -121,8 +120,8 @@ public class DefaultManagedArtifact implements ManagedArtifact {
     public boolean isExpired() {
         boolean expired = (System.currentTimeMillis() - artifactFile.lastModified()) > timeToLiveInMillis;
         if (expired) {
-            if (logger.isLoggable(Level.INFO)) {
-                logger.log(
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.log(
                         Level.INFO,
                         "Artifact: " + getArtifactName() + " expired, time(now): "
                                 + FileTime.fromMillis(System.currentTimeMillis()) + ", created: "
@@ -241,14 +240,14 @@ public class DefaultManagedArtifact implements ManagedArtifact {
         }
 
         public Map<String, String> asMap() {
-            SeLionGridLogger.entering();
+            LOGGER.entering();
             Map<String, String> contentMap = new HashMap<>();
             contentMap.put(RequestHeaders.FILENAME.getParameterName(), getArtifactName());
             contentMap.put(RequestHeaders.USERID.getParameterName(), getUserId());
             if (!StringUtils.isBlank(getApplicationFolder())) {
                 contentMap.put(RequestHeaders.APPLICATIONFOLDER.getParameterName(), getApplicationFolder());
             }
-            SeLionGridLogger.exiting(contentMap);
+            LOGGER.exiting(contentMap);
             return contentMap;
         }
 

@@ -24,19 +24,20 @@ import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.pojos.ProcessNames;
 
 /**
- * This class provides for a simple implementation that aims at providing the logic to fetch processes as
- * represented by {@link ProcessNames} and also in forcibly killing them on a Windows like environment.
+ * This class provides for a simple implementation that aims at providing the logic to fetch processes as represented by
+ * {@link ProcessNames} and also in forcibly killing them on a Windows like environment.
  *
  */
 public class WindowsProcessHandler extends AbstractProcessHandler implements ProcessHandler {
     private static final String DELIMITER = ",";
 
     public WindowsProcessHandler() {
-        log.info("You have chosen to use a Windows Process Handler.");
+        LOGGER.info("You have chosen to use a Windows Process Handler.");
     }
 
     @Override
     public List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException {
+        LOGGER.entering();
         int ourPid = getCurrentProcessID();
 
         // Find all processes names that are our direct children using our PID as the parent pid using wmic.
@@ -44,10 +45,12 @@ public class WindowsProcessHandler extends AbstractProcessHandler implements Pro
         // Note that we plan to kill all child process descendants in killProcess (with /T)
         String cmd = String.format("wmic process where (parentprocessid=%s) get name,processid /format:csv | more +2",
                 String.valueOf(ourPid));
-       // String[] cmd = { "cmd.exe", "/C", "tasklist /FO CSV /NH" };
 
         try {
-            return super.getProcessInfo(new String[] { "cmd.exe", "/C", cmd }, DELIMITER, OSPlatform.WINDOWS);
+            List<ProcessInfo> processToBeKilled = getProcessInfo(new String[] { "cmd.exe", "/C", cmd }, DELIMITER,
+                    OSPlatform.WINDOWS);
+            LOGGER.exiting(processToBeKilled.toString());
+            return processToBeKilled;
         } catch (IOException | InterruptedException e) {
             throw new ProcessHandlerException(e);
         }
@@ -55,25 +58,30 @@ public class WindowsProcessHandler extends AbstractProcessHandler implements Pro
 
     @Override
     public void killProcess(List<ProcessInfo> processes) throws ProcessHandlerException {
-        String[] cmd = {"cmd.exe", "/C", "taskkill /F /T /PID"};
+        String[] cmd = { "cmd.exe", "/C", "taskkill /F /T /PID" };
         super.killProcess(cmd, processes);
     }
 
     /**
-     * @param image - The image name of the process
+     * @param image
+     *            - The image name of the process
      * @return - <code>true</code> If the image name begins with any of the image names that are part of
-     * {@link ProcessNames} enum.
+     *         {@link ProcessNames} enum.
      */
     @Override
     protected boolean matches(String image) {
+        LOGGER.entering(image);
         if (StringUtils.isEmpty(image)) {
+            LOGGER.exiting(false);
             return false;
         }
         for (ProcessNames eachImage : ProcessNames.values()) {
-            if (image.startsWith(eachImage.getWindowsImageName())){
+            if (image.startsWith(eachImage.getWindowsImageName())) {
+                LOGGER.exiting(true);
                 return true;
             }
         }
+        LOGGER.exiting(false);
         return false;
     }
 

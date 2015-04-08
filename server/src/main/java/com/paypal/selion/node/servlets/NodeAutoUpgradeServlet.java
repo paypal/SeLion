@@ -61,7 +61,7 @@ public class NodeAutoUpgradeServlet extends HttpServlet {
                     prop.setProperty(eachKey.getKey(), value.trim());
                 }
             }
-            FileOutputStream f = new FileOutputStream(SeLionGridConstants.DOWNLOAD_FILE_PATH);
+            FileOutputStream f = new FileOutputStream(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE);
             prop.store(f, null);
             f.close();
         } catch (IOException ex) {

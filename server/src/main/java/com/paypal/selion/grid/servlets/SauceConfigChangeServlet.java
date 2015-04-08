@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +35,7 @@ import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.SauceConfigReader;
 import com.paypal.selion.utils.ServletHelper;
@@ -52,7 +52,7 @@ import com.paypal.selion.utils.ServletHelper;
 public class SauceConfigChangeServlet extends RegistryBasedServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = Logger.getLogger(SauceConfigChangeServlet.class.getName());
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigChangeServlet.class);
 
     public SauceConfigChangeServlet(Registry registry) {
         super(registry);
@@ -74,7 +74,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
 
     private void loadSauceConfigPage(PrintWriter writer) throws IOException {
         String finalHtml = IOUtils.toString(this.getClass().getResourceAsStream(
-                SeLionGridConstants.UPDATE_SAUCE_CONFIG_PAGE), "UTF-8");
+                SeLionGridConstants.SAUCE_CONFIG_UPDATE_PAGE_RESOURCE), "UTF-8");
         writer.write(finalHtml);
     }
 
@@ -87,12 +87,12 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
             return;
         }
 
-        String msg = "<p align='center'><b>Sauce Configuration Updated Successfully</b></p>";
+        String msg = "<p align='center'><b>Sauce configuration updated successfully</b></p>";
         String sauceURL = req.getParameter("sauceURL");
         String key = req.getParameter("username") + ":" + req.getParameter("accessKey");
         String authKey = new String(Base64.encodeBase64(key.getBytes()));
 
-        Path path = Paths.get(SeLionGridConstants.SAUCE_CONFIG);
+        Path path = Paths.get(SeLionGridConstants.SAUCE_CONFIG_FILE);
         boolean isUpdateSuccess = false;
 
         try (BufferedWriter bw = Files.newBufferedWriter(path, Charset.defaultCharset())) {
@@ -100,11 +100,11 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
             jsonObject.addProperty("authenticationKey", authKey);
             jsonObject.addProperty("sauceURL", sauceURL);
             bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject));
-            LOG.info("Sauce Config file updated successfully");
+            LOGGER.info("Sauce config file updated");
             isUpdateSuccess = true;
         } catch (Exception e) {
-            msg = "<p align='center'><b>Sauce Config updation got failed. Please refer the log file for the failure</b></p>";
-            LOG.log(Level.SEVERE, e.getMessage(), e);
+            msg = "<p align='center'><b>Sauce config file update failed. Please refer to the log file for the failure.</b></p>";
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         if (isUpdateSuccess) {

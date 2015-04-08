@@ -16,8 +16,10 @@
         "maxInstances": 1
     }],
     "configuration": {
+        "servlets": "com.paypal.selion.node.servlets.LogServlet,com.paypal.selion.node.servlets.NodeAutoUpgradeServlet,com.paypal.selion.node.servlets.NodeForceRestartServlet",
         "cleanUpCycle": 30000,
         "timeout": 120000,
+        "registerCycle": 300000,
         "proxy": "com.paypal.selion.proxy.SeLionRemoteProxy",
         "maxSession": 20,
         "port": 5555,

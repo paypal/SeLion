@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,50 +15,56 @@
 
 package com.paypal.selion.logging;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
-import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
- * A simple java utils logger that is used in SeLion enhanced grid
- * 
+ * A wrapper around JUL {@link Logger} which adds additional entering / exiting methods
  */
-public class SeLionGridLogger {
+public class SeLionGridLogger extends Logger {
     private static final String CLASS_NAME = SeLionGridLogger.class.getSimpleName();
-    public static final String CONSOLE_LOGGER_NAME = SeLionGridLogger.class.getPackage().toString();
-    private static Logger logger = null;
 
-    public static synchronized Logger getLogger() {
-        if (logger != null) {
-            return logger;
+    private String loggerName = SeLionGridLogger.class.getName();
+    private static Map<String, SeLionGridLogger> loggerMap;
+    static {
+        loggerMap = new ConcurrentHashMap<String, SeLionGridLogger>();
+    }
+
+    private SeLionGridLogger(String name) {
+        super(name, null);
+        this.loggerName = name;
+    }
+
+    public static SeLionGridLogger getLogger(Class<?> clazz) {
+        return getLogger(clazz.getName());
+    }
+
+    private SeLionGridLogger getLogger() {
+        return getLogger(this.loggerName);
+    }
+
+    public static synchronized SeLionGridLogger getLogger(String name) {
+        // first look for the logger on our internal ConcurrentHashMap
+        SeLionGridLogger gridLogger = loggerMap.get(name);
+        if (gridLogger == null) {
+            gridLogger = new SeLionGridLogger(name);
+            LogManager.getLogManager().addLogger(gridLogger);
+            // add it to our loggerMap
+            loggerMap.put(name, gridLogger);
+        } else {
+            return gridLogger;
         }
-        logger = Logger.getLogger(CONSOLE_LOGGER_NAME);
-        Handler handler = null;
-        try {
-            new File(SeLionGridConstants.LOGS_FOLDER_PATH).mkdirs();
-            handler = new FileHandler(SeLionGridConstants.LOGS_FOLDER_PATH + "selion-jar-spawner.log", true);
-            handler.setFormatter(new SimpleFormatter());
-            handler.setLevel(Level.FINE);
-            logger.addHandler(handler);
-            return logger;
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+        return gridLogger;
     }
 
     /**
      * Function entry log convenience method.
      */
-    public static void entering() {
+    public void entering() {
         if (!getLogger().isLoggable(Level.FINER)) {
             return;
         }
@@ -72,7 +78,21 @@ public class SeLionGridLogger {
      * @param object
      *            additional parm
      */
-    public static void entering(Object object) {
+    public void entering(Object object) {
+        if (!getLogger().isLoggable(Level.FINER)) {
+            return;
+        }
+        FrameInfo fi = getLoggingFrame();
+        getLogger().entering(fi.className, fi.methodName, object);
+    }
+
+    /**
+     * Function entry log convenience method with additional param.
+     * 
+     * @param object
+     *            additional parms
+     */
+    public void entering(Object ... object) {
         if (!getLogger().isLoggable(Level.FINER)) {
             return;
         }
@@ -83,7 +103,7 @@ public class SeLionGridLogger {
     /**
      * Function exit log convenience method.
      */
-    public static void exiting() {
+    public void exiting() {
         if (!getLogger().isLoggable(Level.FINER)) {
             return;
         }
@@ -97,7 +117,7 @@ public class SeLionGridLogger {
      * @param object
      *            return value
      */
-    public static void exiting(Object object) {
+    public void exiting(Object object) {
         if (!getLogger().isLoggable(Level.FINER)) {
             return;
         }

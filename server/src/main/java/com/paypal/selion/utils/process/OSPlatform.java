@@ -23,13 +23,13 @@ package com.paypal.selion.utils.process;
  */
 public enum OSPlatform {
     /**
-     * Represents Windows Operating system [ all the sub flavors of windows viz., XP, Vista, windows 7 etc., are
+     * Represents Windows operating system [ all the sub flavors of windows such as XP, Vista, windows 7 etc., are
      * collectively represented by this value.
      */
     WINDOWS,
     /**
-     * Represents non windows Operating systems such as OSX or other flavors of Unix.
+     * Represents Unix based operating systems such as OSX, Linux, or other.
      */
-    NONWINDOWS;
+    UNIX;
 
 }

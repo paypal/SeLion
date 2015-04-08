@@ -27,11 +27,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
-import com.paypal.selion.node.servlets.NodeForceRestartServlet;
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.pojos.ProcessNames;
+
 import sun.management.VMManagement;
 
 /**
@@ -40,12 +40,13 @@ import sun.management.VMManagement;
  * The sub classes of this class cater to the default recycling logic that comes pre-built in SeLion.
  *
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractProcessHandler {
-    protected static final Logger log = Logger.getLogger(NodeForceRestartServlet.class.getName());
+    protected static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AbstractProcessHandler.class);
 
     protected List<ProcessInfo> getProcessInfo(String[] cmd, String delimiter, OSPlatform platform) throws IOException,
             InterruptedException {
-        log.info("Fetching process information using the command : " + Arrays.toString(cmd));
+        LOGGER.info("Fetching process information using the command : " + Arrays.toString(cmd));
         Process process = Runtime.getRuntime().exec(cmd);
         StreamGobbler output = new StreamGobbler(process.getInputStream());
         StreamGobbler error = new StreamGobbler(process.getErrorStream());
@@ -61,9 +62,9 @@ public abstract class AbstractProcessHandler {
             String[] eachProcessData = eachLine.split(delimiter);
             if (eachProcessData != null && eachProcessData.length >= 2) {
                 ProcessInfo tProcess = null;
-                switch(platform) {
-                case NONWINDOWS:
-                    // The process name comes first, then pid
+                switch (platform) {
+                case UNIX:
+                    // In the output process name comes second
                     tProcess = new ProcessInfo(eachProcessData[0], eachProcessData[1]);
                     break;
                 default:
@@ -83,17 +84,17 @@ public abstract class AbstractProcessHandler {
     protected void killProcess(String[] killCommand, List<ProcessInfo> process) throws ProcessHandlerException {
         try {
             for (ProcessInfo eachProcess : process) {
-                log.info("Killing process : " + eachProcess);
+                LOGGER.info("Killing process : " + eachProcess);
                 String[] cmd = Arrays.copyOf(killCommand, killCommand.length + 1);
                 cmd[cmd.length - 1] = eachProcess.getProcessId();
                 Process output = Runtime.getRuntime().exec(cmd);
                 int returnCode = output.waitFor();
                 if (returnCode != 0) {
-                    log.info("Printing possible errors " + convertStreamToString(output.getErrorStream()));
+                    LOGGER.info("Printing possible errors " + convertStreamToString(output.getErrorStream()));
                 }
                 output.destroy();
             }
-            log.info("Successfully killed all stalled processes");
+            LOGGER.info("Successfully killed all stalled processes");
 
         } catch (IOException | InterruptedException e) {
             throw new ProcessHandlerException(e);
@@ -119,6 +120,13 @@ public abstract class AbstractProcessHandler {
      */
     protected abstract boolean matches(String image);
 
+
+    /**
+     * Gets the PID for the SeLion-Grid (main) process
+     * 
+     * @return the PID as an int
+     * @throws ProcessHandlerException
+     */
     protected int getCurrentProcessID() throws ProcessHandlerException {
         int pid;
         // Not ideal but using JNA failed on RHEL5.

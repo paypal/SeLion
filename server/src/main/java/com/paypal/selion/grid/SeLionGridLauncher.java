@@ -33,78 +33,77 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.GridLauncher;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ConfigParser;
 
 /**
  * The SeLion version of the {@link GridLauncher}. We have intentionally duplicated the code from {@link GridLauncher}
  * because {@link GridLauncher} is meddling around with the {@link Logger} and thus preventing us from feeding in
- * {@link Logger} properties to control/tweak the File and console level logging.
- * This class represents a stripped version of {@link GridLauncher} without the logging tweaks.
+ * {@link Logger} properties to control/tweak the File and console level logging. This class represents a stripped
+ * version of {@link GridLauncher} without the logging tweaks.
  *
  */
 public class SeLionGridLauncher {
 
-  private static final Logger log = Logger.getLogger(SeLionGridLauncher.class.getName());
-  
-  public static void printEnvironment() {
-      System.out.println("Environment Variables: " + Arrays.asList(System.getenv()));
-      System.out.println("JVM System Properties: " + Arrays.asList(System.getProperties()));
-  }
-  
+    private static final Logger LOGGER = SeLionGridLogger.getLogger(SeLionGridLauncher.class);
 
-  public static void main(String[] args) throws Exception {
-
-    CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
-
-    if (helper.isParamPresent(SeLionGridConstants.CONFIG_NAME)) {
-        ConfigParser.setConfigFile(helper.getParamValue(SeLionGridConstants.CONFIG_NAME));
+    public static void printEnvironment() {
+        LOGGER.info("Environment Variables: " + Arrays.asList(System.getenv()));
+        LOGGER.info("JVM System Properties: " + Arrays.asList(System.getProperties()));
     }
 
-    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")) {
-      String separator = "\n----------------------------------\n";
-      RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
-      GridDocHelper.printHelp(separator+"To use in a grid environment :"+separator,false);
-      return;
-    }
-
-    GridRole role = GridRole.find(args);
-    printEnvironment();
-    
-    switch (role) {
-      case NOT_GRID:
-        log.info("Launching a standalone server");
-        SeleniumServer.main(args);
-        break;
-      case HUB:
-        log.info("Launching a selenium grid server");
-        try {
-          GridHubConfiguration c = GridHubConfiguration.build(args);
-          Hub h = new Hub(c);
-          h.start();
-        } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
-          e.printStackTrace();
+    public static void main(String[] args) throws Exception {
+        CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
+        
+        if (helper.isParamPresent("-help") || helper.isParamPresent("-h")) {
+            String separator = "\n----------------------------------\n";
+            RemoteControlLauncher.usage(separator + "To use as a standalone server" + separator);
+            GridDocHelper.printHelp(separator + "To use in a grid environment :" + separator, false);
+            return;
         }
-        break;
-      case NODE:
-        log.info("Launching a selenium grid node");
-        try {
-          RegistrationRequest c = RegistrationRequest.build(args);
-          SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-          remote.startRemoteServer();
-          remote.startRegistrationProcess();
-        } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
-          e.printStackTrace();
+
+        if (helper.isParamPresent(SeLionGridConstants.SELION_CONFIG_ARG)) {
+            ConfigParser.setConfigFile(helper.getParamValue(SeLionGridConstants.SELION_CONFIG_ARG));
         }
-        break;
-      default:
-        throw new RuntimeException("NI");
+
+        try {
+            GridRole role = GridRole.find(args);
+            printEnvironment();
+
+            switch (role) {
+            case NOT_GRID:
+                LOGGER.info("Launching a standalone server");
+                final RemoteControlConfiguration configuration = RemoteControlLauncher.parseLauncherOptions(args);
+                final SeleniumServer proxy = new SeleniumServer(configuration);
+                proxy.boot();
+                break;
+            case HUB:
+                LOGGER.info("Launching a selenium grid server");
+                final GridHubConfiguration ghc = GridHubConfiguration.build(args);
+                final Hub h = new Hub(ghc);
+                h.start();
+                break;
+            case NODE:
+                LOGGER.info("Launching a selenium grid node");
+                final RegistrationRequest rr = RegistrationRequest.build(args);
+                final SelfRegisteringRemote remote = new SelfRegisteringRemote(rr);
+                remote.startRemoteServer();
+                remote.startRegistrationProcess();
+                break;
+            default:
+               throw new RuntimeException("NI");
+            }
+        } catch (GridConfigurationException e) {
+            GridDocHelper.printHelp(e.getMessage());
+            e.printStackTrace();
+        } catch (RuntimeException rex) {
+            rex.printStackTrace();
+        } 
     }
-  }
 
 }

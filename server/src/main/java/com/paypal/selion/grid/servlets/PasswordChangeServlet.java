@@ -41,10 +41,10 @@ public class PasswordChangeServlet extends HttpServlet {
     }
 
     private void askForCredentialsPage(PrintWriter writer) throws IOException {
-        String changePasswordMessage = "Enter the old and New password to change the password";
+        String changePasswordMessage = "Fill out the form to change the management console password";
 
         String template = IOUtils.toString(this.getClass().getResourceAsStream(
-                SeLionGridConstants.PASSWORD_CHANGE_GET_DETAILS), "UTF-8");
+                SeLionGridConstants.PASSWORD_CHANGE_PAGE_RESOURCE), "UTF-8");
         writer.write(String.format(template, PasswordChangeServlet.class.getSimpleName(), changePasswordMessage));
     }
 
@@ -66,11 +66,11 @@ public class PasswordChangeServlet extends HttpServlet {
             errorPage(writer, "Something went wrong while changing the password.");
         } else {
             HttpSession session = req.getSession(false);
-            if(session != null){
-                //invalidating the current session so that the password change is reflected in the forth coming session
+            if (session != null) {
+                // invalidating the current session so that the password change is reflected in the forth coming session
                 session.invalidate();
             }
-            ServletHelper.displayMessageOnRedirect(writer, "<p align='center'><b>Password Change Successful</b></p>");
+            ServletHelper.displayMessageOnRedirect(writer, "<p align='center'><b>Password changed</b></p>");
         }
     }
 
@@ -79,7 +79,7 @@ public class PasswordChangeServlet extends HttpServlet {
         writer.write("<html xmlns='http://www.w3.org/1999/xhtml'>");
         writer.write("<head>");
         writer.write("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>");
-        writer.write("<title>Error</title>");
+        writer.write("<title>Grid Management Console</title>");
         writer.write("<link rel='stylesheet' type='text/css' href='/grid/resources/form/view.css' media='all' >");
         writer.write("<script type='text/javascript' src='/grid/resources/form/view.js'></script>");
         writer.write("</head>");

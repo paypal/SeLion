@@ -23,6 +23,7 @@ import com.paypal.selion.logging.SeLionGridLogger;
 public class DownloadRequestProcessor {
 
     protected ServerRepository<? extends ManagedArtifact, ? super Criteria> serverRepository;
+    private SeLionGridLogger logger = SeLionGridLogger.getLogger(DownloadRequestProcessor.class);
 
     public DownloadRequestProcessor() {
         super();
@@ -30,16 +31,16 @@ public class DownloadRequestProcessor {
     }
 
     public boolean isArtifactPresent(Criteria requestedCriteria) {
-        SeLionGridLogger.entering();
+        logger.entering();
         boolean isPresentInRepository = serverRepository.isArtifactPresent(requestedCriteria);
-        SeLionGridLogger.exiting(isPresentInRepository);
+        logger.exiting(isPresentInRepository);
         return isPresentInRepository;
     }
 
     public ManagedArtifact getArtifact(Criteria requestedCriteria) {
-        SeLionGridLogger.entering(requestedCriteria);
+        logger.entering(requestedCriteria);
         ManagedArtifact managedArtifact = serverRepository.getArtifact(requestedCriteria);
-        SeLionGridLogger.exiting(managedArtifact);
+        logger.exiting(managedArtifact);
         return managedArtifact;
     }
 

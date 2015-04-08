@@ -15,7 +15,7 @@
 
 package com.paypal.selion.grid.matchers;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import io.selendroid.common.SelendroidCapabilities;
 
 import java.util.HashMap;

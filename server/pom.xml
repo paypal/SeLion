@@ -21,8 +21,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.paypal.selion.utils.JarSpawner</mainClass>
-                            <packageName>com.paypal.selion.utils</packageName>
+                            <mainClass>com.paypal.selion.grid.JarSpawner</mainClass>
+                            <packageName>com.paypal.selion.grid</packageName>
                         </manifest>
                     </archive>
                     <descriptors>
@@ -62,14 +62,22 @@
             <artifactId>selenium-server</artifactId>
             <scope>provided</scope>
         </dependency>
+       
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-api</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.4</version>
+        </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -92,11 +100,31 @@
         <dependency>
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-grid-plugin</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-remote-driver</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-common</artifactId>
             <version>${selendroid.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- This dependency brings in IOSCapabilitiesMatcher -->
         <dependency>
@@ -113,29 +141,29 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        <!--  This dependency is needed for extracting artifacts used by SeLion-Grid -->
-       <dependency>
+
+        <!-- This dependency is needed for extracting artifacts used by SeLion-Grid -->
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.8.1</version>
-       </dependency>
-       <dependency>
-           <groupId>commons-fileupload</groupId>
-           <artifactId>commons-fileupload</artifactId>
-           <version>1.3.1</version>
-       </dependency>
-       <dependency>
-           <groupId>org.powermock</groupId>
-           <artifactId>powermock-module-testng</artifactId>
-           <version>1.6.1</version>
-           <scope>test</scope>
-       </dependency>
-       <dependency>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-testng</artifactId>
+            <version>1.6.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.6.1</version>
             <scope>test</scope>
-       </dependency>
+        </dependency>
     </dependencies>
 </project>

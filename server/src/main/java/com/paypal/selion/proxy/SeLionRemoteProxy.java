@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.NameValuePair;
@@ -39,6 +38,7 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.pojos.ArtifactDetails;
@@ -50,18 +50,18 @@ import com.paypal.selion.utils.ConfigParser.ConfigParserException;
 /**
  * This is a customized {@link DefaultRemoteProxy} for SeLion. This proxy when injected into the Grid, starts counting
  * unique test sessions. After "n" test sessions, the proxy unhooks the node gracefully from the grid and self
- * terminates gracefully. The number of unique sessions is controlled via a properties file : "selion.grid.properties".
- * A typical content of the file would be as below :
+ * terminates gracefully. The number of unique sessions is controlled via a json config file : "SeLionConfig.json". A
+ * typical entry in this file looks like:
  * 
  * <pre>
- * UniqueSessionCount = 2
+ *  "uniqueSessionCount": 25
  * </pre>
  * 
  * Here UniqueSessionCount represents the max. number of tests that the node will run before recycling itself.
  */
 public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
-    private static final Logger log = Logger.getLogger(SeLionRemoteProxy.class.getName());
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionRemoteProxy.class);
     private static final int MAX_SESSION_ALLOWED = 50;
 
     private int maxSessionsAllowed, totalSessionsCompleted = 0, totalSessionsStarted = 0;
@@ -74,10 +74,9 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         try {
             return ConfigParser.getInstance().getInt("uniqueSessionCount");
         } catch (ConfigParserException e) {// NOSONAR
-            // Purposefully gobbling the exception here and NOT doing anything
-            // with it.
+            // Purposely gobbling the exception here and NOT doing anything with it.
             // We cannot afford to throw exceptions from within a Proxy
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         // if we are here, then it means there was a problem loading the
         // session count value from the configuration json file.
@@ -99,13 +98,13 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         StringBuffer info = new StringBuffer();
         maxSessionsAllowed = getUniqueSessionCount();
         machine = getRemoteHost().getHost();
-        String logFileName = SeLionGridConstants.LOGS_FOLDER_PATH + machine + ".log";
+        String logFileName = SeLionGridConstants.LOGS_DIR + machine + ".log";
         logFile = new File(logFileName);
         if (logFile.exists()) {
             FileUtils.deleteQuietly(logFile);
         }
-        info.append("New proxy instantiated for the machine :").append(machine).append("\n");
-        info.append("Autobot will attempt to recycle the node [");
+        info.append("New proxy instantiated for the machine ").append(machine).append("\n");
+        info.append("SeLionRemoteProxy will attempt to recycle the node [");
         info.append(machine).append("] after ").append(maxSessionsAllowed);
         info.append(" unique sessions");
         appendMsgToCustomLog(info.toString());
@@ -146,27 +145,27 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         HttpPost post = new HttpPost(url.toString());
 
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        
+
         Map<String, URLChecksumEntity> artifactDetailsAsMap = artifactDetails.getArtifactDetailsAsMap();
-        for (URLChecksumEntity eachArtifact  : artifactDetailsAsMap.values()) {
+        for (URLChecksumEntity eachArtifact : artifactDetailsAsMap.values()) {
             nvps.add(eachArtifact.getChecksum());
             nvps.add(eachArtifact.getUrl());
         }
-        
+
         try {
             post.setEntity(new UrlEncodedFormEntity(nvps));
             client.execute(post);
         } catch (ClientProtocolException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         } catch (IOException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         } finally {
             try {
                 client.close();
             } catch (IOException e) {
-                log.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
@@ -276,14 +275,14 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             client.execute(post);
             appendMsgToCustomLog("Node " + machine + " shut-down successfully.");
         } catch (ClientProtocolException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } catch (IOException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 client.close();
             } catch (IOException e) {
-                log.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
     }

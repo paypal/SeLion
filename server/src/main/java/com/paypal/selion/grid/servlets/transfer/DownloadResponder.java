@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.EnumMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -48,7 +47,7 @@ public class DownloadResponder {
 
     private static final String CRITERIA_CONFIG_PROPERTY = "managedCriteria";
 
-    private static final Logger logger = SeLionGridLogger.getLogger();
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(DownloadResponder.class);
 
     private HttpServletResponse httpServletResponse;
 
@@ -70,7 +69,7 @@ public class DownloadResponder {
     }
 
     public void respond() {
-        SeLionGridLogger.entering();
+        LOGGER.entering();
         formCriteria();
         managedArtifact = downloadRequestProcessor.getArtifact(requestedCriteria);
         contents = managedArtifact.getArtifactContents();
@@ -80,7 +79,7 @@ public class DownloadResponder {
         } catch (IOException e) {
             throw new ArtifactDownloadException("IOException in writing to servlet response", e);
         }
-        SeLionGridLogger.exiting();
+        LOGGER.exiting();
     }
 
     private Criteria formCriteria() {
@@ -88,8 +87,8 @@ public class DownloadResponder {
             EnumMap<RequestHeaders, String> parametersMap = getParametersMap();
             try {
                 String criteriaClassName = ConfigParser.getInstance().getString(CRITERIA_CONFIG_PROPERTY);
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.log(Level.FINE, "Criteria class name configured in grid: " + criteriaClassName);
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE, "Criteria class name configured in grid: " + criteriaClassName);
                 }
                 @SuppressWarnings("unchecked")
                 Class<? extends Criteria> criteriaClass = (Class<? extends Criteria>) this.getClass().getClassLoader()
@@ -112,8 +111,8 @@ public class DownloadResponder {
             throw new ArtifactDownloadException("Request missing essential parametes: "
                     + RequestHeaders.FILENAME.getParameterName() + ", " + RequestHeaders.USERID.getParameterName());
         }
-        if (logger.isLoggable(Level.FINE)) {
-            logger.log(Level.FINE, "Parametes map received in request: " + parametersMap);
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Parametes map received in request: " + parametersMap);
         }
         return parametersMap;
     }

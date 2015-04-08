@@ -72,7 +72,7 @@ public class SauceServlet extends RegistryBasedServlet {
         URL registration;
         try {
 
-            String respMsg = "<p align='center'><b>Sauce Node already registered</b></p>";
+            String respMsg = "<p align='center'><b>Sauce node already registered</b></p>";
             if (count > 0) {
                 ServletHelper.displayMessageOnRedirect(resp.getWriter(), respMsg);
                 return;
@@ -107,10 +107,10 @@ public class SauceServlet extends RegistryBasedServlet {
             // TODO: Should we do something with the status code for e.g., check if it was "200". Maybe attempt a few
             // retries as well if the registration didnt go through ?
 
-            respMsg = "<p align='center'><b>Sauce Node registration got failed. Please refer the log file for failure</b></p>";
+            respMsg = "<p align='center'><b>Sauce node registration got failed. Please refer to the log file for failure details</b></p>";
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                respMsg = "<p align='center'><b>Sauce Node Registered Successfully</b></p>";
+                respMsg = "<p align='center'><b>Sauce node registered successfully</b></p>";
             }
 
             ServletHelper.displayMessageOnRedirect(resp.getWriter(), respMsg);

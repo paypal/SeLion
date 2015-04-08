@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -28,7 +28,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
  * A string buffer that flushes its content to a temporary file whenever the internal string buffer becomes larger than
@@ -41,7 +42,7 @@ import java.util.logging.Logger;
 
 public class FileBackedStringBuffer {
 
-    private static final Logger log = Logger.getLogger(FileBackedStringBuffer.class.getName());
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(FileBackedStringBuffer.class);
 
     private static int MAX = 100000;
 
@@ -68,7 +69,7 @@ public class FileBackedStringBuffer {
             try {
                 copy(new StringReader(charSequence.toString()), new FileWriter(file, true));
             } catch (IOException e) {
-                log.log(Level.WARNING, e.getMessage(), e);
+                LOGGER.log(Level.WARNING, e.getMessage(), e);
             }
         }
         return this;
@@ -120,7 +121,7 @@ public class FileBackedStringBuffer {
                 file = File.createTempFile("testng", "FileBackedStringBuffer");
                 file.deleteOnExit();
             } catch (IOException e) {
-                log.log(Level.WARNING, e.getMessage(), e);
+                LOGGER.log(Level.WARNING, e.getMessage(), e);
             }
         }
 
@@ -130,7 +131,7 @@ public class FileBackedStringBuffer {
             fw.append(builder);
             fw.close();
         } catch (IOException e) {
-            log.log(Level.WARNING, e.getMessage(), e);
+            LOGGER.log(Level.WARNING, e.getMessage(), e);
         }
         builder = new StringBuilder();
     }
@@ -146,7 +147,7 @@ public class FileBackedStringBuffer {
         try {
             result = readFile(file);
         } catch (IOException e) {
-            log.log(Level.WARNING, e.getMessage(), e);
+            LOGGER.log(Level.WARNING, e.getMessage(), e);
         }
         return result;
     }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.utils;
+package com.paypal.selion.grid;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -37,22 +36,26 @@ import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.ProcessNames;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
-class FileExtractor {
+final class FileExtractor {
 
-    private static final Logger logger = SeLionGridLogger.getLogger();
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(FileExtractor.class.getName());
 
     private FileExtractor() {
-        //Utility class. So hiding the constructor
+        // Utility class. So hiding the constructor
     }
 
     private static String getFileNameFromPath(String name) {
         String[] path = name.split("/");
-
-        return path[path.length - 1];
+        String s = path[path.length - 1];
+        return s;
     }
 
     public static List<String> extractArchive(String archiveFile) {
-        String archiverName = null;
+        LOGGER.entering(archiveFile);
+
+        LOGGER.info("Extracting " + archiveFile);
+
+        String archiveStreamType;
         boolean isCompressedArchive = false;
         String compressName = null;
         String outputArchiveName = null;
@@ -62,13 +65,13 @@ class FileExtractor {
             isCompressedArchive = true;
             compressName = CompressorStreamFactory.BZIP2;
             outputArchiveName = archiveFile.substring(0, archiveFile.lastIndexOf('.'));
-            logger.info("Output Archive name:" + outputArchiveName);
+            LOGGER.fine("Output archive name: " + outputArchiveName);
         }
         // TODO: For any other compress format a simple else-if part with proper assignments will suffice
 
         if (isCompressedArchive) {
-            logger.info("Found a compressed archive");
-            CompressorInputStream is = null;
+            LOGGER.fine("Found a compressed archive");
+            CompressorInputStream is;
             try {
                 is = new CompressorStreamFactory().createCompressorInputStream(compressName, new FileInputStream(
                         archiveFile));
@@ -80,44 +83,44 @@ class FileExtractor {
                 // Add the file name to the list
                 files.add(outputArchiveName);
             } catch (CompressorException | IOException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        
-        archiverName = ArchiveStreamFactory.ZIP;
+
+        archiveStreamType = ArchiveStreamFactory.ZIP;
         if (archiveFile.endsWith(".tar")) {
-            archiverName = ArchiveStreamFactory.TAR;
+            archiveStreamType = ArchiveStreamFactory.TAR;
         }
         // TODO: For any new archive formats a simple else-if will suffice
 
         OutputStream outputFileStream = null;
         List<String> executableNameList = new ArrayList<String>();
-        logger.info("Getting filelist for archive " + archiveFile);
+        LOGGER.fine("Getting file list for archive " + archiveFile);
         executableNameList = ProcessNames.getExecutableNames();
 
-        logger.info("Executable list:" + executableNameList.toString());
+        LOGGER.fine("Executable list: " + executableNameList.toString());
 
         ArchiveInputStream archiveStream = null;
 
         try {
-            archiveStream = new ArchiveStreamFactory().createArchiveInputStream(archiverName, new FileInputStream(
-                    archiveFile));
+            archiveStream = new ArchiveStreamFactory().createArchiveInputStream(archiveStreamType,
+                    new FileInputStream(archiveFile));
             ArchiveEntry entry;
             while ((entry = archiveStream.getNextEntry()) != null) {
                 String fileNameInEntry = getFileNameFromPath(entry.getName());
                 if (!entry.isDirectory() && executableNameList.contains(fileNameInEntry.toLowerCase())) {
-                    String filename = SeLionGridConstants.SELION_HOME + getFileNameFromPath(entry.getName());
+                    String filename = SeLionGridConstants.SELION_HOME_DIR + getFileNameFromPath(entry.getName());
                     File outputFile = new File(filename);
                     if (outputFile.exists()) {
                         outputFile.delete();
                     }
                     outputFile.createNewFile();
-                    logger.info(String.format("Creating output file %s.", outputFile.getAbsolutePath()));
+                    LOGGER.fine(String.format("Creating output file %s.", outputFile.getAbsolutePath()));
                     outputFileStream = new FileOutputStream(outputFile);
                     IOUtils.copy(archiveStream, outputFileStream);
-                    logger.info("Is binary executable by application:" + outputFile.canExecute());
+                    LOGGER.fine("Is binary executable by application: " + outputFile.canExecute());
                     if (!outputFile.canExecute()) {
-                        logger.info("Setting the file to be executable");
+                        LOGGER.fine("Setting the file to be executable");
                         outputFile.setExecutable(true);
                     }
                     // Adding the binary name or .exe to the list
@@ -125,8 +128,8 @@ class FileExtractor {
                     break; // No point in proceeding further with the loop
                 }
             }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+        } catch (Exception e) { // NOSONAR
+            LOGGER.log(Level.SEVERE, "Unable to extract archive", e);
         } finally {
             try {
                 if (archiveStream != null) {
@@ -136,10 +139,11 @@ class FileExtractor {
                     outputFileStream.close();
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, "Error closing streams while extracting archive", e);
             }
         }
-        
+
+        LOGGER.exiting(files.toString());
         return files;
     }
 }

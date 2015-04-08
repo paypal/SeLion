@@ -17,13 +17,13 @@ package com.paypal.selion.node.servlets;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.process.ProcessHandlerException;
 
 /**
@@ -34,7 +34,7 @@ import com.paypal.selion.utils.process.ProcessHandlerException;
 public class NodeForceRestartServlet extends HttpServlet {
 
     private static final long serialVersionUID = -8308677302003045927L;
-    private static final Logger log = Logger.getLogger(NodeForceRestartServlet.class.getName());
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(NodeForceRestartServlet.class);
     private final ProcessShutdownHandler shutdownHandler = new ProcessShutdownHandler();
 
     @Override
@@ -45,11 +45,11 @@ public class NodeForceRestartServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
-        log.warning("Shutting down the node");
+        LOGGER.warning("Shutting down the node");
         try {
             shutdownHandler.shutdownProcesses();
         } catch (ProcessHandlerException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             System.exit(0);
         }

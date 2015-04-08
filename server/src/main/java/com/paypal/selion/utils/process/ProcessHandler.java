@@ -20,20 +20,21 @@ import java.util.List;
 import com.paypal.selion.pojos.ProcessInfo;
 
 /**
- * This interface represents the capabilities that any custom process handler would need to possess if it is
- * to be used for the auto healing logic of SeLion.
+ * This interface represents the capabilities that any custom process handler would need to possess if it is to be used
+ * for the auto healing logic of SeLion.
  *
  */
 public interface ProcessHandler {
     /**
-     * @return - A List of {@link ProcessInfo} that represents the bunch of processes that need to be 
-     * forcibly killed before a given node can be recycled.
+     * @return A List of {@link ProcessInfo} that represents the bunch of processes that need to be forcibly killed
+     *         before a given node can be recycled.
      * @throws ProcessHandlerException
      */
     List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException;
 
     /**
-     * @param processes - A List of {@link ProcessInfo} that are to be forcibly killed.
+     * @param processes
+     *            A List of {@link ProcessInfo} that are to be forcibly killed.
      * @throws ProcessHandlerException
      */
     void killProcess(List<ProcessInfo> processes) throws ProcessHandlerException;

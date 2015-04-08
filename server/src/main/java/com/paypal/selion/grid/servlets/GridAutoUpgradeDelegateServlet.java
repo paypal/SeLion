@@ -151,7 +151,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                 for (String temp : pendingProxy) {
                     ids = ids + temp + ",";
                 }
-                writer.write("Following nodes are not auto upgraded: " + ids.substring(0, ids.length() - 2));
+                writer.write("The following nodes were not auto upgraded: " + ids.substring(0, ids.length() - 2));
                 writer.write("<br>Click Submit button to retry.");
                 writer.write("<input type='hidden' name='ids' value='" + ids + "'>");
                 
@@ -165,7 +165,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                 writer.write("</body>");
                 writer.write("</html>");
             } else {
-                ServletHelper.displayMessageOnRedirect(writer, "Auto Upgrade was successful.");
+                ServletHelper.displayMessageOnRedirect(writer, "Auto upgrade was successful.");
             }
         } else {
             /*
@@ -182,7 +182,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
         writer.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
         writer.write("<head>");
         writer.write("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>");
-        writer.write("<title>SeLion Grid Marimba</title>");
+        writer.write("<title>Grid Management Console</title>");
         writer.write("<link rel='stylesheet' type='text/css' href='/grid/resources/form/view.css' media='all' >");
         writer.write("<script type='text/javascript' src='/grid/resources/form/view.js'></script>");
         writer.write("</head>");
@@ -218,19 +218,16 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
         writer.write("</script>");
         writer.write("<img id='top' src='/grid/resources/form/top.png' alt='' >");
         writer.write("<div id='form_container'>");
-        writer.write("<h1>");
-        writer.write("<a>SeLion Grid Marimba</a>");
-        writer.write("</h1>");
         writer.write("<form id='myForm' name='myForm' class='appnitro' method='post' onsubmit='return validateForm()' action='"
                 + GridAutoUpgradeDelegateServlet.class.getSimpleName() + "' >");
         writer.write("<div class='form_description'>");
-        writer.write("<h2>SeLion Grid Marimba</h2>");
-        writer.write("<p>This is used to upgrade our infrastructure</p>");
+        writer.write("<h2>SeLion Grid - Auto Update</h2>");
+        writer.write("<p>Use this page to automatically update all nodes</p>");
         writer.write("</div>");
         writer.write("<ul>");
 
         int labelIndex = 1;
-        writer.write("<h3 align='center'>Enter Details below to download the artifacts</h3>");
+        writer.write("<h3 align='center'>Enter details below for the new artifacts</h3>");
         for (PropsKeys eachKeys : PropsKeys.getValuesForCurrentPlatform()) {
             String currentName = eachKeys.getKey();
             if (labelIndex % 2 != 0) {

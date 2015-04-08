@@ -15,6 +15,7 @@
 
 package com.paypal.selion.node.servlets;
 
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.utils.process.ProcessHandler;
 import com.paypal.selion.utils.process.ProcessHandlerException;
@@ -28,20 +29,20 @@ import java.util.logging.Logger;
  */
 public class ProcessShutdownHandler {
 
-    private static final Logger log = Logger.getLogger(ProcessShutdownHandler.class.getName());
+    private static final Logger LOGGER = SeLionGridLogger.getLogger(ProcessShutdownHandler.class);
 
     /**
      * This method terminates all Node processes that we started.
      *
      */
     public void shutdownProcesses() throws ProcessHandlerException {
-        log.info("Shutting down all our node processes.");
+        LOGGER.info("Shutting down all our node processes.");
 
         ProcessHandler handler = ProcessHandlerFactory.createInstance();
         List<ProcessInfo> processes = handler.potentialProcessToBeKilled();
         handler.killProcess(processes);
 
-        log.info("Successfully shutdown all processes");
+        LOGGER.info("Successfully shutdown all processes");
     }
 
 }

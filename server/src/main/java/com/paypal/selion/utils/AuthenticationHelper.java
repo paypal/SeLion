@@ -50,7 +50,7 @@ public final class AuthenticationHelper {
 
     }
 
-    final static String AUTH_FILE_LOCATION = SeLionGridConstants.SELION_HOME + ".authFile";
+    final static String AUTH_FILE_LOCATION = SeLionGridConstants.SELION_HOME_DIR + ".authFile";
 
     final static String DEFAULT_USERNAME = "admin";
 

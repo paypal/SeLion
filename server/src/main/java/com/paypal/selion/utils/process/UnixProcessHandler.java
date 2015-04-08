@@ -24,19 +24,20 @@ import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.pojos.ProcessNames;
 
 /**
- * This class provides for a simple implementation that aims at providing the logic to fetch processes as
- * represented by {@link ProcessNames} and also in forcibly killing them on a Non Windows like environment.
+ * This class provides for a simple implementation that aims at providing the logic to fetch processes as represented by
+ * {@link ProcessNames} and also in forcibly killing them on a Unix like environment.
  *
  */
-public class NonWindowsProcessHandler extends AbstractProcessHandler implements ProcessHandler {
-    public NonWindowsProcessHandler() {
-        log.info("You have chosen to use a NON Windows Process Handler.");
+public class UnixProcessHandler extends AbstractProcessHandler implements ProcessHandler {
+    public UnixProcessHandler() {
+        LOGGER.info("You have chosen to use a Unix Process Handler.");
     }
 
     private static final String DELIMITER = "<#>";
 
     @Override
     public List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException {
+        LOGGER.entering();
         int ourProcessPID = getCurrentProcessID();
 
         // Find all processes that are our direct children using our PID as the parent pid to pgrep.
@@ -44,8 +45,12 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
         // process name and PID with "<#>" as a delimiter.
         String cmd = String.format("pgrep -P %s -l | awk '{ print $2\"%s\"$1 }'",
                 Integer.toString(ourProcessPID), DELIMITER);
+
         try {
-            return getProcessInfo(new String[] { "sh", "-c", cmd }, DELIMITER, OSPlatform.NONWINDOWS);
+            List<ProcessInfo> processToBeKilled = getProcessInfo(new String[] { "sh", "-c", cmd }, DELIMITER,
+                    OSPlatform.UNIX);
+            LOGGER.exiting(processToBeKilled.toString());
+            return processToBeKilled;
         } catch (IOException | InterruptedException e) {
             throw new ProcessHandlerException(e);
         }
@@ -53,7 +58,7 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
 
     @Override
     public void killProcess(List<ProcessInfo> processes) throws ProcessHandlerException {
-        super.killProcess(new String[] {"kill", "-9"}, processes);
+        super.killProcess(new String[] { "kill", "-9" }, processes);
     }
 
     /**
@@ -69,20 +74,26 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
      */
     @Override
     protected boolean matches(String image) {
+        LOGGER.entering(image);
+
         if (StringUtils.isEmpty(image)) {
+            LOGGER.exiting(false);
             return false;
         }
-        // On Non Windows the image name can either be at the beginning of the command
+
+        // On unix the image name can either be at the beginning of the command
         // as in the case of chromedriver process (or) it can be at the end of the command
         // as in the case of binaries such as firefox
         // or in the middle as in the case of chrome browser
         // so we need to look at all the places places
         for (ProcessNames eachImage : ProcessNames.values()) {
-            String img = eachImage.getNonWindowsImageName();
+            String img = eachImage.getUnixImageName();
             if (image.startsWith(img) || image.contains(img) || image.endsWith(img)) {
+                LOGGER.exiting(true);
                 return true;
             }
         }
+        LOGGER.exiting(false);
         return false;
     }
 

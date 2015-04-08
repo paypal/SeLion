@@ -50,10 +50,11 @@ import com.paypal.selion.logging.SeLionGridLogger;
 public class TransferServlet extends HttpServlet {
 
     private static final long serialVersionUID = -4598713481663637719L;
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(TransferServlet.class);
 
     public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws ServletException, java.io.IOException {
-        SeLionGridLogger.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
+        LOGGER.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
         try {
             TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);
             UploadRequestProcessor<ManagedArtifact> requestProcessor = getUploadRequestProcessor(transferContext);
@@ -69,12 +70,12 @@ public class TransferServlet extends HttpServlet {
              */
             handleExceptions(exe);
         }
-        SeLionGridLogger.exiting();
+        LOGGER.exiting();
     }
 
     public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws ServletException, java.io.IOException {
-        SeLionGridLogger.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
+        LOGGER.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
         try {
             TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);
             DownloadRequestProcessor downloadRequestProcessor = new DownloadRequestProcessor();
@@ -90,7 +91,7 @@ public class TransferServlet extends HttpServlet {
              */
             handleExceptions(exe);
         }
-        SeLionGridLogger.exiting();
+        LOGGER.exiting();
     }
 
     private void handleExceptions(Exception exe) throws IOException, ServletException {
@@ -109,7 +110,7 @@ public class TransferServlet extends HttpServlet {
      * @return Instance of {@link AbstractUploadRequestProcessor}.
      */
     private UploadRequestProcessor<ManagedArtifact> getUploadRequestProcessor(TransferContext transferContext) {
-        SeLionGridLogger.entering(transferContext);
+        LOGGER.entering(transferContext);
         String contentType = transferContext.getHttpServletRequest().getContentType() != null ? transferContext
                 .getHttpServletRequest().getContentType().toLowerCase() : "unknown";
         if (contentType.contains(AbstractUploadRequestProcessor.MULTIPART_CONTENT_TYPE)) {
@@ -117,7 +118,7 @@ public class TransferServlet extends HttpServlet {
             // Return a Multipart request processor
             UploadRequestProcessor<ManagedArtifact> uploadRequestProcessor = new MultipartUploadRequestProcessor(
                     transferContext);
-            SeLionGridLogger.exiting(uploadRequestProcessor);
+            LOGGER.exiting(uploadRequestProcessor);
             return uploadRequestProcessor;
         }
         if (contentType.contains(AbstractUploadRequestProcessor.APPLICATION_URLENCODED_CONTENT_TYPE)) {
@@ -125,7 +126,7 @@ public class TransferServlet extends HttpServlet {
             // Return normal Urlencoded request processor
             UploadRequestProcessor<ManagedArtifact> uploadRequestProcessor = new ApplicationUploadRequestProcessor(
                     transferContext);
-            SeLionGridLogger.exiting(uploadRequestProcessor);
+            LOGGER.exiting(uploadRequestProcessor);
             return uploadRequestProcessor;
         }
         throw new ArtifactUploadException("Content-Type should be either: "
@@ -143,21 +144,21 @@ public class TransferServlet extends HttpServlet {
      * @return Instance of {@link AbstractUploadResponder}.
      */
     private UploadResponder<ManagedArtifact> getUploadResponder(TransferContext transferContext) {
-        SeLionGridLogger.entering(transferContext);
+        LOGGER.entering(transferContext);
         UploadResponder<ManagedArtifact> uploadResponder = null;
         Class<? extends UploadResponder<ManagedArtifact>> uploadResponderClass = getResponderClass(transferContext
                 .getHttpServletRequest().getHeader("accept"));
         try {
             uploadResponder = uploadResponderClass.getConstructor(new Class[] { TransferContext.class }).newInstance(
                     new Object[] { transferContext });
-            SeLionGridLogger.exiting(uploadResponder);
+            LOGGER.exiting(uploadResponder);
             return uploadResponder;
         } catch (Exception e) {
 
             // We cannot do any meaningful operation to handle this; catching exception and returning
             // default responder
             uploadResponder = new JsonUploadResponder(transferContext);
-            SeLionGridLogger.exiting(uploadResponder);
+            LOGGER.exiting(uploadResponder);
             return uploadResponder;
         }
     }

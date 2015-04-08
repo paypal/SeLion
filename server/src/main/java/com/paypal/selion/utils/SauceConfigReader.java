@@ -16,7 +16,6 @@
 package com.paypal.selion.utils;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +24,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
@@ -32,7 +32,7 @@ import com.paypal.selion.pojos.SeLionGridConstants;
  */
 public class SauceConfigReader {
 
-    private static final Logger LOG = Logger.getLogger(SauceConfigReader.class.getName());
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigReader.class);
     private static SauceConfigReader reader = new SauceConfigReader();
 
     private String authKey;
@@ -57,7 +57,7 @@ public class SauceConfigReader {
      */
     public void loadConfig() {
         try {
-            JsonObject jsonObject = JSONConfigurationUtils.loadJSON(SeLionGridConstants.SAUCE_CONFIG);
+            JsonObject jsonObject = JSONConfigurationUtils.loadJSON(SeLionGridConstants.SAUCE_CONFIG_FILE);
 
             authKey = getAttributeValue(jsonObject, "authenticationKey");
 
@@ -68,11 +68,11 @@ public class SauceConfigReader {
 
             url = sauceURL + "/" + userName;
 
-            LOG.info("Sauce Config loaded successfully");
+            LOGGER.info("Sauce Config loaded successfully");
 
         } catch (JsonSyntaxException e) {
             String error = "Error with the JSON of the Sauce Config : " + e.getMessage();
-            LOG.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             throw new GridConfigurationException(error, e);
         }
     }
@@ -85,14 +85,14 @@ public class SauceConfigReader {
             }
         }
         
-        throw new GridConfigurationException("Invalid property " + key + " in " + SeLionGridConstants.SAUCE_CONFIG);
+        throw new GridConfigurationException("Invalid property " + key + " in " + SeLionGridConstants.SAUCE_CONFIG_FILE);
     }
 
     /**
      * @return the access key associated with the saucelabs account
      */
     public String getAuthenticationKey() {
-        LOG.info("authKey: " + authKey);
+        LOGGER.info("authKey: " + authKey);
         return authKey;
     }
 
@@ -100,7 +100,7 @@ public class SauceConfigReader {
      * @return the sauceURL specified in the configuration file
      */
     public String getSauceURL() {
-        LOG.info("sauceURL: " + sauceURL);
+        LOGGER.info("sauceURL: " + sauceURL);
         return sauceURL;
     }
 
@@ -108,7 +108,7 @@ public class SauceConfigReader {
      * @return the sauce labs user name
      */
     public String getUserName() {
-        LOG.info("userName: " + userName);
+        LOGGER.info("userName: " + userName);
         return userName;
     }
 
@@ -116,7 +116,7 @@ public class SauceConfigReader {
      * @return the fully qualified sauce url
      */
     public String getURL() {
-        LOG.info("url: " + url);
+        LOGGER.info("url: " + url);
         return url;
     }
 
