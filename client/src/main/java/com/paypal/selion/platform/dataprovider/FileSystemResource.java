@@ -17,7 +17,11 @@ package com.paypal.selion.platform.dataprovider;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import com.paypal.selion.platform.utilities.FileAssistant;
 
@@ -149,6 +153,17 @@ public class FileSystemResource {
             is = new BufferedInputStream(FileAssistant.loadFile(file));
         }
 
+        return is;
+    }
+    
+    public Reader getReader() {
+        InputStreamReader is = null;
+        try {
+            File resourceFile = new File(this.pathName,this.fileName);
+            is = new InputStreamReader(new FileInputStream(resourceFile));
+        } catch (FileNotFoundException f) {
+            throw new RuntimeException("File Not Found", f);
+        }
         return is;
     }
 

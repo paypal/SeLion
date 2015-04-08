@@ -1,0 +1,47 @@
+[
+{
+ "id":"test1",
+ "password":123456,
+ "accountNumber":"9999999999",
+ "amount":50000,
+ "areaCode":[{ "areaCode" :"area1"},
+  			 { "areaCode" :"area2"}],
+ "bank":{
+ 		"name" : "Bank1",
+ 		"type" : "Savings",
+ 		"address" : {
+ 					"street":"1234 Some St"
+ 				}
+ 		}
+},
+{
+ "id":"test2",
+ "password":123456,
+ "accountNumber":"9999999999",
+ "amount":80000,
+ "areaCode":[{ "areaCode" :"area3"},
+  			 { "areaCode" :"area4"}],
+ "bank":{
+ 		"name" : "Bank2",
+ 		"type" : "Current",
+ 		"address" : {
+ 					"street":"1234 Any St"
+ 				}
+ 		}
+},
+{
+ "id":"test3",
+ "password":"sample",
+ "accountNumber":"9999999999",
+ "amount":80000,
+ "areaCode":[{ "areaCode" :"area3"},
+  			 { "areaCode" :"area4"}],
+ "bank":{
+ 		"name" : "Bank3",
+ 		"type" : "Current",
+ 		"address" : {
+ 					"street":"1234 any2 St"
+ 				}
+ 		}
+}
+]
