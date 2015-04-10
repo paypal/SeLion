@@ -26,28 +26,34 @@ import com.paypal.selion.platform.grid.MobileTestSession;
 class IOSDriverCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     private String MOBILE_NODE_TYPE = "mobileNodeType";
-    private String IOS_DRIVER = "ios-driver";
-    
+
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+        IOSCapabilities iOSCapabilities = new IOSCapabilities();
+        setMandatoryCapabilitiesFor(iOSCapabilities);
+        setOptionalCapabilitiesFor(iOSCapabilities);
+        iOSCapabilities.merge(capabilities);
+        return iOSCapabilities;
+    }
+
+    private void setMandatoryCapabilitiesFor(IOSCapabilities iOSCapabilities) {
         MobileTestSession mobileSession = Grid.getMobileTestSession();
-        
-        IOSCapabilities iosCapabilities = new IOSCapabilities(capabilities.asMap());
-        iosCapabilities.setCapability(IOSCapabilities.DEVICE, mobileSession.getDevice());
-        iosCapabilities.setCapability(IOSCapabilities.LANGUAGE, mobileSession.getAppLanguage());
-        iosCapabilities.setCapability(IOSCapabilities.LOCALE, mobileSession.getAppLocale());
-        iosCapabilities.setCapability(IOSCapabilities.BUNDLE_NAME, mobileSession.getAppName());
-        iosCapabilities.setCapability(MOBILE_NODE_TYPE, IOS_DRIVER);
+        iOSCapabilities.setCapability(IOSCapabilities.DEVICE, mobileSession.getDevice());
+        iOSCapabilities.setCapability(IOSCapabilities.LANGUAGE, mobileSession.getAppLanguage());
+        iOSCapabilities.setCapability(IOSCapabilities.LOCALE, mobileSession.getAppLocale());
+        iOSCapabilities.setCapability(IOSCapabilities.BUNDLE_NAME, mobileSession.getAppName());
+        iOSCapabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getMobileNodeType());
+    }
+
+    private void setOptionalCapabilitiesFor(IOSCapabilities iOSCapabilities) {
+        MobileTestSession mobileSession = Grid.getMobileTestSession();
         if (StringUtils.isNotBlank(mobileSession.getAppVersion())) {
-            iosCapabilities.setCapability(IOSCapabilities.BUNDLE_VERSION, mobileSession.getAppVersion());
-        }
-        if (StringUtils.isNotBlank(mobileSession.getPlatformVersion())) {
-            iosCapabilities.setCapability(IOSCapabilities.UI_SDK_VERSION, mobileSession.getPlatformVersion());
+            iOSCapabilities.setCapability(IOSCapabilities.BUNDLE_VERSION, mobileSession.getAppVersion());
         }
         if (StringUtils.isNotBlank(mobileSession.getDeviceType())) {
-            iosCapabilities.setCapability(IOSCapabilities.VARIATION,
+            iOSCapabilities.setCapability(IOSCapabilities.VARIATION,
                     DeviceVariation.valueOf(mobileSession.getDeviceType()));
         }
-        return iosCapabilities;
     }
+
 }
