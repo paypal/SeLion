@@ -34,17 +34,18 @@ import com.paypal.selion.platform.html.ParentTraits;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * A Simple class that houses the utilities related to a HTML element locators
- * 
+ * <code>HtmlElementUtils</code> houses utilities related to HTML element locators.
  */
 public class HtmlElementUtils {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
+
     private static final String INVALID_LOCATOR_ERR_MSG = "Locator cannot be null (or) empty.";
+
     private static final String INVALID_PARENT_ERR_MSG = "Parent element cannot be null.";
 
     private HtmlElementUtils() {
-        //Utility class. Hide the constructor to prevent instantiation
+        // Utility class. Hide the constructor to prevent instantiation
     }
 
     /**
@@ -52,19 +53,15 @@ public class HtmlElementUtils {
      * {@link WebElement#findElement(By)} to locate the web element.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
-     * @return - A {@link RemoteWebElement} that represents the html element that was located using the locator
-     *         provided.
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     * @return {@link RemoteWebElement} that represents the html element that was located using the locator provided.
      */
     public static RemoteWebElement locateElement(String locator) {
         logger.entering(locator);
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By locatorBy = resolveByType(locator);
-       
-
         RemoteWebElement element = (RemoteWebElement) Grid.driver().findElement(locatorBy);
         logger.exiting(element);
-
         return element;
     }
 
@@ -73,11 +70,10 @@ public class HtmlElementUtils {
      * {@link WebElement#findElement(By)} to locate the web element nested within the parent web element.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param parent
-     *            - A {@link ParentTraits} object that represents the parent element for this element.
-     * @return - A {@link RemoteWebElement} that represents the html element that was located using the locator
-     *         provided.
+     *            {@link ParentTraits} object that represents the parent element for this element.
+     * @return {@link RemoteWebElement} that represents the html element that was located using the locator provided.
      */
     public static RemoteWebElement locateElement(String locator, ParentTraits parent) {
         logger.entering(new Object[] { locator, parent });
@@ -93,17 +89,17 @@ public class HtmlElementUtils {
      * {@link WebElement#findElements(By)} to locate the web elements.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            String that represents the means to locate this element (could be id/name/xpath/css locator).
      * 
-     * @return A {@link WebElement} list that represents the html elements that was located using the locator provided.
+     * @return {@link WebElement} list that represents the html elements that was located using the locator provided.
      */
     public static List<WebElement> locateElements(String locator) {
         logger.entering(locator);
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By locatorBy = resolveByType(locator);
-
         RemoteWebDriver rwd = (RemoteWebDriver) Grid.driver();
         List<WebElement> webElementsFound = rwd.findElements(locatorBy);
+
         // if element is empty list then throw exception since unlike
         // findElement() findElements() always returns a list
         // irrespective of whether an element was found or not
@@ -119,16 +115,17 @@ public class HtmlElementUtils {
      * {@link WebElement#findElements(By)} to locate the web elements nested within the parent web .
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param parent
-     *            - A {@link ParentTraits} object that represents the parent element for this element.
-     * @return A {@link WebElement} list that represents the html elements that was located using the locator provided.
+     *            {@link ParentTraits} object that represents the parent element for this element.
+     * @return {@link WebElement} list that represents the html elements that was located using the locator provided.
      */
     public static List<WebElement> locateElements(String locator, ParentTraits parent) {
         logger.entering(new Object[] { locator, parent });
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         Preconditions.checkArgument(parent != null, INVALID_PARENT_ERR_MSG);
         List<WebElement> webElementsFound = parent.locateChildElements(locator);
+
         // if element is empty list then throw exception since unlike
         // findElement() findElements() always returns a list
         // irrespective of whether an element was found or not
@@ -143,7 +140,7 @@ public class HtmlElementUtils {
      * Validates a child locator to have the xpath dot notation.
      * 
      * @param locator
-     *            - A String that represents the xpath locator for an element.
+     *            String that represents the xpath locator for an element.
      */
     public static void isValidXpath(String locator) {
         logger.entering(locator);
@@ -159,15 +156,14 @@ public class HtmlElementUtils {
      * Method to split the locator string with delimiter '|' to return a valid {@link By } type.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
-     * @return A {@link By} object that represents the actual locating strategy that would be employed.
+     *            String that represents the means to locate this element (could be id/name/xpath/css locator).
+     * @return {@link By} object that represents the actual locating strategy that would be employed.
      */
     public static By resolveByType(String locator) {
         logger.entering(locator);
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By locatorBy = null;
         locator = locator.trim();
-
         if (locator.indexOf("|") == -1) {
             locatorBy = getFindElementType(locator);
         } else {
@@ -178,7 +174,6 @@ public class HtmlElementUtils {
             }
             locatorBy = new ByOrOperator(result);
         }
-
         logger.exiting(locatorBy);
         return locatorBy;
     }
@@ -187,27 +182,40 @@ public class HtmlElementUtils {
      * Detects Selenium {@link org.openqa.selenium.By By} type depending on what the locator string starts with.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
-     * @return The {@link By} sub-class that represents the actual location strategy that will be used.
+     *            String that represents the means to locate this element (could be id/name/xpath/css locator).
+     * @return {@link By} sub-class that represents the actual location strategy that will be used.
      */
     public static By getFindElementType(String locator) {
         logger.entering(locator);
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By valueToReturn = null;
         locator = locator.trim();
-        if (locator.startsWith("id=")) {
-            valueToReturn = By.id(locator.substring("id=".length()));
-        } else if (locator.startsWith("name=")) {
-            valueToReturn = By.name(locator.substring("name=".length()));
-        } else if (locator.startsWith("link=")) {
-            valueToReturn = By.linkText(locator.substring("link=".length()));
-        } else if (locator.startsWith("xpath=")) {
-            valueToReturn = By.xpath(locator.substring("xpath=".length()));
-        } else if (locator.startsWith("/") || locator.startsWith("./")) {
-            valueToReturn = By.xpath(locator);
-        } else if (locator.startsWith("css=")) {
-            valueToReturn = By.cssSelector(locator.substring("css=".length()));
-        } else {
+        int typeDelimiterIndex = locator.indexOf('=');
+        String locatorType = typeDelimiterIndex != -1 ? locator.substring(0, typeDelimiterIndex) : locator;
+        switch (locatorType) {
+        case "id":
+            valueToReturn = By.id(locator.substring(typeDelimiterIndex + 1));
+            break;
+        case "name":
+            valueToReturn = By.name(locator.substring(typeDelimiterIndex + 1));
+            break;
+        case "link":
+            valueToReturn = By.linkText(locator.substring(typeDelimiterIndex + 1));
+            break;
+        case "xpath":
+            valueToReturn = By.xpath(locator.substring(typeDelimiterIndex + 1));
+            break;
+        case "css":
+            valueToReturn = By.cssSelector(locator.substring(typeDelimiterIndex + 1));
+            break;
+        case "classname":
+            valueToReturn = By.className(locator.substring(typeDelimiterIndex + 1));
+            break;
+        default:
+            if (locator.startsWith("/") || locator.startsWith("./")) {
+                valueToReturn = By.xpath(locator);
+                break;
+            }
             valueToReturn = new ByIdOrName(locator);
         }
         if (logger.isLoggable(Level.FINE)) {
@@ -226,18 +234,17 @@ public class HtmlElementUtils {
 
     /**
      * Checks if the provided element is present on the page based on the locator provided
-     *
+     * 
      * @param locator
-     *         A String that represents the means to locate this element (could be id/name/xpath/css locator).
-     * @return
-     *         A boolean indicating if the element was found.
+     *            String that represents the means to locate this element (could be id/name/xpath/css locator).
+     * @return boolean indicating if the element was found.
      */
     public static boolean isElementPresent(String locator) {
         logger.entering(locator);
         boolean flag = false;
         try {
             flag = HtmlElementUtils.locateElement(locator) != null;
-        } catch (NoSuchElementException e) { //NOSONAR
+        } catch (NoSuchElementException e) { // NOSONAR
         }
         logger.exiting(flag);
         return flag;
