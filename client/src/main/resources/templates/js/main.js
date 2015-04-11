@@ -15,6 +15,10 @@
 
 /* Main JavaScript for RuntimeReporter */
 (function main() {
+  var reports = window.reports;
+  var tree = new Object();
+  var treeFilter = reports.testMethods, configTreeFilter = reports.configurationMethods;
+  var autoHideTree = true;
   var pageSize = 10, configPageSize = 10;
   var index = 1, configIndex = 1;
   var total, configTotal;
@@ -27,9 +31,84 @@
   var autoRefresh;
   var timeRefresh = 300 * 1000;//300 seconds refresh interval
   var localConfigMap = new Object();
-  var reports = window.reports;
   var reportMetaData = reports.reporterMetadata;
   var DISPLAY_LABEL = "displayLabel";
+
+  tree["AllSuites"] = new Object();
+  var root = tree["AllSuites"];
+  $.each(reports.testMethods, function(index, item) {
+      var suiteMap = getMap(root, item.suite);
+      var testMap = getMap(suiteMap, item.test);
+      var packageMap = getMap(testMap, item.packageInfo);
+      var classMap = getMap(packageMap, item.className);
+  })
+
+  var uniqueId = 0;
+  $.each(root, function(key, value) {
+	  var id = '#AllSuites';
+	  var suiteId = uniqueId++;
+	  generateInnerTree(id, key, 'suite', suiteId);
+	  $.each(value, function(key1, value1) {
+		  var id1 = '#' + key + 'suite' + suiteId;
+		  var testId = uniqueId++;
+		  generateInnerTree(id1, key1, 'test', testId);
+		  $.each(value1, function(key2, value2) {
+			  var id2 = '#' + key1 + 'test' + testId;
+			  var packageId = uniqueId++;
+			  generateInnerTree(id2, key2, 'packageInfo', packageId);
+			  $.each(value2, function(key3, value3) {
+				  var id3 = '#' + key2 + 'packageInfo' + packageId;
+				  var classId = uniqueId++;
+				  generateInnerTree(id3, key3, 'className', classId);
+			  });
+
+		  });
+	  });
+  });
+
+  $(".btn-tree-autohide").click(function(e) {
+      var span = $(this).find('span');
+      if ($(span).hasClass('label-success')) {
+        $(span).removeClass('label-success').addClass('label-danger').html('Off');
+        autoHideTree = false;
+      } else {
+        $(span).removeClass('label-danger').addClass('label-success').html('On');
+        autoHideTree = true;
+      }
+  });
+  
+  $('#tree').jstree({
+	  "core" : { "themes" : { "variant" : "medium" } },
+	  "checkbox" : { "keep_selected_style" : true }
+  });
+
+  $('#tree').on("changed.jstree", function (e, data) {
+	  var searchType = data.node.li_attr['data-type'];
+	  var searchMap = new Object();
+
+	  if (searchType == "all") {
+          treeFilter = reports.testMethods;
+          configTreeFilter = reports.configurationMethods;
+	  } else {
+          searchMap[searchType] = data.node.text;
+          for (i = (data.node.parents.length - 3); i >= 0; i--) {
+              var parent = $('#' + data.node.parents[i]);
+              searchMap[parent.attr('data-type')] = parent.attr('data-value');
+          }
+          treeFilter = filterResults(searchMap, reports.testMethods);
+          configTreeFilter = filterResults(searchMap, reports.configurationMethods);
+      }
+      refreshResults();
+      if (autoHideTree) {
+          $("#bodycontent").toggleClass("toggled");
+      }
+  });
+
+  $("#display-tree").click(function(e) {
+      e.preventDefault();
+      $("#bodycontent").toggleClass("toggled");
+      $("#treeview-left").css("height", (window.innerHeight - 85) + "px");
+  });
 
   var dateFormatOptions = {
       year: "numeric", month: "short", day: "numeric",
@@ -62,7 +141,7 @@
 
     function reloadPage() {
       location.reload();
-    }
+    };
 
     //Prepare configuration summary content
     $('#config-popover').popover();
@@ -76,80 +155,9 @@
         return {value: helpers.formatDateValue(value, key), key: helpers.formatDisplayName(key)}}); 
     });
 
-    autoRefresh = setInterval(reloadPage,timeRefresh);
+    autoRefresh = setInterval(reloadPage, timeRefresh);
 
-    //Calulate the test case summary
-    var passed = 0, failed = 0, skipped = 0, running = 0;
-    $.each(reports.testMethods,function(index, item) {
-      if (item.status == 'Passed') {
-        passed++;
-      } else if (item.status == 'Failed') {
-        failed++;
-      } else if (item.status == 'Skipped') {
-        skipped++;
-      } else {
-        running++;
-      }
-    })
-
-    total = passed + failed + skipped + running;
-
-    if (passed > 0) {
-      $('#statistics-data-passed').css('width',(passed * 100 / total)+ '%').html(passed + ' passed');
-      $('#statistics-progress-passed').css('width',(passed * 100 / total)+ '%');
-    }
-    if (failed > 0) {
-      $('#statistics-data-failed').css('width',(failed * 100 / total)+ '%').html(failed + ' failed');
-      $('#statistics-progress-failed').css('width',(failed * 100 / total)+ '%');
-    }
-    if (skipped > 0) {
-      $('#statistics-data-skipped').css('width',(skipped * 100 / total)+ '%').html(skipped + ' skipped');
-      $('#statistics-progress-skipped').css('width',(skipped * 100 / total)+ '%');
-    }
-    if (running > 0) {
-      $('#statistics-data-running').css('width',(running * 100 / total)+ '%').html(running + ' running');
-      $('#statistics-progress-running').css('width',(running * 100 / total)+ '%');
-    }
-
-    //Pagination for Test case table
-    sortedRecords = reports.testMethods;
-    filterSearch = sortedRecords;
-    total = filterSearch.length;
-    noOfPage = Math.ceil(total/pageSize);
-
-    renderPageCombo("#", ".pageSizeCombo");
-    renderSearch("#", "#testCaseSearch", sortedRecords);
-    renderPageNumbers("#", 1, noOfPage);
-    renderPagination("#", noOfPage);
-    renderTable("#", filterSearch,index,pageSize);
-
-    //Pagination for Config Test case table
-    configSortedRecords = reports.configurationMethods;
-    configFilterSearch = configSortedRecords;
-    configTotal = configFilterSearch.length;
-    configNoOfPage = Math.ceil(configTotal/configPageSize);
-
-    renderPageCombo("#config-", ".config-pageSizeCombo");
-    renderSearch("#config-", "#config-testCaseSearch", configSortedRecords);
-    renderPageNumbers("#config-", 1, configNoOfPage);
-    renderPagination("#config-", configNoOfPage);
-    renderTable("#config-", configFilterSearch, configIndex, configPageSize);
-
-    $('#testcase-btn-grid').click(function() {
-      $('#testcaseParentBody .fixed-table-pagination').hide();
-      $('#testcase-btn-list').removeClass('active');
-      $('#testcase-btn-grid').addClass('active');
-      $('#testcaseBody').html($('#gridImpl').render({'results' : reports.testMethods}));
-      afterRender(reports.testMethods, '');
-    });
-
-    $('#testcase-btn-list').click(function() {
-      $('#testcase-btn-grid').removeClass('active');
-      $('#testcase-btn-list').addClass('active');
-      renderTable("#", filterSearch,index,pageSize);
-      $('#testcaseParentBody .fixed-table-pagination').show();
-      afterRender(filterSearch,'');
-    });
+    refreshResults();
 
     $('.btn-auto-update').click(function() {
       var span = $(this).find('span');
@@ -163,6 +171,70 @@
         autoRefresh = setInterval(reloadPage,timeRefresh);
       }
     });
+  });
+
+  function refreshResults() {
+    //Calulate the test case summary
+    var passed = 0, failed = 0, skipped = 0, running = 0;
+    $.each(treeFilter,function(index, item) {
+      if (item.status == 'Passed') {
+        passed++;
+      } else if (item.status == 'Failed') {
+        failed++;
+      } else if (item.status == 'Skipped') {
+        skipped++;
+      } else {
+        running++;
+      }
+    })
+
+    total = passed + failed + skipped + running;
+    generateSummary('passed', passed, total);
+    generateSummary('failed', failed, total);
+    generateSummary('skipped', skipped, total);
+    generateSummary('running', running, total);
+
+    //Pagination for Test case table
+    sortedRecords = treeFilter;
+    filterSearch = sortedRecords;
+    total = filterSearch.length;
+    noOfPage = Math.ceil(total/pageSize);
+
+    renderPageCombo("#", ".pageSizeCombo");
+    renderSearch("#", "#testCaseSearch", sortedRecords);
+    $('#' + 'testcase-pagination ul .page-number').remove();
+    renderPageNumbers("#", 1, noOfPage);
+    renderPagination("#", noOfPage);
+    renderTable("#", filterSearch,index,pageSize);
+
+    //Pagination for Config Test case table
+    configSortedRecords = configTreeFilter;
+    configFilterSearch = configSortedRecords;
+    configTotal = configFilterSearch.length;
+    configNoOfPage = Math.ceil(configTotal/configPageSize);
+
+    renderPageCombo("#config-", ".config-pageSizeCombo");
+    renderSearch("#config-", "#config-testCaseSearch", configSortedRecords);
+    $('#config-' + 'testcase-pagination ul .page-number').remove();
+    renderPageNumbers("#config-", 1, configNoOfPage);
+    renderPagination("#config-", configNoOfPage);
+    renderTable("#config-", configFilterSearch, configIndex, configPageSize);
+
+    $('#testcase-btn-grid').click(function() {
+      $('#testcaseParentBody .fixed-table-pagination').hide();
+      $('#testcase-btn-list').removeClass('active');
+      $('#testcase-btn-grid').addClass('active');
+      $('#testcaseBody').html($('#gridImpl').render({'results' : treeFilter}));
+      afterRender(treeFilter, '');
+    });
+
+    $('#testcase-btn-list').click(function() {
+      $('#testcase-btn-grid').removeClass('active');
+      $('#testcase-btn-list').addClass('active');
+      renderTable("#", filterSearch,index,pageSize);
+      $('#testcaseParentBody .fixed-table-pagination').show();
+      afterRender(filterSearch,'');
+    });
 
     enableClickForProgressBar("passed");
     enableClickForProgressBar("failed");
@@ -171,8 +243,54 @@
     $('#statistics-data').click(function() {
       searchResults('');
     });
+  }
 
-  });
+  function generateSummary(id, status, total) {
+    $('#statistics-progress-' + id).css('width',(status * 100 / total)+ '%');
+    if (status > 0) {
+        $('#statistics-data-' + id).css('width',(status * 100 / total)+ '%').html(status + ' ' + id);
+    } else {
+        $('#statistics-data-' + id).css('width','0%').html('');
+    }
+  }
+
+  function filterResults(searchMap, results) {
+    var count = 0, tmpTreeFilter = new Array();
+    $.each(results, function(index, testCase) {
+        var searchAll = true;
+        $.each(searchMap, function(key, value) {
+            if(testCase[key] != value) {
+                searchAll = false;
+            }
+        });
+        if (searchAll) {
+            tmpTreeFilter[count++] = testCase;
+        }
+    })
+    return tmpTreeFilter;
+  }
+
+  function generateInnerTree(id, key, type, uniqueId) {
+    var leaf = '';
+    if (type == 'className') {
+        leaf = 'data-jstree=\'{"icon":"glyphicon glyphicon-leaf"}\'';
+    }
+    //Remove dot and spaces from the key
+    var id = id.replace(/\./g, '').replace(/\s+/g, '');
+    var newId = key.replace(/\./g, '').replace(/\s+/g, '') + type + uniqueId;
+    if ($(id + ' ul').length == 0) {
+        $(id).first().append('<ul><li id="' + newId + '" data-value="' + key + '" data-type="' + type + '" ' + leaf + '>' + key + '</li></ul>');
+    } else {
+        $(id + ' ul').first().append('<li id="' + newId + '" data-value="' + key + '" data-type="' + type + '" ' + leaf + '>' + key + '</li>');
+    }
+  }
+
+  function getMap(map, key) {
+    if (map[key] == null) {
+        map[key] = new Object();
+    }
+    return map[key];
+  }
 
   function renderPageCombo(pageAdditionalId, comboClassName) {
     $(comboClassName + " li a").click(function(){

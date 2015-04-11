@@ -20,6 +20,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="../css/bootstrap.css">
         <link rel="stylesheet" href="../css/bootstrap-table.min.css">
+        <link rel="stylesheet" href="../css/style.min.css" />
+        <link rel="stylesheet" href="../css/treeview.css" />
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]><script src="../bower_components/html5shiv/dist/html5shiv.js"></script><script src="../bower_components/respond/dest/respond.min.js"></script><![endif]-->
         <style type="text/css">.modal-dialog {width: 95%; min-height: 95%; padding: 0;}.modal-content {min-height: 100%; }
@@ -49,33 +51,53 @@
                     <li>
                     <a href="javascript:;" class="btn-auto-update">Auto Update <span class="label label-success">On</span></a>
                     </li>
+                    <li>
+                    <a href="javascript:;" class="btn-tree-autohide">Tree Auto Hide <span class="label label-success">On</span></a>
+                    </li>
                 </ul>
             </div>
         </div>
         <!-- Header End -->
-        <div class="container">
+        <div id="bodycontent" class="container toggled">
+
+            <!-- Treeview Begin -->
+        <div id="treeview-left">
+            <label class="tree-toggler nav-header">TREEVIEW</label>
+            <div id="tree">
+            <ul>
+                <li id="AllSuites" data-type="all" data-value="All Suites">All Suites</li>
+            </ul>
+            </div>
+        </div>
+
+        <div id="result-right">
+
+        <button type="button" class="btn btn-default" id="display-tree">Tree View</button>
+            <!-- Treeview End -->
+
             <!-- Statistics Begin -->
             <div style="clear: both;cursor: pointer;" id="statistics-data">
-                <div id="statistics-data-passed" class="text-center text-success" style="float: left;">
-                </div>
-                <div id="statistics-data-failed" class="text-center text-danger" style="float: left;">
-                </div>
                 <div id="statistics-data-skipped" class="text-center text-warning" style="float: left;">
                 </div>
                 <div id="statistics-data-running" class="text-center text-info" style="float: left;">
                 </div>
+                <div id="statistics-data-passed" class="text-center text-success" style="float: left;">
+                </div>
+                <div id="statistics-data-failed" class="text-center text-danger" style="float: left;">
+                </div>
             </div>
             <div class="progress" style="clear: both;cursor: pointer;">
-                <div id="statistics-progress-passed" class="progress-bar progress-bar-success">
-                </div>
-                <div id="statistics-progress-failed" class="progress-bar progress-bar-danger">
-                </div>
                 <div id="statistics-progress-skipped" class="progress-bar progress-bar-warning">
                 </div>
                 <div id="statistics-progress-running" class="progress-bar progress-bar-info">
                 </div>
+                <div id="statistics-progress-passed" class="progress-bar progress-bar-success">
+                </div>
+                <div id="statistics-progress-failed" class="progress-bar progress-bar-danger">
+                </div>
             </div>
             <!-- Statistics End -->
+
             <!-- Results Begin -->
             <div class="panel panel-default" id="testcaseTable">
                 <div class="panel-heading">
@@ -179,6 +201,7 @@
                 </div>
             </div>
             <!-- Results End -->
+            </div>
         </div>
         <div class="modal fade modal-config" id="modal-id-config">
             <div class="modal-dialog">
@@ -269,6 +292,7 @@
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/render.min.js"></script>
 <script src="../js/readmore.min.js"></script>
+<script src="../js/jstree.min.js"></script>
 <script id="tableImpl" type="text/x-jsrender">
         <table class="table table-striped table-hover" id="paginationTextCaseTable">
             <thead>

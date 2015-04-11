@@ -1,0 +1,47 @@
+/* TreeView Styles */
+#bodycontent {
+    -webkit-transition: all 0.40s ease;
+    -moz-transition: all 0.40s ease;
+    -o-transition: all 0.40s ease;
+    transition: all 0.40s ease;
+    padding-left: 300px;
+    width: 99%;
+}
+
+#treeview-left {
+    -webkit-transition: all 0.40s ease;
+    -moz-transition: all 0.40s ease;
+    -o-transition: all 0.40s ease;
+    transition: all 0.40s ease;
+    background: white;
+    overflow-y: auto;
+    z-index: 10;
+    position: fixed;
+    left: 0px;
+    width: 300px;
+    height: 88%;
+    font-size: 11px;
+    color: #197E7A;
+}
+
+#result-right {
+    position: relative;
+    padding: 20px;
+    margin-right: 0;
+    width: 100%;
+}
+
+#bodycontent.toggled {
+    width: 100%;
+    padding-left: 0;
+}
+
+#bodycontent.toggled #treeview-left {
+    width: 0;
+}
+
+#bodycontent.toggled #result-right {
+    position: relative;
+    width: 100%;
+    margin-right: 0;
+}
