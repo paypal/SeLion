@@ -46,7 +46,7 @@ class SelendroidCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             capabilities.setBrowserName(ANDROID);
         }
 
-        capabilities.setCapability(MOBILE_NODE_TYPE, SELENDROID);
+        capabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getAsString());
         capabilities.setCapability(SelendroidCapabilities.AUT, mobileSession.getAppName());
         capabilities.setCapability(SelendroidCapabilities.LOCALE, mobileSession.getAppLocale());
         if (StringUtils.isNotBlank(mobileSession.getDeviceType())) {

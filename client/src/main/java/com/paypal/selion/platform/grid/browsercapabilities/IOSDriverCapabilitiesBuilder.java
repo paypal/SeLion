@@ -42,7 +42,7 @@ class IOSDriverCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         iOSCapabilities.setCapability(IOSCapabilities.LANGUAGE, mobileSession.getAppLanguage());
         iOSCapabilities.setCapability(IOSCapabilities.LOCALE, mobileSession.getAppLocale());
         iOSCapabilities.setCapability(IOSCapabilities.BUNDLE_NAME, mobileSession.getAppName());
-        iOSCapabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getMobileNodeType());
+        iOSCapabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getAsString());
     }
 
     private void setOptionalCapabilitiesFor(IOSCapabilities iOSCapabilities) {

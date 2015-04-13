@@ -29,7 +29,7 @@ public enum MobileNodeType {
         this.mobileNodeType = mobileNodeType;
     }
 
-    public String getMobileNodeType() {
+    public String getAsString() {
         return this.mobileNodeType;
     }
 
@@ -43,7 +43,7 @@ public enum MobileNodeType {
         StringBuilder buffer = new StringBuilder();
         String delimiter = ",";
         for (MobileNodeType node : MobileNodeType.values()) {
-            buffer.append(node.getMobileNodeType()).append(delimiter);
+            buffer.append(node.getAsString()).append(delimiter);
         }
         buffer.deleteCharAt(buffer.length() - 1);
         return buffer.toString();
@@ -56,7 +56,7 @@ public enum MobileNodeType {
      */
     public static MobileNodeType getMobileNodeType(String mobileNodeType) {
         for (MobileNodeType node : MobileNodeType.values()) {
-            if (node.getMobileNodeType().equalsIgnoreCase(mobileNodeType)) {
+            if (node.getAsString().equalsIgnoreCase(mobileNodeType)) {
                 return node;
             }
         }
