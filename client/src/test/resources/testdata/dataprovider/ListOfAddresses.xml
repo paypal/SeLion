@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addresses>
+ <address id="1">
+  <street>1234 Elm st</street>
+ </address>
+ <address id="2">
+  <street>12 Pico st</street>
+ </address>
+</addresses>

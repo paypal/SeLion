@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items>
+ <item>
+  <key>k1</key>
+  <value>val1</value>
+ </item>
+ <item>
+  <key>k2</key>
+  <value>val2</value>
+ </item>
+ <item>
+  <key>k3</key>
+  <value>val3</value>
+ </item>
+</items>

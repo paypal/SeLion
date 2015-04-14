@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transactions>
+ <transaction>
+  <user>
+   <accountNumber>78901</accountNumber>
+   <amount>120.0</amount>
+   <address>
+    <street>1234 Elm st</street>
+   </address>
+   <name>Thomas</name>
+  </user>
+  <user>
+   <accountNumber>123456</accountNumber>
+   <amount>117.0</amount>
+   <address>
+    <street>12 Pico st</street>
+   </address>
+   <name>Mason</name>
+  </user>
+ </transaction>
+ <transaction>
+  <user>
+   <accountNumber>543210</accountNumber>
+   <amount>10.0</amount>
+   <address>
+    <street>100 Never st</street>
+   </address>
+   <name>Sir Edison</name>
+  </user>
+  <user>
+   <accountNumber>123456</accountNumber>
+   <amount>9.0</amount>
+   <address>
+    <street>2014 Open st</street>
+   </address>
+   <name>Dr. Drake</name>
+  </user>
+ </transaction>
+</transactions>

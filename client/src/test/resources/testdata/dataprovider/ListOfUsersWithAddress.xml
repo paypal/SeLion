@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+ <user>
+  <id>1</id>
+  <accountNumber>78901</accountNumber>
+  <amount>120.0</amount>
+  <address>
+   <street>1234 Elm st</street>
+  </address>
+  <name>Thomas</name>
+  <phoneNumber>4081231234</phoneNumber>
+ </user>
+ <user>
+  <id>2</id>
+  <accountNumber>123456</accountNumber>
+  <amount>100.0</amount>
+  <address>
+   <street>12 Pico st</street>
+  </address>
+  <name>rama</name>
+  <phoneNumber>4081233456</phoneNumber>
+  <phoneNumber>4081235678</phoneNumber>
+ </user>
+</users>

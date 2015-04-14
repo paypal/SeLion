@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,18 +15,25 @@
 
 package com.paypal.selion.platform.dataprovider;
 
-import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
-import com.paypal.test.utilities.logging.SimpleLogger;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.Map.Entry;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * This class provides several methods to retrieve test data from yaml files. Users can get data returned in an Object
@@ -263,7 +270,7 @@ public final class YamlDataProvider {
             }
         }
 
-        Object[][] objArray = convertToObjectArray(yamlObject);
+        Object[][] objArray = DataProviderHelper.convertToObjectArray(yamlObject);
 
         logger.exiting(objArray);
         return objArray;
@@ -277,10 +284,10 @@ public final class YamlDataProvider {
      *            an implementation class of {@link DataProviderFilter}
      * @return An iterator over a collection of Object Array to be used with TestNG DataProvider
      * @throws IOException
-     * @throws YamlDataProviderException
+     * @throws DataProviderException 
      */
     public static Iterator<Object[]> getDataByFilter(FileSystemResource resource, DataProviderFilter dataFilter)
-            throws IOException, YamlDataProviderException {
+            throws IOException, DataProviderException {
         logger.entering(new Object[] { resource, dataFilter });
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
@@ -303,62 +310,7 @@ public final class YamlDataProvider {
                 throw new YamlDataProviderException("Error reading YAML data", composerException);
             }
         }
-        return convertToObjectIterator(yamlObject, dataFilter);
-    }
-
-    private static Iterator<Object[]> convertToObjectIterator(Object object, DataProviderFilter dataFilter)
-            throws YamlDataProviderException {
-        logger.entering(new Object[] { object, dataFilter });
-        List<Object[]> objs = new ArrayList<>();
-        Class<?> rootClass = object.getClass();
-
-        try {
-            // Convert a LinkedHashMap (Yaml Associative Array) to an Object double array.
-            if (rootClass.equals(LinkedHashMap.class)) {
-                LinkedHashMap<?, ?> objAsLinkedHashMap = (LinkedHashMap<?, ?>) object;
-                Collection<?> allValues = objAsLinkedHashMap.values();
-                for (Object eachValue : allValues) {
-                    if (dataFilter.filter(eachValue)) {
-                        objs.add(new Object[] { eachValue });
-                    }
-                }
-            } else if (rootClass.equals(ArrayList.class)) {
-                    // Converts an ArrayList (Yaml List) to an Object double array.
-                ArrayList<?> objAsArrayList = (ArrayList<?>) object;
-
-                int i = 0;
-                for (Object eachArrayListObject : objAsArrayList) {
-
-                    /*
-                     * Yaml list of an associative array will return a LinkedHashMap nested in a LinkedHashMap. Yaml
-                     * list of a list will return an ArrayList nested in a LinkedHashMap. This block removes the first
-                     * mapping since that data serves as visual organization of data within a yaml. If the parent is a
-                     * LinkedHashMap and the child is a LinkedHashMap or an ArrayList, then assign the child to the
-                     * Object double array instead of the parent.
-                     */
-                    if (dataFilter.filter(eachArrayListObject)) {
-                        objs.add(i, new Object[] { eachArrayListObject });
-                        i++;
-                    }
-
-                    if (eachArrayListObject.getClass().equals(LinkedHashMap.class)) {
-                        LinkedHashMap<?, ?> eachArrayListObjectAsHashMap = (LinkedHashMap<?, ?>) eachArrayListObject;
-                        for (Object eachEntry : eachArrayListObjectAsHashMap.values()) {
-                            if (eachEntry.getClass().equals(LinkedHashMap.class)
-                                    || eachEntry.getClass().equals(ArrayList.class)) {
-                                if (dataFilter.filter(eachEntry)) {
-                                    objs.add(i, new Object[] { eachEntry });
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (DataProviderException e) {
-            throw new YamlDataProviderException(e.getMessage(), e);
-        }
-        logger.exiting(objs.iterator());
-        return objs.iterator();
+        return DataProviderHelper.filterToListOfObjects(yamlObject, dataFilter).iterator();
     }
 
     /**
@@ -390,18 +342,9 @@ public final class YamlDataProvider {
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
 
-        HashMap<String, Object> requestedMap = new LinkedHashMap<>();
         LinkedHashMap<?, ?> map = (LinkedHashMap<?, ?>) yaml.load(inputStream);
 
-        for (String key : keys) {
-            Object obj = map.get(key);
-            if (obj == null) {
-                throw new IllegalArgumentException("Key not found, returned null value: " + key);
-            }
-            requestedMap.put(key, obj);
-        }
-
-        Object[][] objArray = convertToObjectArray(requestedMap);
+        Object[][] objArray = DataProviderHelper.getDataByKeys(map, keys);
 
         logger.exiting(objArray);
         return objArray;
@@ -458,17 +401,9 @@ public final class YamlDataProvider {
     public static Object[][] getDataByIndex(FileSystemResource resource, String indexes) throws IOException,
             DataProviderException {
         logger.entering(new Object[] { resource, indexes });
-        List<Integer> arrayIndex = DataProviderHelper.parseIndexString(indexes);
 
         Object[][] yamlObj = getAllData(resource);
-        Object[][] yamlObjRequested = new Object[arrayIndex.size()][yamlObj[0].length];
-
-        int i = 0;
-        for (Integer index : arrayIndex) {
-            index--;
-            yamlObjRequested[i] = yamlObj[index];
-            i++;
-        }
+        Object[][] yamlObjRequested = DataProviderHelper.getDataByIndex(yamlObj, indexes);
 
         logger.exiting(yamlObjRequested);
         return yamlObjRequested;
@@ -604,62 +539,6 @@ public final class YamlDataProvider {
         }
 
         return new Yaml();
-    }
-
-    /**
-     * 
-     * 
-     * @param object - The object that has to be converted.
-     * @return Object[][] two dimensional object to be used with TestNG DataProvider
-     */
-    private static Object[][] convertToObjectArray(Object object) {
-        logger.entering(object);
-        Object[][] objArray = new Object[][] { { object } };
-        Class<?> rootClass = object.getClass();
-
-        // Convert a LinkedHashMap (Yaml Associative Array) to an Object double array.
-        if (rootClass.equals(LinkedHashMap.class)) {
-            LinkedHashMap<?, ?> objAsLinkedHashMap = (LinkedHashMap<?, ?>) object;
-            Collection<?> allValues = objAsLinkedHashMap.values();
-            objArray = new Object[allValues.size()][1];
-            int i = 0;
-            for (Object eachValue : allValues) {
-                objArray[i][0] = eachValue;
-                i++;
-            }
-        }
-
-        // Converts an ArrayList (Yaml List) to an Object double array.
-        else if (rootClass.equals(ArrayList.class)) {
-            ArrayList<?> objAsArrayList = (ArrayList<?>) object;
-            objArray = new Object[objAsArrayList.size()][1];
-
-            int i = 0;
-            for (Object eachArrayListObject : objAsArrayList) {
-
-                /*
-                 * Yaml list of an associative array will return a LinkedHashMap nested in a LinkedHashMap. Yaml list of
-                 * a list will return an ArrayList nested in a LinkedHashMap. This block removes the first mapping since
-                 * that data serves as visual organization of data within a yaml. If the parent is a LinkedHashMap and
-                 * the child is a LinkedHashMap or an ArrayList, then assign the child to the Object double array
-                 * instead of the parent.
-                 */
-                objArray[i][0] = eachArrayListObject;
-                if (eachArrayListObject.getClass().equals(LinkedHashMap.class)) {
-                    LinkedHashMap<?, ?> eachArrayListObjectAsHashMap = (LinkedHashMap<?, ?>) eachArrayListObject;
-                    for (Object eachEntry : eachArrayListObjectAsHashMap.values()) {
-                        if (eachEntry.getClass().equals(LinkedHashMap.class)
-                                || eachEntry.getClass().equals(ArrayList.class)) {
-                            objArray[i][0] = eachEntry;
-                        }
-                    }
-                }
-                i++;
-            }
-        }
-
-        logger.exiting(objArray);
-        return objArray;
     }
 
     /**

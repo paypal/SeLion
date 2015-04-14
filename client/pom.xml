@@ -93,7 +93,10 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
         <!-- Selenium 2 dependencies -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>

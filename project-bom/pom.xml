@@ -37,7 +37,11 @@
                 <artifactId>poi</artifactId>
                 <version>3.6</version>
             </dependency>
-
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.2</version>
+            </dependency>
             <!-- Selenium 2 dependencies -->
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
