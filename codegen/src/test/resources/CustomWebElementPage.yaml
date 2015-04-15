@@ -1,0 +1,11 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+  US: "API Page"
+elements:
+  buttonCustomElement:
+    locators: 
+      US: "//div[@id='apiOption1']/p[3]/a"
+  linkAnotherElement:
+    locators: 
+      US: "//div[@id='apiOption2']/p[3]/a"
+defaultLocale: "US"

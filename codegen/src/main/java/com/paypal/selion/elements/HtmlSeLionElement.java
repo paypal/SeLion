@@ -16,6 +16,7 @@
 package com.paypal.selion.elements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.paypal.selion.plugins.GUIObjectDetails;
@@ -25,20 +26,22 @@ import com.paypal.selion.plugins.GUIObjectDetails;
  *
  */
 public class HtmlSeLionElement extends AbstractSeLionElement {
-    public static HtmlSeLionElement TEXT_FIELD = new HtmlSeLionElement("TextField", true, true);
-    public static HtmlSeLionElement TABLE = new HtmlSeLionElement("Table", true, true);
-    public static HtmlSeLionElement SELECT_LIST = new HtmlSeLionElement("SelectList", true, true);
-    public static HtmlSeLionElement RADIO_BUTTON = new HtmlSeLionElement("RadioButton", true, true);
-    public static HtmlSeLionElement BUTTON = new HtmlSeLionElement("Button", true, true);
-    public static HtmlSeLionElement LINK = new HtmlSeLionElement("Link", true, true);
-    public static HtmlSeLionElement LABEL = new HtmlSeLionElement("Label", true, true);
-    public static HtmlSeLionElement IMAGE = new HtmlSeLionElement("Image", true, true);
-    public static HtmlSeLionElement FORM = new HtmlSeLionElement("Form", true, true);
-    public static HtmlSeLionElement DATE_PICKER = new HtmlSeLionElement("DatePicker", true, true);
-    public static HtmlSeLionElement CHECK_BOX = new HtmlSeLionElement("CheckBox", true, true);
-    public static HtmlSeLionElement CONTAINER = new HtmlSeLionElement("Container", true, false);
-    public static HtmlSeLionElement BASE_CLASS = new HtmlSeLionElement("baseClass", false, false);
-    public static HtmlSeLionElement PAGE_TITLE = new HtmlSeLionElement("pageTitle", false, false);
+    public static final String SELION_ELEMENT_CLASS = "com.paypal.selion.platform.html";
+    
+    public static HtmlSeLionElement TEXT_FIELD = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "TextField", true, true);
+    public static HtmlSeLionElement TABLE = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Table", true, true);
+    public static HtmlSeLionElement SELECT_LIST = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "SelectList", true, true);
+    public static HtmlSeLionElement RADIO_BUTTON = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "RadioButton", true, true);
+    public static HtmlSeLionElement BUTTON = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Button", true, true);
+    public static HtmlSeLionElement LINK = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Link", true, true);
+    public static HtmlSeLionElement LABEL = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Label", true, true);
+    public static HtmlSeLionElement IMAGE = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Image", true, true);
+    public static HtmlSeLionElement FORM = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Form", true, true);
+    public static HtmlSeLionElement DATE_PICKER = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "DatePicker", true, true);
+    public static HtmlSeLionElement CHECK_BOX = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "CheckBox", true, true);
+    public static HtmlSeLionElement CONTAINER = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Container", true, false);
+    public static HtmlSeLionElement BASE_CLASS = new HtmlSeLionElement(null, "baseClass", false, false);
+    public static HtmlSeLionElement PAGE_TITLE = new HtmlSeLionElement(null, "pageTitle", false, false);
 
     //DONOT alter the order of RADIO_BUTTON and BUTTON because of the following reason:
     //consider a field in the yaml file which looks like this : fxBankRadioButton
@@ -52,6 +55,20 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
     @Override
     public String toString() {
         return String.format("%s, canHaveParent=%s",super.toString(), canHaveParent);
+    }
+    
+    /**
+     * By providing the qualified name of a custom element we can register it to the element array.
+     * Custom elements are inserted before SeLion elements, if you use the same name it will overwrite the existing element.
+     * 
+     * @param element string of the qualified class
+     */
+    public static void registerElement(String element) {
+        List<HtmlSeLionElement> temp = new ArrayList<HtmlSeLionElement>(Arrays.asList(values));
+        
+        temp.add(0, new HtmlSeLionElement(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true, false));
+        
+        values = temp.toArray(new HtmlSeLionElement[temp.size()]);
     }
 
     /**
@@ -70,6 +87,14 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
     public static boolean isValid(String element) {
         return isValid(values, element);
     }
+    
+    /**
+     * @param element - The element that needs to be searched.
+     * @return - <code>true</code> if the element was found in the set of elements provided.
+     */
+    public static boolean isExactMatch(String element) {
+        return isExactMatch(values, element);
+    }
 
     /**
      * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElement} and whose
@@ -82,8 +107,8 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
 
     private boolean canHaveParent;
 
-    private HtmlSeLionElement(String element, boolean isHtmlType, boolean canHaveParent) {
-        super(element, isHtmlType);
+    private HtmlSeLionElement(String elementPackage, String element, boolean isHtmlType, boolean canHaveParent) {
+        super(elementPackage, element, isHtmlType);
         this.canHaveParent = canHaveParent;
     }
 
@@ -133,9 +158,9 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
             if (element != null && element.isUIElement()) {
                 GUIObjectDetails htmlObjectDetails = null;
                 if (element.canHaveParent()) {
-                    htmlObjectDetails = new GUIObjectDetails(element.stringify(), key, parent);
+                    htmlObjectDetails = new GUIObjectDetails(element.stringify(), key, element.getElementPackage(), parent);
                 } else {
-                    htmlObjectDetails = new GUIObjectDetails(element.stringify(), key);
+                    htmlObjectDetails = new GUIObjectDetails(element.stringify(), key, element.getElementPackage());
                 }
                 htmlObjectDetailsList.add(htmlObjectDetails);
             }

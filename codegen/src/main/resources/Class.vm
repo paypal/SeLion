@@ -4,7 +4,7 @@ package $package;
 
 import $baseclasspackage;
 #foreach ($data in $control)
-import com.paypal.selion.platform.html.$data;
+import $data;
 #end
 
 public class $class extends $baseclass {

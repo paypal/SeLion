@@ -7,7 +7,7 @@ import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.grid.Grid;
 import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 #foreach ($data in $control)
-import org.uiautomation.ios.UIAModels.$data;
+import $data;
 #end
 
 public class $class extends $baseclass {
