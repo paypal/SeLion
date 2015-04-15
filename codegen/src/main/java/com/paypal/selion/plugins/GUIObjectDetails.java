@@ -29,14 +29,16 @@ public class GUIObjectDetails {
     private String memberType;
     private String memberName;
     private String parent;
+    private String memberPackage;
 
-    public GUIObjectDetails(String memberType, String memberName) {
-        this(memberType, memberName, null);
+    public GUIObjectDetails(String memberType, String memberName, String memberPackage) {
+        this(memberType, memberName, memberPackage, null);
     }
 
-    public GUIObjectDetails(String memberType, String memberName, String parent) {
+    public GUIObjectDetails(String memberType, String memberName, String memberPackage, String parent) {
         this.memberType = memberType;
         this.memberName = memberName;
+        this.memberPackage = memberPackage;
         this.parent = parent;
     }
 
@@ -44,14 +46,18 @@ public class GUIObjectDetails {
         return memberType;
     }
 
-
     public String getMemberName() {
         return memberName;
+    }
+    
+    public String getMemberPackage() {
+        return memberPackage;
     }
 
     public String getParent() {
         return parent;
     }
+
     
     //This method is used by the velocity template and has reference in Class.vm
     //DO NOT tamper with this method

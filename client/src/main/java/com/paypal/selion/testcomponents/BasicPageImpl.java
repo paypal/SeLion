@@ -46,10 +46,6 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
 
     private static final String NESTED_CONTAINER_ERR_MSG = "No support for defining a Container within a Container.";
 
-    /** The SELION_GUI_COMPONENTS. */
-    // TODO This should probably be determined via reflection instead
-    private static final String SELION_COMPONENTS = "com.paypal.selion.platform.html";
-
     /**
      * Instantiates a new base page impl.
      */
@@ -176,33 +172,9 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
                         throw new UnsupportedOperationException(NESTED_CONTAINER_ERR_MSG);
                     }
 
-                    String packageName = field.getType().getPackage().getName();
-
-                    // We need to perform initialization only for the paypal html objects and
-                    // We need to skip for any other objects such String, custom Classes etc.
-                    if (packageName.equals(SELION_COMPONENTS)) {
-                        // Checking if the superClass/Parent is also a container. If so its not allowed.
-
-                        Class<?> dataMemberClass = Class.forName(field.getType().getName());
-                        Class<?> parameterTypes[] = new Class[3];
-
-                        parameterTypes[0] = String.class;
-                        parameterTypes[1] = String.class;
-                        parameterTypes[2] = ParentTraits.class;
-                        Constructor<?> constructor = dataMemberClass.getDeclaredConstructor(parameterTypes);
-
-                        String locatorValue = objectMap.get(field.getName());
-                        if (locatorValue == null) {
-                            continue;
-                        }
-                        Object[] constructorArgList = new Object[3];
-                        constructorArgList[0] = new String(locatorValue);
-                        constructorArgList[1] = new String(field.getName());
-                        constructorArgList[2] = whichClass;
-                        Object retobj = constructor.newInstance(constructorArgList);
-                        field.set(whichClass, retobj);
-
-                    } else if (field.getType().getSuperclass().equals(Container.class)) {
+                    // We need to perform initialization only for the objects that extend the AbstractElement or Container class
+                    // We need to skip for any other objects such as String, custom Classes etc.
+                    if (Container.class.isAssignableFrom(field.getType())) {
                         Class<?> dataMemberClass = Class.forName(field.getType().getName());
                         Class<?> parameterTypes[] = new Class[3];
 
@@ -227,6 +199,28 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
 
                         // Calling it recursively to load the elements in the container
                         initializeHtmlObjects(retobj, objectContainerMap.get(field.getName()));
+                    } else if (AbstractElement.class.isAssignableFrom(field.getType())) {
+                        // Checking if the superClass/Parent is also a container. If so its not allowed.
+
+                        Class<?> dataMemberClass = Class.forName(field.getType().getName());
+                        Class<?> parameterTypes[] = new Class[3];
+
+                        parameterTypes[0] = String.class;
+                        parameterTypes[1] = String.class;
+                        parameterTypes[2] = ParentTraits.class;
+                        Constructor<?> constructor = dataMemberClass.getDeclaredConstructor(parameterTypes);
+
+                        String locatorValue = objectMap.get(field.getName());
+                        if (locatorValue == null) {
+                            continue;
+                        }
+                        Object[] constructorArgList = new Object[3];
+                        constructorArgList[0] = new String(locatorValue);
+                        constructorArgList[1] = new String(field.getName());
+                        constructorArgList[2] = whichClass;
+                        Object retobj = constructor.newInstance(constructorArgList);
+                        field.set(whichClass, retobj);
+
                     }
                 }
             }

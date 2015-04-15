@@ -16,6 +16,7 @@
 package com.paypal.selion.elements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.paypal.selion.plugins.GUIObjectDetails;
@@ -25,41 +26,42 @@ import com.paypal.selion.plugins.GUIObjectDetails;
  * 
  */
 public class IOSSeLionElement extends AbstractSeLionElement {
+    public static final String UIAUTOMATION_ELEMENT_CLASS = "org.uiautomation.ios.UIAModels";
 
-    public static IOSSeLionElement UIAButton = new IOSSeLionElement("UIAButton", true);
-    public static IOSSeLionElement UIAActivityIndicator = new IOSSeLionElement("UIAActivityIndicator", true);
-    public static IOSSeLionElement UIATableCell = new IOSSeLionElement("UIATableCell", true);
-    public static IOSSeLionElement UIAAlert = new IOSSeLionElement("UIAAlert", true);
-    public static IOSSeLionElement UIAApplication = new IOSSeLionElement("UIAApplication", true);
-    public static IOSSeLionElement UIAImage = new IOSSeLionElement("UIAImage", true);
-    public static IOSSeLionElement UIACollectionCell = new IOSSeLionElement("UIACollectionCell", true);
-    public static IOSSeLionElement UIACollectionView = new IOSSeLionElement("UIACollectionView", true);
-    public static IOSSeLionElement UIADriver = new IOSSeLionElement("UIADriver", true);
-    public static IOSSeLionElement UIAKey = new IOSSeLionElement("UIAKey", true);
-    public static IOSSeLionElement UIAKeyboard = new IOSSeLionElement("UIAKeyboard", true);
-    public static IOSSeLionElement UIALink = new IOSSeLionElement("UIALink", true);
-    public static IOSSeLionElement UIANavigationBar = new IOSSeLionElement("UIANavigationBar", true);
-    public static IOSSeLionElement UIAPicker = new IOSSeLionElement("UIAPicker", true);
-    public static IOSSeLionElement UIAPickerWheel = new IOSSeLionElement("UIAPickerWheel", true);
-    public static IOSSeLionElement UIAPoint = new IOSSeLionElement("UIAPoint", true);
-    public static IOSSeLionElement UIAScrollView = new IOSSeLionElement("UIAScrollView", true);
-    public static IOSSeLionElement UIASearchBar = new IOSSeLionElement("UIASearchBar", true);
-    public static IOSSeLionElement UIASecureTextField = new IOSSeLionElement("UIASecureTextField", true);
-    public static IOSSeLionElement UIASlider = new IOSSeLionElement("UIASlider", true);
-    public static IOSSeLionElement UIAStaticText = new IOSSeLionElement("UIAStaticText", true);
-    public static IOSSeLionElement UIAStatusBar = new IOSSeLionElement("UIAStatusBar", true);
-    public static IOSSeLionElement UIASwitch = new IOSSeLionElement("UIASwitch", true);
-    public static IOSSeLionElement UIATabBar = new IOSSeLionElement("UIATabBar", true);
-    public static IOSSeLionElement UIATableGroup = new IOSSeLionElement("UIATableGroup", true);
-    public static IOSSeLionElement UIATableView = new IOSSeLionElement("UIATableView", true);
-    public static IOSSeLionElement UIATarget = new IOSSeLionElement("UIATarget", true);
-    public static IOSSeLionElement UIATextField = new IOSSeLionElement("UIATextField", true);
-    public static IOSSeLionElement UIATextView = new IOSSeLionElement("UIATextView", true);
-    public static IOSSeLionElement UIAToolbar = new IOSSeLionElement("UIAToolbar", true);
-    public static IOSSeLionElement UIATouchScreen = new IOSSeLionElement("UIATouchScreen", true);
-    public static IOSSeLionElement UIAWebView = new IOSSeLionElement("UIAWebView", true);
-    public static IOSSeLionElement UIAWindow = new IOSSeLionElement("UIAWindow", true);
-    public static IOSSeLionElement BASE_CLASS = new IOSSeLionElement("baseClass", false);
+    public static IOSSeLionElement UIAButton = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAButton", true);
+    public static IOSSeLionElement UIAActivityIndicator = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAActivityIndicator", true);
+    public static IOSSeLionElement UIATableCell = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATableCell", true);
+    public static IOSSeLionElement UIAAlert = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAAlert", true);
+    public static IOSSeLionElement UIAApplication = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAApplication", true);
+    public static IOSSeLionElement UIAImage = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAImage", true);
+    public static IOSSeLionElement UIACollectionCell = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIACollectionCell", true);
+    public static IOSSeLionElement UIACollectionView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIACollectionView", true);
+    public static IOSSeLionElement UIADriver = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIADriver", true);
+    public static IOSSeLionElement UIAKey = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAKey", true);
+    public static IOSSeLionElement UIAKeyboard = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAKeyboard", true);
+    public static IOSSeLionElement UIALink = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIALink", true);
+    public static IOSSeLionElement UIANavigationBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIANavigationBar", true);
+    public static IOSSeLionElement UIAPicker = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAPicker", true);
+    public static IOSSeLionElement UIAPickerWheel = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAPickerWheel", true);
+    public static IOSSeLionElement UIAPoint = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAPoint", true);
+    public static IOSSeLionElement UIAScrollView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAScrollView", true);
+    public static IOSSeLionElement UIASearchBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASearchBar", true);
+    public static IOSSeLionElement UIASecureTextField = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASecureTextField", true);
+    public static IOSSeLionElement UIASlider = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASlider", true);
+    public static IOSSeLionElement UIAStaticText = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAStaticText", true);
+    public static IOSSeLionElement UIAStatusBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAStatusBar", true);
+    public static IOSSeLionElement UIASwitch = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASwitch", true);
+    public static IOSSeLionElement UIATabBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATabBar", true);
+    public static IOSSeLionElement UIATableGroup = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATableGroup", true);
+    public static IOSSeLionElement UIATableView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATableView", true);
+    public static IOSSeLionElement UIATarget = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATarget", true);
+    public static IOSSeLionElement UIATextField = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
+    public static IOSSeLionElement UIATextView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATextView", true);
+    public static IOSSeLionElement UIAToolbar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAToolbar", true);
+    public static IOSSeLionElement UIATouchScreen = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATouchScreen", true);
+    public static IOSSeLionElement UIAWebView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAWebView", true);
+    public static IOSSeLionElement UIAWindow = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAWindow", true);
+    public static IOSSeLionElement BASE_CLASS = new IOSSeLionElement(null, "baseClass", false);
 
     private static IOSSeLionElement[] values = { UIAButton, UIAActivityIndicator, UIATableCell, UIAAlert, UIAApplication,
             UIAImage, UIACollectionCell, UIACollectionView, UIADriver, UIAKey, UIAKeyboard, UIALink, UIANavigationBar,
@@ -67,8 +69,22 @@ public class IOSSeLionElement extends AbstractSeLionElement {
             UIAStaticText, UIAStatusBar, UIASwitch, UIATabBar, UIATableGroup, UIATableView, UIATarget, UIATextField,
             UIATextView, UIAToolbar, UIATouchScreen, UIAWebView, UIAWindow, BASE_CLASS };
 
-    private IOSSeLionElement(String element, boolean isHtmlType) {
-        super(element, isHtmlType);
+    private IOSSeLionElement(String elementPackage, String element, boolean isHtmlType) {
+        super(elementPackage, element, isHtmlType);
+    }
+    
+    /**
+     * By providing the qualified name of a custom element we can register it to the element array.
+     * Custom elements are inserted before SeLion elements, if you use the same name it will overwrite the existing element.
+     * 
+     * @param element string of the qualified class
+     */
+    public static void registerElement(String element) {
+        List<IOSSeLionElement> temp = new ArrayList<IOSSeLionElement>(Arrays.asList(values));
+        
+        temp.add(0, new IOSSeLionElement(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true));
+        
+        values = temp.toArray(new IOSSeLionElement[temp.size()]);
     }
 
     /**
@@ -88,6 +104,14 @@ public class IOSSeLionElement extends AbstractSeLionElement {
      */
     public static boolean isValid(String element) {
         return isValid(values, element);
+    }
+    
+    /**
+     * @param element - The element that needs to be searched.
+     * @return - <code>true</code> if the element was found in the set of elements provided.
+     */
+    public static boolean isExactMatch(String element) {
+        return isExactMatch(values, element);
     }
 
     /**
@@ -115,7 +139,7 @@ public class IOSSeLionElement extends AbstractSeLionElement {
             IOSSeLionElement element = IOSSeLionElement.findMatch(key);
             if (element != null && element.isUIElement()) {
                 GUIObjectDetails htmlObjectDetails = null;
-                htmlObjectDetails = new GUIObjectDetails(element.stringify(), key);
+                htmlObjectDetails = new GUIObjectDetails(element.stringify(), key, element.getElementPackage());
                 htmlObjectDetailsList.add(htmlObjectDetails);
             }
         }
