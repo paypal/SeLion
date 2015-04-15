@@ -24,6 +24,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.elements.IOSSeLionElement;
+
 public class GUIObjectDetailsTest {
     class DummyMojo extends AbstractMojo {
         @Override
@@ -47,6 +50,30 @@ public class GUIObjectDetailsTest {
     @Test
     public void validateIOSElements() throws Exception {
         String dataFile = "src/test/resources/IOSInteractionPage.yaml";
+        DataReader reader = new DataReader(dataFile);
+        TestPlatform currentPlatform = reader.platform();
+        GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
+    }
+    
+    @Test
+    public void validateCustomWebElements() throws Exception {
+        String dataFile = "src/test/resources/CustomWebElementPage.yaml";
+        
+        HtmlSeLionElement.registerElement("com.paypal.test.CustomElement");
+        HtmlSeLionElement.registerElement("com.paypal.test.AnotherElement");
+        
+        DataReader reader = new DataReader(dataFile);
+        TestPlatform currentPlatform = reader.platform();
+        GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
+    }
+    
+    @Test
+    public void validateCustomMobileElements() throws Exception {
+        String dataFile = "src/test/resources/CustomMobileElementPage.yaml";
+        
+        IOSSeLionElement.registerElement("com.paypal.test.CustomElement");
+        IOSSeLionElement.registerElement("com.paypal.test.AnotherElement");
+        
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
         GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);

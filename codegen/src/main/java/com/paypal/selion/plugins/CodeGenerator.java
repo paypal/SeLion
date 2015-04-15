@@ -79,7 +79,7 @@ public class CodeGenerator {
 
             Set<String> set = new HashSet<String>();
             for (GUIObjectDetails htmlObjectDetails : htmlObjectDetailsList) {
-                set.add(htmlObjectDetails.getMemberType());
+                set.add(htmlObjectDetails.getMemberPackage() + "." + htmlObjectDetails.getMemberType());
             }
 
             Velocity.init();

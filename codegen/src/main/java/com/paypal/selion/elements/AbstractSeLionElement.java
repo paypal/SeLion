@@ -19,10 +19,12 @@ public abstract class AbstractSeLionElement {
 
     private String element;
     private boolean uiElement;
+    private String elementPackage;
 
-    protected AbstractSeLionElement(String element, boolean uiElement) {
+    protected AbstractSeLionElement(String elementPackage, String element, boolean uiElement) {
         this.element = element;
         this.uiElement = uiElement;
+        this.elementPackage = elementPackage;
     }
 
     /**
@@ -37,6 +39,13 @@ public abstract class AbstractSeLionElement {
      */
     public String stringify() {
         return element;
+    }
+
+    /**
+     * @return the elementPackage
+     */
+    public String getElementPackage() {
+        return elementPackage;
     }
 
     /**
@@ -107,6 +116,24 @@ public abstract class AbstractSeLionElement {
         for (AbstractSeLionElement each : validSet) {
             if (each.looksLike(element)) {
                 return each.isUIElement();
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * @param validSet - An array of {@link AbstractSeLionElement} that represents the set of elements in which an 
+     * exact match attempt is to be made.
+     * @param element - The element that needs to be searched.
+     * @return - <code>true</code> if the element was found in the set of elements provided.
+     */
+    static boolean isExactMatch(AbstractSeLionElement[] validSet, String element) {
+        if (element == null || element.trim().isEmpty()) {
+            return false;
+        }
+        for (AbstractSeLionElement each : validSet) {
+            if (each.element.equals(element)) {
+                return true;
             }
         }
         return false;

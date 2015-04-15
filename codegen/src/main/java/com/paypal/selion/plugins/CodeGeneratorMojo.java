@@ -30,6 +30,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
+import com.paypal.selion.elements.HtmlElementUtils;
+import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.elements.IOSSeLionElement;
+
 /**
  * Goal used to generate SeLion Page Object code from the data file.
  * 
@@ -65,6 +69,13 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * @parameter expression="${selion-code-generator.excludeDomains}"
      */
     private List<String> excludeDomains;
+    
+    /**
+     * List of "customElements" to be included during code generation. 
+     * 
+     * @parameter expression="${selion-code-generator.customElements}"
+     */
+    private List<String> customElements;
 
     /**
      * Represents the location for the code generator plug-in to create a <code>SeLionPageDetails.txt</code> text file. \
@@ -73,7 +84,11 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * @parameter expression="${selion-code-generator.detailedTextOutputLocation}" default-value="${project.build.directory}";
      */
     private File detailedTextOutputLocation;
-
+    
+    public void setCustomElements(String[] elements) {
+        customElements = Arrays.asList(elements);
+    }
+    
     public void setExcludeDomains(String[] excludes) {
         excludeDomains = Arrays.asList(excludes);
     }
@@ -141,7 +156,20 @@ public class CodeGeneratorMojo extends AbstractMojo {
 
         createSeLionPageDetailsFile(allDataFiles);
         CodeGenerator helper = new CodeGenerator(generatedSourceDir);
-
+        
+        for(String customElement : customElements) {
+            String elementName = HtmlElementUtils.getClass(customElement);
+            if(HtmlSeLionElement.isExactMatch(elementName) || IOSSeLionElement.isExactMatch(elementName)) {
+                logger.info("The custom " + elementName + " that will be registered as a valid element is overwriting an existing SeLion element.");
+            } else {
+                logger.info("The custom " + elementName + " will be registered as a valid element.");
+            }
+            
+            HtmlSeLionElement.registerElement(customElement);
+            IOSSeLionElement.registerElement(customElement);
+        }
+        
+        
         for (File dataFile : allDataFiles) {
             try {
                 String folder = pathToFolder(dataFile);
@@ -167,6 +195,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
                     if (!folder.isEmpty()) {
                         tempPackage += tempPackage.isEmpty() ?  folder :  "." + folder;
                     }
+                    
                     helper.generateNewCode(dataFile, relativePath, tempPackage, domain);
                 }
 
