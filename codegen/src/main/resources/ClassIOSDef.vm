@@ -3,9 +3,6 @@ package $package;
 #end
 
 import $baseclasspackage;
-import com.paypal.selion.platform.html.support.HtmlElementUtils;
-import com.paypal.selion.platform.grid.Grid;
-import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 #foreach ($data in $control)
 import $data;
 #end
@@ -15,8 +12,6 @@ public class $class extends $baseclass {
 #foreach ($member in $members)
     private $member.memberType            $member.memberName;
 #end
-
-    private String initialSession = null;
 
     private static String CLASS_NAME = "$class";
     private static String PAGE_DOMAIN = "$domain";
@@ -53,31 +48,10 @@ public class $class extends $baseclass {
      * @return $member.memberName
      */
     public $member.memberType get$member.firstToUpperCase($member.memberName)() {
-        if (Grid.driver().getSessionId().toString().equals(initialSession)) {
-            if ($member.memberName != null) {
-                return $member.memberName;
-            }
-
-        } else {
-            resetAll();
-            initialSession = Grid.driver().getSessionId().toString();
-        }
-        RemoteIOSDriver driver = (RemoteIOSDriver) Grid.driver();
-        $member.memberName = ($member.memberType) driver.findElement(
-                HtmlElementUtils.resolveByType(getPage().fieldsMap.get("$member.memberName")));
-        return $member.memberName;
+       return getPage().${member.memberName};
     }
 
 #end
-
-    /**
-     * Used to set all elements in the page $class to null
-     */
-     private void resetAll(){
-#foreach ($member in $members)
-         $member.memberName = null;
-#end
-}
 }
 
 

@@ -15,31 +15,26 @@
 
 package com.paypal.selion.testcomponents;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.paypal.selion.platform.html.WebPage;
+import com.paypal.selion.platform.mobile.ios.UIAElement;
 
 /**
  * A Base class from which all page classes denoting a IOS page should be derived.
  * 
  * It contains the code to initialize pages, load values to the "ObjectMap".
  */
-public class IOSPage extends AbstractPage {
-
-    protected Map<String, String> fieldsMap = new HashMap<String, String>();
+public abstract class IOSPage extends AbstractPage {
 
     protected IOSPage() {
         super();
     }
 
-    @Override
-    public WebPage getPage() {
-        throw new UnsupportedOperationException("This operation is NOT supported for IOS Page");
-    }
+    public abstract IOSPage getPage();
 
     protected void initializeHtmlObjects(Object whichClass, Map<String, String> objectMap) {
 
@@ -50,14 +45,32 @@ public class IOSPage extends AbstractPage {
             fields.addAll(Arrays.asList(incomingClass.getDeclaredFields()));
             incomingClass = incomingClass.getSuperclass();
         } while (incomingClass != null);
+        String errorDesc = " Error while initializing fields from the object map for IOS Elements. Root cause:";
+        try {
+            for (Field field : fields) {
+                if (objectMap.containsKey(field.getName())) {
+                    field.setAccessible(true);
+                    if (UIAElement.class.isAssignableFrom(field.getType())) {
+                        Class<?> dataMemberClass = Class.forName(field.getType().getName());
+                        Class<?> parameterTypes[] = new Class[1];
+                        // As per the current implementation IOS elements accept only locators hence initializing one
+                        // argument constructors
+                        parameterTypes[0] = String.class;
+                        Constructor<?> constructor = dataMemberClass.getDeclaredConstructor(parameterTypes);
 
-        for (Field field : fields) {
-            // proceed further only if the data member and the key in the .xls
-            // file match with each other
-            // below condition checks for this one to one mapping presence
-            if (objectMap.containsKey(field.getName())) {
-                fieldsMap.put(field.getName(), objectMap.get(field.getName()));
+                        String fieldLocator = objectMap.get(field.getName());
+                        if (fieldLocator == null) {
+                            continue;
+                        }
+                        Object[] constructorArgList = new Object[1];
+                        constructorArgList[0] = fieldLocator;
+                        Object retobj = constructor.newInstance(constructorArgList);
+                        field.set(whichClass, retobj);
+                    }
+                }
             }
+        } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException exception) {
+            throw new RuntimeException(errorDesc, exception);
         }
     }
 

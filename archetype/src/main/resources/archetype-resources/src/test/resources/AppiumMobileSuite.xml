@@ -10,6 +10,7 @@
         <classes>
             <class name="${package}.sample.selion.AppiumIOSDemoTest" />
             <class name="${package}.sample.selion.AppiumAndroidDemoTest" />
+            <class name="${package}.sample.selion.NativeAppFlowUsingSeLionPageObject" />
         </classes>
     </test>
 </suite>

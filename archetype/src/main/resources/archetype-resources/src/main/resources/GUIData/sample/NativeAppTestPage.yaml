@@ -1,10 +1,13 @@
 baseClass: "com.paypal.selion.testcomponents.IOSPage"
 defaultLocale: "US"
 elements:
+  sampleUIANavigationBar:
+    locators:
+      english: "//UIAApplication[1]/UIAWindow[2]/UIANavigationBar[1]"
+  sampleUIATableView:
+    locators:
+      english: "//UIAApplication[1]/UIAWindow[2]/UIATableView[1]"
   sampleUIAStaticText:
     locators:
-      english: "//UIAStaticText[contains(@name,'climbed')]"
-  sampleUIATableCell:
-    locators:
-      english: "//UIATableCell[contains(@name,'Mountain 1')]"
+      english: "//UIAApplication[1]/UIAWindow[2]/UIAStaticText[1]"
 platform: "ios"

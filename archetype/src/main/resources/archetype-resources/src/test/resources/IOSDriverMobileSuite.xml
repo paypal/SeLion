@@ -9,7 +9,6 @@
     <test verbose="2" name="DemoIOSTests" annotations="JDK">
         <classes>
             <class name="${package}.sample.selion.IOSNativeAppDemoTest" />
-            <class name="${package}.sample.selion.NativeAppFlowUsingSeLionPageObject" />
         </classes>
     </test>
 </suite>

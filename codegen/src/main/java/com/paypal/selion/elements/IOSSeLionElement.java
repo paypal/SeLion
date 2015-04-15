@@ -26,48 +26,21 @@ import com.paypal.selion.plugins.GUIObjectDetails;
  * 
  */
 public class IOSSeLionElement extends AbstractSeLionElement {
-    public static final String UIAUTOMATION_ELEMENT_CLASS = "org.uiautomation.ios.UIAModels";
+    public static final String UIAUTOMATION_ELEMENT_CLASS = "com.paypal.selion.platform.mobile.ios";
 
     public static IOSSeLionElement UIAButton = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAButton", true);
-    public static IOSSeLionElement UIAActivityIndicator = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAActivityIndicator", true);
-    public static IOSSeLionElement UIATableCell = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATableCell", true);
     public static IOSSeLionElement UIAAlert = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAAlert", true);
-    public static IOSSeLionElement UIAApplication = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAApplication", true);
-    public static IOSSeLionElement UIAImage = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAImage", true);
-    public static IOSSeLionElement UIACollectionCell = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIACollectionCell", true);
-    public static IOSSeLionElement UIACollectionView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIACollectionView", true);
-    public static IOSSeLionElement UIADriver = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIADriver", true);
-    public static IOSSeLionElement UIAKey = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAKey", true);
-    public static IOSSeLionElement UIAKeyboard = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAKeyboard", true);
-    public static IOSSeLionElement UIALink = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIALink", true);
     public static IOSSeLionElement UIANavigationBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIANavigationBar", true);
     public static IOSSeLionElement UIAPicker = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAPicker", true);
-    public static IOSSeLionElement UIAPickerWheel = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAPickerWheel", true);
-    public static IOSSeLionElement UIAPoint = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAPoint", true);
-    public static IOSSeLionElement UIAScrollView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAScrollView", true);
-    public static IOSSeLionElement UIASearchBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASearchBar", true);
-    public static IOSSeLionElement UIASecureTextField = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASecureTextField", true);
     public static IOSSeLionElement UIASlider = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASlider", true);
     public static IOSSeLionElement UIAStaticText = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAStaticText", true);
-    public static IOSSeLionElement UIAStatusBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAStatusBar", true);
     public static IOSSeLionElement UIASwitch = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASwitch", true);
-    public static IOSSeLionElement UIATabBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATabBar", true);
-    public static IOSSeLionElement UIATableGroup = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATableGroup", true);
     public static IOSSeLionElement UIATableView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATableView", true);
-    public static IOSSeLionElement UIATarget = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATarget", true);
     public static IOSSeLionElement UIATextField = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
-    public static IOSSeLionElement UIATextView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATextView", true);
-    public static IOSSeLionElement UIAToolbar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAToolbar", true);
-    public static IOSSeLionElement UIATouchScreen = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATouchScreen", true);
-    public static IOSSeLionElement UIAWebView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAWebView", true);
-    public static IOSSeLionElement UIAWindow = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAWindow", true);
     public static IOSSeLionElement BASE_CLASS = new IOSSeLionElement(null, "baseClass", false);
 
-    private static IOSSeLionElement[] values = { UIAButton, UIAActivityIndicator, UIATableCell, UIAAlert, UIAApplication,
-            UIAImage, UIACollectionCell, UIACollectionView, UIADriver, UIAKey, UIAKeyboard, UIALink, UIANavigationBar,
-            UIAPicker, UIAPickerWheel, UIAPoint, UIAScrollView, UIASearchBar, UIASecureTextField, UIASlider,
-            UIAStaticText, UIAStatusBar, UIASwitch, UIATabBar, UIATableGroup, UIATableView, UIATarget, UIATextField,
-            UIATextView, UIAToolbar, UIATouchScreen, UIAWebView, UIAWindow, BASE_CLASS };
+    private static IOSSeLionElement[] values = { UIAButton, UIAAlert, UIANavigationBar, UIAPicker, UIASlider,
+            UIAStaticText, UIASwitch, UIATableView, UIATextField, BASE_CLASS };
 
     private IOSSeLionElement(String elementPackage, String element, boolean isHtmlType) {
         super(elementPackage, element, isHtmlType);
