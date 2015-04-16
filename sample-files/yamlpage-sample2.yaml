@@ -1,0 +1,7 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+  US: "API Page"
+elements:
+  submitCustomButton:
+    locators:
+      US: "name=submit"

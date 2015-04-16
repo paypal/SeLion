@@ -116,6 +116,13 @@
       elements please take a look at the section -- <a href="#containers">PageYAML and Container Elements</a>.
     </li>
   </ul>
+
+  <h2>How to use custom elements in your page yaml.</h2>
+  <p>Please make sure that you register your custom elements as described in the <a href="#what-is-code-generator">SeLion's Code Generator</a> documentation. Once done you can use your custom elements, just like the elements that are provided by SeLion. Let's say we registered a custom element named <code>com.paypal.test.CustomButton</code>, to SeLion's code generator.</p>
+
+  <p>We can then use the following Yaml to generate a page object which makes use of our CustomButton.</p>
+  <pre data-src="../sample-files/yamlpage-sample2.yaml" class="language-markup"></pre>
+  <p>The element will then be accesible through a getter method, in the generated page object.</p>
 </div>
 
 <script src="../js/prismjs-min.js"></script>

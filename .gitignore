@@ -12,3 +12,5 @@ test-output/
 target/
 selionFiles/
 logs/
+_site
+Gemfile.lock
