@@ -83,7 +83,7 @@
     </li>
     </ul>
 
-  <h2>An Example PageYaml File</h2>
+  <h2>An Example PageYAML File</h2>
   <pre data-src="../sample-files/yamlpage-sample1.yaml" class="language-markup"></pre>
   <p>Some important things to reiterate and note from this example:</p>
   <ul>
@@ -107,7 +107,7 @@
       doesn't have a locator for <b>FR</b> SeLion will default to using the locator specified for the locale <b>US</b>
       while working with the country <b>FR</b>.
     </li>
-    <li>The element <code>pageValidators</code> contain the list of elements that are supposed to be
+    <li>The element <code>pageValidators</code> contains the list of elements that are supposed to be
       validated when your test performs a <code>click(Object..)</code> (or) <code>clickAndExpectOneOf(Object..)</code>
       operation on a page. So from our above example, SeLion checks if the element represented by
       <code>grantAPIPermissionLink</code> is <code>visible</code> because we explicitly requested for that validation.
@@ -116,6 +116,16 @@
       elements please take a look at the section -- <a href="#containers">PageYAML and Container Elements</a>.
     </li>
   </ul>
+
+  <h2>How to use custom elements in your PageYAML</h2>
+  <p>Please make sure that you register your custom elements as described in the
+    <a href="#what-is-code-generator">SeLion's Code Generator</a> documentation. Once done, you can use your custom
+    elements just like the elements that are provided by SeLion. For example: Let's say you registered a custom element
+    named <code>com.mycompany.CustomButton</code> to SeLion's code generator.</p>
+
+  <p>You can then use the following PageYAML to generate a page object which makes use of your <code>CustomButton</code>.</p>
+  <pre data-src="../sample-files/yamlpage-sample2.yaml" class="language-markup"></pre>
+  <p>The element will then be accessible through a getter method in the generated page object.</p>
 </div>
 
 <script src="../js/prismjs-min.js"></script>
