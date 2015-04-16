@@ -7,7 +7,8 @@
 
   <test name="SampleTest">
     <classes>
-      <class name="com.mycompany.test.MobileDemo"/>
+      <class name="com.mycompany.test.IOSMobileDemo"/>
+      <class name="com.mycompany.test.AndroidMobileDemo"/>
     </classes>
   </test>
 </suite>
