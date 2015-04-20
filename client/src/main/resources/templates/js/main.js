@@ -13,6 +13,18 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
+function displayImage(src, title) {
+    $('.modal-image .modal-body').find('img').attr('src',src);
+    $('.modal-image .modal-header .modal-title').text(title);
+    $('.modal-image').modal();
+  }
+
+function displaySource(src, title) {
+    $('.modal-source .modal-body').find('iframe').attr("src", src);
+    $('.modal-source .modal-header .modal-title').text(title);
+    $('.modal-source').modal();
+  }
+  
 /* Main JavaScript for RuntimeReporter */
 (function main() {
   var pageSize = 10, configPageSize = 10;
@@ -172,7 +184,7 @@
       searchResults('');
     });
 
-  });
+  }); // end of ready
 
   function renderPageCombo(pageAdditionalId, comboClassName) {
     $(comboClassName + " li a").click(function(){
@@ -449,18 +461,6 @@
     });
   }
 
-  function displayImage(src, title) {
-    $('.modal-image .modal-body').find('img').attr('src',src);
-    $('.modal-image .modal-header .modal-title').text(title);
-    $('.modal-image').modal();
-  }
-
-  function displaySource(src, title) {
-    $('.modal-source .modal-body').find('iframe').attr("src", src);
-    $('.modal-source .modal-header .modal-title').text(title);
-    $('.modal-source').modal();
-  }
-
   function setIndex(pageAdditionalId, val) {
     if(pageAdditionalId == '#') {
       index = val;
@@ -556,4 +556,4 @@
       return configSortingDirection;
     }
   }
-}());
+}()); // end of main function
