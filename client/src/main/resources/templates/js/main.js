@@ -13,6 +13,18 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
+function displayImage(src, title) {
+  $('.modal-image .modal-body').find('img').attr('src',src);
+  $('.modal-image .modal-header .modal-title').text(title);
+  $('.modal-image').modal();
+}
+
+function displaySource(src, title) {
+  $('.modal-source .modal-body').find('iframe').attr("src", src);
+  $('.modal-source .modal-header .modal-title').text(title);
+  $('.modal-source').modal();
+}
+  
 /* Main JavaScript for RuntimeReporter */
 (function main() {
   var reports = window.reports;
@@ -37,104 +49,104 @@
   tree["AllSuites"] = new Object();
   var root = tree["AllSuites"];
   $.each(reports.testMethods, function(index, item) {
-      var suiteMap = getMap(root, item.suite);
-      var testMap = getMap(suiteMap, item.test);
-      var packageMap = getMap(testMap, item.packageInfo);
-      var classMap = getMap(packageMap, item.className);
+    var suiteMap = getMap(root, item.suite);
+    var testMap = getMap(suiteMap, item.test);
+    var packageMap = getMap(testMap, item.packageInfo);
+    var classMap = getMap(packageMap, item.className);
   })
 
   var uniqueId = 0;
   $.each(root, function(key, value) {
-	  var id = '#AllSuites';
-	  var suiteId = uniqueId++;
-	  generateInnerTree(id, key, 'suite', suiteId);
-	  $.each(value, function(key1, value1) {
-		  var id1 = '#' + key + 'suite' + suiteId;
-		  var testId = uniqueId++;
-		  generateInnerTree(id1, key1, 'test', testId);
-		  $.each(value1, function(key2, value2) {
-			  var id2 = '#' + key1 + 'test' + testId;
-			  var packageId = uniqueId++;
-			  generateInnerTree(id2, key2, 'packageInfo', packageId);
-			  $.each(value2, function(key3, value3) {
-				  var id3 = '#' + key2 + 'packageInfo' + packageId;
-				  var classId = uniqueId++;
-				  generateInnerTree(id3, key3, 'className', classId);
-			  });
-
-		  });
-	  });
+    var id = '#AllSuites';
+    var suiteId = uniqueId++;
+    generateInnerTree(id, key, 'suite', suiteId);
+    $.each(value, function(key1, value1) {
+      var id1 = '#' + key + 'suite' + suiteId;
+      var testId = uniqueId++;
+      generateInnerTree(id1, key1, 'test', testId);
+      $.each(value1, function(key2, value2) {
+        var id2 = '#' + key1 + 'test' + testId;
+        var packageId = uniqueId++;
+        generateInnerTree(id2, key2, 'packageInfo', packageId);
+        $.each(value2, function(key3, value3) {
+          var id3 = '#' + key2 + 'packageInfo' + packageId;
+          var classId = uniqueId++;
+          generateInnerTree(id3, key3, 'className', classId);
+        });
+      });
+    });
   });
 
   $(".btn-tree-autohide").click(function(e) {
-      var span = $(this).find('span');
-      if ($(span).hasClass('label-success')) {
-        $(span).removeClass('label-success').addClass('label-danger').html('Off');
-        autoHideTree = false;
-      } else {
-        $(span).removeClass('label-danger').addClass('label-success').html('On');
-        autoHideTree = true;
-      }
+    var span = $(this).find('span');
+    if ($(span).hasClass('label-success')) {
+      $(span).removeClass('label-success').addClass('label-danger').html('Off');
+      autoHideTree = false;
+    } else {
+      $(span).removeClass('label-danger').addClass('label-success').html('On');
+      autoHideTree = true;
+    }
   });
   
   $('#tree').jstree({
-	  "core" : { "themes" : { "variant" : "medium" } },
-	  "checkbox" : { "keep_selected_style" : true }
+    "core" : { "themes" : { "variant" : "medium" } },
+    "checkbox" : { "keep_selected_style" : true }
   });
 
   $('#tree').on("changed.jstree", function (e, data) {
-	  var searchType = data.node.li_attr['data-type'];
-	  var searchMap = new Object();
+    var searchType = data.node.li_attr['data-type'];
+    var searchMap = new Object();
 
-	  if (searchType == "all") {
-          treeFilter = reports.testMethods;
-          configTreeFilter = reports.configurationMethods;
-	  } else {
-          searchMap[searchType] = data.node.text;
-          for (i = (data.node.parents.length - 3); i >= 0; i--) {
-              var parent = $('#' + data.node.parents[i]);
-              searchMap[parent.attr('data-type')] = parent.attr('data-value');
-          }
-          treeFilter = filterResults(searchMap, reports.testMethods);
-          configTreeFilter = filterResults(searchMap, reports.configurationMethods);
+    if (searchType == "all") {
+      treeFilter = reports.testMethods;
+      configTreeFilter = reports.configurationMethods;
+    } else {
+      searchMap[searchType] = data.node.text;
+      for (i = (data.node.parents.length - 3); i >= 0; i--) {
+        var parent = $('#' + data.node.parents[i]);
+        searchMap[parent.attr('data-type')] = parent.attr('data-value');
       }
-      refreshResults();
-      if (autoHideTree) {
-          $("#bodycontent").toggleClass("toggled");
-      }
+      treeFilter = filterResults(searchMap, reports.testMethods);
+      configTreeFilter = filterResults(searchMap, reports.configurationMethods);
+    }
+    refreshResults();
+    if (autoHideTree) {
+      $("#bodycontent").toggleClass("toggled");
+    }
   });
 
   $("#display-tree").click(function(e) {
-      e.preventDefault();
-      $("#bodycontent").toggleClass("toggled");
-      $("#treeview-left").css("height", (window.innerHeight - 85) + "px");
+    e.preventDefault();
+    $("#bodycontent").toggleClass("toggled");
+    $("#treeview-left").css("height", (window.innerHeight - 85) + "px");
   });
 
   var dateFormatOptions = {
-      year: "numeric", month: "short", day: "numeric",
-      hour: "2-digit", minute: "2-digit", second:"2-digit"
+    year: "numeric", month: "short", day: "numeric",
+    hour: "2-digit", minute: "2-digit", second:"2-digit"
   };
+
   var helpers = {
-//    Declare date format helper to get readable name and value.
-      formatDateValue : function(val, key) {
-        switch (key) {
-        case "currentDate":
-          var d = new Date(val);
-          return d.toLocaleString("en-US", dateFormatOptions);
-        default:
-          return val;
-        }
-      },
-      formatDisplayName : function(key) {
-        var labelToRender = key;
-        if (reportMetaData.hasOwnProperty(key)) {
-          var configProperty = reportMetaData[key];
-          if (configProperty.hasOwnProperty(DISPLAY_LABEL)) {
-            labelToRender = configProperty.displayLabel;
-          }
-        }
-        return labelToRender;
+    // Declare date format helper to get readable name and value.
+    formatDateValue : function(val, key) {
+      switch (key) {
+      case "currentDate":
+        var d = new Date(val);
+        return d.toLocaleString("en-US", dateFormatOptions);
+      default:
+        return val;
       }
+    },
+    formatDisplayName : function(key) {
+      var labelToRender = key;
+      if (reportMetaData.hasOwnProperty(key)) {
+        var configProperty = reportMetaData[key];
+        if (configProperty.hasOwnProperty(DISPLAY_LABEL)) {
+          labelToRender = configProperty.displayLabel;
+        }
+      }
+      return labelToRender;
+    }
   };
 
   $(document).ready(function() {
@@ -565,18 +577,6 @@
       }));
       $('.modal-stacktrace').modal();
     });
-  }
-
-  function displayImage(src, title) {
-    $('.modal-image .modal-body').find('img').attr('src',src);
-    $('.modal-image .modal-header .modal-title').text(title);
-    $('.modal-image').modal();
-  }
-
-  function displaySource(src, title) {
-    $('.modal-source .modal-body').find('iframe').attr("src", src);
-    $('.modal-source .modal-header .modal-title').text(title);
-    $('.modal-source').modal();
   }
 
   function setIndex(pageAdditionalId, val) {

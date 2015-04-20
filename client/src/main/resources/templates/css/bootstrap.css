@@ -4592,6 +4592,7 @@ a.list-group-item.active > .badge,
   -webkit-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
+  cursor:pointer;
 }
 .thumbnail > img,
 .thumbnail a > img {
