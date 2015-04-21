@@ -145,10 +145,10 @@ public final class DriverFactory {
             List<EventListener> listeners = getSeLionEventListeners();
 
             if (listeners.size() > 0) {
-                return new SelionSelendroidDriver(new EventFiringCommandExecutor(new SelendroidCommandExecutor(url),
+                return new SeLionSelendroidDriver(new EventFiringCommandExecutor(new SelendroidCommandExecutor(url),
                         listeners), capability);
             } else {
-                return new SelendroidDriver(url, capability);
+                return new SeLionSelendroidDriver(url, capability);
             }
         } catch (Exception e) {
             throw new WebDriverException(e);
