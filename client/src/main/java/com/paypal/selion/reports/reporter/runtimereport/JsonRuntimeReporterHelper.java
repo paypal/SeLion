@@ -344,6 +344,7 @@ public class JsonRuntimeReporterHelper {
 
     /**
      * Construct the JSON report for report generation
+     * 
      * @return
      */
     private JsonObject buildJSONReport() {
@@ -354,17 +355,22 @@ public class JsonRuntimeReporterHelper {
         JsonArray testObjects = loadJSONArray(jsonCompletedTest);
 
         for (TestMethodInfo temp : runningTest) {
-            testObjects.add(gson.fromJson (temp.toJson(), JsonElement.class));
+            testObjects.add(gson.fromJson(temp.toJson(), JsonElement.class));
         }
 
         JsonArray configObjects = loadJSONArray(jsonCompletedConfig);
         for (ConfigMethodInfo temp : runningConfig) {
-            configObjects.add(gson.fromJson (temp.toJson(), JsonElement.class));
+            configObjects.add(gson.fromJson(temp.toJson(), JsonElement.class));
         }
-        
+
+        JsonObject summary = new JsonObject();
+        summary.add("testMethodsSummary", getReportSummaryCounts(testObjects));
+        summary.add("configurationMethodsSummary", getReportSummaryCounts(configObjects));
+
         JsonElement reportMetadata = gson.fromJson(ReporterConfigMetadata.toJsonAsString(), JsonElement.class);
-        
+
         JsonObject reporter = new JsonObject();
+        reporter.add("reportSummary", summary);
         reporter.add("testMethods", testObjects);
         reporter.add("configurationMethods", configObjects);
         reporter.add("configSummary", generateConfigSummary());
@@ -374,6 +380,54 @@ public class JsonRuntimeReporterHelper {
         logger.exiting(reporter);
 
         return reporter;
+    }
+
+    /**
+     * Provides a JSON object representing the counts of tests passed, failed, skipped and running.
+     * 
+     * @param testObjects
+     *            Array of the current tests as a {@link JsonArray}.
+     * @return A {@link JsonObject} with counts for various test results.
+     */
+    private JsonObject getReportSummaryCounts(JsonArray testObjects) {
+        logger.entering(testObjects);
+
+        int runningCount = 0;
+        int skippedCount = 0;
+        int passedCount = 0;
+        int failedCount = 0;
+        String result;
+
+        for (JsonElement test : testObjects) {
+            result = test.getAsJsonObject().get("status").getAsString();
+            switch (result) {
+            case "Running":
+                runningCount += 1;
+                break;
+            case "Passed":
+                passedCount += 1;
+                break;
+            case "Failed":
+                failedCount += 1;
+                break;
+            case "Skipped":
+                skippedCount += 1;
+                break;
+            default:
+                logger.warning("Found invalid status of the test being run. Status: " + result);
+            }
+        }
+
+        JsonObject testSummary = new JsonObject();
+        if (0 < runningCount) {
+            testSummary.addProperty("running", runningCount);
+        }
+        testSummary.addProperty("passed", passedCount);
+        testSummary.addProperty("failed", failedCount);
+        testSummary.addProperty("skipped", skippedCount);
+
+        logger.exiting(testSummary);
+        return testSummary;
     }
 
     /**
