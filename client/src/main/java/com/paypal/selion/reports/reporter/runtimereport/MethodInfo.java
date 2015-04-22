@@ -31,9 +31,7 @@ import com.google.gson.GsonBuilder;
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.reports.model.AbstractLog;
-import com.paypal.selion.reports.model.AppLog;
-import com.paypal.selion.reports.model.WebLog;
+import com.paypal.selion.internal.reports.model.BaseLog;
 import com.paypal.selion.reports.reporter.services.ReporterDateFormatter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -103,11 +101,7 @@ public class MethodInfo {
         for (String temp : Reporter.getOutput(result)) {
 
             LogInfo logInfo = new LogInfo();
-            AbstractLog logLine = new WebLog(temp);
-
-            if (isDeviceTest) {
-                logLine = new AppLog(temp);
-            }
+            BaseLog logLine = new BaseLog(temp);
 
             if (logLine.getMsg() != null && !logLine.getMsg().isEmpty()) {
                 logInfo.setMessage(logLine.getMsg());
@@ -117,12 +111,10 @@ public class MethodInfo {
                 logInfo.setImage(logLine.getScreen());
             }
 
-            if (isWebTest) {
-                WebLog thisLine = (WebLog) logLine;
-                if (thisLine.getHref() != null && !thisLine.getHref().isEmpty()) {
-                    logInfo.setSource(thisLine.getHref());
-                }
+            if (logLine.getHref() != null && !logLine.getHref().isEmpty()) {
+                logInfo.setSource(logLine.getHref());
             }
+
             tempLogs.add(logInfo);
         }
 

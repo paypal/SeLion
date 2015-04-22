@@ -52,7 +52,7 @@ import org.testng.xml.XmlSuite;
 import com.paypal.selion.configuration.ListenerInfo;
 import com.paypal.selion.configuration.ListenerManager;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.reports.model.WebLog;
+import com.paypal.selion.internal.reports.model.BaseLog;
 import com.paypal.selion.reports.reporter.html.filter.Filter;
 import com.paypal.selion.reports.reporter.html.filter.StateFilter;
 import com.paypal.selion.reports.reporter.html.splitters.ByClassSplitter;
@@ -292,7 +292,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
                 contentBuffer.append("<h3>Test Log</h3>");
 
                 for (String line : msgs) {
-                    WebLog logLine = new WebLog(line);
+                    BaseLog logLine = new BaseLog(line);
                     if (logLine.getScreen() != null) {
                         imgForFilmStrip.add(logLine.getScreenURL());
                     }

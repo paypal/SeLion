@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -36,7 +36,7 @@ public class AppiumIOSTest {
     @Test
     @MobileTest(appPath = "src/test/resources/apps/InternationalMountains.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
     public void testWithNativeAppAllInternationalMountains() throws InterruptedException {
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true, true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         Assert.assertEquals(9, cells.size());
 
@@ -46,7 +46,7 @@ public class AppiumIOSTest {
         Thread.sleep(10 * 1000);
 
         // take a screenshot
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true, true);
 
     }
 
@@ -58,16 +58,15 @@ public class AppiumIOSTest {
 
         // And now use this to visit Google
         driver.get("http://www.google.com");
-
+        SeLionReporter.log("Page loaded", true, true);
         // Find the text input element by its name
         WebElement element = driver.findElement(By.name("q"));
         // Enter something to search for
         element.sendKeys("Cheese!");
         // Now submit the form. WebDriver will find the form for us from the element
         element.submit();
-
         // take a screenshot
-        MobileReporter.log("cheese!", true);
+        SeLionReporter.log("cheese!", true, true);
     }
 
 }

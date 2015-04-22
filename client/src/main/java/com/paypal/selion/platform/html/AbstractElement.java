@@ -50,7 +50,7 @@ import com.paypal.selion.platform.html.support.events.Clickable;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
 import com.paypal.selion.platform.html.support.events.Hoverable;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
-import com.paypal.selion.reports.runtime.WebReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.selion.testcomponents.BasicPageImpl;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -385,9 +385,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         }
         boolean logPages = Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.LOG_PAGES));
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.AUTO_SCREEN_SHOT))) {
-            WebReporter.log(title, true, logPages);
+            SeLionReporter.log(title, true, logPages);
         } else {
-            WebReporter.log(title, false, logPages);
+            SeLionReporter.log(title, false, logPages);
         }
         logger.exiting();
     }

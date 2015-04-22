@@ -15,7 +15,7 @@
 
 package com.paypal.selion.reports.runtime;
 
-import com.paypal.selion.reports.model.PageContents;
+import com.paypal.selion.internal.reports.model.PageContents;
 
 /**
  * Simple interface for data persistence of web page parts.

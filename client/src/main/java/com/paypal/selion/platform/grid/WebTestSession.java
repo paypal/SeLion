@@ -29,7 +29,7 @@ import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
-import com.paypal.selion.reports.runtime.WebReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /**
  * A class for loading and representing the {@link WebTest} annotation parameters. Also performs sanity checks.
@@ -422,7 +422,7 @@ public class WebTestSession extends AbstractTestSession {
         if (StringUtils.isEmpty(errMsg)) {
             errMsg = "Test Failure screenshot";
         }
-        WebReporter.log(errMsg, true, true);
+        SeLionReporter.log(errMsg, true, true);
         logger.info("Please review the test report for the screenshot at the time of failure.");
 
     }

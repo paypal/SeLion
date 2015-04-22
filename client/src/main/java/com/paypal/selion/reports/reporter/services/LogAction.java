@@ -15,19 +15,17 @@
 
 package com.paypal.selion.reports.reporter.services;
 
-import com.paypal.selion.reports.runtime.WebReporter;
-
 /**
  * This interface facilitates custom actions to be taken place whenever a person invokes
- * {@link WebReporter#log(String, boolean, boolean)} method. An instance of this interface needs to be hooked into
- * {@link WebReporter} via a TestNG listener using the method {@link WebReporter#addLogAction(LogAction)}.
+ * {@link SeLionReporter#log(String, boolean, boolean)} method. An instance of this interface needs to be hooked into
+ * {@link SeLionReporter} via a TestNG listener using the method {@link SeLionReporter#addLogAction(LogAction)}.
  * 
  */
 public interface LogAction {
 
     /**
      * Implement this method to define the custom action that needs to be done as apart of executing
-     * {@link WebReporter#log(String, boolean, boolean)}
+     * {@link SeLionReporter#log(String, boolean, boolean)}
      */
     void perform();
 

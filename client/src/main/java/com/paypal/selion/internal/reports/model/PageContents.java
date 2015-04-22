@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reports.model;
+package com.paypal.selion.internal.reports.model;
 
 import java.util.Arrays;
 

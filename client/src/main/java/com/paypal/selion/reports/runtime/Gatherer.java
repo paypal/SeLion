@@ -33,6 +33,9 @@ class Gatherer {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
+    // this is applicable for both web and mobile. In mobile, you can use safari, etc, to test mobile webpages and
+    // getCurrentUrl will get the webpage URL. If testing a mobile application instead of mobile webbrowser then
+    // getCurrentURL will throw Exception  
     static String saveGetLocation(WebDriver driver) {
         logger.entering(driver);
         String location = "n/a";
@@ -41,7 +44,10 @@ class Gatherer {
                 location = driver.getCurrentUrl();
             }
         } catch (Exception exception) {
-            logger.log(Level.WARNING, "Current location couldn't be retrieved by getCurrentUrl().", exception);
+            logger.log(
+                    Level.WARNING,
+                    "Current location couldn't be retrieved by getCurrentUrl(). This can be SAFELY IGNORED if testing a non-web mobile application. Reason: "
+                            + exception.getClass().getName() + ": " + exception.getMessage());
         }
         logger.exiting(location);
         return location;

@@ -26,7 +26,7 @@ import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.reports.model.PageContents;
+import com.paypal.selion.internal.reports.model.PageContents;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
