@@ -26,7 +26,7 @@ import static org.testng.Assert.assertEquals;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /**
  * This test class demonstrates how to use SeLion for running tests against a Native iOS app.
@@ -42,7 +42,7 @@ public class IOSNativeAppDemoTest {
     @Test
     public void testMethod() throws InterruptedException {
         //Log a screenshot to the report and label it "My Screenshot 1"
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         //To gain access to the IOSRemoteWebDriver, we use the thread safe helper method Grid.driver() 
         //which provides an instance of IOSRemoteWebDriver for the current Test method. 
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
@@ -54,7 +54,7 @@ public class IOSNativeAppDemoTest {
         Thread.sleep(10 * 1000);
 
       //Log a screenshot to the report and label it "My Screenshot 2"
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
 
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");

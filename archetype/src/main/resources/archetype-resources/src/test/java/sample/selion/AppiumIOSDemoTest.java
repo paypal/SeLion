@@ -28,7 +28,7 @@ import static org.testng.Assert.assertNotNull;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /**
  * This class has test cases that demonstrates how to use SeLion for running tests against IOS apps using appium.
@@ -56,7 +56,7 @@ public class AppiumIOSDemoTest{
     @Test
     public void testWithNativeApp() throws InterruptedException {
         //Log a screenshot to the report and label it "My Screenshot 1"
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         //To gain access to the IOSRemoteWebDriver, we use the thread safe helper method Grid.driver() which provides
         //an instance of IOSRemoteWebDriver for the current Test method. 
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
@@ -66,7 +66,7 @@ public class AppiumIOSDemoTest{
         first.click();
         Thread.sleep(10 * 1000);
         //Log a screenshot to the report and label it "My Screenshot 2"
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
         // access the content
         By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");
         WebElement text = Grid.driver().findElement(selector);
@@ -100,6 +100,6 @@ public class AppiumIOSDemoTest{
         // Now submit the form. WebDriver will find the form for us from the element
         element.submit();
         // take a screenshot
-        MobileReporter.log("cheese!", true);
+        SeLionReporter.log("cheese!", true);
     }
 }

@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 /**
  * This class has test cases that demonstrates how to use SeLion for running tests against mobile apps using sauce cloud.
  */
@@ -57,14 +57,14 @@ public class AppiumSauceCloudTest {
     @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", device = "iphone:8.1",
         deviceType = "iPhone Simulator", additionalCapabilities = { "appiumVersion:1.3.4" })
     public void testWithNativeIOSApp() throws InterruptedException {
-        MobileReporter.log("My Screenshot 1", true);
+        SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));
         assertEquals(9, cells.size());
         // get the 1st mountain
         WebElement first = cells.get(0);
         first.click();
         Thread.sleep(10 * 1000);
-        MobileReporter.log("My Screenshot 2", true);
+        SeLionReporter.log("My Screenshot 2", true);
     }
 
 }
