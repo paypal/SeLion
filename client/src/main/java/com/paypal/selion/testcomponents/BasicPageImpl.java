@@ -334,28 +334,30 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
      */
     private void verifyElementByAction(String elementName, String action) {
         AbstractElement element = getAbstractElementThroughReflection(elementName);
-
+        
+        boolean present = element.isElementPresent();
+        
         switch (action) {
         case "isPresent":
-            if (!element.isElementPresent()) {
+            if (!present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
                         + elementName + " isn't present.");
             }
             break;
         case "isVisible":
-            if (!element.isElementPresent() && !element.isVisible()) {
+            if (!present || (present && !element.isVisible())) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
                         + elementName + " isn't visible.");
             }
             break;
         case "isEnabled":
-            if (!element.isElementPresent() && !element.isEnabled()) {
+            if (!present || (present && !element.isEnabled())) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
                         + elementName + " isn't enabled.");
             }
             break;
         default:
-            if (!HtmlElementUtils.isElementPresent(element.getLocator())) {
+            if (!present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
                         + elementName + " isn't present.");
             }
