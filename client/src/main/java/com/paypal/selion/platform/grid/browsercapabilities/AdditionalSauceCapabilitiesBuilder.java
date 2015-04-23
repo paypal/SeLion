@@ -39,7 +39,7 @@ import com.paypal.selion.platform.utilities.FileAssistant;
 public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     private static String USER_NAME = "username";
-    private static String ACCESS_KEY = "access-key";
+    private static String ACCESS_KEY = "accessKey";
     private static String PARENT_TUNNEL = "parent-tunnel";
 
     @Override
