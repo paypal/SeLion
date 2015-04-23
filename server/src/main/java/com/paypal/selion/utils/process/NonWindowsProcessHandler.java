@@ -18,8 +18,6 @@ package com.paypal.selion.utils.process;
 import java.io.IOException;
 import java.util.List;
 
-import com.sun.jna.Library;
-import com.sun.jna.Native;
 import org.apache.commons.lang3.StringUtils;
 
 import com.paypal.selion.pojos.ProcessInfo;
@@ -39,15 +37,14 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
 
     @Override
     public List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException {
-        try {
-            // Java has no direct way to get our pid.
-            int ourProcessPID = CLibrary.INSTANCE.getpid();
+        int ourProcessPID = getCurrentProcessID();
 
-            // Find all processes that are our direct children using our PID as the parent pid to pgrep.
-            // The pgrep command is basically getting all child processes and we are interested only in
-            // process name and PID with "<#>" as a delimiter.
-            String cmd = String.format("pgrep -P %s -l | awk '{ print $2\"%s\"$1 }'",
-                    Integer.toString(ourProcessPID), DELIMITER);
+        // Find all processes that are our direct children using our PID as the parent pid to pgrep.
+        // The pgrep command is basically getting all child processes and we are interested only in
+        // process name and PID with "<#>" as a delimiter.
+        String cmd = String.format("pgrep -P %s -l | awk '{ print $2\"%s\"$1 }'",
+                Integer.toString(ourProcessPID), DELIMITER);
+        try {
             return getProcessInfo(new String[] { "sh", "-c", cmd }, DELIMITER, OSPlatform.NONWINDOWS);
         } catch (IOException | InterruptedException e) {
             throw new ProcessHandlerException(e);
@@ -87,11 +84,6 @@ public class NonWindowsProcessHandler extends AbstractProcessHandler implements 
             }
         }
         return false;
-    }
-
-    private interface CLibrary extends Library {
-        CLibrary INSTANCE = (CLibrary) Native.loadLibrary("c", CLibrary.class);
-        int getpid();
     }
 
 }

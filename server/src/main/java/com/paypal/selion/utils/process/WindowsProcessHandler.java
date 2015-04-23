@@ -18,7 +18,6 @@ package com.paypal.selion.utils.process;
 import java.io.IOException;
 import java.util.List;
 
-import com.sun.jna.platform.win32.Kernel32;
 import org.apache.commons.lang3.StringUtils;
 
 import com.paypal.selion.pojos.ProcessInfo;
@@ -38,8 +37,7 @@ public class WindowsProcessHandler extends AbstractProcessHandler implements Pro
 
     @Override
     public List<ProcessInfo> potentialProcessToBeKilled() throws ProcessHandlerException {
-        // Java has no platform neutral way to get our current pid.
-        int ourPid = Kernel32.INSTANCE.GetCurrentProcessId();
+        int ourPid = getCurrentProcessID();
 
         // Find all processes names that are our direct children using our PID as the parent pid using wmic.
         // We want to kill only the direct child processes we have started. ("More +2" drops the csv header from output)

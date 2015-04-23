@@ -19,6 +19,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +32,7 @@ import java.util.logging.Logger;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.pojos.ProcessNames;
+import sun.management.VMManagement;
 
 /**
  * This class captures most of the heavy lifting required in terms of finding the default set of processes which
@@ -113,4 +119,21 @@ public abstract class AbstractProcessHandler {
      */
     protected abstract boolean matches(String image);
 
+    protected int getCurrentProcessID() throws ProcessHandlerException {
+        int pid;
+        // Not ideal but using JNA failed on RHEL5.
+        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+        Field jvm = null;
+        try {
+            jvm = runtime.getClass().getDeclaredField("jvm");
+            jvm.setAccessible(true);
+            VMManagement mgmt = (VMManagement) jvm.get(runtime);
+            Method pid_method = mgmt.getClass().getDeclaredMethod("getProcessId");
+            pid_method.setAccessible(true);
+            pid = (Integer) pid_method.invoke(mgmt);
+        } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new ProcessHandlerException(e);
+        }
+        return pid;
+    }
 }
