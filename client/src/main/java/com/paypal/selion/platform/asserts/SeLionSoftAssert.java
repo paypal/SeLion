@@ -108,12 +108,14 @@ class SeLionSoftAssert extends Assertion {
             }
             sb.append("failed because the expected value of [").append(eachAssert.getExpected()).append("] ");
             sb.append("was different from the actual value [").append(eachAssert.getActual()).append("]");
-            Reporter.log(sb.toString(), true);
-            Reporter.log("StackTrace as below", true);
+            
+            sb.append("\n").append("StackTrace as below");
+            
             StringWriter sw = new StringWriter();
             eachError.printStackTrace(new PrintWriter(sw));
-            Reporter.log(sw.toString(), true);
-
+            
+            sb.append("\n").append(sw.toString());
+            Reporter.log(sb.toString(), true);
         }
         result.setStatus(ITestResult.FAILURE);
     }
