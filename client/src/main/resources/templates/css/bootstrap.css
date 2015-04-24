@@ -5008,6 +5008,7 @@ a.list-group-item-danger.active:focus {
   margin-bottom: 0;
   font-size: 17px;
   color: inherit;
+  word-wrap: break-word;
 }
 .panel-title > a {
   color: inherit;
@@ -5395,7 +5396,6 @@ button.close {
   overflow-y: auto;
 }
 .modal-dialog {
-  position: absolute;
   width: auto;
   margin: 10px;
 }

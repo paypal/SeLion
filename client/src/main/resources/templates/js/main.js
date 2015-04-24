@@ -217,7 +217,11 @@ function displaySource(src, title) {
     $('#' + 'testcase-pagination ul .page-number').remove();
     renderPageNumbers("#", 1, noOfPage);
     renderPagination("#", noOfPage);
-    renderTable("#", filterSearch,index,pageSize);
+    if ($('#testcaseParentBody .fixed-table-pagination').is(":visible")) {
+      renderTable("#", filterSearch,index,pageSize);
+    } else {
+      $('#testcaseBody').html($('#gridImpl').render({'results' : treeFilter}));
+    }
 
     //Pagination for Config Test case table
     configSortedRecords = configTreeFilter;
