@@ -309,8 +309,8 @@
             </thead>
             <tbody>
                 {{for results}}
-                <tr>
-                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index+~startIndex}}</span></td>
+                <tr data-toggle="tooltip" title="{{:status}}">
+                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}" data-toggle="tooltip" title="{{:status}}">{{:#index+~startIndex}}</span></td>
                     <td>{{:suite}}</td>
                     <td>{{:test}}</td>
                     <td>{{:packageInfo}}</td>
