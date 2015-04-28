@@ -266,11 +266,16 @@ th {
   src: url('../fonts/glyphicons-halflings-regular.eot');
   src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+@font-face {
+  font-family: 'Glyphicons Halflings Web';
+  src: url('http://paypal.github.io/SeLion/fonts/glyphicons-halflings-regular.eot');
+  src: url('http://paypal.github.io/SeLion/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('http://paypal.github.io/SeLion/fonts/glyphicons-halflings-regular.woff') format('woff'), url('http://paypal.github.io/SeLion/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('http://paypal.github.io/SeLion/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
 .glyphicon {
   position: relative;
   top: 1px;
   display: inline-block;
-  font-family: 'Glyphicons Halflings';
+  font-family: 'Glyphicons Halflings', Fallback, 'Glyphicons Halflings Web';
   font-style: normal;
   font-weight: normal;
   line-height: 1;
@@ -4607,6 +4612,7 @@ a.thumbnail.active {
 .thumbnail .caption {
   padding: 9px;
   color: #2c3e50;
+  overflow: auto;
 }
 .alert {
   padding: 15px;

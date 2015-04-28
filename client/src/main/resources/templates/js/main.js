@@ -221,6 +221,7 @@ function displaySource(src, title) {
       renderTable("#", filterSearch,index,pageSize);
     } else {
       $('#testcaseBody').html($('#gridImpl').render({'results' : treeFilter}));
+      afterRender(treeFilter, '');
     }
 
     //Pagination for Config Test case table
