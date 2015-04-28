@@ -42,12 +42,12 @@ public class UiObject implements UserinterfaceObject {
 
     public UiObject(String locator) {
         this.locator = locator;
-        driver = SeLionAndroidBridgeDriver.class.cast(Grid.driver());
     }
 
     @Override
     public void clearTextField() {
         logger.entering();
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.clearTextField(webElement);
         logger.exiting();
@@ -56,6 +56,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void click(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.click(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -67,6 +68,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void clickBottomRight(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.clickBottomRight(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -79,6 +81,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void clickTopLeft(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.clickTopLeft(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -91,6 +94,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public String getText() {
         logger.entering();
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         String text = driver.getText(webElement);
         logger.exiting(text);
@@ -100,6 +104,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isCheckable() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isCheckable(webElement);
@@ -110,6 +115,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isChecked() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isChecked(webElement);
@@ -120,6 +126,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isClickable() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isClickable(webElement);
@@ -130,6 +137,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isEnabled() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isEnabled(webElement);
@@ -140,6 +148,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isFocusable() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isFocusable(webElement);
@@ -150,6 +159,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isFocused() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isFocused(webElement);
@@ -160,6 +170,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isLongClickable() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isLongClickable(webElement);
@@ -170,6 +181,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isScrollable() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isScrollable(webElement);
@@ -180,6 +192,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public boolean isSelected() {
         logger.entering();
+        initBridge();
         boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         result = driver.isSelected(webElement);
@@ -190,6 +203,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void longClick(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.longClick(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -201,6 +215,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void longClickBottomRight(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.longClickBottomRight(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -212,6 +227,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void longClickTopLeft(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.longClickTopLeft(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -223,6 +239,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void setText(String text) {
         logger.entering(text);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.clearTextField(webElement);
         driver.setText(webElement, text);
@@ -232,6 +249,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void swipeLeft(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.swipeLeft(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -243,6 +261,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void swipeRight(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.swipeRight(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -255,6 +274,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void swipeUp(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.swipeUp(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -266,6 +286,7 @@ public class UiObject implements UserinterfaceObject {
     @Override
     public void swipeDown(Object... expected) {
         logger.entering(expected);
+        initBridge();
         WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
         driver.swipeDown(webElement);
         if (!ArrayUtils.isEmpty(expected)) {
@@ -306,5 +327,10 @@ public class UiObject implements UserinterfaceObject {
             }
         }
         logger.exiting();
+    }
+    
+    private SeLionAndroidBridgeDriver initBridge(){
+        driver = SeLionAndroidBridgeDriver.class.cast(Grid.driver());
+        return driver;
     }
 }
