@@ -15,13 +15,14 @@
 
 package com.paypal.selion.testcomponents;
 
+import com.paypal.selion.platform.mobile.ios.UIAElement;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-
-import com.paypal.selion.platform.mobile.ios.UIAElement;
 
 /**
  * A Base class from which all page classes denoting a IOS page should be derived.
@@ -38,7 +39,7 @@ public abstract class IOSPage extends AbstractPage {
 
     protected void initializeHtmlObjects(Object whichClass, Map<String, String> objectMap) {
 
-        ArrayList<Field> fields = new ArrayList<Field>();
+        List<Field> fields = new ArrayList<>();
         Class<?> incomingClass = whichClass.getClass();
 
         do {
@@ -48,26 +49,26 @@ public abstract class IOSPage extends AbstractPage {
         String errorDesc = " Error while initializing fields from the object map for IOS Elements. Root cause:";
         try {
             for (Field field : fields) {
-                if (objectMap.containsKey(field.getName())) {
-                    field.setAccessible(true);
-                    if (UIAElement.class.isAssignableFrom(field.getType())) {
-                        Class<?> dataMemberClass = Class.forName(field.getType().getName());
-                        Class<?> parameterTypes[] = new Class[1];
-                        // As per the current implementation IOS elements accept only locators hence initializing one
-                        // argument constructors
-                        parameterTypes[0] = String.class;
-                        Constructor<?> constructor = dataMemberClass.getDeclaredConstructor(parameterTypes);
-
-                        String fieldLocator = objectMap.get(field.getName());
-                        if (fieldLocator == null) {
-                            continue;
-                        }
-                        Object[] constructorArgList = new Object[1];
-                        constructorArgList[0] = fieldLocator;
-                        Object retobj = constructor.newInstance(constructorArgList);
-                        field.set(whichClass, retobj);
-                    }
+                if (!objectMap.containsKey(field.getName())) {
+                    continue;
                 }
+                if (!UIAElement.class.isAssignableFrom(field.getType())) {
+                    continue;
+                }
+                String fieldLocator = objectMap.get(field.getName());
+                if (fieldLocator == null) {
+                    continue;
+                }
+                field.setAccessible(true);
+                Class<?> dataMemberClass = Class.forName(field.getType().getName());
+                Class<?> parameterTypes[] = new Class[] { String.class };
+                // As per the current implementation IOS elements accept only locators hence initializing one
+                // argument constructors
+                Constructor<?> constructor = dataMemberClass.getDeclaredConstructor(parameterTypes);
+
+                Object[] constructorArgList = new Object[] { fieldLocator };
+                Object retobj = constructor.newInstance(constructorArgList);
+                field.set(whichClass, retobj);
             }
         } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException exception) {
             throw new RuntimeException(errorDesc, exception);
