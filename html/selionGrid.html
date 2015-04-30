@@ -6,18 +6,18 @@
   <h2 id="introduction">Introduction</h2>
   <p>
     The SeLion client component is compatible with any <a href="https://code.google.com/p/selenium/wiki/Grid2">Selenium Grid2</a>.
-      That said, we have also published our own enhanced grid as the server component of SeLion. At a high level in includes a
-      few plug-ins to make managing and setting up your own grid a bit easier.
+      That said, we have also published our own enhanced grid as the server component of SeLion. At a high level it in includes a
+      few additions to make managing and setting up your own grid a bit easier.
   </p>
   <ol>
     <li>Dependency Downloader - Download Selenium dependencies -- the jars, various drivers, etc at startup.</li>
     <li>Auto Upgrade Nodes – Upgrade the Selenium, IE Driver, Chrome Driver,
         PhantomJS binary in each node without impacting existing test case execution.</li>
-    <li>Force Restart Node – Forcibly restart the node without logging in to the
-        physical node.</li>
-    <li>Self-Healing – Recycles the node after a pre-defined number of unique sessions are finished to avoid unexpected issues.
-    Defaults to 50. Configurable via <code>$SELION_HOME/config/SeLionConfig.json</code></li>
-    <li>View Node Logs – Grid provides the ability to view all the registered node log files</li>
+    <li>Force Restart Node – Forcibly restart the node without logging in to the physical node.</li>
+    <li>Auto Restart Node – Recycles the node after a pre-defined number of unique sessions are finished to avoid unexpected
+      issues.</li>
+    <li>View Node Logs – Grid provides the ability to view all the registered node log files.</li>
+    <li>Transfer Servlet aka "SeLion Hub Storage" - Upload and download zip files to the Hub for use with tests.</li>
   </ol>
 
   <h2 id="prerequisites">Prerequisites</h2>
@@ -26,7 +26,8 @@
     <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java
       JDK 1.7</a> and configure the <code>JAVA_HOME</code> environment variable on your system</li>
     <li>If you <a href="#buildingSelion">compiled SeLion</a> locally, copy the <code>SeLion-Grid.jar</code> file of
-      SeLion's Enhanced Grid from <code>server/target/</code> and paste it to your working folder. Otherwise, you can obtain it
+      SeLion's Enhanced Grid from <code>server/target/</code> and paste it to your working folder. Otherwise, you can obtain
+      the latest SNAPSHOT
       <a href="https://oss.sonatype.org/content/repositories/snapshots/com/paypal/selion/SeLion-Grid/1.0.0-SNAPSHOT/">here</a>.
     </li>
   </ol>
@@ -34,27 +35,27 @@
   <h2 id="start-selion-grid">Start the Grid Hub</h2>
   <p>The grid hub serves as the central point. It will receive all test case requests from all
       clients and distribute them to the nodes registered with the grid.</p>
-  <p>Open the command prompt and navigate to the location of the grid jar file. Type in the following command:</p>
+  <p>Open the command prompt and navigate to the location of the grid jar file. Type in the following command.</p>
 
   <pre><code class="language-sh">java -jar SeLion-Grid.jar -role hub</code></pre>
 
   <p>
       The grid hub will start up using the port <var>4444</var> by default. You can view it by connecting
       to <kbd>http://localhost:4444</kbd> with your preferred browser. By default all the required files will be downloaded or 
-      extracted to <var>&lt;user.home&gt;/.selion</var> directory. To specify the different directory configure system property
-      <code>-DselionHome=&lt;folderPath&gt;</code> to the java process.
+      extracted to the directory <var>&lt;user.home&gt;/.selion</var>. You can specify a different directory with the system
+      property <code>-DselionHome=&lt;folderPath&gt;</code>.
   </p>
 
   <h2 id="start-selion-node">Start the Grid Node</h2>
   <p>The grid node will execute the test cases.</p>
-  <p>Open the command prompt and navigate to the location of the grid jar file. Type in the following command:</p>
+  <p>Open the command prompt and navigate to the location of the grid jar file. Type in the following command.</p>
 
   <pre><code class="language-sh">java -jar SeLion-Grid.jar -role node -hub http://localhost:4444/grid/register</code></pre>
 
   <p>
       The grid node will start up using the port <var>5555</var> by default. Once it is started,
       it will register with the grid hub. You can view the node detail in the
-      grid console at <kbd>http://localhost:4444/grid/console</kbd>. Option <var>-hub</var> which represents SeLion Grid URL.
+      grid console at <kbd>http://localhost:4444/grid/console</kbd>.
   </p>
 
   <p>The grid console should look like the following screen shot:</p>
@@ -64,7 +65,7 @@
   </div>
   <br>
   <p>
-      <b>Note:</b> The example shown uses the same machine for both the grid and the node. But you can spawn any
+      <b>Note:</b> The example shown uses the same machine for both the grid and the node. However, you can spawn any
       number of nodes (one node per machine) and register them to a central grid hub.
   </p>
 
@@ -92,7 +93,7 @@
       If you have a large grid, managing the nodes can become tedious. The Enhanced Grid management console
       allows you to force restart and auto upgrade nodes. Navigate to the management console
       via the url <kbd>http://localhost:4444/grid/admin/LoginServlet</kbd> to manage
-      the nodes. Default username and password is <kbd>admin</kbd>. Once logged in you will see this page:
+      the nodes. Default username and password is <kbd>admin</kbd>. Once logged in, you will see this page.
   </p>
 
   <div class="container">
@@ -101,22 +102,27 @@
 
   <h2 id="selion-config">SeLion Grid Configuration File</h2>
   <p>
-    The SeLion Grid Configuration JSON file allows Grid to load the default properties. File available in
-    <code>$SELION_HOME/config/SeLionConfig.json</code>. Default JSON file will be overrided by <code>-selionConfig</code> argument.
+    The SeLion Grid config JSON file allows you to configure the additional components in SeLion-Grid. Once you start a
+    Node for the first time, the file will be available in <code>$SELION_HOME/config/SeLionConfig.json</code>.
+    Optionally, you can specify a different file with the <code>-selionConfig</code> argument.
   </p>
   <ol>
-    <li>restartCycle - Restart cycle will check specified interval to start the server if it is down. Units in milliseconds.</li>
-    <li>uniqueSessionCount – Number of unique session completion node will be recycled.</li>
-    <li>customProcessHandler – Process handler will be used to identify and kill the child processes spawned by node. Handler should
-    implement interface <code>com.paypal.selion.utils.process.ProcessHandler</code></li>
-    <li>artifactMaxFileSize – Maximum file size of the artifact which can be uploaded in to SeLion Grid repository. Units in bytes.</li>
-    <li>artifactExpiryInMilliSec – Artifact will be removed from repository after the expiration time.</li>
-    <li>managedArtifact – ManagedArtifact represents a basic artifact successfully saved to SeLion grid by an HTTP POST method call. It
-     should implement interface <code>com.paypal.selion.grid.servlets.transfer.ManagedArtifact</code></li>
-    <li>managedCriteria – Criteria implementation uses artifact name, user id and application folder to uniquely identify a managed artifact. It
-     should implement interface <code>com.paypal.selion.grid.servlets.transfer.Criteria</code></li>
+    <li><code>restartCycle</code> - Restart cycle will check at the specified interval and restart the server if it is down.
+      Units in milliseconds.</li>
+    <li><code>uniqueSessionCount</code> – Number of unique sessions before automatically recycling the node. <i>Default: 50</i></li>
+    <li><code>customProcessHandler</code> – Process handler will be used to identify and kill the child processes spawned
+      by a node. This handler should implement the interface <code>com.paypal.selion.utils.process.ProcessHandler</code></li>
+    <li><code>artifactMaxFileSize</code> – Maximum file size allowed for any artifact uploaded to the SeLion Grid hub
+      storage. Units in bytes.</li>
+    <li><code>artifactExpiryInMilliSec</code> – Artifact will be removed from hub storage after the expiration time.</li>
+    <li><code>managedArtifact</code> – ManagedArtifact represents a basic artifact successfully saved to SeLion Grid
+      by an HTTP POST method call. It should implement the interface
+      <code>com.paypal.selion.grid.servlets.transfer.ManagedArtifact</code></li>
+    <li><code>managedCriteria</code> – Criteria implementation uses artifact name, user id and application folder to
+      uniquely identify a managed artifact. It should implement the interface
+      <code>com.paypal.selion.grid.servlets.transfer.Criteria</code></li>
   </ol>
-  <p>Sample Windows SeLionConfig.json File:</p>
+  <h2>Sample SeLionConfig.json File</h2>
   <pre data-src="../sample-files/SeLionConfig.json" class="language-markup"></pre>
 </div>
 
