@@ -16,7 +16,6 @@
 package ${package}.sample.selion;
 
 
-import com.paypal.selion.platform.dataprovider.ExcelDataProviderException;
 import com.paypal.selion.platform.dataprovider.SimpleExcelDataProvider;
 import ${package}.sample.dataobjects.SimpleData;
 
@@ -38,7 +37,7 @@ public class SimpleDataDrivenTest {
 
 
     @DataProvider(name = "simpleReader")
-    public Object[][] setupExcelDataProvider () throws IOException, ExcelDataProviderException {
+    public Object[][] setupExcelDataProvider () throws IOException{
         //Lets first initialize the data provider and specify the file from which data is to be read from.
         SimpleExcelDataProvider
             dataProvider =

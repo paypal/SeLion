@@ -63,9 +63,8 @@ public abstract class AbstractExcelDataProvider {
      * @param myObj
      *            - the user defined type object which provide details structure.
      * @return an object of type {@link Hashtable} that represents the excel sheet data in form of hashTable.
-     * @throws ExcelDataProviderException
      */
-    public abstract Hashtable<String, Object> getAllRowsAsHashTable(Object myObj) throws ExcelDataProviderException;
+    public abstract Hashtable<String, Object> getAllRowsAsHashTable(Object myObj);
 
     /**
      * This method fetches a specific row from an excel sheet which can be identified using a key and returns the data
@@ -76,10 +75,8 @@ public abstract class AbstractExcelDataProvider {
      * @param key
      *            - A string that represents a key to search for in the excel sheet
      * @return - An Object which can be cast into the user's actual data type.
-     * 
-     * @throws ExcelDataProviderException
      */
-    public abstract Object getSingleExcelRow(Object userObj, String key) throws ExcelDataProviderException;
+    public abstract Object getSingleExcelRow(Object userObj, String key);
 
     /**
      * This method fetches a specific row from an excel sheet which can be identified using a key and returns the data
@@ -94,22 +91,19 @@ public abstract class AbstractExcelDataProvider {
      *            external calls the index of the row would need to be bumped up,because the first row is to be ignored
      *            always.
      * @return - An Object which can be cast into the user's actual data type.
-     * @throws ExcelDataProviderException
      */
-    protected Object getSingleExcelRow(Object userObj, String key, boolean isExternalCall)
-            throws ExcelDataProviderException {
+    protected Object getSingleExcelRow(Object userObj, String key, boolean isExternalCall) {
         logger.entering(new Object[] { userObj, key, isExternalCall });
         Class<?> cls;
         try {
             cls = Class.forName(userObj.getClass().getName());
         } catch (ClassNotFoundException e) {
-            throw new ExcelDataProviderException("Unable to find class of type + '" + userObj.getClass().getName()
-                    + "'", e);
+            throw new DataProviderException("Unable to find class of type + '" + userObj.getClass().getName() + "'", e);
         }
         int rowIndex = excelReader.getRowIndex(cls.getSimpleName(), key);
 
         if (rowIndex == -1) {
-            throw new ExcelDataProviderException("Row with key '" + key + "' is not found");
+            throw new DataProviderException("Row with key '" + key + "' is not found");
         }
         Object object = getSingleExcelRow(userObj, rowIndex, isExternalCall);
         logger.exiting(object);
@@ -131,10 +125,8 @@ public abstract class AbstractExcelDataProvider {
      * 
      * @return - An object that represents the data for a given row in the excel sheet.
      * 
-     * @throws ExcelDataProviderException
      */
-    protected Object getSingleExcelRow(Object userObj, int index, boolean isExternalCall)
-            throws ExcelDataProviderException {
+    protected Object getSingleExcelRow(Object userObj, int index, boolean isExternalCall) {
         if (isExternalCall) {
             index++;
 
@@ -146,8 +138,7 @@ public abstract class AbstractExcelDataProvider {
         try {
             cls = Class.forName(userObj.getClass().getName());
         } catch (ClassNotFoundException e) {
-            throw new ExcelDataProviderException("Unable to find class of type + '" + userObj.getClass().getName()
-                    + "'", e);
+            throw new DataProviderException("Unable to find class of type + '" + userObj.getClass().getName() + "'", e);
         }
         Field[] fields = cls.getDeclaredFields();
 
@@ -156,11 +147,11 @@ public abstract class AbstractExcelDataProvider {
             try {
                 obj = prepareObject(userObj, fields, excelRowData);
             } catch (IllegalAccessException e) {
-                throw new ExcelDataProviderException("Unable to create instance of type '"
-                        + userObj.getClass().getName() + "'", e);
+                throw new DataProviderException("Unable to create instance of type '" + userObj.getClass().getName()
+                        + "'", e);
             }
         } else {
-            throw new ExcelDataProviderException("Row with key '" + index + "' is not found");
+            throw new DataProviderException("Row with key '" + index + "' is not found");
         }
 
         logger.exiting(obj);
@@ -180,9 +171,8 @@ public abstract class AbstractExcelDataProvider {
      *            value always remember to ignore the header, since this method will look for a particular row ignoring
      *            the header row.
      * @return - An object that represents the data for a given row in the excel sheet.
-     * @throws ExcelDataProviderException
      */
-    public abstract Object getSingleExcelRow(Object userObj, int index) throws ExcelDataProviderException;
+    public abstract Object getSingleExcelRow(Object userObj, int index);
 
     /**
      * This function will use the input string representing the indexes to collect and return the correct excel sheet
@@ -195,9 +185,8 @@ public abstract class AbstractExcelDataProvider {
      *            "1, 2, 3" for individual indexes. <li>"1-4, 6-8, 9-10" for ranges of indexes. <li>
      *            "1, 3, 5-7, 10, 12-14" for mixing individual and range of indexes.
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
-     * @throws ExcelDataProviderException
      */
-    public abstract Object[][] getExcelRows(Object myData, String indexes) throws ExcelDataProviderException;
+    public abstract Object[][] getExcelRows(Object myData, String indexes);
 
     /**
      * This function will use the input string representing the keys to collect and return the correct excel sheet data
@@ -209,9 +198,8 @@ public abstract class AbstractExcelDataProvider {
      *            the string represents the list of key for the search and return the wanted row. It is in the format of
      *            {"row1", "row3", "row5"}
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
-     * @throws ExcelDataProviderException
      */
-    public abstract Object[][] getExcelRows(Object myObj, String[] keys) throws ExcelDataProviderException;
+    public abstract Object[][] getExcelRows(Object myObj, String[] keys);
 
     /**
      * This function will read the whole excel sheet and map the data into two-dimensional array of object which is
@@ -224,9 +212,8 @@ public abstract class AbstractExcelDataProvider {
      * @param myObj
      *            the user defined type object which provide details structure to this function.
      * @return Object[][] a two-dimensional object to be used with TestNG DataProvider
-     * @throws ExcelDataProviderException
      */
-    public abstract Object[][] getAllExcelRows(Object myObj) throws ExcelDataProviderException;
+    public abstract Object[][] getAllExcelRows(Object myObj);
 
     private DefaultCustomType fetchMatchingCustomType(Class<?> type) {
         for (DefaultCustomType eachCustomType : customTypes) {
@@ -260,17 +247,17 @@ public abstract class AbstractExcelDataProvider {
      * @return Object which can be cast into a user defined type to get access to its fields
      */
     protected Object prepareObject(Object userObj, Field[] fields, List<String> excelRowData)
-            throws IllegalAccessException, ExcelDataProviderException {
+            throws IllegalAccessException {
         logger.entering(new Object[] { userObj, fields, excelRowData });
         Object objectToReturn = createObjectToUse(userObj);
         int index = 0;
         for (Field eachField : fields) {
-            //If the data is not present in excel sheet then skip it
+            // If the data is not present in excel sheet then skip it
             String data = excelRowData.get(index++);
             if (StringUtils.isEmpty(data)) {
                 continue;
             }
-            
+
             Class<?> eachFieldType = eachField.getType();
 
             if (eachFieldType.isInterface()) {
@@ -290,14 +277,14 @@ public abstract class AbstractExcelDataProvider {
                 try {
                     setValueForArrayType(memberInfo);
                 } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | InstantiationException e) {
-                    throw new ExcelDataProviderException(e.getMessage(), e);
+                    throw new DataProviderException(e.getMessage(), e);
                 }
             } else {
                 try {
                     setValueForNonArrayType(memberInfo);
                 } catch (InstantiationException | IllegalArgumentException | InvocationTargetException
                         | NoSuchMethodException | SecurityException e) {
-                    throw new ExcelDataProviderException(e.getMessage(), e);
+                    throw new DataProviderException(e.getMessage(), e);
                 }
             }
         }
@@ -305,7 +292,7 @@ public abstract class AbstractExcelDataProvider {
         return objectToReturn;
     }
 
-    private Object createObjectToUse(Object userObject) throws IllegalAccessException, ExcelDataProviderException {
+    private Object createObjectToUse(Object userObject) throws IllegalAccessException {
         try {
             // Create a new instance of the data so we can
             // store it here before return everything to the users.
@@ -314,7 +301,7 @@ public abstract class AbstractExcelDataProvider {
             String msg = String.format(
                     "Unable to instantiate an object of class %s bcoz it doesn't have a default constructor. ",
                     userObject.getClass().getCanonicalName());
-            throw new ExcelDataProviderException(msg, e1);
+            throw new DataProviderException(msg, e1);
         }
 
     }
@@ -328,11 +315,9 @@ public abstract class AbstractExcelDataProvider {
      * @throws ArrayIndexOutOfBoundsException
      * @throws IllegalArgumentException
      * @throws InstantiationException
-     * @throws ExcelDataProviderException
      */
     private void setValueForArrayType(DataMemberInformation memberInfo) throws IllegalAccessException,
-            ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException,
-            ExcelDataProviderException {
+            ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException {
         logger.entering(memberInfo);
         Field eachField = memberInfo.getField();
         Object objectToSetDataInto = memberInfo.getObjectToSetDataInto();
@@ -382,7 +367,6 @@ public abstract class AbstractExcelDataProvider {
      *            - A {@link DataMemberInformation} object that represents values pertaining to every data member.
      * 
      * @throws IllegalAccessException
-     * @throws ExcelDataProviderException
      * @throws InstantiationException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
@@ -390,8 +374,8 @@ public abstract class AbstractExcelDataProvider {
      * @throws SecurityException
      */
     private void setValueForNonArrayType(DataMemberInformation memberInfo) throws IllegalAccessException,
-            ExcelDataProviderException, InstantiationException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException {
+            InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
+            SecurityException {
         logger.entering(memberInfo);
         Field eachField = memberInfo.getField();
         Class<?> eachFieldType = eachField.getType();
@@ -436,35 +420,34 @@ public abstract class AbstractExcelDataProvider {
     }
 
     /**
-      * Using the specified rowIndex to search for the row from the specified Excel sheet, then return the row contents
-      * in a list of string format.
-      *
-      * @param rowIndex
-      *            - The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
-      *            (which is where your data exists) in your excel sheet, the value for index would be 1. <b>This method
-      *            assumes that your excel sheet would have a header which it would EXCLUDE.</b> When specifying index
-      *            value always remember to ignore the header, since this method will look for a particular row ignoring
-      *            the header row.
-      * @param size
-      *            - The number of columns to read, including empty and blank column.
-      * @return List<String> String array contains the row data.
-      */
-    public List<String> getRowContents(String sheetName, int rowIndex, int size)  {
+     * Using the specified rowIndex to search for the row from the specified Excel sheet, then return the row contents
+     * in a list of string format.
+     * 
+     * @param rowIndex
+     *            - The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
+     *            (which is where your data exists) in your excel sheet, the value for index would be 1. <b>This method
+     *            assumes that your excel sheet would have a header which it would EXCLUDE.</b> When specifying index
+     *            value always remember to ignore the header, since this method will look for a particular row ignoring
+     *            the header row.
+     * @param size
+     *            - The number of columns to read, including empty and blank column.
+     * @return List<String> String array contains the row data.
+     */
+    public List<String> getRowContents(String sheetName, int rowIndex, int size) {
         return excelReader.getRowContents(sheetName, rowIndex, size);
     }
 
     /**
      * Get all excel rows from a specified sheet.
-     *
-     * @param sheetName - A String that represents the Sheet name from which data is to be read
-     * @param heading -
-     *            If true, will return all rows along with the heading row. If false, will return all rows
-     *            except the heading row.
-     * @return -  A List of {@link Row} that are read.
+     * 
+     * @param sheetName
+     *            - A String that represents the Sheet name from which data is to be read
+     * @param heading
+     *            - If true, will return all rows along with the heading row. If false, will return all rows except the
+     *            heading row.
+     * @return - A List of {@link Row} that are read.
      */
     public List<Row> getAllRawExcelRows(String sheetName, boolean heading) {
         return excelReader.getAllExcelRows(sheetName, heading);
     }
 }
-
-

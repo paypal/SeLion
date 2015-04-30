@@ -111,10 +111,8 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      * @param myObj
      *            the user defined type object which provide details structure to this function.
      * @return an object of type {@link Hashtable} that represents the excel sheet data in form of hashTable.
-     * @throws ExcelDataProviderException
-     *             if invalid class name from input parameter myObj
      */
-    public Hashtable<String, Object> getAllRowsAsHashTable(Object myObj) throws ExcelDataProviderException {
+    public Hashtable<String, Object> getAllRowsAsHashTable(Object myObj) {
         logger.entering(myObj);
         Hashtable<String, Object> hashTable = new Hashtable<>();
 
@@ -145,11 +143,9 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      *            - A string that represents a key to search for in the excel sheet
      * @return - An Object which can be cast into the user's actual data type.
      * 
-     * @throws ExcelDataProviderException
-     * 
      */
     @Override
-    public Object getSingleExcelRow(Object userObj, String key) throws ExcelDataProviderException {
+    public Object getSingleExcelRow(Object userObj, String key) {
         return getSingleExcelRow(userObj, key, true);
     }
 
@@ -165,10 +161,9 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      *            value always remember to ignore the header, since this method will look for a particular row ignoring
      *            the header row.
      * @return - An object that represents the data for a given row in the excel sheet.
-     * @throws ExcelDataProviderException
      */
     @Override
-    public Object getSingleExcelRow(Object userObj, int index) throws ExcelDataProviderException {
+    public Object getSingleExcelRow(Object userObj, int index) {
         return getSingleExcelRow(userObj, index, true);
     }
 
@@ -183,21 +178,20 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      *            "1, 2, 3" for individual indexes. <li>"1-4, 6-8, 9-10" for ranges of indexes. <li>
      *            "1, 3, 5-7, 10, 12-14" for mixing individual and range of indexes.
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
-     * @throws ExcelDataProviderException
      */
     @Override
-    public Object[][] getExcelRows(Object myData, String indexes) throws ExcelDataProviderException {
+    public Object[][] getExcelRows(Object myData, String indexes) {
         logger.entering(new Object[] { myData, indexes });
-        List<Integer> arrayIndex;
+        int[] arrayIndex;
         try {
             arrayIndex = DataProviderHelper.parseIndexString(indexes);
         } catch (DataProviderException e) {
-            throw new ExcelDataProviderException(e.getMessage(), e);
+            throw new DataProviderException(e.getMessage(), e);
         }
 
-        Object[][] obj = new Object[arrayIndex.size()][1];
-        for (int i = 0; i < arrayIndex.size(); i++) {
-            int actualIndex = arrayIndex.get(i) + 1;
+        Object[][] obj = new Object[arrayIndex.length][1];
+        for (int i = 0; i < arrayIndex.length; i++) {
+            int actualIndex = arrayIndex[i] + 1;
             obj[i][0] = getSingleExcelRow(myData, actualIndex, false);
 
         }
@@ -215,10 +209,9 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      *            the string represents the list of key for the search and return the wanted row. It is in the format of
      *            {"row1", "row3", "row5"}
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
-     * @throws ExcelDataProviderException
      */
     @Override
-    public Object[][] getExcelRows(Object myObj, String[] keys) throws ExcelDataProviderException {
+    public Object[][] getExcelRows(Object myObj, String[] keys) {
         logger.entering(new Object[] { myObj, keys });
         Object[][] obj = new Object[keys.length][1];
 
@@ -277,10 +270,9 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      * @param myObj
      *            the user defined type object which provide details structure to this function.
      * @return Object[][] a two-dimensional object to be used with TestNG DataProvider
-     * @throws ExcelDataProviderException
      */
     @Override
-    public Object[][] getAllExcelRows(Object myObj) throws ExcelDataProviderException {
+    public Object[][] getAllExcelRows(Object myObj) {
         logger.entering(myObj);
         int i;
         Object[][] obj = null;
@@ -301,7 +293,7 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
                     try {
                         obj[i++][0] = prepareObject(myObj, fields, excelRowData);
                     } catch (IllegalAccessException e) {
-                        throw new ExcelDataProviderException("Unable to create instance of type '"
+                        throw new DataProviderException("Unable to create instance of type '"
                                 + myObj.getClass().getName() + "'", e);
                     }
                 }
@@ -318,11 +310,9 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
      *            the user defined type object which provide details structure to this function.
      * @param dataFilter
      *            an implementation class of {@link DataProviderFilter}
-     * @return  An iterator over a collection of Object Array to be used with TestNG DataProvider
-     * @throws ExcelDataProviderException
+     * @return An iterator over a collection of Object Array to be used with TestNG DataProvider
      */
-    public Iterator<Object[]> getExcelRowsByFilter(Object myObj, DataProviderFilter dataFilter)
-            throws ExcelDataProviderException {
+    public Iterator<Object[]> getExcelRowsByFilter(Object myObj, DataProviderFilter dataFilter) {
         logger.entering(new Object[] { myObj, dataFilter });
         List<Object[]> objs = new ArrayList<>();
         Field[] fields = myObj.getClass().getDeclaredFields();
@@ -340,10 +330,10 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
                         objs.add(new Object[] { temp });
                     }
                 } catch (IllegalAccessException e) {
-                    throw new ExcelDataProviderException("Unable to create instance of type '"
-                            + myObj.getClass().getName() + "'", e);
+                    throw new DataProviderException("Unable to create instance of type '" + myObj.getClass().getName()
+                            + "'", e);
                 } catch (DataProviderException e) {
-                    throw new ExcelDataProviderException(e.getMessage(), e);
+                    throw new DataProviderException(e.getMessage(), e);
                 }
             }
         }

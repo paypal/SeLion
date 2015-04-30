@@ -18,7 +18,7 @@ package com.paypal.selion.platform.dataprovider;
 /**
  * This Exception class is specific to data reader.
  */
-public class DataProviderException extends Exception {
+public class DataProviderException extends RuntimeException {
 
     private static final long serialVersionUID = 3290312548375984346L;
 

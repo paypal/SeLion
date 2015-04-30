@@ -22,6 +22,7 @@ import com.paypal.selion.platform.dataprovider.pojos.yaml.ADDRESS;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.AREA_CODE;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.BANK;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.USER;
+
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -207,40 +208,40 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testGetAllDataFromDocuments() throws IOException, YamlDataProviderException {
+    public void testGetAllDataFromDocuments() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getAllData(resource);
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
         arrayComparer(new String[] { "Thomas", "rama", "binh", "suri", null, "suri" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetAllDataFromMap() throws IOException, YamlDataProviderException {
+    public void testGetAllDataFromMap() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getAllData(resource);
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
         // Keys cannot be repeated in a map, so only expecting one "suri"
         arrayComparer(new String[] { "Thomas", "rama", "binh", "suri" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetAllDataFromList() throws IOException, YamlDataProviderException {
+    public void testGetAllDataFromList() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getAllData(resource);
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
         arrayComparer(new String[] { "Thomas", "rama", "binh", "suri", null, "suri" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetAllDataFromTaggedList() throws IOException, YamlDataProviderException {
+    public void testGetAllDataFromTaggedList() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, userTaggedList, USER.class);
         Object[][] allUsers = YamlDataProvider.getAllData(resource);
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
         arrayComparer(new String[] { "Thomas", "rama", "binh", "suri", null, "suri" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetAllDataFromStringList() throws IOException, YamlDataProviderException {
+    public void testGetAllDataFromStringList() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, list);
         Object[][] allStrings = YamlDataProvider.getAllData(resource);
         List<String> fetchedStrings = transferStringDataIntoList(allStrings);
@@ -263,7 +264,7 @@ public class YamlDataProviderTest {
     public void testGetDataByKeys_Tom() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByKeys(resource, new String[] { "tom" });
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
         arrayComparer(new String[] { "Thomas" }, fetchedNames.toArray());
     }
 
@@ -271,7 +272,7 @@ public class YamlDataProviderTest {
     public void testGetDataByKeys_Three() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByKeys(resource, new String[] { "3" });
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
         arrayComparer(new String[] { "suri" }, fetchedNames.toArray());
     }
 
@@ -285,7 +286,7 @@ public class YamlDataProviderTest {
     public void testGetDataByKeys_MultipleKeys() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByKeys(resource, new String[] { "tom", "binh" });
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
         arrayComparer(new String[] { "Thomas", "binh" }, fetchedNames.toArray());
     }
 
@@ -296,60 +297,54 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testGetDataByIndex_One() throws IOException, DataProviderException {
+    public void testGetDataByIndex_One() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "1");
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataIteratorIntoList(allUsers);
         arrayComparer(new String[] { "Thomas" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetDataByIndex_Four() throws IOException, DataProviderException {
+    public void testGetDataByIndex_Four() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "4");
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataIteratorIntoList(allUsers);
         arrayComparer(new String[] { "suri" }, fetchedNames.toArray());
     }
 
-    @Test(expectedExceptions = { ArrayIndexOutOfBoundsException.class }, groups = "unit")
-    public void testGetDataByIndex_OutOfBoundsIndex() throws IOException, DataProviderException {
-        FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
-        YamlDataProvider.getDataByIndex(resource, "100");
-    }
-
     @Test(expectedExceptions = { DataProviderException.class }, groups = "unit")
-    public void testGetDataByIndex_InvalidIndex() throws IOException, DataProviderException {
+    public void testGetDataByIndex_InvalidIndex() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
         YamlDataProvider.getDataByIndex(resource, "2~3");
 
     }
 
     @Test(groups = "unit")
-    public void testGetDataByIndex_MultipleIndexes() throws IOException, DataProviderException {
+    public void testGetDataByIndex_MultipleIndexes() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "2,3");
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataIteratorIntoList(allUsers);
         arrayComparer(new String[] { "rama", "binh" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetDataByIndex_RangeOfIndexes() throws IOException, DataProviderException {
+    public void testGetDataByIndex_RangeOfIndexes() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "1-2");
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataIteratorIntoList(allUsers);
         arrayComparer(new String[] { "Thomas", "rama" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetDataByIndex_IndividualAndRangeOfIndexes() throws IOException, DataProviderException {
+    public void testGetDataByIndex_IndividualAndRangeOfIndexes() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "1-2,4,6");
-        List<String> fetchedNames = transferUserDataIntoList(allUsers);
+        List<String> fetchedNames = transferUserDataIteratorIntoList(allUsers);
         arrayComparer(new String[] { "Thomas", "rama", "suri", "suri" }, fetchedNames.toArray());
     }
 
     @Test(groups = "unit")
-    public void testGetDataByIndex_NullData() throws IOException, DataProviderException {
+    public void testGetDataByIndex_NullData() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
         Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "5");
         USER user = (USER) allUsers[0][0];
@@ -368,12 +363,24 @@ public class YamlDataProviderTest {
 
     }
 
-    private synchronized List<String> transferUserDataIntoList(Object[][] allUsers) {
+    private synchronized List<String> transferUserDataIteratorIntoList(Object[][] allUsers) {
         List<String> fetchedNames = new ArrayList<String>();
         for (Object[] object : allUsers) {
             USER user = (USER) object[0];
             fetchedNames.add(user.getName());
         }
+
+        return fetchedNames;
+    }
+    
+    private synchronized List<String> transferUserDataArrayInArrayIntoList(Object[][] allUsers) {
+        List<String> fetchedNames = new ArrayList<String>();
+        for (Object[] object : allUsers)
+        {
+            USER user = (USER) object[0];
+            fetchedNames.add(user.getName());
+        }
+
         return fetchedNames;
     }
 
@@ -408,84 +415,84 @@ public class YamlDataProviderTest {
     }
 
     @Test(expectedExceptions = { RuntimeException.class }, groups = "unit")
-    public void negativeTestsInvalidFileName() throws IOException, YamlDataProviderException {
+    public void negativeTestsInvalidFileName() throws IOException {
         FileSystemResource resource = new FileSystemResource("IdontExist.yaml", USER.class);
         YamlDataProvider.getAllData(resource);
     }
 
     @DataProvider(name = "getList")
-    public static Object[][] dataProviderGetList() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetList() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, list);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getListOfLists")
-    public static Object[][] dataProviderGetListOfLists() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetListOfLists() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, listOfLists);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getListOfAssociativeArrays")
-    public static Object[][] dataProviderGetListOfAssociativeArrays() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetListOfAssociativeArrays() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, listOfAssociativeArrays);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getListOfUsers")
-    public static Object[][] dataProviderGetListOfUsers() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetListOfUsers() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, listOfUsers);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getAssociativeArray")
-    public static Object[][] dataProviderGetAssociativeArray() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetAssociativeArray() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrays);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getAssociativeArrayOfLists")
-    public static Object[][] dataProviderGetAssociativeArrayOfLists() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetAssociativeArrayOfLists() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfLists);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getAssociativeArrayOfArrays")
-    public static Object[][] dataProviderGetAssociativeArrayOfArrays() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetAssociativeArrayOfArrays() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfArrays);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getAssociativeArrayOfUsers")
-    public static Object[][] dataProviderGetAssociativeArrayOfUsers() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetAssociativeArrayOfUsers() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getDocumentSeparatedLists")
-    public static Object[][] dataProviderGetDocumentSeparatedLists() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetDocumentSeparatedLists() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedLists);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getDocumentSeparatedAssociativeArrays")
-    public static Object[][] dataProviderGetDocumentSeparatedAssociativeArrays() throws IOException,
-            YamlDataProviderException {
+    public static Object[][] dataProviderGetDocumentSeparatedAssociativeArrays() throws IOException
+             {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedAssociativeArrays);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
     }
 
     @DataProvider(name = "getDocumentSeparatedUsers")
-    public static Object[][] dataProviderGetDocumentSeparatedUsers() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetDocumentSeparatedUsers() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, USER.class);
         Object[][] data = YamlDataProvider.getAllData(resource);
         return data;
@@ -499,14 +506,13 @@ public class YamlDataProviderTest {
     }
 
     @DataProvider(name = "getDataByIndex")
-    public static Object[][] dataProviderGetDataByIndex() throws IOException, DataProviderException {
+    public static Object[][] dataProviderGetDataByIndex() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
-        Object[][] data = YamlDataProvider.getDataByIndex(resource, "1-6");
-        return data;
+        return YamlDataProvider.getDataByIndex(resource, "1-6");
     }
 
     @DataProvider(name = "getDataFilterByIndexRange")
-    public static Iterator<Object[]> dataProviderByFilterGetDataByIndex() throws IOException, DataProviderException {
+    public static Iterator<Object[]> dataProviderByFilterGetDataByIndex() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-6");
         Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
@@ -514,8 +520,7 @@ public class YamlDataProviderTest {
     }
 
     @DataProvider(name = "getDataFilterByIndexRangeAndIndividual")
-    public static Iterator<Object[]> dataProviderByFilterGetDataByIndexRange() throws IOException,
-            DataProviderException {
+    public static Iterator<Object[]> dataProviderByFilterGetDataByIndexRange() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-2,4,5");
         Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
@@ -523,8 +528,8 @@ public class YamlDataProviderTest {
     }
 
     @DataProvider(name = "getDataFilterByIndexIndividual")
-    public static Iterator<Object[]> dataProviderByFilterGetDataByIndexIndividual() throws IOException,
-            DataProviderException {
+    public static Iterator<Object[]> dataProviderByFilterGetDataByIndexIndividual() throws IOException
+             {
         FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, USER.class);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1,3,5");
         Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
@@ -532,8 +537,7 @@ public class YamlDataProviderTest {
     }
 
     @DataProvider(name = "getDataByCustomKeysFilterByAccountNumber")
-    public static Iterator<Object[]> dataProviderByFilterGetDataByCustomeByAccountNumber() throws IOException,
-            DataProviderException {
+    public static Iterator<Object[]> dataProviderByFilterGetDataByCustomeByAccountNumber() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         CustomKeyFilter filter = new CustomKeyFilter("accountNumber",
                 "123456,124567,1234567");
@@ -542,8 +546,7 @@ public class YamlDataProviderTest {
     }
 
     @DataProvider(name = "getDataByCustomKeysFilterByName")
-    public static Iterator<Object[]> dataProviderByFilterGetDataByCustomeByName() throws IOException,
-            DataProviderException {
+    public static Iterator<Object[]> dataProviderByFilterGetDataByCustomeByName() throws IOException {
         FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, USER.class);
         CustomKeyFilter filter = new CustomKeyFilter("name","Thomas,binh,suri");
         Iterator<Object[]> data = YamlDataProvider.getDataByFilter(resource, filter);
@@ -551,7 +554,7 @@ public class YamlDataProviderTest {
     }
 
     @DataProvider(name = "getMultipleStringArguments")
-    public static Object[][] dataProviderGetMultipleStringArguments() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetMultipleStringArguments() throws IOException {
         List<FileSystemResource> yamlResources = new ArrayList<FileSystemResource>();
         yamlResources.add(new FileSystemResource(pathName, list));
         yamlResources.add(new FileSystemResource(pathName, list));
@@ -562,7 +565,7 @@ public class YamlDataProviderTest {
     }
 
     @DataProvider(name = "getMultipleArguments")
-    public static Object[][] dataProviderGetMultipleArguments() throws IOException, YamlDataProviderException {
+    public static Object[][] dataProviderGetMultipleArguments() throws IOException {
         List<FileSystemResource> yamlResources = new ArrayList<FileSystemResource>();
         yamlResources.add(new FileSystemResource(pathName, documentSeparatedUsers, USER.class));
         yamlResources.add(new FileSystemResource(pathName, documentSeparatedUsers2, USER.class));

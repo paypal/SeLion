@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.google.common.primitives.Ints;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -45,14 +46,15 @@ public final class DataProviderHelper {
 
     /**
      * This function will parse the index string into separated individual indexes as needed. Calling the method with a
-     * string containing "1, 3, 5-7, 11, 12-14, 8" would return a list of Integers {1, 3, 5, 6, 7, 11, 12, 13, 14, 8}
+     * string containing "1, 3, 5-7, 11, 12-14, 8" would return an list of integers {1, 3, 5, 6, 7, 11, 12, 13, 14, 8}.
+     * Use ',' to separate values, and use '-' to specify a continuous range. Presence of an invalid character would
+     * result in {@link DataProviderException}.
      * 
      * @param value
      *            the input string represent the indexes to be parse.
-     * @return a list of indexes represented as Integers
-     * @throws DataProviderException
+     * @return a list of indexes as an integer array
      */
-    public static List<Integer> parseIndexString(String value) throws DataProviderException {
+    public static int[] parseIndexString(String value) {
         logger.entering(value);
 
         List<Integer> indexes = new ArrayList<Integer>();
@@ -79,8 +81,9 @@ public final class DataProviderHelper {
             }
         }
 
-        logger.exiting(indexes);
-        return indexes;
+        int[] indexArray = Ints.toArray(indexes);
+        logger.exiting(indexArray);
+        return indexArray;
     }
 
     /**
@@ -229,6 +232,8 @@ public final class DataProviderHelper {
                 }
             }
         }
+
+        // Passing no arguments to exiting() because implementation to print 2D array could be highly recursive.
         logger.exiting();
         return objArray;
     }
@@ -241,8 +246,7 @@ public final class DataProviderHelper {
      *            Object of any type.
      * @return List<Object[]> a ArrayList of objects to be used with TestNG DataProvider
      */
-    public static List<Object[]> filterToListOfObjects(Object object, DataProviderFilter dataFilter)
-            throws DataProviderException {
+    public static List<Object[]> filterToListOfObjects(Object object, DataProviderFilter dataFilter) {
         logger.entering(object);
         List<Object[]> objs = new ArrayList<Object[]>();
         Class<?> rootClass = object.getClass();
@@ -350,51 +354,6 @@ public final class DataProviderHelper {
     }
 
     /**
-     * Filters data set by one-based indexes specified in textual representation.
-     * 
-     * @param dataProvider2dArray
-     * @param indexes
-     * @return Object[][] two dimensional object to be used with TestNG DataProvider.
-     * @throws DataProviderException
-     */
-    public static Object[][] getDataByIndex(Object[][] dataProvider2dArray, String indexes)
-            throws DataProviderException {
-        logger.entering(new Object[] { dataProvider2dArray, indexes });
-
-        List<Integer> listIndexes = DataProviderHelper.parseIndexString(indexes);
-        Object[][] dataProvider2dArrayRequested = DataProviderHelper.getDataByIndexList(dataProvider2dArray,
-                listIndexes);
-        logger.exiting();
-        return dataProvider2dArrayRequested;
-    }
-
-    /**
-     * Filters data set by one-based indexes specified as a list.
-     * 
-     * @param dataProvider2dArray
-     * @param listIndexes
-     * @return Object[][] two dimensional object to be used with TestNG DataProvider.
-     */
-    public static Object[][] getDataByIndexList(Object[][] dataProvider2dArray, List<Integer> indexList) {
-        logger.entering(new Object[] { dataProvider2dArray, indexList });
-        if ((null == indexList) || indexList.isEmpty()) {
-            throw new IllegalArgumentException("Keys cannot be null or empty.");
-        }
-
-        Object[][] dataProvider2dArrayRequested = new Object[indexList.size()][];
-
-        int i = 0;
-        for (Integer index : indexList) {
-            dataProvider2dArrayRequested[i++] = dataProvider2dArray[--index];
-        }
-
-        Object[][] objectArray = dataProvider2dArrayRequested;
-
-        logger.exiting();
-        return objectArray;
-    }
-
-    /**
      * Filters a map by keys specified as a list.
      * 
      * @param map
@@ -402,6 +361,7 @@ public final class DataProviderHelper {
      * @param keys
      *            Non-empty array of string keys.
      * @return Object[][] two dimensional object to be used with TestNG DataProvider.
+     * @throws IllegalArgumentException When the argument to {@code keys} is null, or any keys is not contained by the {@code map}.
      */
     public static Object[][] getDataByKeys(Map<?, ?> map, String[] keys) {
         logger.entering(new Object[] { map, keys });
@@ -422,6 +382,7 @@ public final class DataProviderHelper {
 
         Object[][] objArray = DataProviderHelper.convertToObjectArray(requestedMap);
 
+        // Passing no arguments to exiting() because implementation to print 2D array could be highly recursive.
         logger.exiting();
         return objArray;
     }
@@ -496,6 +457,7 @@ public final class DataProviderHelper {
             i++;
         }
 
+        // Passing no arguments to exiting() because implementation to print 2D array could be highly recursive.
         logger.exiting();
         return data;
     }

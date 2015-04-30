@@ -17,10 +17,9 @@ package com.paypal.selion.platform.dataprovider.filter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.util.List;
+import java.util.Arrays;
 
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.dataprovider.DataProviderException;
 import com.paypal.selion.platform.dataprovider.DataProviderHelper;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -42,9 +41,11 @@ public class SimpleIndexInclusionFilter implements DataProviderFilter {
 
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
     private int invocationCount = 0;
-    private String filterIndexes;
+    
+    private int[] indexes;
 
     /**
+     * Initializes indexes to be included for filter using a conforming string.
      * @param filterIndexes
      *            - sets the indexes string that will be used in the filtering. It is in the format of:
      * 
@@ -57,7 +58,18 @@ public class SimpleIndexInclusionFilter implements DataProviderFilter {
      */
     public SimpleIndexInclusionFilter(String filterIndexes) {
         checkArgument(filterIndexes != null, "Please provide valid indexes for filtering");
-        this.filterIndexes = filterIndexes;
+        this.indexes = DataProviderHelper.parseIndexString(filterIndexes);
+    }
+    
+    /**
+     * Initializes indexes to be included for filter using an array of indexes.
+     * @param indexes
+     *            - sets the indexes that will be used in the filtering. It is an array of integers starting from 1.
+     * 
+     */
+    public SimpleIndexInclusionFilter(int[] indexes) {
+        checkArgument(indexes != null, "Please provide valid indexes for filtering");
+        this.indexes = indexes.clone();
     }
 
     /**
@@ -67,15 +79,14 @@ public class SimpleIndexInclusionFilter implements DataProviderFilter {
      * @param data
      *            the object to be filtered.
      * @return boolean - true if object falls in the filter criteria.
-     * @throws DataProviderException
      */
     @Override
-    public boolean filter(Object data) throws DataProviderException {
+    public boolean filter(Object data) {
 
         logger.entering(new Object[] { data });
-        List<Integer> indexes = DataProviderHelper.parseIndexString(filterIndexes);
         invocationCount += 1;
-        for (int index : indexes) {
+        
+        for (int index : this.indexes) {
             if (invocationCount == index) {
                 logger.exiting(true);
                 return true;
@@ -85,8 +96,11 @@ public class SimpleIndexInclusionFilter implements DataProviderFilter {
         return false;
     }
 
+    /**
+     * Returns a string representation of the indexes.
+     */
     public String toString() {
-        return "Filter Indexes :" + filterIndexes;
+        return "Filter Indexes :" + Arrays.toString(this.indexes);
     }
 
 }

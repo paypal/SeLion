@@ -16,7 +16,6 @@
 package ${package}.sample.selion;
 
 import com.paypal.selion.platform.dataprovider.DefaultCustomType;
-import com.paypal.selion.platform.dataprovider.ExcelDataProviderException;
 import com.paypal.selion.platform.dataprovider.SimpleExcelDataProvider;
 
 import ${package}.sample.dataobjects.Country;
@@ -38,7 +37,7 @@ import static org.testng.Assert.assertTrue;
 public class DataDrivenWithCustomTypesTest {
 
     @DataProvider(name = "simpleReader")
-    public Object[][] setupExcelDataProvider () throws IOException, ExcelDataProviderException, NoSuchMethodException {
+    public Object[][] setupExcelDataProvider () throws IOException, NoSuchMethodException {
         //Lets first initialize the data provider and specify the file from which data is to be read from.
         SimpleExcelDataProvider
             dataProvider =

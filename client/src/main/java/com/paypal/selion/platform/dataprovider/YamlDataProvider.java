@@ -242,12 +242,12 @@ public final class YamlDataProvider {
      * <br>
      * <br>
      * 
-     * @param resource - A {@link FileSystemResource} that represents a data source.
+     * @param resource
+     *            - A {@link FileSystemResource} that represents a data source.
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
      * @throws IOException
-     * @throws YamlDataProviderException
      */
-    public static Object[][] getAllData(FileSystemResource resource) throws IOException, YamlDataProviderException {
+    public static Object[][] getAllData(FileSystemResource resource) throws IOException {
         logger.entering(resource);
 
         InputStream inputStream = resource.getInputStream();
@@ -266,7 +266,7 @@ public final class YamlDataProvider {
                 inputStream.reset();
                 yamlObject = loadDataFromDocuments(yaml, inputStream);
             } else {
-                throw new YamlDataProviderException("Error reading YAML data", composerException);
+                throw new DataProviderException("Error reading YAML data", composerException);
             }
         }
 
@@ -277,17 +277,18 @@ public final class YamlDataProvider {
     }
 
     /**
-     * Gets yaml data by applying the given filter.
+     * Gets yaml data by applying the given filter. Throws {@link DataProviderException} when unexpected error occurs
+     * during processing of YAML file data by filter
      * 
-     * @param resource  A {@link FileSystemResource} that represents a data source.
+     * @param resource
+     *            A {@link FileSystemResource} that represents a data source.
      * @param dataFilter
      *            an implementation class of {@link DataProviderFilter}
      * @return An iterator over a collection of Object Array to be used with TestNG DataProvider
      * @throws IOException
-     * @throws DataProviderException 
      */
     public static Iterator<Object[]> getDataByFilter(FileSystemResource resource, DataProviderFilter dataFilter)
-            throws IOException, DataProviderException {
+            throws IOException {
         logger.entering(new Object[] { resource, dataFilter });
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
@@ -302,12 +303,12 @@ public final class YamlDataProvider {
             yamlObject = yaml.load(inputStream);
         } catch (ComposerException composerException) {
             String msg = composerException.getMessage();
-            msg = (msg == null) ? "": msg;
+            msg = (msg == null) ? "" : msg;
             if (msg.toLowerCase().contains("expected a single document")) {
                 inputStream.reset();
                 yamlObject = loadDataFromDocuments(yaml, inputStream);
             } else {
-                throw new YamlDataProviderException("Error reading YAML data", composerException);
+                throw new DataProviderException("Error reading YAML data", composerException);
             }
         }
         return DataProviderHelper.filterToListOfObjects(yamlObject, dataFilter).iterator();
@@ -367,7 +368,8 @@ public final class YamlDataProvider {
      *     userId: 10686627
      * </pre>
      * 
-     * @param resource  A {@link FileSystemResource} that represents a data source.
+     * @param resource
+     *            A {@link FileSystemResource} that represents a data source.
      * @return yaml data in form of a Hashtable.
      */
     public static Hashtable<String, Object> getDataAsHashtable(FileSystemResource resource) {
@@ -391,19 +393,26 @@ public final class YamlDataProvider {
     /**
      * Gets yaml data for requested indexes.
      * 
-     * @param resource  A {@link FileSystemResource} that represents a data source.
-     * @param indexes - The indexes for which data is to be fetched
+     * @param resource
+     * @param indexes
      * 
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
      * @throws IOException
-     * @throws DataProviderException
      */
     public static Object[][] getDataByIndex(FileSystemResource resource, String indexes) throws IOException,
             DataProviderException {
         logger.entering(new Object[] { resource, indexes });
+        int[] arrayIndex = DataProviderHelper.parseIndexString(indexes);
 
         Object[][] yamlObj = getAllData(resource);
-        Object[][] yamlObjRequested = DataProviderHelper.getDataByIndex(yamlObj, indexes);
+        Object[][] yamlObjRequested = new Object[arrayIndex.length][yamlObj[0].length];
+
+        int i = 0;
+        for (Integer index : arrayIndex) {
+            index--;
+            yamlObjRequested[i] = yamlObj[index];
+            i++;
+        }
 
         logger.exiting(yamlObjRequested);
         return yamlObjRequested;
@@ -436,13 +445,12 @@ public final class YamlDataProvider {
      * public void testExample(USER user1, USER user2)
      * </pre>
      * 
-     * @param resources -  A List of {@link FileSystemResource} that represents data sources.
+     * @param resources
+     *            - A List of {@link FileSystemResource} that represents data sources.
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
      * @throws IOException
-     * @throws YamlDataProviderException
      */
-    public static Object[][] getAllDataMultipleArgs(List<FileSystemResource> resources) throws IOException,
-            YamlDataProviderException {
+    public static Object[][] getAllDataMultipleArgs(List<FileSystemResource> resources) throws IOException {
         logger.entering(resources);
         List<Object[][]> dataproviders = new ArrayList<>();
         Object[][] data;
@@ -514,8 +522,10 @@ public final class YamlDataProvider {
      * public void testExample(MyObject myObject)
      * </pre>
      * 
-     * @param yaml - A {@link Yaml} object that represents a Yaml document.
-     * @param inputStream - A {@link InputStream} object.
+     * @param yaml
+     *            - A {@link Yaml} object that represents a Yaml document.
+     * @param inputStream
+     *            - A {@link InputStream} object.
      * @return an List containing multiple yaml documents loaded by SnakeYaml
      */
     private static List<Object> loadDataFromDocuments(Yaml yaml, InputStream inputStream) {
@@ -544,7 +554,8 @@ public final class YamlDataProvider {
     /**
      * Use this utility method to print and return a yaml string to help serialize the object passed in.
      * 
-     * @param object - The Object that is to be serialised.
+     * @param object
+     *            - The Object that is to be serialised.
      * @return a yaml string representation of the object passed in
      */
     public static String serializeObjectToYamlString(Object object) {
@@ -558,7 +569,8 @@ public final class YamlDataProvider {
     /**
      * Use this utility method to print and return a yaml string to help serialize the object passed in as an ArrayList.
      * 
-     * @param objects - One or more objects that are to be serialised.
+     * @param objects
+     *            - One or more objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsList(Object... objects) {
@@ -572,7 +584,8 @@ public final class YamlDataProvider {
      * Use this utility method to print and return a yaml string to help serialize the object passed in as a
      * LinkedHashMap.
      * 
-     * @param objects - One or more objects that are to be serialised.
+     * @param objects
+     *            - One or more objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsDocuments(Object... objects) {
@@ -587,7 +600,8 @@ public final class YamlDataProvider {
      * Use this utility method to print and return a yaml string to help serialize the object passed in as multiple
      * documents.
      * 
-     * @param objects - The objects that are to be serialised.
+     * @param objects
+     *            - The objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsMap(Object... objects) {

@@ -38,6 +38,7 @@ import org.dom4j.io.SAXReader;
 import com.google.common.base.Preconditions;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
+import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter;
 import com.paypal.selion.platform.dataprovider.pojos.KeyValueMap;
 import com.paypal.selion.platform.dataprovider.pojos.KeyValuePair;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -62,10 +63,8 @@ public final class XmlDataProvider {
      * @param xmlResource
      *            A {@link XmlFileSystemResource} object containing the XML file location and representing type.
      * @return A two dimensional object array.
-     * @throws XmlDataProviderException
-     *             when the XML content in file is invalid, or cannot be unmarshallesd to declared type.
      */
-    public static Object[][] getAllData(XmlFileSystemResource xmlResource) throws XmlDataProviderException {
+    public static Object[][] getAllData(XmlFileSystemResource xmlResource) {
         logger.entering(xmlResource);
         Object[][] objectArray;
 
@@ -85,24 +84,22 @@ public final class XmlDataProvider {
             objectArray = DataProviderHelper.convertToObjectArray(objectList);
         }
 
+        // Passing no arguments to exiting() because implementation to print 2D array could be highly recursive.
         logger.exiting();
         return objectArray;
     }
 
     /**
-     * Generates a two dimensional array for TestNG DataProvider from the XML data filtered per {@code dataFilter}.
+     * Generates an object array in iterator as TestNG DataProvider from the XML data filtered per {@code dataFilter}.
      * 
      * @param resource
      *            A {@link FileSystemResource} that represents a data source.
      * @param dataFilter
      *            an implementation class of {@link DataProviderFilter}
      * @return An iterator over a collection of Object Array to be used with TestNG DataProvider
-     * @throws DataProviderException
      * @throws IOException
-     * @throws YamlDataProviderException
      */
-    public static Iterator<Object[]> getDataByFilter(XmlFileSystemResource xmlResource, DataProviderFilter dataFilter)
-            throws DataProviderException {
+    public static Iterator<Object[]> getDataByFilter(XmlFileSystemResource xmlResource, DataProviderFilter dataFilter) {
         logger.entering(new Object[] { xmlResource, dataFilter });
         List<Object[]> allObjs = new ArrayList<Object[]>();
         if ((null == xmlResource.getCls()) && (null != xmlResource.getXpathMap())) {
@@ -121,12 +118,61 @@ public final class XmlDataProvider {
     }
 
     /**
+     * Generates an object array in iterator as TestNG DataProvider from the XML data filtered per given indexes string.
+     * This method may throw {@link DataProviderException} when an unexpected error occurs during data provision from
+     * XML file.
+     * 
+     * @param xmlResource
+     *            A {@link XmlFileSystemResource} that represents a data source.
+     * @param filterIndexes
+     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     * 
+     * @return An Iterator<Object[]> object to be used with TestNG DataProvider.
+     */
+    public static Iterator<Object[]> getDataByIndex(XmlFileSystemResource xmlResource, String filterIndexes) {
+        logger.entering(new Object[] { xmlResource, filterIndexes });
+
+        SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter(filterIndexes);
+        Iterator<Object[]> xmlObjFiltered = XmlDataProvider.getDataByFilter(xmlResource, filter);
+
+        logger.exiting(xmlObjFiltered);
+        return xmlObjFiltered;
+    }
+
+    /**
+     * Generates an object array in iterator as TestNG DataProvider from the XML data filtered per given indexes. This
+     * method may throw {@link DataProviderException} when an unexpected error occurs during data provision from XML
+     * file.
+     * 
+     * @param xmlResource
+     *            A {@link XmlFileSystemResource} that represents a data source.
+     * @param indexes
+     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     * 
+     * @return An Iterator<Object[]> object to be used with TestNG DataProvider.
+     * @throws IOException
+     */
+    public static Iterator<Object[]> getDataByIndex(XmlFileSystemResource xmlResource, int[] indexes) {
+        logger.entering(new Object[] { xmlResource, indexes });
+
+        SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter(indexes);
+        Iterator<Object[]> xmlObjFiltered = XmlDataProvider.getDataByFilter(xmlResource, filter);
+
+        logger.exiting(xmlObjFiltered);
+        return xmlObjFiltered;
+    }
+
+    /**
      * Generates a two dimensional array for TestNG DataProvider from the XML data representing a map of name value
      * collection.
      * 
-     * A name value item should use the node name 'item' and a specific child structure since the implementation depends
-     * on {@link KeyValuePair} class. The structure of an item in collection is shown below where 'key' and 'value' are
-     * child nodes contained in a parent node named 'item' :-
+     * This method needs the referenced {@link XmlFileSystemResource} to be instantiated using its constructors with
+     * parameter {@code Class<?> cls} and set to {@code KeyValueMap.class}. The implementation in this method is tightly
+     * coupled with {@link KeyValueMap} and {@link KeyValuePair}.
+     * 
+     * The hierarchy and name of the nodes are strictly as instructed. A name value pair should be represented as nodes
+     * 'key' and 'value' as child nodes contained in a parent node named 'item'. A sample data with proper tag names is
+     * shown here as an example :-
      * 
      * <pre>
      * <items>
@@ -148,14 +194,9 @@ public final class XmlDataProvider {
      * @param xmlResource
      *            A {@link XmlFileSystemResource} object containing the XML file location and representing type.
      * @return A two dimensional object array.
-     * @throws XmlDataProviderException
-     *             when the XML content in file is invalid, or cannot be unmarshalled to declared type.
      */
-    public static Object[][] getAllKeyValueData(XmlFileSystemResource xmlResource) throws XmlDataProviderException {
+    public static Object[][] getAllKeyValueData(XmlFileSystemResource xmlResource) {
         logger.entering(xmlResource);
-        if (null == xmlResource.getCls()) {
-            xmlResource.setCls(KeyValueMap.class);
-        }
 
         Object[][] objectArray = null;
         try {
@@ -166,10 +207,10 @@ public final class XmlDataProvider {
                     .unmarshal(xmlStreamSource, KeyValueMap.class).getValue().getMap();
             objectArray = DataProviderHelper.convertToObjectArray(keyValueItems);
         } catch (JAXBException excp) {
-            logger.exiting(excp.getMessage());
-            throw new XmlDataProviderException("Error unmarshalling XML file.", excp);
+            throw new DataProviderException("Error unmarshalling XML file.", excp);
         }
 
+        // Passing no arguments to exiting() because implementation to print 2D array could be highly recursive.
         logger.exiting();
         return objectArray;
     }
@@ -204,11 +245,8 @@ public final class XmlDataProvider {
      * @param keys
      *            The string keys to filter the data.
      * @return A two dimensional object array.
-     * @throws XmlDataProviderException
-     *             when the XML content in file is invalid, or cannot be unmarshalled to declared type.
      */
-    public static Object[][] getDataByKeys(XmlFileSystemResource xmlResource, String[] keys)
-            throws XmlDataProviderException {
+    public static Object[][] getDataByKeys(XmlFileSystemResource xmlResource, String[] keys) {
         logger.entering(xmlResource);
         if (null == xmlResource.getCls()) {
             xmlResource.setCls(KeyValueMap.class);
@@ -224,9 +262,10 @@ public final class XmlDataProvider {
             objectArray = DataProviderHelper.getDataByKeys(keyValueItems, keys);
         } catch (JAXBException excp) {
             logger.exiting(excp.getMessage());
-            throw new XmlDataProviderException("Error unmarshalling XML file.", excp);
+            throw new DataProviderException("Error unmarshalling XML file.", excp);
         }
 
+        // Passing no arguments to exiting() because implementation to print 2D array could be highly recursive.
         logger.exiting();
         return objectArray;
     }
@@ -237,10 +276,8 @@ public final class XmlDataProvider {
      * @param xmlResource
      *            A {@link XmlFileSystemResource} object containing the XML file location and representing type.
      * @return A {@link List} of object of declared type {@link XmlFileSystemResource#getCls()}.
-     * @throws XmlDataProviderException
-     *             when the XML content in file is invalid, or cannot be unmarshalled to declared type.
      */
-    private static List<?> loadDataFromXmlFile(XmlFileSystemResource xmlResource) throws XmlDataProviderException {
+    private static List<?> loadDataFromXmlFile(XmlFileSystemResource xmlResource) {
         logger.entering(xmlResource);
         Preconditions.checkArgument(xmlResource.getCls() != null, "Please provide a valid type.");
         List<?> returned = null;
@@ -253,7 +290,7 @@ public final class XmlDataProvider {
             returned = wrapper.getList();
         } catch (JAXBException excp) {
             logger.exiting(excp.getMessage());
-            throw new XmlDataProviderException("Error unmarshalling XML file.", excp);
+            throw new DataProviderException("Error unmarshalling XML file.", excp);
         }
 
         logger.exiting(returned);
@@ -268,10 +305,8 @@ public final class XmlDataProvider {
      * @param cls
      *            The declared type modeled by the XML content.
      * @return A {@link List} of object of declared type {@link XmlFileSystemResource#getCls()}.
-     * @throws XmlDataProviderException
-     *             when the XML data is invalid, or cannot be unmarshalled to declared type.
      */
-    private static List<?> loadDataFromXml(String xml, Class<?> cls) throws XmlDataProviderException {
+    private static List<?> loadDataFromXml(String xml, Class<?> cls) {
         logger.entering(new Object[] { xml, cls });
         Preconditions.checkArgument(cls != null, "Please provide a valid type.");
         List<?> returned = null;
@@ -285,7 +320,7 @@ public final class XmlDataProvider {
             returned = wrapper.getList();
         } catch (JAXBException excp) {
             logger.exiting(excp.getMessage());
-            throw new XmlDataProviderException("Error unmarshalling XML string.", excp);
+            throw new DataProviderException("Error unmarshalling XML string.", excp);
         }
 
         logger.exiting(returned);
@@ -298,10 +333,8 @@ public final class XmlDataProvider {
      * @param xmlResource
      *            The XML data file to load.
      * @return A Document object.
-     * @throws XmlDataProviderException
-     *             when the XML content in file is invalid, or cannot be unmarshalled to declared type.
      */
-    private static Document getDocument(XmlFileSystemResource xmlResource) throws XmlDataProviderException {
+    private static Document getDocument(XmlFileSystemResource xmlResource) {
         logger.entering(xmlResource);
         DOMDocumentFactory domFactory = new DOMDocumentFactory();
         SAXReader reader = new SAXReader(domFactory);
@@ -311,7 +344,7 @@ public final class XmlDataProvider {
             doc = reader.read(xmlResource.getInputStream());
         } catch (DocumentException excp) {
             logger.exiting(excp.getMessage());
-            throw new XmlDataProviderException("Error reading XML data.", excp);
+            throw new DataProviderException("Error reading XML data.", excp);
         }
 
         logger.exiting(doc.asXML());

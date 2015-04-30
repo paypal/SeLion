@@ -37,7 +37,7 @@ public class JsonDataProviderTest {
 
     // Use cases for parsing json to a user defined pojo
     @Test(groups = "unit")
-    public void jsonPojoParseByIndexTest() throws JsonDataProviderException {
+    public void jsonPojoParseByIndexTest() {
         FileSystemResource jsonResource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
         Object[][] requestedData = JsonDataProvider.getJsonObjectByIndex(jsonResource, "1,3,4");
         for (int i = 0; i < requestedData.length; i++) {
@@ -64,7 +64,7 @@ public class JsonDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void getDataAsHashTableTest() throws JsonDataProviderException, IOException {
+    public void getDataAsHashTableTest() throws IOException {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonRawDataFile);
         Hashtable<String, Hashtable<?, ?>> dataRequested = JsonDataProvider.getJsonDataAsHashTable(resource);
         assertNotNull(dataRequested);
@@ -80,7 +80,7 @@ public class JsonDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testgetAllJsonData() throws JsonDataProviderException, IOException {
+    public void testgetAllJsonData() throws IOException {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
         Object[][] dataObject = JsonDataProvider.getAllJsonData(resource);
         for (int i = 0; i < dataObject.length; i++) {
@@ -92,7 +92,7 @@ public class JsonDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testgetJsonDataByIndexFilter() throws JsonDataProviderException {
+    public void testgetJsonDataByIndexFilter() {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1,3,4");
         Iterator<Object[]> dataObject = JsonDataProvider.getJsonObjectByFilter(resource, filter);
@@ -119,7 +119,7 @@ public class JsonDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testgetJsonDataByCustomKeyAccountNumberFilter() throws JsonDataProviderException {
+    public void testgetJsonDataByCustomKeyAccountNumberFilter() {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
         CustomKeyFilter filter = new CustomKeyFilter("accountNumber", "8888888888,123456789");
         Iterator<Object[]> dataObject = JsonDataProvider.getJsonObjectByFilter(resource, filter);
@@ -135,7 +135,7 @@ public class JsonDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testgetJsonDataByCustomKeyPhoneNumberFilter() throws JsonDataProviderException {
+    public void testgetJsonDataByCustomKeyPhoneNumberFilter() {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
         CustomKeyFilter filter = new CustomKeyFilter("phoneNumber", "3333333333,2222222222");
         Iterator<Object[]> dataObjects = JsonDataProvider.getJsonObjectByFilter(resource, filter);
@@ -151,26 +151,26 @@ public class JsonDataProviderTest {
     }
 
     // Negative use cases
-    @Test(expectedExceptions = { JsonDataProviderException.class }, expectedExceptionsMessageRegExp = "Error while parsing Json Data as a Hash table. Root cause: Unable to find a key named id. Please refer Javadoc", groups = "unit")
-    public void getDataAsHashTableTest_invalidKey() throws JsonDataProviderException, IOException {
+    @Test(expectedExceptions = { DataProviderException.class }, expectedExceptionsMessageRegExp = "Error while parsing Json Data as a Hash table. Root cause: Unable to find a key named id. Please refer Javadoc", groups = "unit")
+    public void getDataAsHashTableTest_invalidKey() throws IOException {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile);
         JsonDataProvider.getJsonDataAsHashTable(resource);
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class }, groups = "unit")
-    public void negativeTestsWithNullFileName() throws JsonDataProviderException, IOException {
+    public void negativeTestsWithNullFileName() throws DataProviderException, IOException {
         FileSystemResource resource = new FileSystemResource(null, null, USER.class);
         JsonDataProvider.getAllJsonData(resource);
     }
 
     @Test(expectedExceptions = { RuntimeException.class }, expectedExceptionsMessageRegExp = "File Not Found", groups = "unit")
-    public void negativeTestsInvalidFileName() throws IOException, JsonDataProviderException {
+    public void negativeTestsInvalidFileName() throws IOException {
         FileSystemResource resource = new FileSystemResource("invalidFile.json", USER.class);
         JsonDataProvider.getAllJsonData(resource);
     }
 
     @Test(expectedExceptions = { IndexOutOfBoundsException.class }, groups = "unit")
-    public void testGetDataByIndex_OutOfBoundsIndex() throws IOException, DataProviderException {
+    public void testGetDataByIndex_OutOfBoundsIndex() throws IOException {
         FileSystemResource resource = new FileSystemResource(filePathPrefix, jsonPojoArrayDataFile, USER.class);
         JsonDataProvider.getJsonObjectByIndex(resource, "50");
     }

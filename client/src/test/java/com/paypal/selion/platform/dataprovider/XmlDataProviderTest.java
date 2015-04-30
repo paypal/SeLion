@@ -32,6 +32,7 @@ import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.platform.dataprovider.filter.CustomKeyFilter;
 import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter;
 import com.paypal.selion.platform.dataprovider.pojos.KeyValueMap;
 import com.paypal.selion.platform.dataprovider.pojos.KeyValuePair;
@@ -60,8 +61,7 @@ public class XmlDataProviderTest {
     private static String[] expectedValues = { "val1", "val2", "val3" };
 
     @DataProvider(name = "getListOfObjects")
-    public static Object[][] dataProviderGetListOfAddresses() throws XPathExpressionException,
-            XmlDataProviderException, IOException {
+    public static Object[][] dataProviderGetListOfAddresses() throws XPathExpressionException, IOException {
         XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfAddresses, Address.class);
         Object[][] data = XmlDataProvider.getAllData(resource);
         return data;
@@ -70,13 +70,13 @@ public class XmlDataProviderTest {
     @Test(groups = "unit", dataProvider = "getListOfObjects")
     public void testDataProviderGetListOfAddresses(Address address) {
         assertNotNull(address);
-        
+
         String street = address.getStreet();
         assertTrue(street.equals(addr1) || street.equals(addr2));
     }
 
     @DataProvider(name = "getNameValueCollection")
-    public static Object[][] dataProviderGetNameValueFromXmlResource() throws XmlDataProviderException {
+    public static Object[][] dataProviderGetNameValueFromXmlResource() {
         XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfKeyValuePairs, KeyValueMap.class);
         Object[][] data = XmlDataProvider.getAllKeyValueData(resource);
         return data;
@@ -88,11 +88,11 @@ public class XmlDataProviderTest {
         assertTrue(Arrays.asList(expectedKeys).contains(keyValueItem.getKey()));
         assertTrue(Arrays.asList(expectedValues).contains(keyValueItem.getValue()));
     }
-    
+
     @DataProvider(name = "getFilteredNameValueCollection")
-    public static Object[][] dataProviderGetFilteredNameValueFromXmlResource() throws XmlDataProviderException {
+    public static Object[][] dataProviderGetFilteredNameValueFromXmlResource() {
         XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfKeyValuePairs, KeyValueMap.class);
-        Object[][] data = XmlDataProvider.getDataByKeys(resource, new String[]{"k2"});
+        Object[][] data = XmlDataProvider.getDataByKeys(resource, new String[] { "k2" });
         return data;
     }
 
@@ -104,8 +104,7 @@ public class XmlDataProviderTest {
     }
 
     @DataProvider(name = "getListFromNestedObjects")
-    public static Object[][] dataProviderGetListOfUsers() throws XPathExpressionException, XmlDataProviderException,
-            IOException {
+    public static Object[][] dataProviderGetListOfUsers() throws XPathExpressionException, IOException {
         XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfUsersWithInlineAddress, User.class);
         Object[][] data = XmlDataProvider.getAllData(resource);
         return data;
@@ -122,7 +121,7 @@ public class XmlDataProviderTest {
 
     @DataProvider(name = "getMultipleObjectsUsingXpath")
     public static Object[][] dataProviderGetMultipleObjectsFromXmlResource() throws XPathExpressionException,
-            XmlDataProviderException, IOException {
+            IOException {
         Map<String, Class<?>> map = new LinkedHashMap<String, Class<?>>();
         map.put("//transactions/transaction/user[1]", User.class);
         map.put("//transactions/transaction/user[2]", User.class);
@@ -138,13 +137,12 @@ public class XmlDataProviderTest {
         assertNotNull(toUser);
 
         String fromStreet = XmlDataProvider.readObjectByXpath(fromUser, String.class, "address/street");
-        String toStreet = ((Address) XmlDataProvider.readObjectByXpath(toUser, Address.class, "address"))
-                .getStreet();
+        String toStreet = ((Address) XmlDataProvider.readObjectByXpath(toUser, Address.class, "address")).getStreet();
 
         assertTrue(Arrays.asList(addr1, addr3).contains(fromStreet));
         assertTrue(Arrays.asList(addr2, addr4).contains(toStreet));
     }
-    
+
     @Test(groups = "unit")
     public void testReadObjectByXpath() {
         Address address = new Address("1234 Elm st");
@@ -199,9 +197,25 @@ public class XmlDataProviderTest {
     @Test(groups = "unit", dataProvider = "getDataFilterByIndexIndividual")
     public void testDataProviderGetDataFilterByIndexIndividual(Address address) {
         assertNotNull(address);
-        
+
         String street = address.getStreet();
-        assertTrue(street.equals(addr1) || street.equals(addr2));
+        assertTrue(street.equals(addr1));
+    }
+
+    @DataProvider(name = "getDataFromCustomKeyFilter")
+    public static Iterator<Object[]> dataProviderUsingCustomKeyFilter() throws IOException, DataProviderException {
+        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfAddresses, Address.class);
+        CustomKeyFilter filter = new CustomKeyFilter("street", "1234 Elm st");
+        Iterator<Object[]> data = XmlDataProvider.getDataByFilter(resource, filter);
+        return data;
+    }
+
+    @Test(groups = "unit", dataProvider = "getDataFromCustomKeyFilter")
+    public void testDataProviderUsingCustomKeyFilter(Address address) {
+        assertNotNull(address);
+
+        String street = address.getStreet();
+        assertTrue(street.equals(addr1));
     }
 
 }

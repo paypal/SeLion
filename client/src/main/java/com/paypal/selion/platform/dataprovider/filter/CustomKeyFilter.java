@@ -56,24 +56,25 @@ public class CustomKeyFilter implements DataProviderFilter {
      * @param data
      *            the object to be filtered.
      * @return boolean - true if object falls in the filter criteria.
-     * @throws DataProviderException
      */
     @Override
-    public boolean filter(Object data) throws DataProviderException {
+    public boolean filter(Object data) {
         logger.entering(data);
         String[] keyValues = filterKeyValues.split(",");
         String tempKey = null;
+        Field field;
+
         try {
+            field = data.getClass().getDeclaredField(filterKeyName);
+            field.setAccessible(true);
             for (String keyValue : keyValues) {
                 tempKey = keyValue;
-                Field field = data.getClass().getDeclaredField(filterKeyName);
-                field.setAccessible(true);
                 if (field.get(data) != null && field.get(data).toString().trim().equals(keyValue)) {
                     logger.exiting(true);
                     return true;
                 }
             }
-        } catch (Exception e) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new DataProviderException("Row with key '" + tempKey + "' is not found for given filter key '"
                     + filterKeyName + "'");
         }

@@ -15,7 +15,6 @@
 
 package com.paypal.selion.platform.dataprovider.filter;
 
-import com.paypal.selion.platform.dataprovider.DataProviderException;
 
 /**
  * This Interface provides the facility to provide the custom filtering logic based on the needs. user can create the
@@ -27,7 +26,7 @@ import com.paypal.selion.platform.dataprovider.DataProviderException;
  * public class SimpleIndexInclusionDataProviderFilter implements IDataProviderFilter {
  * 
  *     &#064;Override
- *     public Object[][] filter(Object[][] data, String... args) throws DataProviderException {
+ *     public Object[][] filter(Object[][] data, String... args) {
  *         // filtering logic here
  *         return filteredData;
  *     }
@@ -43,7 +42,6 @@ public interface DataProviderFilter {
      * @param data
      *            Object the object to be filtered.
      * @return boolean - true if object falls in the filter criteria.
-     * @throws DataProviderException
      */
-    boolean filter(Object data) throws DataProviderException;
+    boolean filter(Object data);
 }

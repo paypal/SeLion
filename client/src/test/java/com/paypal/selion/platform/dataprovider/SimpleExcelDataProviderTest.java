@@ -19,6 +19,7 @@ import com.paypal.selion.platform.dataprovider.filter.CustomKeyFilter;
 import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter;
 import com.paypal.selion.platform.dataprovider.pojos.excel.AREA_CODE;
 import com.paypal.selion.platform.dataprovider.pojos.excel.USER;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.testng.annotations.BeforeClass;
@@ -66,7 +67,8 @@ public class SimpleExcelDataProviderTest {
         }
 
         /**
-         * @param productName the productName to set
+         * @param productName
+         *            the productName to set
          */
         public void setProductName(String productName) {
             this.productName = productName;
@@ -80,7 +82,8 @@ public class SimpleExcelDataProviderTest {
         }
 
         /**
-         * @param whatColor the whatColor to set
+         * @param whatColor
+         *            the whatColor to set
          */
         public void setWhatColor(Colors whatColor) {
             this.whatColor = whatColor;
@@ -100,7 +103,8 @@ public class SimpleExcelDataProviderTest {
         }
 
         /**
-         * @param productName the productName to set
+         * @param productName
+         *            the productName to set
          */
         public void setProductName(String productName) {
             this.productName = productName;
@@ -114,7 +118,8 @@ public class SimpleExcelDataProviderTest {
         }
 
         /**
-         * @param whatColor the whatColor to set
+         * @param whatColor
+         *            the whatColor to set
          */
         public void setWhatColor(List<String> whatColor) {
             this.whatColor = whatColor;
@@ -125,8 +130,7 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testInjectCustomData()
-            throws IOException, NoSuchMethodException, SecurityException, ExcelDataProviderException {
+    public void testInjectCustomData() throws IOException, NoSuchMethodException, SecurityException {
         SimpleExcelDataProvider provider = new SimpleExcelDataProvider("src/test/resources/sampleData.xlsx");
         DefaultCustomType type = new DefaultCustomType(Colors.class, Colors.class.getMethod("whatColor", String.class));
         provider.addCustomTypes(type);
@@ -140,78 +144,76 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class })
-    public void testBehaviorWhenPojoClassHasInterfaces() throws IOException, ExcelDataProviderException {
+    public void testBehaviorWhenPojoClassHasInterfaces() throws IOException {
         SimpleExcelDataProvider provider = new SimpleExcelDataProvider("src/test/resources/sampleData.xlsx");
         provider.getAllExcelRows(new TweakedColorsData());
     }
 
     @Test(groups = "unit")
-    public void testGetSingleExcelRowWithIndexFirstRowCondition() throws ExcelDataProviderException {
+    public void testGetSingleExcelRowWithIndexFirstRowCondition() {
         Object[][] allUsers = new Object[][] { { dataSource.getSingleExcelRow(new USER(), 1) } };
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "Thomas" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
-    @Test(groups = "unit", expectedExceptions = {
-            ExcelDataProviderException.class }, expectedExceptionsMessageRegExp = "Unable to instantiate an object of class .*")
-    public void testPrepareObject()
-            throws IOException, IllegalAccessException, ExcelDataProviderException, SecurityException {
+    @Test(groups = "unit", expectedExceptions = { DataProviderException.class }, expectedExceptionsMessageRegExp = "Unable to instantiate an object of class .*")
+    public void testPrepareObject() throws IOException, IllegalAccessException, SecurityException {
         MyCustomClass foo = new MyCustomClass("foo");
         dataSource.prepareObject(foo, foo.getClass().getDeclaredFields(), new ArrayList<String>());
     }
 
     @Test(groups = "unit")
-    public void testGetSingleExcelRowWithIndex() throws ExcelDataProviderException {
+    public void testGetSingleExcelRowWithIndex() {
         Object[][] allUsers = new Object[][] { { dataSource.getSingleExcelRow(new USER(), 4) } };
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "suri" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
     @Test(groups = "unit")
-    public void testGetSingleExcelRowWithKeyFirstRowCondition() throws ExcelDataProviderException {
+    public void testGetSingleExcelRowWithKeyFirstRowCondition() {
         Object[][] allUsers = new Object[][] { { dataSource.getSingleExcelRow(new USER(), "tom") } };
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "Thomas" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
     @Test(groups = "unit")
-    public void testGetSingleExcelRowWithKey() throws ExcelDataProviderException {
+    public void testGetSingleExcelRowWithKey() {
         Object[][] allUsers = new Object[][] { { dataSource.getSingleExcelRow(new USER(), "3") } };
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "suri" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
-    @Test(expectedExceptions = { ExcelDataProviderException.class }, groups = "unit")
-    public void testGetSingleExcelRowWithInvalidKey() throws ExcelDataProviderException {
+    @Test(expectedExceptions = { DataProviderException.class }, groups = "unit")
+    public void testGetSingleExcelRowWithInvalidKey() {
         dataSource.getSingleExcelRow(new USER(), "selion");
     }
 
-    @Test(groups = "unit", expectedExceptions = { ExcelDataProviderException.class })
-    public void testGetSingleExcelRowWithInvalidIndex() throws ExcelDataProviderException {
+    @Test(groups = "unit", expectedExceptions = { DataProviderException.class })
+    public void testGetSingleExcelRowWithInvalidIndex() {
         assertNull(dataSource.getSingleExcelRow(new USER(), 100), "Returned data should have been null");
     }
 
-    @Test(expectedExceptions = { ExcelDataProviderException.class }, groups = "unit")
-    public void testGetExcelRowsNegativeConditions() throws ExcelDataProviderException {
+    @Test(expectedExceptions = { DataProviderException.class }, groups = "unit")
+    public void testGetExcelRowsNegativeConditions() {
         dataSource.getExcelRows(new USER(), "2~3");
 
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithKeys() throws ExcelDataProviderException {
+    public void testGetExcelRowsWithKeys() {
         Object[][] allUsers = dataSource.getExcelRows(new USER(), new String[] { "tom", "binh" });
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "Thomas", "binh" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
-    @Test(expectedExceptions = { ExcelDataProviderException.class }, groups = "unit")
-    public void testGetExcelRowsWithInvalidKeys() throws ExcelDataProviderException {
+    @Test(expectedExceptions = { DataProviderException.class }, groups = "unit")
+    public void testGetExcelRowsWithInvalidKeys() {
         dataSource.getExcelRows(new USER(), new String[] { "selion" });
 
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithIndividualIndexes() throws ExcelDataProviderException {
+    public void testGetExcelRowsWithIndividualIndexes() {
         Object[][] allUsers = dataSource.getExcelRows(new USER(), "2,3");
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "rama", "binh" }, fetchedNames.toArray()), assertFailedMsg);
@@ -236,30 +238,29 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithRangeOfIndexes() throws ExcelDataProviderException {
+    public void testGetExcelRowsWithRangeOfIndexes() {
         Object[][] allUsers = dataSource.getExcelRows(new USER(), "1-2");
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "Thomas", "rama" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithIndividualAndRangeOfIndexes() throws ExcelDataProviderException {
+    public void testGetExcelRowsWithIndividualAndRangeOfIndexes() {
         Object[][] allUsers = dataSource.getExcelRows(new USER(), "1-2,4,6");
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "Thomas", "rama", "suri", "suri" }, fetchedNames.toArray()),
                 assertFailedMsg);
     }
 
-    @Test(groups = "unit", expectedExceptions = { ExcelDataProviderException.class })
-    public void testGetExcelRowsWhereRowIsNull() throws ExcelDataProviderException {
+    @Test(groups = "unit", expectedExceptions = { DataProviderException.class })
+    public void testGetExcelRowsWhereRowIsNull() {
         Object[][] allUsers = dataSource.getExcelRows(new USER(), "5");
         assertNull(allUsers[0][0], assertFailedMsg);
 
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithRangeOfIndexes()
-            throws ExcelDataProviderException {
+    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithRangeOfIndexes() {
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-2");
         Iterator<Object[]> allUsers = dataSource.getExcelRowsByFilter(new USER(), filter);
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
@@ -267,8 +268,7 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithIndividualAndRangeOfIndexes()
-            throws ExcelDataProviderException {
+    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithIndividualAndRangeOfIndexes() {
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-2,4,5");
         Iterator<Object[]> allUsers = dataSource.getExcelRowsByFilter(new USER(), filter);
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
@@ -276,52 +276,43 @@ public class SimpleExcelDataProviderTest {
                 assertFailedMsg);
     }
 
-    @Test(groups = "unit", expectedExceptions = {
-            IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Please provide valid indexes for filtering")
-    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithNullIndexes()
-            throws ExcelDataProviderException {
-        new SimpleIndexInclusionFilter(null);
+    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Please provide valid indexes for filtering")
+    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithNullIndexes() {
+        // Passing just null will give compilation error.
+        new SimpleIndexInclusionFilter((String) null);
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWhereNoValuesReturns()
-            throws ExcelDataProviderException {
+    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWhereNoValuesReturns() {
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("6");
         Iterator<Object[]> allUsers = dataSource.getExcelRowsByFilter(new USER(), filter);
         assertFalse(allUsers.hasNext(), assertFailedMsg);
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithAccountNumber()
-            throws ExcelDataProviderException {
-        CustomKeyFilter filter = new CustomKeyFilter("accountNumber",
-                "78901,124567");
+    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithAccountNumber() {
+        CustomKeyFilter filter = new CustomKeyFilter("accountNumber", "78901,124567");
         Iterator<Object[]> allUsers = dataSource.getExcelRowsByFilter(new USER(), filter);
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "Thomas", "binh" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithPhoneNumber()
-            throws ExcelDataProviderException {
-        CustomKeyFilter filter = new CustomKeyFilter("phoneNumber",
-                "1-408-666-5508,1-408-225-8040,1-714-666-0043");
+    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithPhoneNumber() {
+        CustomKeyFilter filter = new CustomKeyFilter("phoneNumber", "1-408-666-5508,1-408-225-8040,1-714-666-0043");
         Iterator<Object[]> allUsers = dataSource.getExcelRowsByFilter(new USER(), filter);
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
         assertTrue(arrayComparer(new String[] { "Thomas", "rama", "binh" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
-    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class },
-            expectedExceptionsMessageRegExp = "Please specify values to use for filtering.")
-    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithNullFilterKeyValues()
-            throws ExcelDataProviderException {
+    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Please specify values to use for filtering.")
+    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithNullFilterKeyValues() {
+        @SuppressWarnings("unused")
         CustomKeyFilter filter = new CustomKeyFilter("phoneNumber", null);
     }
 
-    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class },
-            expectedExceptionsMessageRegExp = "Please specify a valid key.")
-    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithNullFilterKey()
-            throws ExcelDataProviderException {
+    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Please specify a valid key.")
+    public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithNullFilterKey() {
         new CustomKeyFilter(null, "1-408-666-5508,1-408-225-8040,1-714-666-0043");
     }
 
@@ -334,7 +325,7 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testGetAllExcelRows() throws ExcelDataProviderException {
+    public void testGetAllExcelRows() {
         Object[][] allUsers = dataSource.getAllExcelRows(new USER());
         assertNotNull(allUsers, "Data read from excel sheet failed");
         // Reduce 2 from the actual count, since the test excel sheet has 1 blank row
@@ -344,7 +335,7 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testGetAllRowsAsHashTable() throws ExcelDataProviderException {
+    public void testGetAllRowsAsHashTable() {
         Hashtable<String, Object> allValues = dataSource.getAllRowsAsHashTable(new USER());
         assertNotNull(allValues, "Data read from excel sheet failed");
         assertEquals(allValues.size(), getRowCountFromSheet(USER.class.getSimpleName()) - 2,
@@ -352,13 +343,13 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class }, groups = "unit")
-    public void testGetAllRowsAsHashTableInvalidSheetName() throws ExcelDataProviderException {
+    public void testGetAllRowsAsHashTableInvalidSheetName() {
         Student student = new SimpleExcelDataProviderTest().new Student();
         dataSource.getAllRowsAsHashTable(student);
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class }, groups = "unit")
-    public void testGetallExcelRowsInvalidSheetName() throws ExcelDataProviderException {
+    public void testGetallExcelRowsInvalidSheetName() {
         Student student = new SimpleExcelDataProviderTest().new Student();
         dataSource.getAllExcelRows(student);
     }
@@ -374,24 +365,24 @@ public class SimpleExcelDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void getAllRowsAsHash() throws ExcelDataProviderException {
+    public void getAllRowsAsHash() {
         assertNotNull(dataSource.getAllRowsAsHashTable(new USER()));
     }
 
     @Test(groups = "unit")
-    public void getSheetAsHashByKeyTest1() throws ExcelDataProviderException {
+    public void getSheetAsHashByKeyTest1() {
         USER user = (USER) dataSource.getAllRowsAsHashTable(new USER()).get("binh");
         assertData(user);
     }
 
     @Test(groups = "unit")
-    public void getSheetAsHashByKeyTest2() throws ExcelDataProviderException {
+    public void getSheetAsHashByKeyTest2() {
         USER user = (USER) dataSource.getAllRowsAsHashTable(new USER()).get("1");
         assertData(user);
     }
 
     @DataProvider(parallel = true)
-    public Object[][] getExcelDataRowsByKeys() throws Exception {
+    public Object[][] getExcelDataRowsByKeys() {
         return dataSource.getExcelRows(new USER(), new String[] { "1", "binh" });
 
     }
@@ -405,7 +396,7 @@ public class SimpleExcelDataProviderTest {
     }
 
     @DataProvider(parallel = true)
-    public Object[][] getExcelDataRowsByIndexes() throws ExcelDataProviderException {
+    public Object[][] getExcelDataRowsByIndexes() {
         return dataSource.getExcelRows(new USER(), "2, 3-4");
 
     }
@@ -420,7 +411,7 @@ public class SimpleExcelDataProviderTest {
     }
 
     @DataProvider(parallel = true)
-    public Object[][] getAllExcelRows() throws ExcelDataProviderException {
+    public Object[][] getAllExcelRows() {
         return dataSource.getAllExcelRows(new USER());
 
     }

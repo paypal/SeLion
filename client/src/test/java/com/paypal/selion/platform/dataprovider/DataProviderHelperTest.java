@@ -15,15 +15,14 @@
 
 package com.paypal.selion.platform.dataprovider;
 
+import static org.apache.commons.lang.ArrayUtils.contains;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import org.testng.annotations.Test;
 
@@ -36,16 +35,16 @@ import com.paypal.selion.platform.dataprovider.pojos.xml.Address;
 public class DataProviderHelperTest {
 
     @Test(groups = "unit")
-    public void testParseIndexString() throws DataProviderException {
+    public void testParseIndexString() {
         String indexes = "1-3, 5, 7-8";
-        List<Integer> arrayIndex = DataProviderHelper.parseIndexString(indexes);
-        assertEquals(arrayIndex.size(), 6);
-        assertFalse(arrayIndex.contains(6));
-        assertTrue(arrayIndex.contains(7));
+        int[] arrayIndex = DataProviderHelper.parseIndexString(indexes);
+        assertEquals(arrayIndex.length, 6);
+        assertFalse(contains(arrayIndex, 6));
+        assertTrue(contains(arrayIndex,7));
     }
 
     @Test(groups = "unit", expectedExceptions = { DataProviderException.class })
-    public void testExceptionWhenParseIndexString() throws DataProviderException {
+    public void testExceptionWhenParseIndexString() {
         String indexes = "1-3, 5, 7_8";
         DataProviderHelper.parseIndexString(indexes);
     }
@@ -206,36 +205,6 @@ public class DataProviderHelperTest {
         assertEquals(data.length, 4);
         assertEquals(data[0].length, 3);
         assertEquals((int) data[2][2], 1);
-    }
-
-    @Test(groups = "unit")
-    public void testGetDataByIndex() throws DataProviderException {
-        Object[][] input = { { 2 }, { 12 }, { 4 }, { 7 }, { 6 }, { 8 }, { 5 }, { 8 } };
-        String indexes = "1, 3, 5-6";
-
-        Object[][] data = DataProviderHelper.getDataByIndex(input, indexes);
-
-        assertNotNull(data);
-        assertEquals(data.length, 4);
-        assertEquals(data[0][0], 2);
-        assertEquals(data[1][0], 4);
-        assertEquals(data[2][0], 6);
-        assertEquals(data[3][0], 8);
-    }
-
-    @Test(groups = "unit")
-    public void testGetDataByIndexList() {
-        Object[][] input = { { 2 }, { 12 }, { 4 }, { 7 }, { 6 }, { 8 }, { 5 }, { 8 } };
-        List<Integer> indexes = Arrays.asList(1, 3, 5, 6);
-
-        Object[][] data = DataProviderHelper.getDataByIndexList(input, indexes);
-
-        assertNotNull(data);
-        assertEquals(data.length, 4);
-        assertEquals(data[0][0], 2);
-        assertEquals(data[1][0], 4);
-        assertEquals(data[2][0], 6);
-        assertEquals(data[3][0], 8);
     }
 
     @Test(groups = "unit")

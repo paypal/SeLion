@@ -15,6 +15,7 @@
 
 package com.paypal.selion.platform.dataprovider;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 public class XmlFileSystemResource extends FileSystemResource {
 
-    private Map<String, Class<?>> xpathMap = null;
+    private Map<String, Class<?>> xpathMap = Collections.<String, Class<?>>emptyMap();
 
     /**
      * Constructor to accept XML filename at specified path, and declared type indicated by {@code cls} represented by
@@ -92,7 +93,7 @@ public class XmlFileSystemResource extends FileSystemResource {
      *         {@link XmlFileSystemResource#XmlFileSystemResource(String, String, Map)} constructors.
      */
     public Map<String, Class<?>> getXpathMap() {
-        return xpathMap;
+        return xpathMap.isEmpty() ? null : xpathMap;
     }
 
     /**

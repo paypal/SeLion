@@ -98,9 +98,8 @@ public final class JsonDataProvider {
      * @param resource
      *            The {@link FileSystemResource} denoting a JSON file and the type it needs to be mapped to (if any)
      * @return A {@link Object[][]} containing the data parsed from {@link FileSystemResource resource}
-     * @throws JsonDataProviderException
      */
-    public static Object[][] getAllJsonData(FileSystemResource resource) throws JsonDataProviderException {
+    public static Object[][] getAllJsonData(FileSystemResource resource) {
         validateResourceParams(resource);
         logger.entering(resource);
         Class<?> arrayType = null;
@@ -113,7 +112,7 @@ public final class JsonDataProvider {
             logger.log(Level.FINE, "The Json Data is mapped as", arrayType);
             dataToBeReturned = mapJsonData(reader, arrayType);
         } catch (Exception e) {
-            throw new JsonDataProviderException("Error while parsing Json Data", e);
+            throw new DataProviderException("Error while parsing Json Data", e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
@@ -131,21 +130,19 @@ public final class JsonDataProvider {
      *            - The set of indexes to be fetched from the JSON file.
      * @return A {@link Object[][]} containing the data as 2D array as per the specified indexes, parsed from
      *         {@link FileSystemResource resource}
-     * @throws JsonDataProviderException
      */
-    public static Object[][] getJsonObjectByIndex(FileSystemResource jsonResource, String indexes)
-            throws JsonDataProviderException {
+    public static Object[][] getJsonObjectByIndex(FileSystemResource jsonResource, String indexes) {
         validateResourceParams(jsonResource);
         Preconditions.checkArgument(!StringUtils.isEmpty(indexes), "Indexes cannot be empty");
         logger.entering(new Object[] { jsonResource, indexes });
-        List<Integer> indexList = null;
+        int[] indexList = null;
         Object[][] requestedData = null;
         Class<?> arrayType = null;
         JsonReader reader = null;
         try {
 
             indexList = DataProviderHelper.parseIndexString(indexes);
-            requestedData = new Object[indexList.size()][1];
+            requestedData = new Object[indexList.length][1];
             reader = new JsonReader(jsonResource.getReader());
             arrayType = Array.newInstance(jsonResource.getCls(), 0).getClass();
             logger.log(Level.FINE, "The Json Data is mapped as", arrayType);
@@ -157,7 +154,7 @@ public final class JsonDataProvider {
                 i++;
             }
         } catch (IOException | DataProviderException d) {
-            throw new JsonDataProviderException("Error while getting the data by index from Json file", d);
+            throw new DataProviderException("Error while getting the data by index from Json file", d);
         } finally {
             IOUtils.closeQuietly(reader);
         }
@@ -175,10 +172,9 @@ public final class JsonDataProvider {
      *            an implementation class of {@link DataProviderFilter}
      * @return A {@link Iterator<Object[]>} over a collection of Object Array as per the specified filter, parsed from
      *         {@link FileSystemResource resource}
-     * @throws JsonDataProviderException
      */
     public static Iterator<Object[]> getJsonObjectByFilter(FileSystemResource jsonResource,
-            DataProviderFilter dataFilter) throws JsonDataProviderException {
+            DataProviderFilter dataFilter) {
         Preconditions.checkArgument(jsonResource != null, "File resource cannot be null");
         Preconditions.checkArgument(jsonResource.getFileName() != null,
                 "The resource must have a filename. filename cannot be null");
@@ -192,7 +188,7 @@ public final class JsonDataProvider {
             Object[] mappedData = myJson.fromJson(reader, arrayType);
             return prepareDataAsObjectArrayList(mappedData, dataFilter).iterator();
         } catch (Exception e) {
-            throw new JsonDataProviderException(e.getMessage(), e);
+            throw new DataProviderException(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
@@ -227,10 +223,8 @@ public final class JsonDataProvider {
      *            - The {@link FileSystemResource} denoting a JSON file
      * @return - The json data as a {@link HashTable}
      * @throws IOException
-     * @throws JsonDataProviderException
      */
-    public static Hashtable<String, Hashtable<?, ?>> getJsonDataAsHashTable(FileSystemResource jsonResource)
-            throws JsonDataProviderException {
+    public static Hashtable<String, Hashtable<?, ?>> getJsonDataAsHashTable(FileSystemResource jsonResource) {
         Preconditions.checkArgument(jsonResource != null, "File resource cannot be null");
         Preconditions.checkArgument(jsonResource.getFileName() != null,
                 "The resource must have a filename. filename cannot be null");
@@ -261,11 +255,11 @@ public final class JsonDataProvider {
                 dataAsHashTable.put((String) value.get("id"), value);
             }
         } catch (NullPointerException n) {
-            throw new JsonDataProviderException(
+            throw new DataProviderException(
                     "Error while parsing Json Data as a Hash table. Root cause: Unable to find a key named id. Please refer Javadoc",
                     n);
         } catch (Exception e) {
-            throw new JsonDataProviderException("Error while parsing Json Data as a Hash table", e);
+            throw new DataProviderException("Error while parsing Json Data as a Hash table", e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
@@ -314,8 +308,7 @@ public final class JsonDataProvider {
         return dataArray;
     }
 
-    private static List<Object[]> prepareDataAsObjectArrayList(Object[] dataToPack, DataProviderFilter dataFilter)
-            throws DataProviderException {
+    private static List<Object[]> prepareDataAsObjectArrayList(Object[] dataToPack, DataProviderFilter dataFilter) {
         logger.entering(dataToPack);
         logger.fine("Entity Size to be mapped to ArrayList :" + dataToPack.length);
         List<Object[]> list = new ArrayList<Object[]>();
