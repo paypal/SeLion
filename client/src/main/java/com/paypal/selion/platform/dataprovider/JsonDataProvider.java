@@ -153,8 +153,8 @@ public final class JsonDataProvider {
                 requestedData[i] = mappedData[indexVal];
                 i++;
             }
-        } catch (IOException | DataProviderException d) {
-            throw new DataProviderException("Error while getting the data by index from Json file", d);
+        } catch (IOException e) {
+            throw new DataProviderException("Error while getting the data by index from Json file", e);
         } finally {
             IOUtils.closeQuietly(reader);
         }

@@ -182,12 +182,7 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
     @Override
     public Object[][] getExcelRows(Object myData, String indexes) {
         logger.entering(new Object[] { myData, indexes });
-        int[] arrayIndex;
-        try {
-            arrayIndex = DataProviderHelper.parseIndexString(indexes);
-        } catch (DataProviderException e) {
-            throw new DataProviderException(e.getMessage(), e);
-        }
+        int[] arrayIndex = DataProviderHelper.parseIndexString(indexes);
 
         Object[][] obj = new Object[arrayIndex.length][1];
         for (int i = 0; i < arrayIndex.length; i++) {
@@ -332,8 +327,6 @@ public class SimpleExcelDataProvider extends AbstractExcelDataProvider {
                 } catch (IllegalAccessException e) {
                     throw new DataProviderException("Unable to create instance of type '" + myObj.getClass().getName()
                             + "'", e);
-                } catch (DataProviderException e) {
-                    throw new DataProviderException(e.getMessage(), e);
                 }
             }
         }

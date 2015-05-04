@@ -158,7 +158,7 @@ public class JsonDataProviderTest {
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class }, groups = "unit")
-    public void negativeTestsWithNullFileName() throws DataProviderException, IOException {
+    public void negativeTestsWithNullFileName() throws IOException {
         FileSystemResource resource = new FileSystemResource(null, null, USER.class);
         JsonDataProvider.getAllJsonData(resource);
     }
