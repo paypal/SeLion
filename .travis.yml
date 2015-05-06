@@ -3,9 +3,11 @@ jdk:
   - oraclejdk7
   - openjdk7
 install:
-  - sh -e install-ios-driver.sh
+  - sh -e utilities/install-ios-driver.sh
 script:
-  - sh -e run-travis-ci-tests.sh
+  - sh -e utilities/run-travis-ci-tests.sh
+after_success:
+  - sh utilities/travis-config-for-javadoc-push.sh
 addons:
   sauce_connect: true
 notifications:
