@@ -25,24 +25,24 @@ import com.paypal.selion.plugins.GUIObjectDetails;
  * The class represents the elements that can be given in a page object data source and are recognized by IOS Platform
  * 
  */
-public class IOSSeLionElement extends AbstractSeLionElement {
+public class IOSSeLionElementList extends AbstractSeLionElementList {
     public static final String UIAUTOMATION_ELEMENT_CLASS = "com.paypal.selion.platform.mobile.ios";
 
-    public static IOSSeLionElement UIAButton = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAButton", true);
-    public static IOSSeLionElement UIAAlert = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAAlert", true);
-    public static IOSSeLionElement UIANavigationBar = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIANavigationBar", true);
-    public static IOSSeLionElement UIAPicker = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAPicker", true);
-    public static IOSSeLionElement UIASlider = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASlider", true);
-    public static IOSSeLionElement UIAStaticText = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIAStaticText", true);
-    public static IOSSeLionElement UIASwitch = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIASwitch", true);
-    public static IOSSeLionElement UIATableView = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATableView", true);
-    public static IOSSeLionElement UIATextField = new IOSSeLionElement(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
-    public static IOSSeLionElement BASE_CLASS = new IOSSeLionElement(null, "baseClass", false);
+    public static IOSSeLionElementList UIAButton = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAButton", true);
+    public static IOSSeLionElementList UIAAlert = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAAlert", true);
+    public static IOSSeLionElementList UIANavigationBar = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIANavigationBar", true);
+    public static IOSSeLionElementList UIAPicker = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAPicker", true);
+    public static IOSSeLionElementList UIASlider = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASlider", true);
+    public static IOSSeLionElementList UIAStaticText = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAStaticText", true);
+    public static IOSSeLionElementList UIASwitch = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASwitch", true);
+    public static IOSSeLionElementList UIATableView = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATableView", true);
+    public static IOSSeLionElementList UIATextField = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
+    public static IOSSeLionElementList BASE_CLASS = new IOSSeLionElementList(null, "baseClass", false);
 
-    private static IOSSeLionElement[] values = { UIAButton, UIAAlert, UIANavigationBar, UIAPicker, UIASlider,
+    private static IOSSeLionElementList[] values = { UIAButton, UIAAlert, UIANavigationBar, UIAPicker, UIASlider,
             UIAStaticText, UIASwitch, UIATableView, UIATextField, BASE_CLASS };
 
-    private IOSSeLionElement(String elementPackage, String element, boolean isHtmlType) {
+    private IOSSeLionElementList(String elementPackage, String element, boolean isHtmlType) {
         super(elementPackage, element, isHtmlType);
     }
     
@@ -53,26 +53,26 @@ public class IOSSeLionElement extends AbstractSeLionElement {
      * @param element string of the qualified class
      */
     public static void registerElement(String element) {
-        List<IOSSeLionElement> temp = new ArrayList<IOSSeLionElement>(Arrays.asList(values));
+        List<IOSSeLionElementList> temp = new ArrayList<IOSSeLionElementList>(Arrays.asList(values));
         
-        temp.add(0, new IOSSeLionElement(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true));
+        temp.add(0, new IOSSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true));
         
-        values = temp.toArray(new IOSSeLionElement[temp.size()]);
+        values = temp.toArray(new IOSSeLionElementList[temp.size()]);
     }
 
     /**
      * @param rawType
-     *            - The String using which an attempt to find a matching {@link IOSSeLionElement} is to be performed.
-     * @return - A {@link IOSSeLionElement} if the type ends with one of the values of {@link IOSSeLionElement} enum (or)
+     *            - The String using which an attempt to find a matching {@link IOSSeLionElementList} is to be performed.
+     * @return - A {@link IOSSeLionElementList} if the type ends with one of the values of {@link IOSSeLionElementList} enum (or)
      *         <code>null</code> if there were no matches.
      */
-    public static IOSSeLionElement findMatch(String rawType) {
-        return (IOSSeLionElement) findMatch(values, rawType);
+    public static IOSSeLionElementList findMatch(String rawType) {
+        return (IOSSeLionElementList) findMatch(values, rawType);
     }
 
     /**
      * @param element
-     *            - The element that needs to be tested for being a valid {@link IOSSeLionElement}
+     *            - The element that needs to be tested for being a valid {@link IOSSeLionElementList}
      * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValid(String element) {
@@ -89,8 +89,8 @@ public class IOSSeLionElement extends AbstractSeLionElement {
 
     /**
      * @param element
-     *            - The element that needs to be tested for being a valid {@link IOSSeLionElement} and whose
-     *            {@link IOSSeLionElement#isUIElement()} returns true.
+     *            - The element that needs to be tested for being a valid {@link IOSSeLionElementList} and whose
+     *            {@link IOSSeLionElementList#isUIElement()} returns true.
      * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValidUIElement(String element) {
@@ -99,7 +99,7 @@ public class IOSSeLionElement extends AbstractSeLionElement {
     }
 
     /**
-     * Method to obtain a {@link List} of {@link GUIObjectDetails} containing {@link IOSSeLionElement}
+     * Method to obtain a {@link List} of {@link GUIObjectDetails} containing {@link IOSSeLionElementList}
      * 
      * @param keys
      *            -keys for which {@link GUIObjectDetails} is to be created.
@@ -109,7 +109,7 @@ public class IOSSeLionElement extends AbstractSeLionElement {
         List<GUIObjectDetails> htmlObjectDetailsList = new ArrayList<GUIObjectDetails>();
 
         for (String key : keys) {
-            IOSSeLionElement element = IOSSeLionElement.findMatch(key);
+            IOSSeLionElementList element = IOSSeLionElementList.findMatch(key);
             if (element != null && element.isUIElement()) {
                 GUIObjectDetails htmlObjectDetails = null;
                 htmlObjectDetails = new GUIObjectDetails(element.stringify(), key, element.getElementPackage());

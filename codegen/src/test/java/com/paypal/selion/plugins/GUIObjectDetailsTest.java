@@ -24,8 +24,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.elements.HtmlSeLionElement;
-import com.paypal.selion.elements.IOSSeLionElement;
+import com.paypal.selion.elements.HtmlSeLionElementList;
+import com.paypal.selion.elements.IOSSeLionElementList;
 
 public class GUIObjectDetailsTest {
     class DummyMojo extends AbstractMojo {
@@ -59,8 +59,8 @@ public class GUIObjectDetailsTest {
     public void validateCustomWebElements() throws Exception {
         String dataFile = "src/test/resources/CustomWebElementPage.yaml";
         
-        HtmlSeLionElement.registerElement("com.paypal.test.CustomElement");
-        HtmlSeLionElement.registerElement("com.paypal.test.AnotherElement");
+        HtmlSeLionElementList.registerElement("com.paypal.test.CustomElement");
+        HtmlSeLionElementList.registerElement("com.paypal.test.AnotherElement");
         
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
@@ -71,8 +71,8 @@ public class GUIObjectDetailsTest {
     public void validateCustomMobileElements() throws Exception {
         String dataFile = "src/test/resources/CustomMobileElementPage.yaml";
         
-        IOSSeLionElement.registerElement("com.paypal.test.CustomElement");
-        IOSSeLionElement.registerElement("com.paypal.test.AnotherElement");
+        IOSSeLionElementList.registerElement("com.paypal.test.CustomElement");
+        IOSSeLionElementList.registerElement("com.paypal.test.AnotherElement");
         
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();

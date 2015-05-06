@@ -26,7 +26,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.elements.HtmlSeLionElementList;
 
 public class DataReaderTest {
     class DummyMojo extends AbstractMojo {
@@ -73,7 +73,7 @@ public class DataReaderTest {
                 break;
             }
         }
-        assertEquals(requestAPICredentialsLink.getMemberType(), HtmlSeLionElement.LINK.stringify());
+        assertEquals(requestAPICredentialsLink.getMemberType(), HtmlSeLionElementList.LINK.stringify());
     }
 
 }

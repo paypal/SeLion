@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
-import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.elements.HtmlSeLionElementList;
 import com.paypal.selion.plugins.HtmlContainerElement;
 import com.paypal.selion.plugins.TestPlatform;
 
@@ -94,12 +94,12 @@ public abstract class AbstractYamlReader {
                     continue;
                 }
 
-                if (!(HtmlSeLionElement.isValid(elementKey))) {
+                if (!(HtmlSeLionElementList.isValid(elementKey))) {
                     throw new IllegalArgumentException(String.format("Detected an invalid key [%s] in data file %s",
                             elementKey, fileName));
                 }
 
-                if (HtmlSeLionElement.CONTAINER.looksLike(elementKey)) {
+                if (HtmlSeLionElementList.CONTAINER.looksLike(elementKey)) {
                     throw new IllegalArgumentException("Cannot define a Container within a Container.");
                 }
 
@@ -124,12 +124,12 @@ public abstract class AbstractYamlReader {
                     continue;
                 }
 
-                if (!(HtmlSeLionElement.isValidHtmlElement(elementKey))) {
+                if (!(HtmlSeLionElementList.isValidHtmlElement(elementKey))) {
                     throw new IllegalArgumentException(String.format("Detected an invalid key [%s] in data file %s",
                             elementKey, fileName));
                 }
 
-                if (HtmlSeLionElement.CONTAINER.looksLike(elementKey)) {
+                if (HtmlSeLionElementList.CONTAINER.looksLike(elementKey)) {
                     throw new IllegalArgumentException("Cannot define a Container within a Container.");
                 }
 

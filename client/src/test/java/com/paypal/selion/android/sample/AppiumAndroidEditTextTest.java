@@ -59,7 +59,7 @@ public class AppiumAndroidEditTextTest {
         menuButton.click(textField);
         textField.setText("SeLion");
         Assert.assertEquals(textField.getText(), "SeLion", "Set value of edit-text does not match");
-        textField.clearTextField();
+        textField.clearText();
         Assert.assertEquals(textField.getText(), "", "Clear on edit-text failed");
         textField.setText("SeLion");
         textField.setText("Selendroid");

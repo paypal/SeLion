@@ -63,7 +63,7 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
     }
 
     @Override
-    public void clearTextField(WebElement webElement) {
+    public void clearText(WebElement webElement) {
         logger.entering(webElement);
         webElement.clear();
         logger.exiting();
@@ -315,11 +315,9 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
     
     private void performShortClickAction(Point point) {
         try {
-            Action clickAction = new TouchActions(this).down(point.getX(), point.getY()).build();
-            clickAction.perform();
+            new TouchActions(this).down(point.getX(), point.getY()).perform();
             Thread.sleep(SHORT_TAP_TIME_MILLIS);
-            clickAction = new TouchActions(this).up(point.getX(), point.getY()).build();
-            clickAction.perform();
+            new TouchActions(this).up(point.getX(), point.getY()).perform();
         } catch (InterruptedException exe) {
             throw new WebDriverException("InterruptedException occurred during shortClick", exe);
         }
@@ -327,18 +325,15 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
     
     private void performLongClickAction(Point point) {
         try {
-            Action clickAction = new TouchActions(this).down(point.getX(), point.getY()).build();
-            clickAction.perform();
+            new TouchActions(this).down(point.getX(), point.getY()).perform();
             Thread.sleep(LONG_TAP_TIME_MILLIS);
-            clickAction = new TouchActions(this).up(point.getX(), point.getY()).build();
-            clickAction.perform();
+            new TouchActions(this).up(point.getX(), point.getY()).perform();
         } catch (InterruptedException exe) {
             throw new WebDriverException("InterruptedException occurred during longClick", exe);
         }
     }
     
     private void performSwipeAction(Point start, Point end) {
-        Action action = new TouchActions(this).down(start.getX(), start.getY()).move(end.getX(), end.getY()).up(end.getX(), end.getY()).build();
-        action.perform();
+        new TouchActions(this).down(start.getX(), start.getY()).move(end.getX(), end.getY()).up(end.getX(), end.getY()).perform();
     }
 }

@@ -2,11 +2,7 @@
 <suite thread-count="7" verbose="1" name="AppiumAndroidPageObjectsDemo Suite" skipfailedinvocationcounts="false" junit="false"
     parallel="false" data-provider-thread-count="1" annotations="JDK">
     <!-- SELENIUM CONFIGURATION -->
-    <parameter name="runLocally" value="false" />
     <parameter name="mobileNodeType" value="appium" />
-    <parameter name= "seleniumhost" value="localhost"/>
-<!--     <parameter name="seleniumhost" value="10.64.196.247"/> -->
-    <parameter name="seleniumport" value="4723"/>
 
     <test verbose="2" name="AppiumAndroidPageObjectsDemoTests" annotations="JDK">
         <classes>
@@ -14,8 +10,8 @@
             <class name="com.paypal.selion.android.sample.AppiumAndroidButtonShortClickTest" />
             <class name="com.paypal.selion.android.sample.AppiumAndroidButtonLongClickTest" />
             <class name="com.paypal.selion.android.sample.AppiumAndroidCheckBoxSeekBarTest" />
-<class name="com.paypal.selion.android.sample.AppiumAndroidScrollTest"/>
-<class name="com.paypal.selion.android.sample.AppiumAndroidEditTextTest"/>
+            <class name="com.paypal.selion.android.sample.AppiumAndroidScrollTest"/>
+            <class name="com.paypal.selion.android.sample.AppiumAndroidEditTextTest"/>
         </classes>
     </test>
 

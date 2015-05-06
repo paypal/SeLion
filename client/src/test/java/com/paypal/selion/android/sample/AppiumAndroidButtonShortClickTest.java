@@ -53,7 +53,6 @@ public class AppiumAndroidButtonShortClickTest {
         menuButton.click(shortPressButton);
         shortPressButton.click(textView);
         String output = textView.getText();
-        System.out.println(output);
         Assert.assertEquals(output.contains("short press"), true, "Button center click not working properly");
     }
     

@@ -25,30 +25,30 @@ import com.paypal.selion.plugins.GUIObjectDetails;
  * This class represents the set of elements that can occur in a page object data source which are recognized by SeLion.
  *
  */
-public class HtmlSeLionElement extends AbstractSeLionElement {
+public class HtmlSeLionElementList extends AbstractSeLionElementList {
     public static final String SELION_ELEMENT_CLASS = "com.paypal.selion.platform.html";
     
-    public static HtmlSeLionElement TEXT_FIELD = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "TextField", true, true);
-    public static HtmlSeLionElement TABLE = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Table", true, true);
-    public static HtmlSeLionElement SELECT_LIST = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "SelectList", true, true);
-    public static HtmlSeLionElement RADIO_BUTTON = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "RadioButton", true, true);
-    public static HtmlSeLionElement BUTTON = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Button", true, true);
-    public static HtmlSeLionElement LINK = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Link", true, true);
-    public static HtmlSeLionElement LABEL = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Label", true, true);
-    public static HtmlSeLionElement IMAGE = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Image", true, true);
-    public static HtmlSeLionElement FORM = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Form", true, true);
-    public static HtmlSeLionElement DATE_PICKER = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "DatePicker", true, true);
-    public static HtmlSeLionElement CHECK_BOX = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "CheckBox", true, true);
-    public static HtmlSeLionElement CONTAINER = new HtmlSeLionElement(SELION_ELEMENT_CLASS, "Container", true, false);
-    public static HtmlSeLionElement BASE_CLASS = new HtmlSeLionElement(null, "baseClass", false, false);
-    public static HtmlSeLionElement PAGE_TITLE = new HtmlSeLionElement(null, "pageTitle", false, false);
+    public static HtmlSeLionElementList TEXT_FIELD = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "TextField", true, true);
+    public static HtmlSeLionElementList TABLE = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Table", true, true);
+    public static HtmlSeLionElementList SELECT_LIST = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "SelectList", true, true);
+    public static HtmlSeLionElementList RADIO_BUTTON = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "RadioButton", true, true);
+    public static HtmlSeLionElementList BUTTON = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Button", true, true);
+    public static HtmlSeLionElementList LINK = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Link", true, true);
+    public static HtmlSeLionElementList LABEL = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Label", true, true);
+    public static HtmlSeLionElementList IMAGE = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Image", true, true);
+    public static HtmlSeLionElementList FORM = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Form", true, true);
+    public static HtmlSeLionElementList DATE_PICKER = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "DatePicker", true, true);
+    public static HtmlSeLionElementList CHECK_BOX = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "CheckBox", true, true);
+    public static HtmlSeLionElementList CONTAINER = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Container", true, false);
+    public static HtmlSeLionElementList BASE_CLASS = new HtmlSeLionElementList(null, "baseClass", false, false);
+    public static HtmlSeLionElementList PAGE_TITLE = new HtmlSeLionElementList(null, "pageTitle", false, false);
 
     //DONOT alter the order of RADIO_BUTTON and BUTTON because of the following reason:
     //consider a field in the yaml file which looks like this : fxBankRadioButton
     //if we have Button ahead of RadioButton, then our code would end up matching this above key with
     //Button instead of matching it against RadioButton. This is the ONLY case wherein the order is very important
 
-    private static HtmlSeLionElement[] values = {TEXT_FIELD, TABLE, SELECT_LIST, RADIO_BUTTON, BUTTON, LINK, LABEL,
+    private static HtmlSeLionElementList[] values = {TEXT_FIELD, TABLE, SELECT_LIST, RADIO_BUTTON, BUTTON, LINK, LABEL,
             IMAGE, FORM, DATE_PICKER, CHECK_BOX, CONTAINER, BASE_CLASS, PAGE_TITLE
     };
 
@@ -64,24 +64,24 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
      * @param element string of the qualified class
      */
     public static void registerElement(String element) {
-        List<HtmlSeLionElement> temp = new ArrayList<HtmlSeLionElement>(Arrays.asList(values));
+        List<HtmlSeLionElementList> temp = new ArrayList<HtmlSeLionElementList>(Arrays.asList(values));
         
-        temp.add(0, new HtmlSeLionElement(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true, false));
+        temp.add(0, new HtmlSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true, false));
         
-        values = temp.toArray(new HtmlSeLionElement[temp.size()]);
+        values = temp.toArray(new HtmlSeLionElementList[temp.size()]);
     }
 
     /**
-     * @param rawType - The String using which an attempt to find a matching {@link HtmlSeLionElement} is to be performed.
-     * @return - A {@link HtmlSeLionElement} if the type ends with one of the values of {@link HtmlSeLionElement} enum (or)
+     * @param rawType - The String using which an attempt to find a matching {@link HtmlSeLionElementList} is to be performed.
+     * @return - A {@link HtmlSeLionElementList} if the type ends with one of the values of {@link HtmlSeLionElementList} enum (or)
      * <code>null</code> if there were no matches.
      */
-    public static HtmlSeLionElement findMatch(String rawType) {
-        return (HtmlSeLionElement) findMatch(values, rawType);
+    public static HtmlSeLionElementList findMatch(String rawType) {
+        return (HtmlSeLionElementList) findMatch(values, rawType);
     }
 
     /**
-     * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElement}
+     * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElementList}
      * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValid(String element) {
@@ -97,8 +97,8 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
     }
 
     /**
-     * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElement} and whose
-     * {@link HtmlSeLionElement#isUIElement()} returns true.
+     * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElementList} and whose
+     * {@link HtmlSeLionElementList#isUIElement()} returns true.
      * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValidHtmlElement(String element) {
@@ -107,7 +107,7 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
 
     private boolean canHaveParent;
 
-    private HtmlSeLionElement(String elementPackage, String element, boolean isHtmlType, boolean canHaveParent) {
+    private HtmlSeLionElementList(String elementPackage, String element, boolean isHtmlType, boolean canHaveParent) {
         super(elementPackage, element, isHtmlType);
         this.canHaveParent = canHaveParent;
     }
@@ -121,7 +121,7 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
 
     /**
      * This method returns <code>true</code> if the key that was given ends with the textual value of one of the 
-     * elements that are part of {@link HtmlSeLionElement}
+     * elements that are part of {@link HtmlSeLionElementList}
      * @param key - The string that needs to be checked.
      * @return - <code>true</code> if there was a match.
      */
@@ -136,7 +136,7 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
 
     
     /**
-     * Method to obtain a {@link List} of {@link GUIObjectDetails} containing {@link HtmlSeLionElement}
+     * Method to obtain a {@link List} of {@link GUIObjectDetails} containing {@link HtmlSeLionElementList}
      * 
      * @param keys
      *            -keys for which {@link GUIObjectDetails} is to be created.
@@ -154,7 +154,7 @@ public class HtmlSeLionElement extends AbstractSeLionElement {
                 key = key.split(DELIMITER)[1];
             }
 
-            HtmlSeLionElement element = HtmlSeLionElement.findMatch(key);
+            HtmlSeLionElementList element = HtmlSeLionElementList.findMatch(key);
             if (element != null && element.isUIElement()) {
                 GUIObjectDetails htmlObjectDetails = null;
                 if (element.canHaveParent()) {

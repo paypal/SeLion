@@ -17,7 +17,6 @@ package com.paypal.selion.android.sample;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
@@ -65,24 +64,24 @@ public class AppiumAndroidButtonLongClickTest {
         Assert.assertEquals(output.contains("long press"), true, "Button center click not working properly");
     }
 
-//    @Test(enabled = true)
-//    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
-//    public void testButtonClickTopLeft() throws InterruptedException {
-//        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
-//        menuButton.click(longPressButton);
-//        longPressButton.longClickTopLeft(textView);
-//        String output = textView.getText();
-//        Assert.assertEquals(output.contains("long press"), true, "Button top left click not working properly");
-//    }
-//
-//    @Test(enabled = true)
-//    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
-//    public void testButtonClickBottomRight() throws InterruptedException {
-//        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
-//        menuButton.click(longPressButton);
-//        WebDriverWaitUtils.waitUntilElementIsVisible(longPressButtonLocator);
-//        longPressButton.longClickBottomRight(textView);
-//        String output = textView.getText();
-//        Assert.assertEquals(output.contains("long press"), true, "Button bottom right click not working properly");
-//    }
+    @Test(enabled = true)
+    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    public void testButtonClickTopLeft() throws InterruptedException {
+        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        menuButton.click(longPressButton);
+        longPressButton.longClickTopLeft(textView);
+        String output = textView.getText();
+        Assert.assertEquals(output.contains("long press"), true, "Button top left click not working properly");
+    }
+
+    @Test(enabled = true)
+    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    public void testButtonClickBottomRight() throws InterruptedException {
+        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        menuButton.click(longPressButton);
+        WebDriverWaitUtils.waitUntilElementIsVisible(longPressButtonLocator);
+        longPressButton.longClickBottomRight(textView);
+        String output = textView.getText();
+        Assert.assertEquals(output.contains("long press"), true, "Button bottom right click not working properly");
+    }
 }

@@ -37,7 +37,7 @@ public abstract class IOSPage extends AbstractPage {
 
     public abstract IOSPage getPage();
 
-    protected void initializeHtmlObjects(Object whichClass, Map<String, String> objectMap) {
+    protected void initializeMobileElements(Object whichClass, Map<String, String> objectMap) {
 
         List<Field> fields = new ArrayList<>();
         Class<?> incomingClass = whichClass.getClass();

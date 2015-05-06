@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.elements.HtmlSeLionElementList;
 import com.paypal.selion.plugins.GUIElement;
 import com.paypal.selion.plugins.HtmlContainerElement;
 import com.paypal.selion.plugins.Logger;
@@ -67,7 +67,7 @@ class YamlV2Reader extends AbstractYamlReader {
 
                     appendKey(eachElement.getKey());
                     if ((currentPlatform == TestPlatform.WEB)
-                            && HtmlSeLionElement.CONTAINER.looksLike(eachElement.getKey())) {
+                            && HtmlSeLionElementList.CONTAINER.looksLike(eachElement.getKey())) {
                         if (!eachElement.getValue().getContainerElements().isEmpty()) {
                             Map<String, HtmlContainerElement> allElements = eachElement.getValue()
                                     .getContainerElements();

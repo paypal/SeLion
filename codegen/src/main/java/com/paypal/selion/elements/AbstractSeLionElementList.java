@@ -15,13 +15,13 @@
 
 package com.paypal.selion.elements;
 
-public abstract class AbstractSeLionElement {
+public abstract class AbstractSeLionElementList {
 
     private String element;
     private boolean uiElement;
     private String elementPackage;
 
-    protected AbstractSeLionElement(String elementPackage, String element, boolean uiElement) {
+    protected AbstractSeLionElementList(String elementPackage, String element, boolean uiElement) {
         this.element = element;
         this.uiElement = uiElement;
         this.elementPackage = elementPackage;
@@ -68,13 +68,13 @@ public abstract class AbstractSeLionElement {
     }
 
     /**
-     * @param validSet - An array of {@link AbstractSeLionElement} that represents the set of elements in which a 
+     * @param validSet - An array of {@link AbstractSeLionElementList} that represents the set of elements in which a 
      * match attempt is to be made.
      * @param rawType - The element that needs to be searched.
-     * @return - Either the {@link AbstractSeLionElement} version of the raw element or <code>null</code> if it wasn't found.
+     * @return - Either the {@link AbstractSeLionElementList} version of the raw element or <code>null</code> if it wasn't found.
      */
-    static AbstractSeLionElement findMatch(AbstractSeLionElement[] validSet, String rawType) {
-        for (AbstractSeLionElement eachElement : validSet) {
+    static AbstractSeLionElementList findMatch(AbstractSeLionElementList[] validSet, String rawType) {
+        for (AbstractSeLionElementList eachElement : validSet) {
             if (eachElement.looksLike(rawType)) {
                 return eachElement;
             }
@@ -83,16 +83,16 @@ public abstract class AbstractSeLionElement {
     }
 
     /**
-     * @param validSet - An array of {@link AbstractSeLionElement} that represents the set of elements in which a 
+     * @param validSet - An array of {@link AbstractSeLionElementList} that represents the set of elements in which a 
      * match attempt is to be made.
      * @param element - The element that needs to be searched.
      * @return - <code>true</code> if the element was found in the set of elements provided.
      */
-    static boolean isValid(AbstractSeLionElement[] validSet, String element) {
+    static boolean isValid(AbstractSeLionElementList[] validSet, String element) {
         if (element == null || element.trim().isEmpty()) {
             return false;
         }
-        for (AbstractSeLionElement each : validSet) {
+        for (AbstractSeLionElementList each : validSet) {
             if (each.looksLike(element)) {
                 return true;
             }
@@ -102,18 +102,18 @@ public abstract class AbstractSeLionElement {
 
     /**
      * @param validSet
-     *            - An array of {@link AbstractSeLionElement} that represents the set of elements in which a match
+     *            - An array of {@link AbstractSeLionElementList} that represents the set of elements in which a match
      *            attempt is to be made.
      * @param element
      *            - The element that needs to be searched.
      * @return- <code>true</code> if the element was found in the set of elements provided and if its
-     *          {@link AbstractSeLionElement#isUIElement()} resulted in <code>true</code>.
+     *          {@link AbstractSeLionElementList#isUIElement()} resulted in <code>true</code>.
      */
-    static boolean isValidUIElement(AbstractSeLionElement[] validSet, String element) {
+    static boolean isValidUIElement(AbstractSeLionElementList[] validSet, String element) {
         if (element == null || element.trim().isEmpty()) {
             return false;
         }
-        for (AbstractSeLionElement each : validSet) {
+        for (AbstractSeLionElementList each : validSet) {
             if (each.looksLike(element)) {
                 return each.isUIElement();
             }
@@ -122,16 +122,16 @@ public abstract class AbstractSeLionElement {
     }
     
     /**
-     * @param validSet - An array of {@link AbstractSeLionElement} that represents the set of elements in which an 
+     * @param validSet - An array of {@link AbstractSeLionElementList} that represents the set of elements in which an 
      * exact match attempt is to be made.
      * @param element - The element that needs to be searched.
      * @return - <code>true</code> if the element was found in the set of elements provided.
      */
-    static boolean isExactMatch(AbstractSeLionElement[] validSet, String element) {
+    static boolean isExactMatch(AbstractSeLionElementList[] validSet, String element) {
         if (element == null || element.trim().isEmpty()) {
             return false;
         }
-        for (AbstractSeLionElement each : validSet) {
+        for (AbstractSeLionElementList each : validSet) {
             if (each.element.equals(element)) {
                 return true;
             }

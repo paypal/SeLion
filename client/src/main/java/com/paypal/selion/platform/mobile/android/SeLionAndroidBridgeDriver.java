@@ -41,7 +41,7 @@ public interface SeLionAndroidBridgeDriver {
      * @param webElement
      *            Instance of {@link WebElement}.
      */
-    void clearTextField(WebElement webElement);
+    void clearText(WebElement webElement);
 
     /**
      * Performs a click at the center of the visible bounds of the UI element represented by this UiObject.

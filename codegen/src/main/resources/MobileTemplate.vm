@@ -36,7 +36,7 @@ public class $class extends $baseclass {
     public $class getPage() {
         if (!isInitialized()) {
             loadObjectMap();
-            initializeHtmlObjects(this, this.objectMap);
+            initializeMobileElements(this, this.objectMap);
         }
         return this;
     }

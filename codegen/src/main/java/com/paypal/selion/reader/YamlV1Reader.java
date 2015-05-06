@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.elements.HtmlSeLionElementList;
 import com.paypal.selion.plugins.Logger;
 import com.paypal.selion.plugins.TestPlatform;
 
@@ -139,6 +139,6 @@ class YamlV1Reader extends AbstractYamlReader {
         if (platform != TestPlatform.WEB) {
             return false;
         }
-        return HtmlSeLionElement.CONTAINER.looksLike(key) && map.keySet().contains(ELEMENTS);
+        return HtmlSeLionElementList.CONTAINER.looksLike(key) && map.keySet().contains(ELEMENTS);
     }
 }

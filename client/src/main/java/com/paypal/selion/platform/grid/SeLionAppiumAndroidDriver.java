@@ -17,6 +17,7 @@ package com.paypal.selion.platform.grid;
 
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
+import io.selendroid.client.SelendroidDriver;
 
 import java.net.URL;
 
@@ -28,11 +29,13 @@ import org.openqa.selenium.remote.CommandExecutor;
 
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.mobile.android.SeLionAndroidBridgeDriver;
+import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * This class provide facility to add custom {@link CommandExecutor} to {@link AndroidDriver}
- * 
+ * <code>SeLionAppiumAndroidDriver</code> provides facility to add custom {@link CommandExecutor} to
+ * {@link AndroidDriver}. This class also implements the {@link SeLionAndroidBridgeDriver} interface to expose
+ * methods for {@link UiObject} and its subclasses.
  */
 public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAndroidBridgeDriver {
 
@@ -52,6 +55,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     public void click(WebElement webElement) {
         logger.entering(webElement);
         this.tap(1, webElement, 1);
+        logger.exiting();
     }
 
     @Override
@@ -63,6 +67,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         int newX = currentPoint.getX() + dimension.getWidth();
         int newY = currentPoint.getY() + dimension.getHeight();
         clickBottomRight.press(newX - 1, newY - 1).release().perform();
+        logger.exiting();
     }
 
     @Override
@@ -71,7 +76,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         Point currentPoint = webElement.getLocation();
         TouchAction clickTopLeft = new TouchAction(this);
         clickTopLeft.press(currentPoint.getX(), currentPoint.getY()).release().perform();
-
+        logger.exiting();
     }
 
     @Override
@@ -85,7 +90,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isCheckable(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("checkable"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("checkable"));
         logger.exiting(result);
         return result;
@@ -94,7 +98,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isChecked(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("checked"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("checked"));
         logger.exiting(result);
         return result;
@@ -103,7 +106,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isClickable(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("clickable"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("clickable"));
         logger.exiting(result);
         return result;
@@ -112,7 +114,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isEnabled(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("enabled"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("enabled"));
         logger.exiting(result);
         return result;
@@ -121,7 +122,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isFocusable(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("focusable"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("focusable"));
         logger.exiting(result);
         return result;
@@ -130,7 +130,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isFocused(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("focused"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("focused"));
         logger.exiting(result);
         return result;
@@ -139,7 +138,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isLongClickable(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("longClickable"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("longClickable"));
         logger.exiting(result);
         return result;
@@ -148,7 +146,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isScrollable(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("scrollable"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("scrollable"));
         logger.exiting(result);
         return result;
@@ -157,7 +154,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     @Override
     public boolean isSelected(WebElement webElement) {
         logger.entering(webElement);
-        System.out.println("App:"+webElement.getAttribute("selected"));
         boolean result = Boolean.parseBoolean(webElement.getAttribute("selected"));
         logger.exiting(result);
         return result;
@@ -167,6 +163,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
     public void longClick(WebElement webElement) {
         logger.entering(webElement);
         this.tap(1, webElement, OPERATION_DURATION_MILLI_SECONDS);
+        logger.exiting();
     }
 
     @Override
@@ -178,7 +175,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         int newX = currentPoint.getX() + dimension.getWidth();
         int newY = currentPoint.getY() + dimension.getHeight();
         clickBottomRight.longPress(newX - 1, newY - 1).release().perform();
-
+        logger.exiting();
     }
 
     @Override
@@ -187,7 +184,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         Point currentPoint = webElement.getLocation();
         TouchAction clickTopLeft = new TouchAction(this);
         clickTopLeft.longPress(currentPoint.getX(), currentPoint.getY()).release().perform();
-
+        logger.exiting();
     }
 
     @Override
@@ -199,6 +196,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         int y = currentLocation.getY();
         int endx = currentLocation.getX();
         this.swipe(x, y, endx, y, OPERATION_DURATION_MILLI_SECONDS);
+        logger.exiting();
     }
 
     @Override
@@ -210,6 +208,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         int y = currentLocation.getY();
         int endx = x + elementSize.getWidth() - 1;
         this.swipe(x,y,endx, y, OPERATION_DURATION_MILLI_SECONDS);
+        logger.exiting();
     }
 
     @Override
@@ -221,6 +220,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         int y = currentLocation.getY() + elementSize.getHeight() - 1;
         int endy = currentLocation.getY();
         this.swipe(x, y, x, endy, OPERATION_DURATION_MILLI_SECONDS);
+        logger.exiting();
     }
 
     @Override
@@ -232,12 +232,14 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         int y = currentLocation.getY();
         int endy = y + elementSize.getHeight() - 1;
         this.swipe(x, y, x, endy, OPERATION_DURATION_MILLI_SECONDS);
+        logger.exiting();
     }
 
     @Override
-    public void clearTextField(WebElement webElement) {
+    public void clearText(WebElement webElement) {
         logger.entering(webElement);
         webElement.clear();
+        logger.exiting();
     }
 
     @Override
@@ -246,6 +248,6 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAn
         //As per the UI Object API doc a text field will be cleared before setting value
         webElement.clear();
         webElement.sendKeys(text);
-        
+        logger.exiting();
     }
 }

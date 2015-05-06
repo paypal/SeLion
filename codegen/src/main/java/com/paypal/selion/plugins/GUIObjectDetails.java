@@ -17,8 +17,9 @@ package com.paypal.selion.plugins;
 
 import java.util.List;
 
-import com.paypal.selion.elements.IOSSeLionElement;
-import com.paypal.selion.elements.HtmlSeLionElement;
+import com.paypal.selion.elements.AndroidSeLionElementList;
+import com.paypal.selion.elements.IOSSeLionElementList;
+import com.paypal.selion.elements.HtmlSeLionElementList;
 
 /**
  * A simple POJO class that represents information pertaining to a html object.
@@ -62,7 +63,7 @@ public class GUIObjectDetails {
     //This method is used by the velocity template and has reference in Class.vm
     //DO NOT tamper with this method
     public String returnArg(String key) {
-        HtmlSeLionElement element = HtmlSeLionElement.findMatch(key);
+        HtmlSeLionElementList element = HtmlSeLionElementList.findMatch(key);
         if (element == null) {
             return key;
         }
@@ -94,11 +95,15 @@ public class GUIObjectDetails {
         // default case in switch
         switch (platform) {
         case WEB: {
-            htmlObjectDetailsList = HtmlSeLionElement.getGUIObjectList(keys);
+            htmlObjectDetailsList = HtmlSeLionElementList.getGUIObjectList(keys);
             break;
         }
         case IOS: {
-            htmlObjectDetailsList = IOSSeLionElement.getGUIObjectList(keys);
+            htmlObjectDetailsList = IOSSeLionElementList.getGUIObjectList(keys);
+            break;
+        }
+        case ANDROID:{
+            htmlObjectDetailsList = AndroidSeLionElementList.getGUIObjectList(keys);
             break;
         }
         }
@@ -117,7 +122,7 @@ public class GUIObjectDetails {
     }
     
     /**
-     * Method to validate the keys against the {@link HtmlSeLionElement} or {@link IOSSeLionElement} as per the
+     * Method to validate the keys against the {@link HtmlSeLionElementList} or {@link IOSSeLionElementList} as per the
      * {@link TestPlatform}
      * 
      * @param keysToValidate
@@ -148,16 +153,16 @@ public class GUIObjectDetails {
                  * then proceed with the usual check of validating if its a html element
                  */
                  // TODO: This is a hack to be removed when V1 is fully deprecated.
-                if (!(HtmlSeLionElement.isValid(currentKey))) {
+                if (!(HtmlSeLionElementList.isValid(currentKey))) {
                     throw new IllegalArgumentException(String.format(
                             "Detected an invalid key [%s] in data file %s for Platform: WEB", currentKey, dataFileName));
                 }
 
-                if (currentKey.equals(HtmlSeLionElement.PAGE_TITLE.stringify())) {
+                if (currentKey.equals(HtmlSeLionElementList.PAGE_TITLE.stringify())) {
                     continue;
                 }
 
-                if (!(HtmlSeLionElement.isValidHtmlElement(currentKey))) {
+                if (!(HtmlSeLionElementList.isValidHtmlElement(currentKey))) {
                     throw new IllegalArgumentException(String.format(
                             "Detected an invalid key [%s] in data file %s for Platform: WEB", currentKey, dataFileName));
                 }
@@ -165,9 +170,18 @@ public class GUIObjectDetails {
 
             // Validations for IOS
             if ((currentPlatform == TestPlatform.IOS)) {
-                if (!(IOSSeLionElement.isValidUIElement(currentKey))) {
+                if (!(IOSSeLionElementList.isValidUIElement(currentKey))) {
                     throw new IllegalArgumentException(String.format(
                             "Detected an invalid key [%s] in data file %s for Platform IOS", currentKey, dataFileName));
+                }
+            }
+            
+            // Validations for Android - If a user provides an element that is not registered as custom element this
+            // validation takes care of it
+            if((currentPlatform == TestPlatform.ANDROID)) {
+                if (!(AndroidSeLionElementList.isValidUIElement(currentKey))) {
+                    throw new IllegalArgumentException(String.format(
+                            "Detected an invalid key [%s] in data file %s for Platform Android", currentKey, dataFileName));
                 }
             }
         }

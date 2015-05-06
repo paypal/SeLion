@@ -17,24 +17,18 @@ package com.paypal.selion.plugins;
 
 public enum TestPlatform {
 
-    IOS("ios", "IOSPage", "ClassIOSDef.vm"), WEB("web", "BasicPageImpl", "Class.vm");
+    IOS("ios", "MobileTemplate.vm"), WEB("web", "Class.vm"), ANDROID("android", "MobileTemplate.vm");
 
     private String platformName;
-    private String baseClassName;
     private String defFileName;
 
-    private TestPlatform(String platformName, String baseClassName, String defFileName) {
+    private TestPlatform(String platformName, String defFileName) {
         this.platformName = platformName;
-        this.baseClassName = baseClassName;
         this.defFileName = defFileName;
     }
 
     public String getPlatformName() {
         return platformName;
-    }
-
-    public String getBaseClassName() {
-        return baseClassName;
     }
 
     public String getVelocityTemplateToUse() {

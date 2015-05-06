@@ -29,7 +29,7 @@ public interface UserinterfaceObject {
     /**
      * Clears the existing text contents in an editable field.
      */
-    void clearTextField();
+    void clearText();
 
     /**
      * Performs a click at the center of the visible bounds of the UI element represented by this UiObject.

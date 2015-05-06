@@ -13,58 +13,60 @@
 |  the specific language governing permissions and limitations under the License.                                                                           |
 \*----------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.android.sample;
+package com.paypal.selion.testcomponents;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiButton;
 import com.paypal.selion.platform.mobile.android.UiObject;
-import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
-/*
- * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
- */
-public class AppiumAndroidScrollTest {
+public abstract class AndroidPage extends AbstractPage {
 
-    private static final String pageObjectsAppPath = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String deviceName = "android:19";
-    private String messageBoxLocator = "android:id/message";
-    private String menuLocator ="com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private String listViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/scroll_view";
-    
-    private UiButton menuButton = null;
-    private UiObject scrollView = null;
-    private UiObject messageBox = null;
-
-    @BeforeClass
-    public void initElements(){
-        menuButton = new UiButton(menuLocator);
-        scrollView = new UiObject(listViewLocator);
-        messageBox = new UiObject(messageBoxLocator);
-    }
-    
-    @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
-    public void testSwipeActions() {
-        UiObject sampleCell = new UiObject("com.paypal.selion.pageobjectsdemoapp:id/TextView13");
-        UiButton sampleButton = new UiButton("android:id/button1");
-        WebDriverWaitUtils.waitUntilElementIsVisible(menuLocator);
-        menuButton.click(menuLocator);
-        menuButton.click(menuLocator);
-        menuButton.click(scrollView);
-        scrollView.swipeUp();
-        sampleCell.click(sampleButton);
-        Assert.assertEquals("Cell 13", messageBox.getText());
-        sampleButton.click();
-        scrollView.swipeDown();
-        sampleCell = new UiObject("com.paypal.selion.pageobjectsdemoapp:id/TextView2");
-        sampleCell.click(sampleButton);
-        Assert.assertEquals("Cell 2", messageBox.getText());
-        sampleButton.click();
+    public AndroidPage() {
+        super();
     }
 
+    public abstract AndroidPage getPage();
+    
+    protected void initializeMobileElements(Object whichClass, Map<String, String> objectMap) {
+
+        List<Field> fields = new ArrayList<>();
+        Class<?> incomingClass = whichClass.getClass();
+
+        do {
+            fields.addAll(Arrays.asList(incomingClass.getDeclaredFields()));
+            incomingClass = incomingClass.getSuperclass();
+        } while (incomingClass != null);
+        String errorDesc = " Error while initializing fields from the object map for Android Elements. Root cause:";
+        try {
+            for (Field field : fields) {
+                if (!objectMap.containsKey(field.getName())) {
+                    continue;
+                }
+                if (!UiObject.class.isAssignableFrom(field.getType())) {
+                    continue;
+                }
+                String fieldLocator = objectMap.get(field.getName());
+                if (fieldLocator == null) {
+                    continue;
+                }
+                field.setAccessible(true);
+                Class<?> dataMemberClass = Class.forName(field.getType().getName());
+                Class<?> parameterTypes[] = new Class[] { String.class };
+                // As per the current implementation Android elements accept only locators hence initializing one
+                // argument constructors
+                Constructor<?> constructor = dataMemberClass.getDeclaredConstructor(parameterTypes);
+
+                Object[] constructorArgList = new Object[] { fieldLocator };
+                Object retobj = constructor.newInstance(constructorArgList);
+                field.set(whichClass, retobj);
+            }
+        } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException exception) {
+            throw new RuntimeException(errorDesc, exception);
+        }
+    }
 }

@@ -30,9 +30,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
+import com.paypal.selion.elements.AndroidSeLionElementList;
 import com.paypal.selion.elements.HtmlElementUtils;
-import com.paypal.selion.elements.HtmlSeLionElement;
-import com.paypal.selion.elements.IOSSeLionElement;
+import com.paypal.selion.elements.HtmlSeLionElementList;
+import com.paypal.selion.elements.IOSSeLionElementList;
 
 /**
  * Goal used to generate SeLion Page Object code from the data file.
@@ -73,9 +74,23 @@ public class CodeGeneratorMojo extends AbstractMojo {
     /**
      * List of "customElements" to be included during code generation. 
      * 
-     * @parameter expression="${selion-code-generator.customElements}"
+     * @parameter expression="${selion-code-generator.customHtmlElements}"
      */
-    private List<String> customElements;
+    private List<String> customHtmlElements;
+    
+    /**
+     * List of "iosElements" to be included during code generation. 
+     * 
+     * @parameter expression="${selion-code-generator.iosCustomElements}"
+     */
+    private List<String> iosCustomElements;
+    
+    /**
+     * List of "androidElements" to be included during code generation. 
+     * 
+     * @parameter expression="${selion-code-generator.androidCustomElements}"
+     */
+    private List<String> androidCustomElements;
 
     /**
      * Represents the location for the code generator plug-in to create a <code>SeLionPageDetails.txt</code> text file. \
@@ -86,8 +101,17 @@ public class CodeGeneratorMojo extends AbstractMojo {
     private File detailedTextOutputLocation;
     
     public void setCustomElements(String[] elements) {
-        customElements = Arrays.asList(elements);
+        customHtmlElements = Arrays.asList(elements);
     }
+    
+    public void setIosCustomElements(String[] elements) {
+        iosCustomElements = Arrays.asList(elements);
+    }
+    
+    public void setAndroidCustomElements(String[] elements) {
+        androidCustomElements = Arrays.asList(elements);
+    }
+    
     
     public void setExcludeDomains(String[] excludes) {
         excludeDomains = Arrays.asList(excludes);
@@ -157,16 +181,31 @@ public class CodeGeneratorMojo extends AbstractMojo {
         createSeLionPageDetailsFile(allDataFiles);
         CodeGenerator helper = new CodeGenerator(generatedSourceDir);
         
-        for(String customElement : customElements) {
+        for(String customElement : customHtmlElements) {
             String elementName = HtmlElementUtils.getClass(customElement);
-            if(HtmlSeLionElement.isExactMatch(elementName) || IOSSeLionElement.isExactMatch(elementName)) {
+            if(HtmlSeLionElementList.isExactMatch(elementName)) {
                 logger.info("The custom " + elementName + " that will be registered as a valid element is overwriting an existing SeLion element.");
             } else {
                 logger.info("The custom " + elementName + " will be registered as a valid element.");
             }
             
-            HtmlSeLionElement.registerElement(customElement);
-            IOSSeLionElement.registerElement(customElement);
+            HtmlSeLionElementList.registerElement(customElement);
+        }
+        
+        for(String iosElement : iosCustomElements) {
+            String elementName = HtmlElementUtils.getClass(iosElement);
+            if(IOSSeLionElementList.isExactMatch(elementName)) {
+                logger.info("The custom " + elementName + " that will be registered as a valid element is overwriting an existing SeLion element.");
+            } else {
+                logger.info("The custom " + elementName + " will be registered as a valid element.");
+            }
+            
+            IOSSeLionElementList.registerElement(iosElement);
+        }
+        
+        for(String androidElement : androidCustomElements) {
+            //There are no elements declared for android hence proceeding ahead to register the elements
+            AndroidSeLionElementList.registerElement(androidElement);
         }
         
         

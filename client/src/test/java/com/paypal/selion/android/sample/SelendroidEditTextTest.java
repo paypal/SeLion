@@ -64,7 +64,7 @@ public class SelendroidEditTextTest {
         uiEditText = new UiObject("id=edit_text");
         Assert.assertEquals(uiEditText.getText(), "SeLion", "Set value of edit-text does not match");
         uiEditText = new UiObject("id=edit_text");
-        uiEditText.clearTextField();
+        uiEditText.clearText();
         Assert.assertEquals(uiEditText.getText(), "", "Clear on edit-text failed");
         uiEditText.setText("SeLion");
         uiEditText.setText("Selendroid");
