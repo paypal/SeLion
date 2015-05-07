@@ -1,7 +1,7 @@
 <div class="selion-content-div">
   <h1 class="page-header">PageYAML</h1>
 
-  <p class="lead">YAML files in SeLion are are used to abstract away all of the locator/selector information,
+  <p class="lead">YAML files in SeLion are used to abstract away all of the locator/selector information,
     the location strategy to be used to identify an element, localization concerns, and help keep test code clean.
     We call these files <i>PageYAML</i> because when they are processed by <a href="#what-is-code-generator">SeLion's Code Generator</a>,
     a corresponding Page Object in the form of a Java class is created and added to your project source.</p>
@@ -34,28 +34,33 @@
     <li><code>pageTitle</code> - The value for this key is a set of key/value pairs where you define
       the different page titles that exist for the page. Titles can be specified for different locales.
     </li>
-    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent html elements in a page.
+    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent html elements in a page. 
+    The entities declared under <code>elements</code> are a wrapper exposing functions in relevance to the operation that can be done with the html elements in a page.
+
+    <br><i>As an example:</i>
+      <br>A <code>label</code> can be used as a text wrapper to map any element with an inner text. Then use <code>isTextPresent()</code> to check the whether text is present.<br>
+      A <code>text field</code> can be used as a input wrapper to map any element that accepts input. Then use <code>type(String textToType)</code> to send input to the element or call <code>clear()</code> to clear text.
     </li>
     <ul>
       <li> The name to be given to identifying the locator/selector. This name would end up serving as the data member in the
         generated class and maps to the html element specified. The rules for naming locators/selectors are as follows:
         <ul>
-          <li> <var>&lt;prefix&gt;</var>Button Is a Button html element.
-          <li> <var>&lt;prefix&gt;</var>CheckBox Is a Check Box html element.
-          <li> <var>&lt;prefix&gt;</var>DatePicker Is a Date Picker html element.
-          <li> <var>&lt;prefix&gt;</var>Form Is a Form html element.
-          <li> <var>&lt;prefix&gt;</var>Image Is a Image html element.
-          <li> <var>&lt;prefix&gt;</var>Label Is a Label html element.
-          <li> <var>&lt;prefix&gt;</var>Link Is a Link html element.
-          <li> <var>&lt;prefix&gt;</var>RadioButton Is a Radio Button html element.
-          <li> <var>&lt;prefix&gt;</var>List Is a Select List html element.
-          <li> <var>&lt;prefix&gt;</var>Table Is a Table html element.
-          <li> <var>&lt;prefix&gt;</var>TextField Is a Text Field html element.
-          <li> <var>&lt;prefix&gt;</var>Container Is a Container html element.
+          <li> <var>&lt;prefix&gt;</var>Button
+          <li> <var>&lt;prefix&gt;</var>CheckBox 
+          <li> <var>&lt;prefix&gt;</var>DatePicker
+          <li> <var>&lt;prefix&gt;</var>Form
+          <li> <var>&lt;prefix&gt;</var>Image
+          <li> <var>&lt;prefix&gt;</var>Label
+          <li> <var>&lt;prefix&gt;</var>Link
+          <li> <var>&lt;prefix&gt;</var>RadioButton
+          <li> <var>&lt;prefix&gt;</var>List
+          <li> <var>&lt;prefix&gt;</var>Table
+          <li> <var>&lt;prefix&gt;</var>TextField
+          <li> <var>&lt;prefix&gt;</var>Container
         </ul>
         <p>Here <strong><var>prefix</var></strong> is a meaningful name that you
           would give to your element, mapping it to the html element on
-          the page.</p></li>
+          the page.<br><br> <i> Example: loginButton - prefix: login , element name : Button</i></p></li>
       <li><code>locators:</code> - This key represents the set of values that map to the element name.</li>
       <li><b>Localized locator</b> - Values for the locators/selectors which are comprised of a key/value pairs -- the
         locale the html element will exist in and the actual locator/selector to find the html element by.
