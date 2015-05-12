@@ -34,33 +34,42 @@
     <li><code>pageTitle</code> - The value for this key is a set of key/value pairs where you define
       the different page titles that exist for the page. Titles can be specified for different locales.
     </li>
-    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent html elements in a page. 
-    The entities declared under <code>elements</code> are a wrapper exposing functions in relevance to the operation that can be done with the html elements in a page.
-
-    <br><i>As an example:</i>
-      <br>A <code>label</code> can be used as a text wrapper to map any element with an inner text. Then use <code>isTextPresent()</code> to check the whether text is present.<br>
-      A <code>text field</code> can be used as a input wrapper to map any element that accepts input. Then use <code>type(String textToType)</code> to send input to the element or call <code>clear()</code> to clear text.
+    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent html elements on a page.
     </li>
     <ul>
-      <li> The name to be given to identifying the locator/selector. This name would end up serving as the data member in the
-        generated class and maps to the html element specified. The rules for naming locators/selectors are as follows:
+      <li>The name to identify the locator/selector. This name is used in the generated class and maps to the element
+        specified by the locator/selector. Names for a locator/selector follow the pattern
+        <strong><var>&lt;prefix&gt;</var>&lt;ElementType&gt;</strong>
+        where <strong>&lt;ElementType&gt;</strong> is one of the following;
         <ul>
-          <li> <var>&lt;prefix&gt;</var>Button
-          <li> <var>&lt;prefix&gt;</var>CheckBox 
-          <li> <var>&lt;prefix&gt;</var>DatePicker
-          <li> <var>&lt;prefix&gt;</var>Form
-          <li> <var>&lt;prefix&gt;</var>Image
-          <li> <var>&lt;prefix&gt;</var>Label
-          <li> <var>&lt;prefix&gt;</var>Link
-          <li> <var>&lt;prefix&gt;</var>RadioButton
-          <li> <var>&lt;prefix&gt;</var>List
-          <li> <var>&lt;prefix&gt;</var>Table
-          <li> <var>&lt;prefix&gt;</var>TextField
-          <li> <var>&lt;prefix&gt;</var>Container
+          <li><i>Button</i> - Element behaves like or is a button</li>
+          <li><i>CheckBox</i> - Element behaves like or is a check box</li>
+          <li><i>DatePicker</i> - Element behaves like or is a date selection calendar control</li>
+          <li><i>Form</i> - Element behaves like or is a form</li>
+          <li><i>Image</i> - Element behaves like or is an image</li>
+          <li><i>Label</i> - Element is a text label</li>
+          <li><i>Link</i> - Element behaves like or is a link</li>
+          <li><i>RadioButton</i> - Element behaves like or is a radio button</li>
+          <li><i>List</i> - Element behaves like or is a select list</li>
+          <li><i>Table</i> - Element behaves like or is a table</li>
+          <li><i>TextField</i> - Element behaves like or is a text field</li>
+          <li><i>Container</i> - Element is an unbounded container for elements of other types</li>
+          <li>&lt;ACustomElementType&gt; - Element is a custom element</li>
         </ul>
-        <p>Here <strong><var>prefix</var></strong> is a meaningful name that you
-          would give to your element, mapping it to the html element on
-          the page.<br><br> <i> Example: loginButton - prefix: login , element name : Button</i></p></li>
+        <p><strong><var>&lt;prefix&gt;</var></strong> is a meaningful name that you give to the element.
+          For example; <code>loginButton</code> - prefix: <i>login</i>, element type: <i>Button</i></p>
+        <p>When selecting an element type (Button, CheckBox, etc), it is important to note there is not necessarily a
+          one-to-one mapping with HTML element types here. Rather, each element type includes a set of behaviors
+          (properties and/or methods) which are suitable for the scenario they support. This means;
+          <ul>
+          <li>A <code>Label</code> can be used to map to any element with inner text. It exposes the method
+            <code>isTextPresent()</code> to check the whether text is present. </li>
+          <li>A <code>TextField</code> can be used
+            to map to any element that accepts text input. It exposes the method <code>type(String textToType)</code> to send
+            input to the element and the method <code>clear()</code> to clear text.</li>
+          <li>And so on...</li>
+          </ul></p>
+      </li>
       <li><code>locators:</code> - This key represents the set of values that map to the element name.</li>
       <li><b>Localized locator</b> - Values for the locators/selectors which are comprised of a key/value pairs -- the
         locale the html element will exist in and the actual locator/selector to find the html element by.
