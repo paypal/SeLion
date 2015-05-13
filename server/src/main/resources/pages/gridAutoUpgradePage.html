@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+    <title>Grid Management Console</title>
+    <link rel='stylesheet' type='text/css' href='/grid/resources/form/view.css' media='all'></link>
+    <script type='text/javascript' src='/grid/resources/form/view.js'></script>
+    <script type='text/javascript' src='/grid/resources/form/jquery.min.js'></script>
+  </head>
+  <body id='main_body'>
+  <script>
+    function validateForm() {
+
+      var json = document.getElementById('downloadJSON').value;
+      var downloads, isSuccess = true;
+
+      try {
+        downloads = $.parseJSON(json);
+      } catch(err) {
+        alert('Invalid JSON ' + err);
+        return false;
+      }
+
+      $.each(downloads, function(index, artifact) {
+        if(!artifact.hasOwnProperty('name')) {
+          alert('There is no "name" attribute in the below JSON element: ' + JSON.stringify(artifact, undefined, 2));
+          isSuccess = false;
+          return false;
+        }
+
+        $.each(artifact, function(key, attr) {
+          if(!(key == 'name' || key == 'any' || key == 'windows' || key == 'linux' || key == 'mac')) {
+            alert('Attribute "' + key + '" is invalid. Value should be either of name / any / windows / linux / max');
+            isSuccess = false;
+            return false;
+          }
+          if(key != 'name' && !isValidPlatform(attr)) {
+            isSuccess = false;
+            return false;
+          }
+        })
+
+      })
+
+      if(!isSuccess) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function isValidPlatform(platform) {
+      var regExpr = '%s';
+      if(!platform.hasOwnProperty('url')) {
+        alert('There is no "url" attribute in the below JSON element: ' + JSON.stringify(platform, undefined, 2));
+        return false;
+      } else {
+        var url = platform.url;
+        if(url.match(regExpr) == null) {
+          alert(url + ' is invalid URL. Hint:URL must start with http or https');
+          return false;
+        }
+      }
+
+      if(!platform.hasOwnProperty('checksum')) {
+        alert('There is no "checksum" attribute in the below JSON element: ' + JSON.stringify(platform, undefined, 2));
+        return false;
+      }
+
+      return true;
+    }
+  </script>
+  <img id='top' src='/grid/resources/form/top.png' alt='' />
+  <div id='form_container'>
+    <form id='myForm' name='myForm' class='appnitro' method='post' onsubmit='return validateForm()' action='%s'>
+      <div class='form_description'>
+        <h2>SeLion Grid - Auto Update</h2>
+        <p>Use this page to automatically update all nodes</p>
+      </div>
+      <ul>
+        <h3 align='center'>Update details below for the new artifacts</h3>
+        <li id='li'>
+          <label class='description' for='downloadJSON'>Download JSON Content</label>
+          <div>
+            <textarea id='downloadJSON' name='downloadJSON' rows='30' cols='70'>%s</textarea>
+          </div>
+        </li>
+        <li class='buttons'>
+          <input type='hidden' name='form_id' value='710528'/>
+          <input id='saveForm' class='button_text' type='submit' name='submit' value='Submit'/>
+        </li>
+      </ul>
+    </form>
+    <div id='footer'>
+      <a href='/grid/admin/LoginServlet?form_id=login'>Go To Home</a>&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href='/grid/admin/LoginServlet?logout=true'>Logout</a>
+      <p>Created by the SeLion Project</p>
+    </div>
+  </div>
+  <img id='bottom' src='/grid/resources/form/bottom.png' alt=''/>
+  </body>
+</html>

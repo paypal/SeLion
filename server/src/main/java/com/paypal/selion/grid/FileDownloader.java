@@ -27,10 +27,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -43,8 +41,8 @@ import com.paypal.selion.pojos.ArtifactDetails.URLChecksumEntity;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
- * File downloader is used to clean up already downloaded files and download all the files specified in the
- * download.properties
+ * File downloader is used to clean up files already downloaded and download all the files specified in the
+ * download.json file
  */
 final class FileDownloader {
 
@@ -74,13 +72,13 @@ final class FileDownloader {
     }
 
     /**
-     * This method will check whether the download.properties file got modified and download all the files in
-     * download.properties
+     * This method will check whether the download.json file got modified and download all the files in
+     * download.json
      */
     public static void checkForDownloads() {
         LOGGER.entering();
 
-        File downloadFile = new File(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE);
+        File downloadFile = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
 
         if (lastModifiedTime == downloadFile.lastModified()) {
             return;
@@ -89,27 +87,22 @@ final class FileDownloader {
 
         cleanup();
 
-        Properties prop = new Properties();
+        LOGGER.info("Current Platform: " + Platform.getCurrent());
+        List<URLChecksumEntity> artifactDetails = new ArrayList<ArtifactDetails.URLChecksumEntity>();
 
         try {
-            FileInputStream f = new FileInputStream(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE);
-            prop.load(new FileInputStream(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE));
-            f.close();
+            artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatform(downloadFile);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Unable to open download properties file", e);
+            LOGGER.log(Level.SEVERE, "Unable to open download.json file", e);
             throw new RuntimeException(e);
         }
 
-        LOGGER.info("Current Platform: " + Platform.getCurrent());
-        Map<String, URLChecksumEntity> artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatform(prop);
-
-        for (Entry<String, URLChecksumEntity> artifact : artifactDetails.entrySet()) {
-            URLChecksumEntity entity = artifact.getValue();
+        for (Iterator<URLChecksumEntity> iterator = artifactDetails.iterator(); iterator.hasNext();) {
+            URLChecksumEntity entity = (URLChecksumEntity) iterator.next();
             String url = entity.getUrl().getValue();
             String checksum = entity.getChecksum().getValue();
             StringBuilder msg = new StringBuilder();
-            msg.append("Downloading ").append(artifact.getKey());
-            msg.append(" from URL: ").append(url).append("...");
+            msg.append("Downloading from URL: ").append(url).append("...");
             msg.append("[").append(checksum).append("] will be used for checksum validation.");
             LOGGER.info(msg.toString());
             String result;

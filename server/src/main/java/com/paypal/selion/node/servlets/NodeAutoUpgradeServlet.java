@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,23 +15,24 @@
 
 package com.paypal.selion.node.servlets;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.paypal.selion.pojos.PropsKeys;
+import org.apache.commons.io.FileUtils;
+
+import com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ServletHelper;
 
 /**
- * This servlet retrieves selenium url, selenium checksum, ie driver url , ie driver checksum, chrome driver url and
- * chrome checksum from the client and writes those details in dowload.properties file in the current node
+ * This servlet retrieves the download.json content from the HTTP request and writes it to dowload.json file on the
+ * current node
  * 
  */
 public class NodeAutoUpgradeServlet extends HttpServlet {
@@ -47,23 +48,14 @@ public class NodeAutoUpgradeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         process(ServletHelper.getParameters(req));
     }
-    
+
     public void process(Map<String, String> request) {
-        if (! ServletHelper.hasAllParameters(request)) {
+        if (request.get(GridAutoUpgradeDelegateServlet.PARAM_JSON) == null) {
             return;
         }
-        Properties prop = new Properties();
         try {
-            // set the properties value
-            for (PropsKeys eachKey : PropsKeys.getValuesForCurrentPlatform()) {
-                String value = request.get(eachKey.getKey());
-                if (value != null) {
-                    prop.setProperty(eachKey.getKey(), value.trim());
-                }
-            }
-            FileOutputStream f = new FileOutputStream(SeLionGridConstants.DOWNLOAD_PROPERTIES_FILE);
-            prop.store(f, null);
-            f.close();
+            String json = request.get(GridAutoUpgradeDelegateServlet.PARAM_JSON);
+            FileUtils.writeStringToFile(new File(SeLionGridConstants.DOWNLOAD_JSON_FILE), json);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

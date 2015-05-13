@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-d|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -372,7 +372,7 @@ public class JarSpawner {
         try {
             FileUtils.forceMkdir(new File(DOWNLOADS_DIR));
             FileUtils.forceMkdir(new File(LOGS_DIR));
-            copyFileFromResources(DOWNLOAD_PROPERTIES_FILE_RESOURCE, DOWNLOAD_PROPERTIES_FILE);
+            copyFileFromResources(DOWNLOAD_JSON_FILE_RESOURCE, DOWNLOAD_JSON_FILE);
             copyFileFromResources(SELION_CONFIG_FILE_RESOURCE, SELION_CONFIG_FILE);
             ConfigParser.setConfigFile(SELION_CONFIG_FILE);
         } catch (IOException e) {

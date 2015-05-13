@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -71,7 +71,8 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             String nodes[] = request.getParameterValues("nodes");
 
             if (nodes == null || nodes.length == 0) {
-                ServletHelper.displayMessageOnRedirect(writer,"Please select atleast 1 node in order to perform restarts.");
+                ServletHelper.displayMessageOnRedirect(writer,
+                        "Please select atleast 1 node in order to perform restarts.");
                 return;
             }
             for (String temp : nodes) {
@@ -80,7 +81,7 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
                     proxy.shutdownNode();
                 }
             }
-            ServletHelper.displayMessageOnRedirect(writer,"All nodes were forcibly restarted.");
+            ServletHelper.displayMessageOnRedirect(writer, "Restart process initiated on all nodes.");
         } else {
             ServletHelper.displayHeader(writer);
             writer.write("<div id='form_container'>");

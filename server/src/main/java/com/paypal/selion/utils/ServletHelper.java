@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import com.paypal.selion.grid.servlets.LoginServlet;
-import com.paypal.selion.pojos.PropsKeys;
 
 /**
  * A utility class that basically helps in extracting information from Servlet request/responses also has the commonly
@@ -52,23 +51,6 @@ public final class ServletHelper {
             }
         }
         return parameters;
-    }
-
-    /**
-     * Helps validate if a map that represents the parameters and their values from a {@link HttpServletRequest} and
-     * verify if it contains all the parameters represented by {@link PropsKeys}
-     * 
-     * @param request
-     *            - A {@link Map} that represents all the parameters and their values from a {@link HttpServletRequest}
-     * @return - <code>true</code> if the map contains all the parameters represented by the keys in {@link PropsKeys}
-     */
-    public static boolean hasAllParameters(Map<String, String> request) {
-        for (PropsKeys eachProp : PropsKeys.getValuesForCurrentPlatform()) {
-            if (request.get(eachProp.getKey()) == null) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**

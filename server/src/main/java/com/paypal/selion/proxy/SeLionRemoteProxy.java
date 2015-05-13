@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -33,17 +33,17 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 
+import com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
-import com.paypal.selion.pojos.ArtifactDetails;
 import com.paypal.selion.pojos.SeLionGridConstants;
-import com.paypal.selion.pojos.ArtifactDetails.URLChecksumEntity;
 import com.paypal.selion.utils.ConfigParser;
 import com.paypal.selion.utils.ConfigParser.ConfigParserException;
 
@@ -132,7 +132,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         }
     }
 
-    public boolean release(ArtifactDetails artifactDetails) {
+    public boolean release(String downloadJSON) {
 
         final int TIME_OUT = 30 * 1000;
         RequestConfig config = RequestConfig.custom().setConnectTimeout(TIME_OUT).setSocketTimeout(TIME_OUT).build();
@@ -145,12 +145,8 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         HttpPost post = new HttpPost(url.toString());
 
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-
-        Map<String, URLChecksumEntity> artifactDetailsAsMap = artifactDetails.getArtifactDetailsAsMap();
-        for (URLChecksumEntity eachArtifact : artifactDetailsAsMap.values()) {
-            nvps.add(eachArtifact.getChecksum());
-            nvps.add(eachArtifact.getUrl());
-        }
+        NameValuePair jsonNVP = new BasicNameValuePair(GridAutoUpgradeDelegateServlet.PARAM_JSON, downloadJSON);
+        nvps.add(jsonNVP);
 
         try {
             post.setEntity(new UrlEncodedFormEntity(nvps));

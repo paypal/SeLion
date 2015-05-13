@@ -85,14 +85,14 @@ public class SeLionGridConstants {
     public static final String CONFIG_DIR = "config/";
 
     /**
-     * Resource path to the download.properties file
+     * Resource path to the download.json file
      */
-    public static final String DOWNLOAD_PROPERTIES_FILE_RESOURCE = "/" + CONFIG_DIR + "download.properties";
+    public static final String DOWNLOAD_JSON_FILE_RESOURCE = "/" + CONFIG_DIR + "download.json";
 
     /**
-     * Installed/Extracted path to the download.properties file
+     * Installed/Extracted path to the download.json file
      */
-    public static final String DOWNLOAD_PROPERTIES_FILE = SELION_HOME_DIR + CONFIG_DIR + "download.properties";
+    public static final String DOWNLOAD_JSON_FILE = SELION_HOME_DIR + CONFIG_DIR + "download.json";
 
     /**
      * Installed path to the downloads directory
@@ -108,6 +108,11 @@ public class SeLionGridConstants {
      * Resource path to the password change html template file
      */
     public static final String PASSWORD_CHANGE_PAGE_RESOURCE = "/pages/changePageGetDetails.html";
+
+    /**
+     * Resource path to the grid auto upgrade html template file
+     */
+    public static final String GRID_AUTO_UPGRADE_PAGE_RESOURCE = "/pages/gridAutoUpgradePage.html";
 
     /**
      * URL to the SeLion sauce grid home page
