@@ -1,0 +1,12 @@
+baseClass: "com.paypal.selion.testcomponents.IOSPage"
+platform: "ios"
+defaultLocale: "US"
+elements:
+  sampleUIAStaticText:
+    locators:
+      FR: "//UIAStaticText[contains(@name,'climbed')]"
+      US: "//UIAStaticText[contains(@name,'climbed')]"
+  sampleUIATableCell:
+    locators:
+      FR: "//UIATableCell[contains(@name,'Mountain 1')]"
+      US: "//UIATableCell[contains(@name,'Mountain 1')]"

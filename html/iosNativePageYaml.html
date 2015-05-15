@@ -1,0 +1,68 @@
+<div class="selion-content-div">
+  <h1 class="page-header">PageYAML for iOS automation</h1>
+
+  <p class="lead">This section is focused on SeLion PageYAML to facilitate automation for
+    iOS apps. Concepts outlined in this section build on those described in <a href="#pageyaml">SeLion PageYAML for
+    web flow</a>.</p>
+   
+  <h2>Contents of a PageYAML File</h2>
+
+  <p>A PageYAML file that represents a page (or screen) in an iOS application is made up of the following parts.</p>
+  <ul>
+    <li><code>baseClass</code> - The value for this key represents the fully qualified name of a class that will
+      serve as the base class to inherit attributes and/or capabilities from. If your page is new and is not
+      customizing an existing page, then you should specify the value 
+      <code>com.paypal.selion.testcomponents.IOSPage</code> which by default is the class within SeLion that 
+      provides all the basic operations that are required for any given iOS page, including instantiation logic.
+    </li>
+    <li><code>platform</code> - The value for this key represents the platform the YAML is intended for.
+     By default, if nothing is specified it is taken as "web". For platforms like iOS it must be specified as "ios".
+     </li>
+    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent elements in a page.
+    </li>
+    <ul>
+      <li>A unique name for identifying a particular element and type in the page. This name would end up as the name of 
+          the member variable of the generated class and maps to the element. The rules for naming locators/selectors 
+          are as follows:
+        <ul>
+          <li> &lt;prefix&gt;UIAElement for basic UI element.</li>
+          <li> &lt;prefix&gt;UIAButton for Button UI element.</li>
+          <li> &lt;prefix&gt;UIAAlert for Alert UI element.</li>
+          <li> &lt;prefix&gt;UIANavigationBar for Navigation Bar UI element.</li>
+          <li> &lt;prefix&gt;UIAPicker for Picker UI element.</li>
+          <li> &lt;prefix&gt;UIASlider for Slider UI element.</li>
+          <li> &lt;prefix&gt;UIAStaticText for Static Text UI element.</li>
+          <li> &lt;prefix&gt;UIATableView for Table View UI element.</li>
+          <li> &lt;prefix&gt;UIATextField for Text Field UI element.</li>
+        </ul>
+        <p>Here <strong>prefix</strong> would be a concise, contextual and meaningful name of your choice.</p>
+      </li>
+      <p>The list of supported iOS elements can be found 
+         <a href="java-docs/client-apis/com/paypal/selion/platform/mobile/ios/package-summary.html" 
+         alt="List of supported ios elements">here</a>.
+      </p>
+      <p>For including iOS custom elements refer to the section <b>Configuration Parameters for Customizing the Code Generator 
+        Maven Plugin</b> as described in <a href="#what-is-code-generator">SeLion Code Generator</a>. 
+      </p>
+    </ul>
+  </ul>
+  
+  <h2>An Example PageYAML File for an iOS application</h2>
+  <pre data-src="../sample-files/yamlpage-iosnativeapp.yaml" class="language-markup"></pre>
+  <p>Some important things to reiterate from this example:</p>
+  <ul>
+   <li><code>baseClass</code> value for the IOS Native app automation must be 
+        <code>com.paypal.selion.testcomponents.IOSPage</code> or a class which extends it.
+   </li>
+   <li><code>platform</code> value must be specified as <strong>ios</strong>. This value is mandatory. 
+       Otherwise, <a href="#pageyaml">web</a> is assumed.
+   </li>
+   <li>The suffix of all the elements must be a valid element name as per the platform. 
+       In the above YAML file a text area is represented using
+       <code>UIAStaticText</code> and the element name is given as <code>sampleUIAStaticText</code> 
+       which is a valid one.</li>
+  </ul> 
+  
+</div>
+
+<script src="../js/prismjs-min.js"></script>  
