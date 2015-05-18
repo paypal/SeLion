@@ -17,7 +17,6 @@ package com.paypal.selion.platform.grid;
 
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
-import io.selendroid.client.SelendroidDriver;
 
 import java.net.URL;
 

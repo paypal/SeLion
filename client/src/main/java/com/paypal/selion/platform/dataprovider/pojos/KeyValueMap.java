@@ -26,6 +26,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Mappable class for a collection of KeyValuePair
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class KeyValueMap {

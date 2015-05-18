@@ -69,7 +69,7 @@ public class GUIObjectDetailsTest {
     
     @Test
     public void validateCustomMobileElements() throws Exception {
-        String dataFile = "src/test/resources/CustomMobileElementPage.yaml";
+        String dataFile = "src/test/resources/CustomIOSElementPage.yaml";
         
         IOSSeLionElementList.registerElement("com.paypal.test.CustomElement");
         IOSSeLionElementList.registerElement("com.paypal.test.AnotherElement");

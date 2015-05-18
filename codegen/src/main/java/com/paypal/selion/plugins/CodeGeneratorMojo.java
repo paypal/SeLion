@@ -72,21 +72,21 @@ public class CodeGeneratorMojo extends AbstractMojo {
     private List<String> excludeDomains;
     
     /**
-     * List of "customElements" to be included during code generation. 
+     * List of "html" custom elements to be included during code generation. 
      * 
-     * @parameter expression="${selion-code-generator.customHtmlElements}"
+     * @parameter expression="${selion-code-generator.htmlCustomElements}"
      */
-    private List<String> customHtmlElements;
+    private List<String> htmlCustomElements;
     
     /**
-     * List of "iosElements" to be included during code generation. 
+     * List of "ios" custom elements to be included during code generation. 
      * 
      * @parameter expression="${selion-code-generator.iosCustomElements}"
      */
     private List<String> iosCustomElements;
     
     /**
-     * List of "androidElements" to be included during code generation. 
+     * List of "android" custom elements to be included during code generation. 
      * 
      * @parameter expression="${selion-code-generator.androidCustomElements}"
      */
@@ -101,7 +101,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
     private File detailedTextOutputLocation;
     
     public void setCustomElements(String[] elements) {
-        customHtmlElements = Arrays.asList(elements);
+        htmlCustomElements = Arrays.asList(elements);
     }
     
     public void setIosCustomElements(String[] elements) {
@@ -181,15 +181,15 @@ public class CodeGeneratorMojo extends AbstractMojo {
         createSeLionPageDetailsFile(allDataFiles);
         CodeGenerator helper = new CodeGenerator(generatedSourceDir);
         
-        for(String customElement : customHtmlElements) {
-            String elementName = HtmlElementUtils.getClass(customElement);
+        for(String htmlElement : htmlCustomElements) {
+            String elementName = HtmlElementUtils.getClass(htmlElement);
             if(HtmlSeLionElementList.isExactMatch(elementName)) {
                 logger.info("The custom " + elementName + " that will be registered as a valid element is overwriting an existing SeLion element.");
             } else {
                 logger.info("The custom " + elementName + " will be registered as a valid element.");
             }
             
-            HtmlSeLionElementList.registerElement(customElement);
+            HtmlSeLionElementList.registerElement(htmlElement);
         }
         
         for(String iosElement : iosCustomElements) {

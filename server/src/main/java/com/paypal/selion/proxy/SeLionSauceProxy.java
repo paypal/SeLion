@@ -48,7 +48,6 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionSauceProxy.class);
 
     private int maxTestCase = 0;
-    private volatile boolean bKill = false;
 
     private Lock accessLock = new ReentrantLock();
 
@@ -189,7 +188,6 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
     }
 
     public void teardown() {
-        bKill = true;
         super.teardown();
     }
 
