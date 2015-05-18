@@ -12,9 +12,20 @@
   </executions>
   <configuration>
     <basePackage>com.mycompany</basePackage>
-    <customElements>
-      <customElement>com.mycompany.CustomButton</customElement>
-      <customElement>com.mycompany.CustomSelectList</customElement>
-    </customElements>
+    <htmlCustomElements>
+      <htmlCustomElement>
+        com.mycompany.CustomButton
+      </htmlCustomElement>
+    </htmlCustomElements>
+    <iosCustomElements>
+      <iosCustomElement>
+        com.mycompany.ios.CustomUIAButton
+      </iosCustomElement>
+    </iosCustomElements>
+    <androidCustomElements>
+      <androidCustomElement>
+        com.mycompany.android.CustomUiButton
+      </androidCustomElement>
+    </androidCustomElements>
   </configuration>
 </plugin>

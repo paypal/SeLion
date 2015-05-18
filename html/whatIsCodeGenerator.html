@@ -56,13 +56,21 @@
       Each domain is represented by a directory under <code>src/main/resources/GUIData</code>.
       <pre data-src="../sample-files/whatIsCodeGenerator-sample5.xml" data-line="15-18" class="line-numbers"></pre>
     </li>
-    <li><code>&lt;customElements /&gt;</code> - This configuration parameter represents the list of custom elements
+    <li><code>&lt;htmlCustomElements /&gt;</code> - This configuration parameter represents the list of custom HTML elements
       that will be registered to the code generator. Each custom element should extend the class <code>AbstractElement</code> --
-      make sure to implement all constructors.
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample6.xml" data-line="15-18" class="line-numbers"></pre>
-      Custom element sample.
+      make sure to <b>implement all constructors</b>.
+     </li>  
+     <li><code>&lt;iosCustomElements /&gt;</code> - This configuration parameter represents the list of custom IOS elements
+      that will be registered to the code generator. Each custom element should extend the class <code>IOSPage</code> --
+      make sure to <b>implement all constructors</b>.
+     </li>
+     <li><code>&lt;androidCustomElements /&gt;</code> - This configuration parameter represents the list of custom Android elements
+      that will be registered to the code generator. Each custom element should extend the class <code>AndroidPage</code> --
+      make sure to <b>implement all constructors</b>.
+     </li> 
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample6.xml" data-line="15-29" class="line-numbers"></pre>
+      HTML Custom Element sample;
       <pre data-src="../sample-files/whatIsCodeGenerator-sample7.java"></pre>
-    </li>
   </ul>
   <h2>Put the SeLion Code Generator in Action</h2>
   <ol>

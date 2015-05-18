@@ -10,7 +10,7 @@ public class CustomElementOne extends AbstractElement {
   }
 
   public CustomElementOne(String locator, String controlName, 
-    ParentTraits parent) {
+                          ParentTraits parent) {
     super(locator, controlName, parent);
   }
 
