@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,6 +25,7 @@ import org.testng.Reporter;
 public final class SeLionAsserts {
 
     private static SeLionHardAssert hardAssert = new SeLionHardAssert();
+    private static SeLionSoftAssert softAssert = new SeLionSoftAssert();
 
     private SeLionAsserts() {
         // Utility class. So hide the constructor
@@ -187,9 +188,7 @@ public final class SeLionAsserts {
      * 
      */
     public static void verifyTrue(boolean condition, String msg) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertTrue(condition, msg);
+        getSoftAssertInContext().assertTrue(condition, msg);
     }
 
     /**
@@ -204,9 +203,7 @@ public final class SeLionAsserts {
      *            - A test condition to be validated for pass/fail
      */
     public static void verifyTrue(boolean condition) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertTrue(condition);
+        getSoftAssertInContext().assertTrue(condition);
     }
 
     /**
@@ -224,9 +221,7 @@ public final class SeLionAsserts {
      * 
      */
     public static void verifyFalse(boolean condition, String msg) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertFalse(condition, msg);
+        getSoftAssertInContext().assertFalse(condition, msg);
     }
 
     /**
@@ -241,9 +236,7 @@ public final class SeLionAsserts {
      *            - A test condition to be validated for pass/fail
      */
     public static void verifyFalse(boolean condition) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertFalse(condition);
+        getSoftAssertInContext().assertFalse(condition);
     }
 
     /**
@@ -262,9 +255,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyEquals(Object actual, Object expected, String msg) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertEquals(actual, expected, msg);
+        getSoftAssertInContext().assertEquals(actual, expected, msg);
     }
 
     /**
@@ -281,9 +272,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyEquals(Object actual, Object expected) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertEquals(actual, expected);
+        getSoftAssertInContext().assertEquals(actual, expected);
     }
 
     /**
@@ -299,9 +288,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyNotEquals(Object actual, Object expected) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertNotEquals(actual, expected);
+        getSoftAssertInContext().assertNotEquals(actual, expected);
     }
 
     /**
@@ -319,9 +306,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyNotEquals(Object actual, Object expected, String msg) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertNotEquals(actual, expected, msg);
+        getSoftAssertInContext().assertNotEquals(actual, expected, msg);
     }
 
     /**
@@ -334,9 +319,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyNull(Object actual) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertNull(actual);
+        getSoftAssertInContext().assertNull(actual);
     }
 
     /**
@@ -352,9 +335,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyNull(Object actual, String msg) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertNull(actual, msg);
+        getSoftAssertInContext().assertNull(actual, msg);
     }
 
     /**
@@ -367,9 +348,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyNotNull(Object actual) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertNotNull(actual);
+        getSoftAssertInContext().assertNotNull(actual);
     }
 
     /**
@@ -385,9 +364,7 @@ public final class SeLionAsserts {
      * </code>
      */
     public static void verifyNotNull(Object actual, String msg) {
-        SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-        sa.assertNotNull(actual, msg);
+        getSoftAssertInContext().assertNotNull(actual, msg);
     }
 
     /**
@@ -495,6 +472,24 @@ public final class SeLionAsserts {
 
     public static void fail(Throwable e, String message) {
         hardAssert.fail(message, e);
+    }
+    
+    /**
+     * Gets the instance of {@link SeLionSoftAssert} depending on whether the soft assert methods
+     * (verify methods) are being called in TestNG context or as a Java application.
+     * @return A {@link SeLionSoftAssert} instance.
+     */
+    private static SeLionSoftAssert getSoftAssertInContext() {
+        SeLionSoftAssert sa;
+        if (null == Reporter.getCurrentTestResult()) {
+            // Assume Java Application, and return the static instance of SeLionSoftAssert.
+            sa = softAssert;
+        }
+        else {
+            sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
+                SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
+        }
+        return sa;
     }
 
 }

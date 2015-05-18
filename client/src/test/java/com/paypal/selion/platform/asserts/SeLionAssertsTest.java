@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -64,6 +64,7 @@ public class SeLionAssertsTest {
         SeLionAsserts.verifyEquals(true, false, "My failure assert2");
         SeLionAsserts.verifyEquals("OK", "OK", "My assert3");
         SeLionAsserts.verifyFalse(false, "My assert4");
+        SeLionAsserts.verifyNotEquals(1, 1, "My failure assert5");
         SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
                 SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
         sa.assertAll();
