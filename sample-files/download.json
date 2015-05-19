@@ -1,0 +1,24 @@
+[
+  {
+    "name": "selenium",
+    "any": {
+      "url": "https://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar",
+      "checksum": "a62db4c36e230a936455aaacda9340a8"
+    }
+  },
+  {
+    "name": "chrome",
+    "windows": {
+      "url": "https://chromedriver.storage.googleapis.com/2.14/chromedriver_win32.zip",
+      "checksum": "00c70587c3e215f030307d546b315323"
+    },
+    "linux": {
+      "url": "http://chromedriver.storage.googleapis.com/2.14/chromedriver_linux64.zip",
+      "checksum": "8368d266bd832ff2ea292baedbc770be"
+    },
+    "mac": {
+      "url": "http://chromedriver.storage.googleapis.com/2.14/chromedriver_mac32.zip",
+      "checksum": "2b8a3e7249c80dec95264cbb55c897ed"
+    }
+  }
+]

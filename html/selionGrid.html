@@ -102,7 +102,7 @@
 
   <h2 id="selion-config">SeLion Grid Configuration File</h2>
   <p>
-    The SeLion Grid config JSON file allows you to configure the additional components in SeLion-Grid. Once you start a
+    The SeLion Grid config JSON file allows you to configure the additional components in SeLion Grid. Once you start a
     Node for the first time, the file will be available in <code>$SELION_HOME/config/SeLionConfig.json</code>.
     Optionally, you can specify a different file with the <code>-selionConfig</code> argument.
   </p>
@@ -124,6 +124,22 @@
   </ol>
   <h2>Sample SeLionConfig.json File</h2>
   <pre data-src="../sample-files/SeLionConfig.json" class="language-markup"></pre>
-</div>
 
+  <h2 id="download-json-importance">SeLion Grid Dependency Downloader</h2>
+  <p>
+    When you host a grid or spawn a node, SeLion Grid will download the artifacts specified in the file
+    <code>$SELION_HOME/config/download.json</code>. Artifact details in this file include the name, platform, url,
+    and the checksum.
+  </p>
+  <p>
+    Furthermore, if you want to upgrade the SeLion nodes you can click on the <b>Auto Upgrade Nodes</b> link from the
+    SeLion Grid Management Console. This link presents a form and the download.json file for you to modify per your needs.
+    Once submitted, the grid relays the new artifact details to all nodes registered with the SeLion Grid.
+    The nodes then receive the information, clean any old artifacts, downloading the new artifacts, and come back online.
+    Note: For this capability to work, the hub and every node which you want to upgrade must be running the SeLion Enhanced Grid.
+  </p>
+  <h2>Sample download.json file</h2>
+  <pre data-src="../sample-files/download.json" class="language-markup"></pre>
+
+</div>
 <script src="../js/prismjs-min.js"></script>
