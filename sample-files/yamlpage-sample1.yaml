@@ -4,7 +4,7 @@ pageTitle:
 elements:
   addOrEditAPIPermissionsLink:
     locators:
-      US: "//div[@id='apiOption1']/p[3]/a"
+      US: "//div[@id='apiOption1']/p[3]/a|id=apiOption1Href"
   viewAPICertificateLink:
     locators:
       US: "//div[@id='apiOption2']/p[3]/a"
@@ -13,14 +13,14 @@ elements:
       US: "//div[@id='main']/div/form/p[3]/a"
   requestAPICredentialsLink:
     locators:
-      US: "//a[contains(@href, 'cmd=_profile-api-add-direct-access')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dadd%2ddirect%2daccess')]"
+      US: "//a[contains(@href, 'cmd=_profile-api-add-direct-access')]"
       FR: "foo"
   grantAPIPermissionLink:
     locators:
-      US: "//a[contains(@href, 'cmd=_profile-api-add-authorization')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dadd%2dauthorization')]"
+      US: "//a[contains(@href, 'cmd=_profile-api-add-authorization')]"
   viewAPISignatureLink:
     locators:
-      US: "//a[contains(@href, 'cmd=_profile-api-signature')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dsignature')]"
+      US: "//a[contains(@href, 'cmd=_profile-api-signature')]"
   headerContainer:
     locators:
       US: "css=header"

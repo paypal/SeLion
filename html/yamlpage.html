@@ -26,7 +26,7 @@
   <ul>
     <li><code>baseClass</code> - The value for this key represents the fully qualified package name of a class that will
       serve as the base class to inherit attributes and/or capabilities from. If your page is new and is not
-      customizing an existing page (for example, a login page which extends a header page ), then you
+      customizing an existing page (for example, a login page which extends a header page), then you
       should specify the value <code>com.paypal.selion.testcomponents.BasicPageImpl</code> which
       by default is the class within SeLion that provides all the basic operations that are required for any given web page,
       including instantiation logic.
@@ -90,10 +90,12 @@
       </ul>
       If you do not wish to include any validators, you can leave it empty <code>[]</code></li>
     </li>
-    <li><code>defaultLocale:</code> - The default locale to use if the PageYAML does not explicitly define a locale specific
-      value. For example; A value of <code>US</code> will require US definitions in the PageYAML but if a test is currently
-      running against the German version of a site and the <code>DE</code> definition does not exist for the queried
-      attribute, then the US version will be used.
+    <li><code>defaultLocale:</code> - The default value to use for <strong>locale</strong> when reading locators from the PageYAML.
+      For example, in the PageYAML below, if you run a test using the locale <code>FR</code> (meaning you are accessing
+      the French version of the site) then the locator value for the element <code>requestAPICredentialsLink</code> will
+      be <code>foo</code>and the locator value for the element <code>enableExpressCheckoutLink</code> will be
+      <code>//div[@id='main']/div/form/p[3]/a</code>. Here SeLion uses the <strong>defaultLocale</strong> of <code>US</code>
+      (also specified below) to find a locator value for elements that do not have a <code>FR</code> specific locator defined.
     </li>
     </ul>
 
@@ -101,26 +103,18 @@
   <pre data-src="../sample-files/yamlpage-sample1.yaml" class="language-markup"></pre>
   <p>Some important things to reiterate and note from this example:</p>
   <ul>
-    <li>Notice how all the elements end with type of the element that we already mentioned.</li>
-    <li>For example, if we consider <code>addOrEditAPIPermissionsLink</code> you will notice that we are giving a
-      meaningful name to this link i.e., this is the link that is representing a href on the page which is going to add
-      or edit api permissions.
+    <li>Notice how each element name conveys it's intended use. For example, if you consider the element named
+      <code>addOrEditAPIPermissionsLink</code> you can probably guess what this element will do -- it is an element that
+      represents a link/href on the page which will add or edit api permissions. As your PageYAML files increase it is
+      important to follow a standard naming convention such as this. Doing so can greatly improve maintainability.
     </li>
     <li>The keys <code>US</code>, <code>FR</code> represents the locales. This is how we create YAML pages for pages
       that involve localization.
     </li>
-    <li>For the element <code>requestAPICredentialsLink</code> the locator <code>"//a[contains(@href,
-      'cmd=_profile-api-add-direct-access')]|//a[contains(@href, 'cmd=%5fprofile%2dapi%2dadd%2ddirect%2daccess')]</code>
+    <li>For the element <code>addOrEditAPIPermissionsLink</code> the locator <code>//div[@id='apiOption1']/p[3]/a|id=apiOption1Href</code>
       has a <b>|</b> (pipe symbol) in it. Pipe symbols are used in SeLion to signify an <b>OR</b> operator
-      which means that this particular link can either be found using the xpath <code>//a[contains(@href,
-        'cmd=_profile-api-add-direct-access')]</code> <b>or</b> using the xpath <code>//a[contains(@href,
-        'cmd=%5fprofile%2dapi%2dadd%2ddirect%2daccess')]</code></li>
-    <li>Notice that only for the element <code>requestAPICredentialsLink</code> we are having locators for 2 locales
-      viz., <b>US</b> and <b>FR</b>. This is another salient feature of SeLion. For specific elements alone you can have
-      locators defined for specific locales. So for the same locale say <b>FR</b> since the element <code>viewAPICertificateLink</code>
-      doesn't have a locator for <b>FR</b> SeLion will default to using the locator specified for the locale <b>US</b>
-      while working with the country <b>FR</b>.
-    </li>
+      which means that this particular link can either be found using the xpath <code>//div[@id='apiOption1']/p[3]/a</code>
+      <b>or</b> by the id <code>id=apiOption1Href</code>. The first element to satisfy the condition is returned.</li>
     <li>The element <code>pageValidators</code> contains the list of elements that are supposed to be
       validated when your test performs a <code>click(Object..)</code> (or) <code>clickAndExpectOneOf(Object..)</code>
       operation on a page. So from our above example, SeLion checks if the element represented by
