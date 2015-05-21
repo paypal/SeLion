@@ -18,27 +18,9 @@
     <properties>
         <suiteXmlPath>src/test/resources/suites/</suiteXmlPath>
         <suiteXmlFile>Default-Suite.xml</suiteXmlFile>
-        <skipTests>false</skipTests>
     </properties>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/selionbuildinfo.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>**/selionbuildinfo.properties</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -80,119 +62,58 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Apache commons configuration -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-Grid</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-Common</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <!-- Selenium 2 dependencies -->
+
+        <!-- Selenium2 server dependency -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>jetty-repacked</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mortbay.jetty</groupId>
-                    <artifactId>servlet-api-2.5</artifactId>
-                </exclusion>
-            </exclusions>
+            <optional>true</optional>
         </dependency>
 
-        <!-- HtmlUnitDriver requires latest xml-apis jar -->
+        <!-- Selenium2 client dependency -->
         <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-api</artifactId>
         </dependency>
 
-        <!-- WebDriver now by default seems to be attempting to trigger a registration of org.openqa.selenium.phantomjs .PhantomJSDriver 
-            and com.opera.core.systems.OperaDriver. But both these libraries are outside the realms of Selenium/WebDriver. So adding 
-            an explicit dependency on them to ensure that our logs dont show up any INFO level ClassNotFoundException, when a user tries 
-            to run tests locally. -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>phantomjsdriver</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.opera</groupId>
             <artifactId>operadriver</artifactId>
+            <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
-        <!-- Apache commons configuration -->
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-        </dependency>
-
-        <!-- selendroid dependencies -->
+        <!-- selendroid client dependency -->
         <dependency>
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-client</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.selendroid</groupId>
-            <artifactId>selendroid-grid-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.selendroid</groupId>
-            <artifactId>selendroid-standalone</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
-        <!-- IOS Driver dependencies. -->
+        <!-- iosdriver client dependency -->
         <dependency>
             <groupId>org.uiautomation</groupId>
-            <artifactId>standalone-no-selenium</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.uiautomation</groupId>
-            <artifactId>ios-grid</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-remote-driver</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>ios-client</artifactId>
         </dependency>
 
         <!-- Appium java client dependency -->
@@ -201,16 +122,64 @@
             <artifactId>java-client</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+        </dependency>
+
+        <!-- Apache commons configuration -->
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+        </dependency>
+
         <!-- A utility for parsing user agent strings -->
         <dependency>
             <groupId>net.sf.uadetector</groupId>
             <artifactId>uadetector-resources</artifactId>
         </dependency>
 
-        <!-- add xerces - used by runtime reporter -->
+        <!-- Required by uadetector -->
         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+        </dependency>
+
+        <!-- jaxen -->
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+        </dependency>
+
+        <!-- jxpath -->
+        <dependency>
+            <groupId>commons-jxpath</groupId>
+            <artifactId>commons-jxpath</artifactId>
         </dependency>
     </dependencies>
 

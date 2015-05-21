@@ -27,19 +27,18 @@ import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * <P>
- * By default the WebDriver Session will get timed out based on the value of "timeout" configuration variable in
- * localnode.json file. In some cases, testcase need more time to do their non ui task before coming back to UI related
- * operation. If the non UI task takes more time than the configuration timeout value, we will get RuntimeException with
- * message "Session timed out".
- * <P>
- * 
+ * <p>
+ * By default the WebDriver Session will get timed out based on the value of timeout configuration for the hub. 
+ * In some cases, test cases need more time to do a non UI task before coming back to UI related
+ * operations. If the non UI task takes more time than the configured timeout value, a RuntimeException with
+ * message "Session timed out" occurs.
+ * <p>
  * 
  * {@link WebDriverSessionHandler} is used to hold WebDriver session while performing non UI operations.
  * 
- * <P>
+ * <p>
  * Code Sample :
- * </P>
+ * </p>
  * 
  * <pre>
  *       Grid.driver().get(https://www.paypal.com);

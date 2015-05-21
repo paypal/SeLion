@@ -158,11 +158,18 @@ public class FileBackedStringBuffer {
 
     public static String readFile(InputStream is) throws IOException {
         StringBuilder result = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line = br.readLine();
-        while (line != null) {
-            result.append(line + "\n");
-            line = br.readLine();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        try {
+            String line = br.readLine();
+            while (line != null) {
+                result.append(line).append("\n");
+                line = br.readLine();
+            }
+        } finally {
+            br.close();
+            isr.close();
+            is.close();
         }
         return result.toString();
     }

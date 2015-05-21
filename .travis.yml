@@ -2,8 +2,6 @@ language: java
 jdk:
   - oraclejdk7
   - openjdk7
-install:
-  - sh -e utilities/install-ios-driver.sh
 script:
   - sh -e utilities/run-travis-ci-tests.sh
 after_success:

@@ -33,6 +33,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.grid.Grid;
@@ -40,7 +41,6 @@ import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.html.support.ParentNotFoundException;
 import com.paypal.selion.testcomponents.BasicPageImpl;
 import com.paypal.selion.testcomponents.GUIPageExtensionTest.SampleTestPage;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 public class AbstractElementTest {
 

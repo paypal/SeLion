@@ -19,9 +19,9 @@ import static com.paypal.selion.platform.asserts.SeLionAsserts.assertTrue;
 
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 public class TextAreaTest {
     static final String sTest = "Testing multi line text for TextArea object";

@@ -18,9 +18,9 @@ package com.paypal.selion.platform.html;
 import org.openqa.selenium.UnhandledAlertException;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 /**
  * This class test the Form class methods

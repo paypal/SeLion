@@ -28,6 +28,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 @PrepareForTest(SeLionGridConstants.class)
@@ -37,7 +38,7 @@ public class AuthenticationHelperTest extends PowerMockTestCase {
     public void mockTestPath() throws Exception {
         mockStatic(SeLionGridConstants.class);
         Whitebox.setInternalState(SeLionGridConstants.class, "SELION_HOME_DIR", SystemUtils.USER_DIR + "/target/temp/");
-        new File(SeLionGridConstants.SELION_HOME_DIR).mkdirs();
+        new File(SeLionConstants.SELION_HOME_DIR).mkdirs();
     }
 
     @Test
@@ -72,7 +73,7 @@ public class AuthenticationHelperTest extends PowerMockTestCase {
 
     @AfterClass(alwaysRun = true)
     public void cleanUpAuthFile() {
-        File authFile = new File(SeLionGridConstants.SELION_HOME_DIR + ".authFile");
+        File authFile = new File(SeLionConstants.SELION_HOME_DIR + ".authFile");
         authFile.delete();
     }
 }

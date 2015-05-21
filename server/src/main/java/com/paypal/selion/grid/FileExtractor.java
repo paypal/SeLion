@@ -34,9 +34,9 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.Platform;
 
+import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.ProcessNames;
-import com.paypal.selion.pojos.SeLionGridConstants;
 
 final class FileExtractor {
 
@@ -136,7 +136,7 @@ final class FileExtractor {
             while ((entry = archiveStream.getNextEntry()) != null) {
                 String fileNameInEntry = getFileNameFromPath(entry.getName());
                 if (!entry.isDirectory() && executableNameList.contains(fileNameInEntry.toLowerCase())) {
-                    String filename = SeLionGridConstants.SELION_HOME_DIR + getFileNameFromPath(entry.getName());
+                    String filename = SeLionConstants.SELION_HOME_DIR + getFileNameFromPath(entry.getName());
                     File outputFile = new File(filename);
                     if (outputFile.exists()) {
                         outputFile.delete();

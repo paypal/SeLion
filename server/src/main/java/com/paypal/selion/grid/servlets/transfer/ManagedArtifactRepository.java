@@ -27,10 +27,10 @@ import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
+import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ConfigParser;
 
 /**
@@ -94,7 +94,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     }
 
     private ManagedArtifactRepository() {
-        repoFolder = new File(SeLionGridConstants.SELION_HOME_DIR + File.separator + REPO_FOLDER_NAME);
+        repoFolder = new File(SeLionConstants.SELION_HOME_DIR + File.separator + REPO_FOLDER_NAME);
         repositorySynchronizationLock = new ReentrantLock();
         timer = new Timer();
 

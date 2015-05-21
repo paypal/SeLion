@@ -23,10 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.uiautomation.ios.grid.IOSCapabilityMatcher;
 
 /**
  * This capability matches for nodes of type 'selendroid', 'ios-driver', or 'appium' when the capability
@@ -34,7 +33,7 @@ import org.uiautomation.ios.grid.IOSCapabilityMatcher;
  * {@link DefaultCapabilityMatcher}
  */
 public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
-
+    
     /**
      * Capability key to match against for mobile specific nodes.
      */
@@ -63,12 +62,10 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
                 // See io.selendroid.server.grid.SelfRegisteringRemote#getNodeConfig() for more on this problem
                 Map<String, Object> augmentedRequestedCapabilities = new HashMap<String, Object>(requestedCapability);
                 augmentedRequestedCapabilities.remove(SelendroidCapabilities.AUT);
-                return (new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities))
-                        && (matchAgainstMobileNodeType(nodeCapability, mobileNodeType));
+                return (new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities));
             }
             case "ios-driver": {
-                return (new IOSCapabilityMatcher().matches(nodeCapability, requestedCapability))
-                        && (matchAgainstMobileNodeType(nodeCapability, mobileNodeType));
+                return (new MinimalIOSCapabilityMatcher().matches(nodeCapability, requestedCapability));
             }
             case "appium": {
                 return (verifyAppiumCapabilities(nodeCapability, requestedCapability))
@@ -86,7 +83,6 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
      */
     private boolean matchAgainstMobileNodeType(Map<String, Object> nodeCapability, String mobileNodeType) {
         String nodeValue = (String) nodeCapability.get(MOBILE_NODE_TYPE);
-        // Match against the required toConsider capabilities
         if (StringUtils.isBlank(nodeValue)) {
             return false;
         }
