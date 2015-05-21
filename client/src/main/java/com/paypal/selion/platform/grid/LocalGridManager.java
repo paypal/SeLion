@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,10 +16,9 @@
 package com.paypal.selion.platform.grid;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-
-import org.openqa.grid.common.exception.GridException;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -35,21 +34,21 @@ final class LocalGridManager {
         // Utility class. So hide the constructor
     }
 
-    private static SimpleLogger logger = SeLionLogger.getLogger();
+    private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static List<LocalServerComponent> toBoot = new ArrayList<>();
 
-    private static void initializeServerList() {
+    private static void setupToBootList() {
         if (!toBoot.isEmpty()) {
             return;
         }
 
-        toBoot.add(new LocalGrid());
+        toBoot.add(new LocalHub());
         toBoot.add(new LocalNode());
         toBoot.add(new LocalIOSNode());
         toBoot.add(new LocalSelendroidNode());
     }
 
-    private static void resetServerList() {
+    private static void clearToBootList() {
         toBoot.clear();
     }
 
@@ -60,48 +59,48 @@ final class LocalGridManager {
     /**
      * This method is responsible for spawning a local hub for supporting local executions
      * 
-     * @param platform
-     *            - A {@link WebDriverPlatform} that represents the platform [ This is internally used to decide if an
-     *            iOS node or an android node is to be additionally spawned and hooked to the Grid.]
+     * @param testSession
+     *            - A {@link AbstractTestSession} that represents the type of test session to start (mobile or web).
      * 
      */
     public static synchronized void spawnLocalHub(AbstractTestSession testSession) {
-        logger.entering(testSession.getPlatform());
+        LOGGER.entering(testSession.getPlatform());
         if (!isRunLocally()) {
-            logger.exiting();
+            LOGGER.exiting();
             return;
         }
-        initializeServerList();
+
+        setupToBootList();
         for (LocalServerComponent eachItem : toBoot) {
             try {
                 eachItem.boot(testSession);
-            } catch (GridException e) {
-                // If either the Grid or the Node or the IOS-Node for that matter failed to start at the first attempt
-                // then there is NO point in trying to keep restarting it for every iteration. So lets log a severe
-                // message
-                // and exit the JVM.
-                logger.log(Level.SEVERE, e.getMessage(), e);
+            } catch (Exception e) { //NOSONAR
+                // If either the Grid or the Node failed to start at the first attempt then there is NO point in trying
+                // to keep restarting it for every iteration. So lets log a severe message and exit the JVM.
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 System.exit(1);
             }
         }
-        logger.exiting();
+        LOGGER.exiting();
     }
 
     /**
      * This method helps shut down the already spawned hub for local runs
      */
     final static synchronized void shutDownHub() {
-        logger.entering();
+        LOGGER.entering();
         if (!isRunLocally()) {
-            logger.exiting();
+            LOGGER.exiting();
             return;
         }
 
+        // shutdown in reverse order
+        Collections.reverse(toBoot);
         for (LocalServerComponent eachItem : toBoot) {
             eachItem.shutdown();
         }
-        resetServerList();
-        logger.exiting();
+        clearToBootList();
+        LOGGER.exiting();
     }
 
 }

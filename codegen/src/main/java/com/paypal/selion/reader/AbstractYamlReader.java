@@ -24,12 +24,13 @@ import java.util.Map.Entry;
 import org.yaml.snakeyaml.Yaml;
 
 import com.paypal.selion.elements.HtmlSeLionElementList;
-import com.paypal.selion.plugins.HtmlContainerElement;
+import com.paypal.selion.platform.web.HtmlContainerElement;
 import com.paypal.selion.plugins.TestPlatform;
 
 /**
  * This is an abstract representation of a typical yaml reader.
  */
+//TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 public abstract class AbstractYamlReader {
     private Yaml yaml = null;
     private boolean processed = false;

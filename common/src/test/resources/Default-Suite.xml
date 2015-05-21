@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="10" verbose="1" name="SeLion Common Default Test Suite" skipfailedinvocationcounts="false"
+    junit="false" parallel="classes" data-provider-thread-count="50" annotations="JDK">
+
+    <test verbose="2" name="Default Tests" annotations="JDK">
+        <packages>
+            <package name="com.paypal.selion.*" />
+            <package name="com.paypal.test.*" />
+        </packages>
+    </test>
+</suite>

@@ -30,6 +30,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
 import org.testng.ITestContext;
 
+import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventListener;
 import com.paypal.selion.platform.grid.MobileNodeType;
@@ -383,12 +384,6 @@ public final class Config {
         SELENIUM_FIREFOX_PROFILE("firefoxProfile", "", false),
 
         /**
-         * The name of the JSON file that can be used, incase for a local run the end user wants to create their own
-         * customization for the local grid.
-         */
-        SELENIUM_LOCAL_GRID_CONFIG_FILE("localGridConfigFile", "localnode.json", true),
-
-        /**
          * The name of the JSON file that contains the configuration customization info needed for saucelabs. By
          * default, the configurations specified at <a href="https://saucelabs.com/docs/additional-config">Sauce labs
          * Configurations</a> are applicable.
@@ -399,14 +394,16 @@ public final class Config {
          * The path to the chromedriver executable on the local machine. This parameter is taken into consideration for
          * local runs involving googlechrome browser alone.
          */
-        SELENIUM_CHROMEDRIVER_PATH("chromeDriverPath", "", true),
+        SELENIUM_CHROMEDRIVER_PATH("chromeDriverPath", SeLionConstants.SELION_HOME_DIR
+                + SeLionConstants.CHROME_DRIVER, true),
 
         /**
          * The path to the PhantomJS executable on the local machine. This parameter is taken into consideration for
          * local runs involving PhantomJS browser alone. The binary can be downloaded from <a
          * href="http://phantomjs.org/download.html">here</a>
          */
-        SELENIUM_PHANTOMJS_PATH("phantomjsPath", "", true),
+        SELENIUM_PHANTOMJS_PATH("phantomjsPath", SeLionConstants.SELION_HOME_DIR
+                + SeLionConstants.PHANTOMJS_DRIVER, true),
 
         /**
          * Use this parameter to set the user agent for firefox when working with Mobile version. This parameter should
@@ -627,28 +624,6 @@ public final class Config {
          * Default is set to <b>1800000</b> milliseconds.
          */
         MOBILE_DRIVER_SESSION_TIMEOUT("sessionTimeout", "1800000", false),
-
-        /**
-         * Time the server component of mobile drivers will wait for application to launch before assuming it has
-         * crashed. You may increase the value if your application is slow to start.<br>
-         * The value of this parameter is used as the value of <b>newSessionTimeoutSecs</b> for ios-driver.<br>
-         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
-         * is set to true.<br>
-         * The unit is milliseconds.<br>
-         * Default is set to <b>20000</b> milliseconds.<br>
-         */
-        IOSDRIVER_NEWSESSION_TIMEOUT("newSessionTimeout", "20000", false),
-
-        /**
-         * Maximum time interval in milliseconds between consecutive commands in a single session. Session will be
-         * forcefully terminated if a command is received beyond this time limit.<br>
-         * The value of this parameter is used as the value of <b>maxIdleBetweenCommands</b> for ios-driver.<br>
-         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
-         * is set to true.<br>
-         * The unit is milliseconds.<br>
-         * Default is set to <b>60000</b> milliseconds.<br>
-         */
-        IOSDRIVER_COMMAND_INTERVAL("maxIdleBetweenCommands", "60000", false),
 
         /**
          * Timeout that will be used to start Android emulators.<br>

@@ -17,8 +17,8 @@ package com.paypal.selion.platform.mobile;
 
 import org.openqa.selenium.WebDriverException;
 
-import com.paypal.selion.configuration.SeLionBuildInfo;
-import com.paypal.selion.configuration.SeLionBuildInfo.SeLionBuildProperty;
+import com.paypal.selion.SeLionBuildInfo;
+import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
 
 /**
  * <code>UIOperationFailedException</code> represents exceptional cases that occur while interacting with mobile

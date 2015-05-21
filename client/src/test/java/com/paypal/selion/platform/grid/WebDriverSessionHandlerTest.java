@@ -22,10 +22,10 @@ import java.util.concurrent.ExecutionException;
 
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.html.TestObjectRepository;
 import com.paypal.selion.platform.html.TextField;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 public class WebDriverSessionHandlerTest {
 

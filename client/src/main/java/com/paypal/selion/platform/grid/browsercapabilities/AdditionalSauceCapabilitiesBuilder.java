@@ -15,19 +15,19 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.platform.grid.BrowserFlavors;
@@ -58,16 +58,6 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         return capabilities;
     }
 
-    private List<Object> retrieveValuesFromJSONArray(JSONArray jsonArray) throws JSONException {
-        logger.entering(jsonArray);
-        List<Object> list = new ArrayList<Object>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            list.add(jsonArray.get(i));
-        }
-        logger.exiting(list);
-        return list;
-    }
-
     private DesiredCapabilities appendSauceLabsCapabilities(DesiredCapabilities capabilities) {
         logger.entering(capabilities);
         String sauceJSONFileName = Config.getConfigProperty(ConfigProperty.SELENIUM_SAUCELAB_GRID_CONFIG_FILE);
@@ -76,41 +66,35 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
             return capabilities;
         }
         try {
-            JSONObject jsonObject = new JSONObject(FileAssistant.readFile(sauceJSONFileName));
-            Iterator<?> iterator = jsonObject.keys();
+            JsonObject jsonObject = new JsonParser().parse(FileAssistant.readFile(sauceJSONFileName)).getAsJsonObject();
+            Iterator<Entry<String,JsonElement>> iterator = jsonObject.entrySet().iterator();
             while (iterator.hasNext()) {
-                String capabilityName = (String) iterator.next();
-                Object capabilityValue = jsonObject.get(capabilityName);
+                Entry<String,JsonElement> entry = iterator.next();
+                String capabilityName = entry.getKey();
+                Object capabilityValue = new JsonToBeanConverter().convert(Object.class, entry.getValue());
                 if ((capabilityValue instanceof String) && (capabilityValue.toString().startsWith("__string__"))) {
                     capabilityValue = capabilityValue.toString().replace("__string__", "");
-                }
-                if (capabilityValue instanceof JSONArray) {
-                    capabilityValue = retrieveValuesFromJSONArray((JSONArray) capabilityValue);
                 }
                 capabilities.setCapability(capabilityName, capabilityValue);
             }
             logger.exiting(capabilities);
             return capabilities;
-        } catch (IOException e) {
-            String errorMsg = "Unable to load the saucelabs additional capabilties JSON file : " + sauceJSONFileName
-                    + ". Root cause: ";
-            throw new WebDriverException(errorMsg, e);
-        } catch (JSONException exception) {
+        } catch (Exception e) { //NOSONAR
             String errorMsg = "An error occured while working with the JSON file : " + sauceJSONFileName
                     + ". Root cause: ";
-            throw new WebDriverException(errorMsg, exception);
+            throw new WebDriverException(errorMsg, e);
         }
     }
 
     private DesiredCapabilities appendSeleniumVersion(DesiredCapabilities caps) {
         logger.entering(caps);
-        // for ipad and iphone saucelabs works with only selected versions if selenium-server
+        // for ipad and iphone saucelabs works with only selected versions of selenium-server
         // so leaving the version selection to saucelabs
         if (isIphoneOrIpad()) {
             logger.exiting(caps);
             return caps;
         }
-        String seleniumVersion = new org.openqa.selenium.internal.BuildInfo().getReleaseLabel();
+        String seleniumVersion = new BuildInfo().getReleaseLabel();
         caps.setCapability("selenium-version", seleniumVersion);
         logger.exiting(caps);
         return caps;

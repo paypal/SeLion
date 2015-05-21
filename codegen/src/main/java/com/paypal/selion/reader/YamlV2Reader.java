@@ -22,16 +22,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.paypal.selion.elements.HtmlSeLionElementList;
-import com.paypal.selion.plugins.GUIElement;
-import com.paypal.selion.plugins.HtmlContainerElement;
+import com.paypal.selion.platform.web.GUIElement;
+import com.paypal.selion.platform.web.HtmlContainerElement;
 import com.paypal.selion.plugins.Logger;
-import com.paypal.selion.plugins.Page;
-import com.paypal.selion.plugins.PageFactory;
+import com.paypal.selion.platform.web.Page;
+import com.paypal.selion.platform.web.PageFactory;
 import com.paypal.selion.plugins.TestPlatform;
 
 /**
  * Concrete YAML reader that is capable of reading YAML V2 format file.
  */
+//TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 class YamlV2Reader extends AbstractYamlReader {
 
     /**

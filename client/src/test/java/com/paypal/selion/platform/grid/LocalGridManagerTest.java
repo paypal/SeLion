@@ -28,18 +28,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.platform.grid.LocalGridManager;
 
 public class LocalGridManagerTest {
 
-    @Test(groups = { "local-grid-tests" })
-    public void testlocalGridManagerStartHub() throws MalformedURLException, IOException, JSONException {
+    @Test(groups = { "local-grid-tests" }, singleThreaded = true)
+    public void testlocalGridManagerStartHub() throws MalformedURLException, IOException {
         String runLocally = Config.getConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY);
         Config.setConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY, "true");
 
@@ -48,11 +49,11 @@ public class LocalGridManagerTest {
             WebTestSession testSession = new WebTestSession();
             LocalGridManager.spawnLocalHub(testSession);
             assertTrue(getHubStatus(), "The Hub should have started locally");
-            JSONObject nodeStatus = getNodeStatus();
+            JsonObject nodeStatus = getNodeStatus();
             assertNotNull(nodeStatus, "The node status should not have been null");
-            assertTrue(nodeStatus.getBoolean("success"),
+            assertTrue(nodeStatus.get("success").getAsBoolean(),
                     "The node should have started properly and hooked itself to the local Grid.");
-            assertTrue(nodeStatus.getString("msg").contains(msg), "The node should have been found");
+            assertTrue(nodeStatus.get("msg").getAsString().contains(msg), "The node should have been found");
         } finally {
             LocalGridManager.shutDownHub();
             Config.setConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY, runLocally);
@@ -60,44 +61,57 @@ public class LocalGridManagerTest {
         }
     }
 
-    public JSONObject getNodeStatus() throws MalformedURLException, IOException, JSONException {
-        JSONObject nodeStatus = null;
+    public JsonObject getNodeStatus() throws MalformedURLException, IOException {
+        JsonObject nodeStatus = null;
         String port = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-        String url = "http://localhost:" + port + "/grid/api/proxy?id=http://localhost:5555";
-        URLConnection connection = new URL(url).openConnection();
-        InputStream isr = connection.getInputStream();
+        String url = "http://127.0.0.1:" + port + "/grid/api/proxy?id=http://127.0.0.1:"
+                + LocalNode.getInstance().getPort();
+        URLConnection connection = null;
+        InputStream isr = null;
         BufferedReader br = new BufferedReader(new InputStreamReader(isr));
-        StringBuffer actualResponse = new StringBuffer();
-        String eachLine = null;
-        while ((eachLine = br.readLine()) != null) {
-            actualResponse.append(eachLine);
-        }
-        if (actualResponse != null && actualResponse.length() > 0) {
-            nodeStatus = new JSONObject(actualResponse.toString());
+        try {
+            connection = new URL(url).openConnection();
+            isr = connection.getInputStream();
+            StringBuffer actualResponse = new StringBuffer();
+            String eachLine = null;
+            while ((eachLine = br.readLine()) != null) {
+                actualResponse.append(eachLine);
+            }
+            if (actualResponse != null && actualResponse.length() > 0) {
+                nodeStatus = new JsonParser().parse(actualResponse.toString()).getAsJsonObject();
+            }
+        } finally {
+            IOUtils.closeQuietly(isr);
+            IOUtils.closeQuietly(br);
         }
         return nodeStatus;
 
     }
 
-    public boolean getHubStatus() throws MalformedURLException, IOException, JSONException {
+    public boolean getHubStatus() throws MalformedURLException, IOException {
         boolean hubStatus = false;
         String port = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-        String url = "http://localhost:" + port + "/grid/api/hub";
+        String url = "http://127.0.0.1:" + port + "/grid/api/hub";
         URLConnection hubConnection = new URL(url).openConnection();
+        InputStream isr = hubConnection.getInputStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(isr));
         try {
-            InputStream isr = hubConnection.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(isr));
             StringBuffer information = new StringBuffer();
             String eachLine = null;
             while ((eachLine = br.readLine()) != null) {
                 information.append(eachLine);
             }
-            JSONObject fullResponse = new JSONObject(information.toString());
+            JsonObject fullResponse = new JsonParser().parse(information.toString()).getAsJsonObject();
             if (fullResponse != null) {
-                hubStatus = fullResponse.getBoolean("success");
+                hubStatus = fullResponse.get("success").getAsBoolean();
             }
         } catch (ConnectException e) {
+            e.printStackTrace();
             hubStatus = false;
+        }
+        finally {
+            isr.close();
+            br.close();
         }
 
         return hubStatus;

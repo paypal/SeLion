@@ -60,6 +60,7 @@ public final class ConfigParser {
      * Set the config file
      * 
      * @param file
+     *            the SeLion Grid config file to use
      */
     public static void setConfigFile(String file) {
         LOGGER.entering(file);
@@ -69,13 +70,13 @@ public final class ConfigParser {
     /**
      * @param key
      *            The key for which the value is to be read for.
-     * @return an int that represents the value for the key
+     * @return an int that represents the value for the key.
      */
     public int getInt(String key) {
         LOGGER.entering(key);
         try {
             return configuration.get(key).getAsInt();
-        } catch (JsonSyntaxException | NullPointerException e) { //NOSONAR
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
             throw new ConfigParserException(e);
         }
     }
@@ -84,15 +85,14 @@ public final class ConfigParser {
      * @param key
      *            The key for which the value is to be read for.
      * @param defaultVal
-     *            default value to use if the key does not exist or has an malformed value
-     * @return
-     *            An integer value.
+     *            default value to use if the key does not exist or has an malformed value.
+     * @return an int that represents the value for the key or the defaultVal if no such key exists.
      */
     public int getInt(String key, int defaultVal) {
-        LOGGER.entering(key);
+        LOGGER.entering(new Object[] { key, defaultVal });
         try {
             return configuration.get(key).getAsInt();
-        } catch (JsonSyntaxException | NullPointerException e) { //NOSONAR
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
             return defaultVal;
         }
     }
@@ -100,13 +100,13 @@ public final class ConfigParser {
     /**
      * @param key
      *            The key for which the value is to be read for.
-     * @return a long that represents the value for the key
+     * @return a long that represents the value for the key.
      */
     public long getLong(String key) {
         LOGGER.entering(key);
         try {
             return configuration.get(key).getAsLong();
-        } catch (JsonSyntaxException | NullPointerException e) { //NOSONAR
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
             throw new ConfigParserException(e);
         }
     }
@@ -115,15 +115,14 @@ public final class ConfigParser {
      * @param key
      *            The key for which the value is to be read for.
      * @param defaultVal
-     *            default value to use if the key does not exist or has an malformed value
-     * @return
-     *            A long integer.
+     *            default value to use if the key does not exist or has an malformed value.
+     * @return a long that represents the value for the key or the defaultVal if no such key exists.
      */
     public long getLong(String key, long defaultVal) {
-        LOGGER.entering(key);
+        LOGGER.entering(new Object[] { key, defaultVal });
         try {
             return configuration.get(key).getAsLong();
-        } catch (JsonSyntaxException | NullPointerException e) { //NOSONAR
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
             return defaultVal;
         }
     }
@@ -131,13 +130,13 @@ public final class ConfigParser {
     /**
      * @param key
      *            The key for which the value is to be read for.
-     * @return a String that represents the value for the key
+     * @return a String that represents the value for the key.
      */
     public String getString(String key) {
         LOGGER.entering(key);
         try {
             return configuration.get(key).getAsString();
-        } catch (JsonSyntaxException | NullPointerException e) { //NOSONAR
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
             throw new ConfigParserException(e);
         }
     }
@@ -146,15 +145,44 @@ public final class ConfigParser {
      * @param key
      *            The key for which the value is to be read for.
      * @param defaultVal
-     *            default value to use if the key does not exist or has an malformed value
-     * @return
-     *            A string value.
+     *            default value to use if the key does not exist or has an malformed value.
+     * @return a String that represents the value for the key or the defaultVal if no such key exists.
      */
     public String getString(String key, String defaultVal) {
-        LOGGER.entering(key);
+        LOGGER.entering(new Object[] { key, defaultVal });
         try {
             return configuration.get(key).getAsString();
-        } catch (JsonSyntaxException | NullPointerException e) { //NOSONAR
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
+            return defaultVal;
+        }
+    }
+
+    /**
+     * @param key
+     *            The key for which the value is to be read for.
+     * @return a {@link JsonObject} that represents the value for the key.
+     */
+    public JsonObject getJsonObject(String key) {
+        LOGGER.entering(key);
+        try {
+            return configuration.get(key).getAsJsonObject();
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
+            throw new ConfigParserException(e);
+        }
+    }
+
+    /**
+     * @param key
+     *            The key for which the value is to be read for.
+     * @param defaultVal
+     *            default value to use if the key does not exist or has an malformed value.
+     * @return a {@link JsonObject} that represents the value for the key or the defaultVal if no such key exists.
+     */
+    public JsonObject getJsonObject(String key, JsonObject defaultVal) {
+        LOGGER.entering(new Object[] { key, defaultVal.toString() });
+        try {
+            return configuration.get(key).getAsJsonObject();
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
             return defaultVal;
         }
     }

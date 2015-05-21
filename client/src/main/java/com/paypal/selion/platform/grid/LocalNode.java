@@ -15,26 +15,17 @@
 
 package com.paypal.selion.platform.grid;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.json.JSONObject;
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.ThreadedLauncher;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -42,114 +33,80 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local node.
  * 
  */
-class LocalNode implements LocalServerComponent {
-    private boolean isRunning = false, isRegistered = false;
-    private final SimpleLogger logger = SeLionLogger.getLogger();
-    private SeleniumServer node;
+class LocalNode extends BaseNode implements LocalServerComponent {
+    private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
+    private static volatile LocalNode instance;
+    private int port;
+    private boolean isRunning = false;
+    private ThreadedLauncher launcher;
+    private ExecutorService executor;
+    private String host;
 
-    @Override
-    public void shutdown() {
-        if (node != null) {
+    static synchronized LocalNode getInstance() {
+        if (instance == null) {
+            instance = new LocalNode();
+
+            instance.host = new NetworkUtils().getIpOfLoopBackIp4();
+            instance.port = PortProber.findFreePort();
+
+            instance.launcher = new ThreadedLauncher(new String[] {
+                    "-role", "node",
+                    "-port", String.valueOf(instance.port),
+                    "-proxy", DefaultRemoteProxy.class.getName(),
+                    "-host", instance.host,
+                    "-hubHost", instance.host });
+        }
+        return instance;
+    }
+
+    public synchronized void shutdown() {
+        if (!getInstance().isRunning) {
+            return;
+        }
+
+        if (getInstance().executor != null) {
             try {
-                node.stop();
-                logger.log(Level.INFO, "Local node has been stopped");
-            } catch (Exception e) {
-                String errorMsg = "An error occured while attempting to shut down the local Node. Root cause: ";
-                logger.log(Level.SEVERE, errorMsg, e);
+                getInstance().launcher.shutdown();
+                getInstance().executor.shutdownNow();
+                while (!getInstance().executor.isTerminated()) {
+                    getInstance().executor.awaitTermination(30, TimeUnit.SECONDS);
+                }
+                getInstance().isRunning = false;
+                LOGGER.info("Local node has been stopped");
+            } catch (Exception e) { //NOSONAR
+                String errorMsg = "An error occurred while attempting to shut down the local Node.";
+                LOGGER.log(Level.SEVERE, errorMsg, e);
             }
         }
 
     }
 
-    @Override
-    public void boot(AbstractTestSession testSession) {
-        logger.entering(testSession.getPlatform());
-        if (isRunning) {
-            logger.exiting();
+    public synchronized void boot(AbstractTestSession testSession) {
+        LOGGER.entering(testSession.getPlatform());
+        if (getInstance().isRunning) {
+            LOGGER.exiting();
             return;
         }
-        if (isRegistered) {
-            logger.exiting();
-            return;
-        }
+
         if (!(testSession instanceof WebTestSession)) {
-            logger.exiting();
+            LOGGER.exiting();
             return;
         }
-        LocalGridConfigFileParser parser = new LocalGridConfigFileParser();
-        int port = parser.getPort();
-        JSONObject request = parser.getRequest();
 
-        RemoteControlConfiguration c = new RemoteControlConfiguration();
-        c.setPort(port);
-
+        getInstance().executor = Executors.newSingleThreadExecutor();
+        Runnable worker = getInstance().launcher;
         try {
-            node = new SeleniumServer(c);
-            node.boot();
-            isRunning = true;
-            logger.log(Level.INFO, "Local node spawned");
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            throw new GridException("Failed to start a local Grid", e);
-        }
-
-        if (!isRegistered && isRunning) {
-            String host = "localhost";
-            String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-            String registrationUrl = String.format("http://%s:%s/grid/register", host, hubPort);
-            URL registration;
-            try {
-                registration = new URL(registrationUrl);
-                registerNodeToHub(registration, request.toString());
-                isRegistered = true;
-                logger.log(Level.INFO, "Attached node to local hub " + registrationUrl);
-            } catch (MalformedURLException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-                throw new GridException("Failed to start a local node", e);
-            }
+            getInstance().executor.execute(worker);
+            waitForNodeToComeUp(getPort(),
+                    "Unable to contact Node after 60 seconds.");
+            getInstance().isRunning = true;
+            LOGGER.info("Local Node spawned");
+        } catch (IllegalStateException e) {
+            throw new GridException("Failed to start a local Node", e);
         }
     }
 
-    /**
-     * This method helps with creating a node and associating it with the already spawned Hub instance
-     * 
-     * @param registrationURL
-     *            - The registration URL of the hub
-     * @param json
-     *            - A string that represents the capabilities and configurations in the JSON text file
-     */
-    private void registerNodeToHub(URL registrationURL, String json) {
-        logger.entering(new Object[] { registrationURL, json });
-        BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST",
-                registrationURL.toExternalForm());
-        String errorMsg = "Error sending the node registration request. ";
-
-        try {
-            r.setEntity(new StringEntity(json));
-        } catch (UnsupportedEncodingException e) {
-            logger.log(Level.SEVERE, errorMsg, e);
-            throw new GridException(errorMsg, e);
-        }
-
-        CloseableHttpClient client = HttpClientBuilder.create().build();
-        HttpHost host = new HttpHost(registrationURL.getHost(), registrationURL.getPort());
-
-        HttpResponse response = null;
-        try {
-            response = client.execute(host, r);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, errorMsg, e);
-            throw new GridException(errorMsg, e);
-        } finally {
-            IOUtils.closeQuietly(client);
-        }
-
-        if (response.getStatusLine().getStatusCode() != 200) {
-            errorMsg += "Received status code " + response.getStatusLine().getStatusCode();
-            logger.log(Level.SEVERE, errorMsg);
-            throw new GridException(errorMsg);
-        }
-        logger.exiting();
+    int getPort() {
+        return getInstance().port;
     }
-
 }

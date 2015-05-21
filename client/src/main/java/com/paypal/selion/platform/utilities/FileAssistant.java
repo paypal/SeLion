@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Preconditions;
@@ -103,4 +104,16 @@ public class FileAssistant {
         return output.toString();
     }
 
+    /**
+     * Write an {@link InputStream} to a file
+     * @param isr the {@link InputStream} 
+     * @param fileName The target file name to use. Do not include the path.
+     * @param outputFolder The target folder to use.
+     * @throws IOException
+     */
+    public static void writeStreamToFile(InputStream isr, String fileName, String outputFolder) throws IOException {
+        logger.entering(new Object[] { isr, fileName, outputFolder });
+        FileUtils.copyInputStreamToFile(isr, new File(outputFolder + "/" + fileName));
+        logger.exiting();
+    }
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,45 +15,98 @@
 
 package com.paypal.selion.platform.grid;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Handler;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.configuration.ConversionException;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.grid.common.exception.GridException;
-import org.uiautomation.ios.IOSServer;
-import org.uiautomation.ios.IOSServerConfiguration;
-import org.uiautomation.ios.grid.IOSMutableRemoteProxy;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 
+import com.google.common.annotations.Beta;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.IOSDriverJarSpawner;
+import com.paypal.selion.grid.ProcessLauncherOptions;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local ios driver node.
  */
-class LocalIOSNode extends AbstractNode implements LocalServerComponent {
-    protected boolean isRunning = false;
-    private IOSServer server = null;
-    private SimpleLogger logger = SeLionLogger.getLogger();
+@Beta
+class LocalIOSNode extends BaseNode implements LocalServerComponent {
+    private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
+    private static volatile LocalIOSNode instance;
+    private int port;
+    private boolean isRunning = false;
+    private IOSDriverJarSpawner launcher;
+    private ExecutorService executor;
+    private String host;
 
-    public void shutdown() {
-        if (server != null) {
+    static synchronized LocalIOSNode getInstance() {
+        if (instance == null) {
+            instance = new LocalIOSNode();
+
+            instance.host = new NetworkUtils().getIpOfLoopBackIp4();
+            instance.port = PortProber.findFreePort();
+
             try {
-                server.stop();
-                logger.log(Level.INFO, "Local iOS Node has been stopped");
-            } catch (Exception e) {
-                String errorMsg = "An error occured while attempting to shut down the local iOS Node. Root cause: ";
-                logger.log(Level.SEVERE, errorMsg, e);
+                String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
+                String hub = String.format("http://%s:%s/grid/register", instance.host, hubPort);
+
+                String[] folder = new String[] { "", "" };
+                String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
+                if (StringUtils.isNotEmpty(autFolder)) {
+                    folder = new String[] { "-folder", autFolder };
+                }
+
+                ProcessLauncherOptions processOptions = new ProcessLauncherOptions().setContinuouslyRestart(false)
+                        .setIncludeJarsInPresentWorkingDir(false).setIncludeParentProcessClassPath(false)
+                        .setIncludeJavaSystemProperties(false);
+
+                instance.launcher = new IOSDriverJarSpawner(new String[] {
+                        "-port", String.valueOf(instance.port),
+                        "-host", instance.host,
+                        "-hub", hub,
+                        folder[0], folder[1],
+                        "-sessionTimeout", checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT) },
+                        processOptions);
+
+            } catch (IllegalArgumentException e) {
+                // TODO refactor #checkAndValidateParameters to fallback on the default value rather than throw this
+                // exception
+            }
+        }
+        return instance;
+    }
+
+    public synchronized void shutdown() {
+        if (!getInstance().isRunning) {
+            return;
+        }
+
+        if (getInstance().executor != null) {
+            try {
+                getInstance().launcher.shutdown();
+                getInstance().executor.shutdownNow();
+                while (!getInstance().executor.isTerminated()) {
+                    getInstance().executor.awaitTermination(30, TimeUnit.SECONDS);
+                }
+                getInstance().isRunning = false;
+                LOGGER.info("Local ios-driver node has been stopped");
+            } catch (Exception e) { // NOSONAR
+                String errorMsg = "An error occurred while attempting to shut down the ios-driver local Node.";
+                LOGGER.log(Level.SEVERE, errorMsg, e);
             }
         }
     }
 
-    public void boot(AbstractTestSession testSession) {
-        logger.entering(testSession.getPlatform());
+    public synchronized void boot(AbstractTestSession testSession) {
+        LOGGER.entering(testSession.getPlatform());
 
         // don't allow non-mobile test case to spawn the ios-driver node
         if ((testSession.getPlatform() != WebDriverPlatform.IOS) && !(testSession instanceof MobileTestSession)) {
@@ -64,88 +117,38 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
             return;
         }
 
-        if (isRunning) {
-            logger.exiting();
+        if (getInstance().isRunning) {
+            LOGGER.exiting();
             return;
         }
-        String host = "localhost";
-        String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-        String registrationUrl = String.format("http://%s:%s/grid/register", host, hubPort);
 
+        getInstance().executor = Executors.newSingleThreadExecutor();
+        Runnable worker = getInstance().launcher;
         try {
-            int port = new LocalGridConfigFileParser().getPort() + 1;
-            startIOSDriverNode(port);
-            waitForNodeToComeUp(port, "Encountered problems when attempting to register the IOS Node to the local Grid");
-            isRunning = true;
-            logger.log(Level.INFO, "Attached iOSDriver node to local hub " + registrationUrl);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            throw new GridException("Failed to start a local iOS Node", e);
+            getInstance().executor.execute(worker);
+            waitForNodeToComeUp(getPort(),
+                    "Unable to contact Node after 60 seconds.");
+            getInstance().isRunning = true;
+            LOGGER.log(Level.INFO, "Local ios-driver Node spawned");
+        } catch (IllegalStateException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            throw new GridException("Failed to start a local ios-driver Node", e);
         }
     }
 
-    private void startIOSDriverNode(int port) throws Exception {
-        logger.entering(port);
-        List<String> args = new ArrayList<String>();
-        args.add(" -hub ");
-        args.add(" http://127.0.0.1:" + Config.getIntConfigProperty(ConfigProperty.SELENIUM_PORT) + "/grid/register");
-        args.add(" -port ");
-        args.add(Integer.toString(port));
-        String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
-        if (autFolder != null && !autFolder.trim().isEmpty()) {
-            args.add(" -folder ");
-            args.add(autFolder);
-        }
-        String newSessionTimeoutSec = checkAndValidateParameters(ConfigProperty.IOSDRIVER_NEWSESSION_TIMEOUT);
-        args.add(" -newSessionTimeoutSec ");
-        args.add(newSessionTimeoutSec);
-        String sessionTimeout = checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
-        args.add(" -sessionTimeout ");
-        args.add(sessionTimeout);
-        String maxIdleBetweenCommands = checkAndValidateParameters(ConfigProperty.IOSDRIVER_COMMAND_INTERVAL);
-        args.add(" -maxIdleBetweenCommands ");
-        args.add(maxIdleBetweenCommands);
-        args.add(" -proxy ");
-        args.add(IOSMutableRemoteProxy.class.getCanonicalName());
-        args.add(" -host ");
-        args.add(" 127.0.0.1 ");
-        Handler[] handlers = Logger.getLogger("").getHandlers();
-        Level level = Logger.getLogger("").getLevel();
-
-        // add an option to skip ios default logger
-        args.add(" -skipLoggerConfiguration");
-        args.add(Boolean.TRUE.toString());
-
-        IOSServerConfiguration config = IOSServerConfiguration.create(args.toArray(new String[args.size()]));
-        server = new IOSServer(config);
-
-        // HACK :: put the RootLogger back into the original state
-        // remove all handlers first
-        for (Handler handler : Logger.getLogger("").getHandlers()) {
-            Logger.getLogger("").removeHandler(handler);
-        }
-        // put the original ones back
-        for (Handler handler : handlers) {
-            Logger.getLogger("").addHandler(handler);
-        }
-        // reset the log level
-        Logger.getLogger("").setLevel(level);
-
-        server.start();
-        logger.exiting();
-    }
-
-    private String checkAndValidateParameters(ConfigProperty configProperty) {
-
-        // Checks the presence of ios-driver specific parameters provided by the user and validates them.
-        // IllegalArgumentException is thrown if the parameter is either insufficient or irrelevant. Throws a
-        // NullPointerException if the received configProperty is null.
-        logger.entering(configProperty);
+    /**
+     * Checks the presence of ios-driver specific parameters provided by the user and validates them.
+     * IllegalArgumentException is thrown if the parameter is either insufficient or irrelevant. Throws a
+     * NullPointerException if the received configProperty is null.
+     * 
+     * @param configProperty
+     *            a SeLion {@link ConfigProperty} to validate
+     */
+    private static String checkAndValidateParameters(ConfigProperty configProperty) {
+        LOGGER.entering(configProperty);
         String validatedValue = null;
         switch (configProperty) {
-        case IOSDRIVER_NEWSESSION_TIMEOUT:
         case MOBILE_DRIVER_SESSION_TIMEOUT:
-        case IOSDRIVER_COMMAND_INTERVAL:
             try {
                 int receivedValue = Config.getIntConfigProperty(configProperty) / 1000;
                 if (receivedValue == 0) {
@@ -166,8 +169,12 @@ class LocalIOSNode extends AbstractNode implements LocalServerComponent {
                     "Invalid ios-server configuration received for validation, configuration property = "
                             + configProperty.getName());
         }
-        logger.exiting(validatedValue);
+        LOGGER.exiting(validatedValue);
         return validatedValue;
+    }
+
+    int getPort() {
+        return getInstance().port;
     }
 
 }

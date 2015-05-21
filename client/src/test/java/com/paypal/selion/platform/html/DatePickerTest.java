@@ -25,9 +25,9 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 /**
  * Testing the date picker widget from a webpage.

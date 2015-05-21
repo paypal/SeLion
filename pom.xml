@@ -13,17 +13,20 @@
 
     <properties>
         <compileSource>1.7</compileSource>
+        <skipTests>false</skipTests>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <selenium.version>2.45.0</selenium.version>
-        <iosdriver.version>0.6.6-SNAPSHOT</iosdriver.version>
+        <iosdriver.version>0.6.5</iosdriver.version>
         <selendroid.version>0.15.0</selendroid.version>
-        <appium.version>2.1.0</appium.version>
-        <testng.version>6.8.7</testng.version>
+        <appium.version>2.2.0</appium.version>
+        <testng.version>6.8.21</testng.version>
+        <snakeyaml.version>1.15</snakeyaml.version>
         <project.bom.version>${project.version}</project.bom.version>
     </properties>
 
     <modules>
         <module>project-bom</module>
+        <module>common</module>
         <module>client</module>
         <module>server</module>
         <module>codegen</module>
@@ -236,7 +239,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.3.1</version>
+                    <version>1.4</version>
                     <executions>
                         <execution>
                             <id>enforce-versions</id>
@@ -254,6 +257,7 @@
                                     <requireReleaseDeps>
                                         <onlyWhenRelease>true</onlyWhenRelease>
                                     </requireReleaseDeps>
+                                    <dependencyConvergence />
                                 </rules>
                             </configuration>
                         </execution>

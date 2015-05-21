@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -294,7 +295,7 @@ public final class DriverFactory {
 
     private static void printDebugInfoForUser(RemoteWebDriver driver) {
         Properties props = new Properties();
-        props.put("Selenium Version", new org.openqa.selenium.internal.BuildInfo().getReleaseLabel());
+        props.put("Selenium Version", new BuildInfo().getReleaseLabel());
         props.put("Client OS", System.getProperty("os.name") + " " + System.getProperty("os.version"));
 
         String currentBrowser = BrowserFlavors.GENERIC.getBrowser();

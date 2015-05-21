@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.pojos.SeLionGridConstants;
 
+//TODO files downloaded here may interfere with other tests.. Need to isolate them
 public class FileDownloaderTest {
 
     File downloadedFile = null;
@@ -65,6 +66,5 @@ public class FileDownloaderTest {
     @AfterClass(alwaysRun = true)
     public void cleanUpFile() {
         FileUtils.deleteQuietly(downloadedFile);
-        FileUtils.deleteQuietly(downloadDir);
     }
 }

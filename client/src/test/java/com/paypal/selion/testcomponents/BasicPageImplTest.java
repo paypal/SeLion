@@ -27,7 +27,6 @@ import com.paypal.selion.platform.asserts.SeLionAsserts;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.Container;
 import com.paypal.selion.testcomponents.BasicPageImpl;
-import com.paypal.selion.testcomponents.paypal.TestPage;
 
 public class BasicPageImplTest {
 

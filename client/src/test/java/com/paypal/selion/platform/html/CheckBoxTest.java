@@ -20,9 +20,9 @@ import static com.paypal.selion.platform.asserts.SeLionAsserts.assertTrue;
 
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 /**
  * This class test the CheckBox class methods.

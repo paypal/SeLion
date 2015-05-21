@@ -16,13 +16,8 @@
 package com.paypal.selion.grid;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -31,13 +26,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.Platform;
 
 import com.google.common.base.Preconditions;
+import com.paypal.selion.SeLionConstants;
+import com.paypal.selion.grid.ArtifactDetails.URLChecksumEntity;
+import com.paypal.selion.grid.RunnableLauncher.InstanceType;
 import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.pojos.ArtifactDetails;
-import com.paypal.selion.pojos.ArtifactDetails.URLChecksumEntity;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
@@ -72,10 +71,9 @@ final class FileDownloader {
     }
 
     /**
-     * This method will check whether the download.json file got modified and download all the files in
-     * download.json
+     * This method will check whether the download.json file got modified and download all the files in download.json
      */
-    static void checkForDownloads() {
+    static void checkForDownloads(InstanceType instanceType) {
         LOGGER.entering();
 
         File downloadFile = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
@@ -91,7 +89,7 @@ final class FileDownloader {
         List<URLChecksumEntity> artifactDetails = new ArrayList<ArtifactDetails.URLChecksumEntity>();
 
         try {
-            artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatform(downloadFile);
+            artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatformAndRole(downloadFile, instanceType);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Unable to open download.json file", e);
             throw new RuntimeException(e);
@@ -121,7 +119,6 @@ final class FileDownloader {
     }
 
     private static boolean checkLocalFile(String filename, String checksum, String algorithm) {
-        InputStream is = null;
         MessageDigest md = null;
         StringBuffer sb = new StringBuffer("");
         try {
@@ -131,43 +128,23 @@ final class FileDownloader {
         }
 
         try {
-            int bytesRead;
-
-            is = new FileInputStream(filename);
-
-            byte[] buf = new byte[1024];
-            while ((bytesRead = is.read(buf)) != -1) {
-                md.update(buf, 0, bytesRead);
-            }
-
-            byte[] mdbytes = md.digest();
-
-            for (int i = 0; i < mdbytes.length; i++) {
-                sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-        } catch (Exception e) {
+            byte[] mdbytes = md.digest(FileUtils.readFileToByteArray(new File(filename)));
+            sb.append(Hex.encodeHexString(mdbytes));
+        } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
         }
         if (checksum.equals(sb.toString())) {
             LOGGER.fine("checksum matched for " + filename);
             return true;
         }
+        LOGGER.fine("checksum did not match for " + filename);
         return false;
 
     }
 
     private static String decideFilePath(String fileName) {
         if (fileName.endsWith(".jar")) {
-            return new StringBuffer().append(SeLionGridConstants.SELION_HOME_DIR).append(fileName).toString();
+            return new StringBuffer().append(SeLionConstants.SELION_HOME_DIR).append(fileName).toString();
         } else {
             // Encountered a archive type: at this point it is sure the valid archive types come in
             return new StringBuffer().append(SeLionGridConstants.DOWNLOADS_DIR).append(fileName).toString();
@@ -175,7 +152,7 @@ final class FileDownloader {
     }
 
     private static String downloadFile(String url, String checksum, String algorithm) {
-
+        Preconditions.checkArgument(StringUtils.isNotBlank(algorithm), "Invalid Algorithm: Cannot be null or empty");
         String filename = decideFilePath(url.substring(url.lastIndexOf("/") + 1));
         if (new File(filename).exists()) {
             // local file exist. no need to download
@@ -184,55 +161,16 @@ final class FileDownloader {
             }
         }
         LOGGER.info("Downloading from " + url + " with checksum " + checksum + "[" + algorithm + "]");
-        OutputStream outStream = null;
-        URLConnection uCon = null;
-
-        InputStream is = null;
-        MessageDigest md = null;
-        StringBuffer sb = new StringBuffer("");
-        try {
-            md = MessageDigest.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e1) {
-            // NOSONAR
-        }
 
         try {
-            int bytesRead;
-            URL Url = new URL(url);
-            outStream = new FileOutputStream(filename);
-
-            uCon = Url.openConnection();
-            is = uCon.getInputStream();
-
-            byte[] buf = new byte[1024];
-            while ((bytesRead = is.read(buf)) != -1) {
-                md.update(buf, 0, bytesRead);
-                outStream.write(buf, 0, bytesRead);
-            }
-            outStream.close();
-
-            byte[] mdbytes = md.digest();
-
-            for (int i = 0; i < mdbytes.length; i++) {
-                sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-        } catch (Exception e) {
+            FileUtils.copyURLToFile(new URL(url), new File(filename), 10000, 60000);
+        } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
         }
-        if (checksum.equals(sb.toString())) {
-            LOGGER.fine("checksum matched for " + url);
+
+        if (checkLocalFile(filename, checksum, algorithm)) {
             return filename;
         }
-        LOGGER.fine("checksum did not match for " + url);
         return null;
     }
 
@@ -247,10 +185,8 @@ final class FileDownloader {
      */
     static String downloadFile(String artifactUrl, String checksum) {
         LOGGER.entering(new Object[] { artifactUrl, checksum });
-        Preconditions.checkArgument(artifactUrl != null && !artifactUrl.isEmpty(),
-                "Invalid URL: Cannot be null or empty");
-        Preconditions.checkArgument(checksum != null && !checksum.isEmpty(),
-                "Invalid CheckSum: Cannot be null or empty");
+        Preconditions.checkArgument(StringUtils.isNotBlank(artifactUrl), "Invalid URL: Cannot be null or empty");
+        Preconditions.checkArgument(StringUtils.isNotBlank(checksum), "Invalid CheckSum: Cannot be null or empty");
         // Making sure only the files supported go through the download and extraction.
         isValidFileType(artifactUrl);
         String algorithm = null;
@@ -263,7 +199,7 @@ final class FileDownloader {
         LOGGER.exiting(result);
         return result;
     }
-
+    
     private static boolean isValidSHA1(String s) {
         return s.matches("[a-fA-F0-9]{40}");
     }

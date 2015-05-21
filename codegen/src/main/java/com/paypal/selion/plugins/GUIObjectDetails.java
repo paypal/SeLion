@@ -84,8 +84,8 @@ public class GUIObjectDetails {
      * HtmlObjectDetails
      * 
      * @param keys
-     *            - keys for which {@link GUIObjectDetails} is to be created.
-     * @return - list of HtmlObjectDetails
+     *            keys for which {@link GUIObjectDetails} is to be created.
+     * @return list of HtmlObjectDetails
      */
     public static List<GUIObjectDetails> transformKeys(List<String> keys,TestPlatform platform) {
         List<GUIObjectDetails> htmlObjectDetailsList = null;
@@ -114,8 +114,8 @@ public class GUIObjectDetails {
     /**
      * A overloaded version of transformKeys method which internally specifies {@link TestPlatform#WEB} as the {@link TestPlatform}
      * @param keys
-     *            - keys for which {@link GUIObjectDetails} is to be created.
-     * @return
+     *            keys for which {@link GUIObjectDetails} is to be created.
+     * @return the {@link List} of {@link GUIObjectDetails}
      */
     public static List<GUIObjectDetails> transformKeys(List<String> keys){
         return transformKeys(keys,TestPlatform.WEB);
@@ -126,11 +126,11 @@ public class GUIObjectDetails {
      * {@link TestPlatform}
      * 
      * @param keysToValidate
-     *            - the keys from the Page Yaml input
+     *            the keys from the Page Yaml input
      * @param dataFileName
-     *            - The file name containing the keys
+     *            The file name containing the keys
      * @param currentPlatform
-     *            - the platform specified in the Page Yaml input
+     *            the platform specified in the Page Yaml input
      */
     public static void validateKeysInDataFile(List<String> keysToValidate, String dataFileName,
             TestPlatform currentPlatform) {

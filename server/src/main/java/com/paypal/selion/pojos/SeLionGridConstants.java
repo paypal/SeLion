@@ -15,7 +15,12 @@
 
 package com.paypal.selion.pojos;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
+
+import static com.paypal.selion.SeLionConstants.*;
+
+import com.paypal.selion.grid.JarSpawner;
 
 /**
  * A Class which contains String constants used throughout SeLion Grid
@@ -46,52 +51,19 @@ public class SeLionGridConstants {
     private static final String GRID_PAGES_URL_PATH_PREFIX = "/grid/resources/pages/";
 
     /**
-     * Path to the home directory from where the jar archive is launched
-     */
-    private static final String HOME_PATH = (SystemUtils.USER_HOME == null) ? SystemUtils.USER_DIR
-            : SystemUtils.USER_HOME;
-
-    /**
-     * The location SeLion-Grid will use to read/write/install required files to
-     */
-    public static String SELION_HOME_DIR = HOME_PATH + "/.selion/";
-
-    static {
-        // allow for the user to override SELION_HOME via a system property
-        if (System.getProperty("selionHome") != null) {
-            SELION_HOME_DIR = System.getProperty("selionHome");
-        }
-        // Make sure SELION_HOME ends with a '/' or '\'
-        if (!SELION_HOME_DIR.endsWith("/") && !SELION_HOME_DIR.endsWith("\\")) {
-            SELION_HOME_DIR += "/";
-        }
-
-        SELION_HOME_DIR = adjustFileSeparatorForPlatform(SELION_HOME_DIR);
-    }
-
-    static String adjustFileSeparatorForPlatform(String path) {
-        return path.replace("/", SystemUtils.FILE_SEPARATOR);
-    }
-
-    /**
-     * Executable name for IEDriver
-     */
-    public static final String IE_DRIVER = "IEDriverServer.exe";
-
-    /**
-     * Platform specific executable name for chromedriver
-     */
-    public static final String CHROME_DRIVER = SystemUtils.IS_OS_WINDOWS ? "chromedriver.exe" : "chromedriver";
-
-    /**
-     * Platform specific executable name for phantomjs
-     */
-    public static final String PHANTOMJS_DRIVER = SystemUtils.IS_OS_WINDOWS ? "phantomjs.exe" : "phantomjs";
-
-    /**
      * Relative directory for config files
      */
-    private static final String CONFIG_DIR = "config/";
+    public static final String CONFIG_DIR = "config/";
+
+    /**
+     * Installed path to the downloads directory
+     */
+    public static final String DOWNLOADS_DIR = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + "downloads/");
+
+    /**
+     * Installed path to the SeLion-Grid log files
+     */
+    public static final String LOGS_DIR = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + "logs/");
 
     /**
      * Resource path to the download.json file
@@ -101,13 +73,8 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the download.json file
      */
-    public static final String DOWNLOAD_JSON_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+    public static final String DOWNLOAD_JSON_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "download.json");
-
-    /**
-     * Installed path to the downloads directory
-     */
-    public static final String DOWNLOADS_DIR = adjustFileSeparatorForPlatform(SELION_HOME_DIR + "downloads/");
 
     /**
      * URL to the grid home page
@@ -143,7 +110,7 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the SeLionConfig.json file
      */
-    public static final String SELION_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+    public static final String SELION_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "SeLionConfig.json");
 
     /**
@@ -159,13 +126,13 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the hubConfig.json file
      */
-    public static final String HUB_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+    public static final String HUB_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "hubConfig.json");
 
     /**
      * Installed/Extracted path to the hubSauceConfig.json file
      */
-    public static final String HUB_SAUCE_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+    public static final String HUB_SAUCE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "hubSauceConfig.json");
 
     /**
@@ -176,7 +143,7 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the sauceConfig.json file
      */
-    public static final String SAUCE_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+    public static final String SAUCE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "sauceConfig.json");
 
     /**
@@ -187,13 +154,8 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the logging.properties file
      */
-    public static final String LOGGING_PROPERTIES_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+    public static final String LOGGING_PROPERTIES_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "logging.properties");
-
-    /**
-     * Installed path to the SeLion-Grid log files
-     */
-    public static final String LOGS_DIR = adjustFileSeparatorForPlatform(SELION_HOME_DIR + "logs/");
 
     /**
      * Resource path to the default nodeConfig.json file
@@ -203,7 +165,7 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the nodeConfig.json file
      */
-    public static final String NODE_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+    public static final String NODE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "nodeConfig.json");
 
     /**
@@ -235,4 +197,9 @@ public class SeLionGridConstants {
      * Dash argument for displaying the help text
      */
     public static final String HELP_ARG = "-help";
+
+    /**
+     * Dash argument for disabling continuous restart nature of {@link JarSpawner}
+     */
+    public static final String SELION_NOCONTINUOS_ARG = "-noContinuousRestart";
 }

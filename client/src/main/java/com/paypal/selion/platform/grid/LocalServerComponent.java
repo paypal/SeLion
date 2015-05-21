@@ -25,10 +25,10 @@ interface LocalServerComponent {
      * @param testSession
      *            A {@link AbstractTestSession} that represents the test session.
      */
-    public void boot(AbstractTestSession testSession);
+    void boot(AbstractTestSession testSession);
 
     /**
      * Shuts down the node/hub running locally.
      */
-    public void shutdown();
+    void shutdown();
 }
