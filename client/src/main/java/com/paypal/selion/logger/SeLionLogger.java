@@ -20,9 +20,9 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
-import com.paypal.selion.configuration.SeLionBuildInfo;
+import com.paypal.selion.SeLionBuildInfo;
+import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
 import com.paypal.selion.configuration.LoggerConfig;
-import com.paypal.selion.configuration.SeLionBuildInfo.SeLionBuildProperty;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import com.paypal.test.utilities.logging.SimpleLoggerEvents;
 import com.paypal.test.utilities.logging.SimpleLoggerSettings;

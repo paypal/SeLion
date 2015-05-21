@@ -62,8 +62,8 @@ public class IOSSeLionElementList extends AbstractSeLionElementList {
 
     /**
      * @param rawType
-     *            - The String using which an attempt to find a matching {@link IOSSeLionElementList} is to be performed.
-     * @return - A {@link IOSSeLionElementList} if the type ends with one of the values of {@link IOSSeLionElementList} enum (or)
+     *            The String using which an attempt to find a matching {@link IOSSeLionElementList} is to be performed.
+     * @return A {@link IOSSeLionElementList} if the type ends with one of the values of {@link IOSSeLionElementList} enum (or)
      *         <code>null</code> if there were no matches.
      */
     public static IOSSeLionElementList findMatch(String rawType) {
@@ -72,16 +72,16 @@ public class IOSSeLionElementList extends AbstractSeLionElementList {
 
     /**
      * @param element
-     *            - The element that needs to be tested for being a valid {@link IOSSeLionElementList}
-     * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
+     *            The element that needs to be tested for being a valid {@link IOSSeLionElementList}
+     * @return <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValid(String element) {
         return isValid(values, element);
     }
     
     /**
-     * @param element - The element that needs to be searched.
-     * @return - <code>true</code> if the element was found in the set of elements provided.
+     * @param element The element that needs to be searched.
+     * @return <code>true</code> if the element was found in the set of elements provided.
      */
     public static boolean isExactMatch(String element) {
         return isExactMatch(values, element);
@@ -89,9 +89,9 @@ public class IOSSeLionElementList extends AbstractSeLionElementList {
 
     /**
      * @param element
-     *            - The element that needs to be tested for being a valid {@link IOSSeLionElementList} and whose
+     *            The element that needs to be tested for being a valid {@link IOSSeLionElementList} and whose
      *            {@link IOSSeLionElementList#isUIElement()} returns true.
-     * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
+     * @return <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValidUIElement(String element) {
         return isValidUIElement(values, element);
@@ -102,8 +102,8 @@ public class IOSSeLionElementList extends AbstractSeLionElementList {
      * Method to obtain a {@link List} of {@link GUIObjectDetails} containing {@link IOSSeLionElementList}
      * 
      * @param keys
-     *            -keys for which {@link GUIObjectDetails} is to be created.
-     * @return
+     *            keys for which {@link GUIObjectDetails} is to be created.
+     * @return the {@link List} of {@link GUIObjectDetails}
      */
     public static List<GUIObjectDetails> getGUIObjectList(List<String> keys) {
         List<GUIObjectDetails> htmlObjectDetailsList = new ArrayList<GUIObjectDetails>();

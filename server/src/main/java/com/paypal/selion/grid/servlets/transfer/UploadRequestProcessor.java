@@ -27,7 +27,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.paypal.selion.grid.servlets.transfer.UploadedArtifact.UploadedArtifactBuilder;
 import com.paypal.selion.logging.SeLionGridLogger;

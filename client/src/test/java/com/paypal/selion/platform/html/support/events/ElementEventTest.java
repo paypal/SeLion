@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.testcomponents.paypal.TestPage;
+import com.paypal.selion.testcomponents.TestPage;
 
 public class ElementEventTest {
     

@@ -15,23 +15,44 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import com.paypal.selion.SeLionConstants;
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
+
 /**
- * 
  * This class represents the capabilities that are specific to IE.
  */
 class IECapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+        if (isLocalRun()) {
+            System.setProperty(SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY, getBinaryPath());
+        }
         capabilities.setBrowserName(DesiredCapabilities.internetExplorer().getBrowserName());
         if (ProxyHelper.isProxyServerRequired()) {
             capabilities.setCapability(InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY, true);
             capabilities.setCapability(CapabilityType.PROXY, ProxyHelper.createProxyObject());
         }
         return capabilities;
+    }
+
+    /*
+     * Returns the location of iedriverserver or "" if it can not be determined.
+     */
+    @SuppressWarnings("deprecation")
+    private String getBinaryPath() {
+        String location = System.getProperty(SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY,
+                Config.getConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH));
+        if (StringUtils.isBlank(location)) {
+            location = CommandLine.find(SeLionConstants.IE_DRIVER.replace(".exe", ""));
+        }
+        return (location != null) ? location : "";
     }
 }

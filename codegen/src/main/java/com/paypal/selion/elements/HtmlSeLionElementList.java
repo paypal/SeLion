@@ -72,8 +72,8 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
     }
 
     /**
-     * @param rawType - The String using which an attempt to find a matching {@link HtmlSeLionElementList} is to be performed.
-     * @return - A {@link HtmlSeLionElementList} if the type ends with one of the values of {@link HtmlSeLionElementList} enum (or)
+     * @param rawType The String using which an attempt to find a matching {@link HtmlSeLionElementList} is to be performed.
+     * @return A {@link HtmlSeLionElementList} if the type ends with one of the values of {@link HtmlSeLionElementList} enum (or)
      * <code>null</code> if there were no matches.
      */
     public static HtmlSeLionElementList findMatch(String rawType) {
@@ -81,25 +81,25 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
     }
 
     /**
-     * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElementList}
-     * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
+     * @param element The element that needs to be tested for being a valid {@link HtmlSeLionElementList}
+     * @return <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValid(String element) {
         return isValid(values, element);
     }
     
     /**
-     * @param element - The element that needs to be searched.
-     * @return - <code>true</code> if the element was found in the set of elements provided.
+     * @param element The element that needs to be searched.
+     * @return <code>true</code> if the element was found in the set of elements provided.
      */
     public static boolean isExactMatch(String element) {
         return isExactMatch(values, element);
     }
 
     /**
-     * @param element - The element that needs to be tested for being a valid {@link HtmlSeLionElementList} and whose
+     * @param element The element that needs to be tested for being a valid {@link HtmlSeLionElementList} and whose
      * {@link HtmlSeLionElementList#isUIElement()} returns true.
-     * @return - <code>true</code> if there was a match and <code>false</code> otherwise.
+     * @return <code>true</code> if there was a match and <code>false</code> otherwise.
      */
     public static boolean isValidHtmlElement(String element) {
         return isValidUIElement(values, element);
@@ -113,7 +113,7 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
     }
 
     /**
-     * @return - <code>true</code> if the current element can have a parent to it.
+     * @return <code>true</code> if the current element can have a parent to it.
      */
     public boolean canHaveParent() {
         return canHaveParent;
@@ -122,8 +122,8 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
     /**
      * This method returns <code>true</code> if the key that was given ends with the textual value of one of the 
      * elements that are part of {@link HtmlSeLionElementList}
-     * @param key - The string that needs to be checked.
-     * @return - <code>true</code> if there was a match.
+     * @param key The string that needs to be checked.
+     * @return <code>true</code> if there was a match.
      */
     public boolean looksLike(String key) {
         boolean returnValue = super.looksLike(key);
@@ -139,8 +139,8 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
      * Method to obtain a {@link List} of {@link GUIObjectDetails} containing {@link HtmlSeLionElementList}
      * 
      * @param keys
-     *            -keys for which {@link GUIObjectDetails} is to be created.
-     * @return
+     *            keys for which {@link GUIObjectDetails} is to be created.
+     * @return the {@link List} of {@link GUIObjectDetails}
      */
     public static List<GUIObjectDetails> getGUIObjectList(List<String> keys) {
         String DELIMITER = "#";

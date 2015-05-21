@@ -8,6 +8,8 @@
         <groups>
             <run>
                 <include name="functional" />
+                <exclude name="firefox-only" />
+                <exclude name="ie-only" />
             </run>
         </groups>
         <packages>

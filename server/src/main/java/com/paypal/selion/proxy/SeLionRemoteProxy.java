@@ -39,11 +39,11 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
-import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ConfigParser;
 import com.paypal.selion.utils.ConfigParser.ConfigParserException;
 
@@ -270,8 +270,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         try {
             client.execute(post);
             appendMsgToCustomLog("Node " + machine + " shut-down successfully.");
-        } catch (ClientProtocolException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {

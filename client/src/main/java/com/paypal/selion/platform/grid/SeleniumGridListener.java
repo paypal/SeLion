@@ -111,7 +111,14 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             testSession.initializeTestSession(methodInfo);
             if (!(testSession instanceof BasicTestSession)) {
                 // BasicTestSession are non selenium tests. So no need to start the Local hub.
-                LocalGridManager.spawnLocalHub(testSession);
+                try {
+                    LocalGridManager.spawnLocalHub(testSession);
+                } catch (NoClassDefFoundError e) {
+                    logger.log(Level.SEVERE, "You are trying to run a local server but are missing Jars. Do you have "
+                            + "SeLion-Grid and Selenium-Server in your CLASSPATH?", e);
+                    // No sense in continuing ... SELENIUM_RUN_LOCALLY is a global config property
+                    System.exit(1);
+                }
             }
         } catch (Exception e) { // NOSONAR
             logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
