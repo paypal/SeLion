@@ -44,21 +44,21 @@
 </body>
 <script>
 function validate() {
-    
-    if(!(isValidField("sauceURL", "Sauce URL") && isValidField("username", "Username") 
-            && isValidField("accessKey", "Access Key"))) {
-        return false;
-    }
+  "use strict";
+  if (!(isValidField("sauceURL", "Sauce URL") && isValidField("username", "Username") && isValidField("accessKey", "Access Key"))) {
+    return false;
+  }
+  return true;
 }
 
-function isValidField(var fieldId, var name) {
-    var x = document.forms["sauceGridConfig"][fieldId].value;
-    if (x == null || x == "") {
-        alert(name + " must be filled out");
-        return false;
-    }
-    return true;
+function isValidField(fieldId, name) {
+  "use strict";
+  var x = document.forms.sauceGridConfig[fieldId].value;
+  if (x === null || x === "") {
+    alert(name + " must be filled out");
+    return false;
+  }
+  return true;
 }
-
 </script>
 </html>

@@ -9,66 +9,67 @@
   </head>
   <body id='main_body'>
   <script>
-    function validateForm() {
+  function validateForm() {
+    "use strict";
+    var json = document.getElementById('downloadJSON').value;
+    var downloads, isSuccess = true;
 
-      var json = document.getElementById('downloadJSON').value;
-      var downloads, isSuccess = true;
+    try {
+      downloads = $.parseJSON(json);
+    } catch (err) {
+      alert('Invalid JSON ' + err);
+      return false;
+    }
 
-      try {
-        downloads = $.parseJSON(json);
-      } catch(err) {
-        alert('Invalid JSON ' + err);
+    $.each(downloads, function (ignore, artifact) {
+      if (!artifact.hasOwnProperty('name')) {
+        alert('There is no "name" attribute in the below JSON element: ' + JSON.stringify(artifact, undefined, 2));
+        isSuccess = false;
         return false;
       }
 
-      $.each(downloads, function(index, artifact) {
-        if(!artifact.hasOwnProperty('name')) {
-          alert('There is no "name" attribute in the below JSON element: ' + JSON.stringify(artifact, undefined, 2));
+      $.each(artifact, function (key, attr) {
+        if (!(key === 'name' || key === 'any' || key === 'windows' || key === 'linux' || key === 'mac')) {
+          alert('Attribute "' + key + '" is invalid. Value should be either of name / any / windows / linux / max');
           isSuccess = false;
           return false;
         }
-
-        $.each(artifact, function(key, attr) {
-          if(!(key == 'name' || key == 'any' || key == 'windows' || key == 'linux' || key == 'mac')) {
-            alert('Attribute "' + key + '" is invalid. Value should be either of name / any / windows / linux / max');
-            isSuccess = false;
-            return false;
-          }
-          if(key != 'name' && !isValidPlatform(attr)) {
-            isSuccess = false;
-            return false;
-          }
-        })
-
-      })
-
-      if(!isSuccess) {
-        return false;
-      }
-
-      return true;
-    }
-
-    function isValidPlatform(platform) {
-      var regExpr = '%s';
-      if(!platform.hasOwnProperty('url')) {
-        alert('There is no "url" attribute in the below JSON element: ' + JSON.stringify(platform, undefined, 2));
-        return false;
-      } else {
-        var url = platform.url;
-        if(url.match(regExpr) == null) {
-          alert(url + ' is invalid URL. Hint:URL must start with http or https');
+        if (key !== 'name' && !isValidPlatform(attr)) {
+          isSuccess = false;
           return false;
         }
-      }
+      });
 
-      if(!platform.hasOwnProperty('checksum')) {
-        alert('There is no "checksum" attribute in the below JSON element: ' + JSON.stringify(platform, undefined, 2));
-        return false;
-      }
+    });
 
-      return true;
+    if (!isSuccess) {
+      return false;
     }
+
+    return true;
+  }
+
+  function isValidPlatform(platform) {
+    "use strict";
+    var regExpr = '%s';
+    if (!platform.hasOwnProperty('url')) {
+      alert('There is no "url" attribute in the below JSON element: ' + JSON.stringify(platform, undefined, 2));
+      return false;
+    }
+
+    var url = platform.url;
+    if (url.match(regExpr) === null) {
+      alert(url + ' is invalid URL. Hint:URL must start with http or https');
+      return false;
+    }
+
+    if (!platform.hasOwnProperty('checksum')) {
+      alert('There is no "checksum" attribute in the below JSON element: ' + JSON.stringify(platform, undefined, 2));
+      return false;
+    }
+
+    return true;
+  }
   </script>
   <img id='top' src='/grid/resources/form/top.png' alt='' />
   <div id='form_container'>
