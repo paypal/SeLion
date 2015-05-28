@@ -78,6 +78,7 @@ final class FileExtractor {
                 FileOutputStream decompressStream = new FileOutputStream(outputArchiveName);
                 IOUtils.copy(is, decompressStream);
                 is.close();
+                decompressStream.close();
                 // The archive is de-compressed. Replacing the compressed file name to the archive name
                 archiveFile = outputArchiveName;
                 // Add the file name to the list
