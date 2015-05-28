@@ -1,0 +1,24 @@
+[
+  {
+    "name": "selenium",
+    "any": {
+      "url": "seleniumURL",
+      "checksum": "seleniumChecksum"
+    }
+  },
+  {
+    "name": "chrome",
+    "windows": {
+      "url": "chromeURL",
+      "checksum": "chromeCheckSum"
+    },
+    "linux": {
+      "url": "chromeURL_linux",
+      "checksum": "chromeCheckSum_linux"
+    },
+    "mac": {
+      "url": "chromeURL_mac",
+      "checksum": "chromeCheckSum_mac"
+    }
+  }
+]
