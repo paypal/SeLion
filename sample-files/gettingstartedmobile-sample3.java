@@ -9,6 +9,9 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.reports.runtime.MobileReporter;
 
+/*
+ * A Selendroid test case example for Native App using SeLion.
+ */
 public class AndroidMobileDemo {
 
   @Test

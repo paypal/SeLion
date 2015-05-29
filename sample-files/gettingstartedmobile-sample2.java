@@ -11,6 +11,9 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.reports.runtime.MobileReporter;
 
+/*
+ * An ios-driver test case example for Native App using SeLion.
+ */
 public class IOSMobileDemo {
 
   @MobileTest(appName = "InternationalMountains", mobileNodeType="ios-driver", 
