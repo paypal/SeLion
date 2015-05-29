@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /*
  * A Selendroid test case example for Native App using SeLion.
@@ -18,13 +18,13 @@ public class AndroidMobileDemo {
   @MobileTest(appName = "io.selendroid.testapp", device = "android:19", 
     mobileNodeType = "selendroid")
   public void testMethod() throws Exception {
-    MobileReporter.log("My Screenshot 1", true);
+    SeLionReporter.log("My Screenshot 1", true);
     WebElement inputField = Grid.driver().findElement(
         By.id("my_text_field"));
 
     // verify TextField is enabled
     Assert.assertEquals("true", inputField.getAttribute("enabled"));
-    MobileReporter.log("My Screenshot 2", true);
+    SeLionReporter.log("My Screenshot 2", true);
     inputField.sendKeys("Selendroid");
 
     // verify content in the TextField

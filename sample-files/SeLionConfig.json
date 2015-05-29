@@ -1,9 +1,9 @@
 {
-    "restartCycle": 60000,
-    "uniqueSessionCount": 50,
-    "customProcessHandler": "com.paypal.selion.utils.process.UnixProcessHandler",
-    "artifactMaxFileSize": 1073741824,
-    "artifactExpiryInMilliSec": 86400000,
-    "managedArtifact": com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact,
-    "managedCriteria": com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria
+  "restartCycle": 60000,
+  "uniqueSessionCount": 50,
+  "customProcessHandler": "com.paypal.selion.utils.process.UnixProcessHandler",
+  "artifactMaxFileSize": 1073741824,
+  "artifactExpiryInMilliSec": 86400000,
+  "managedArtifact": com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact,
+  "managedCriteria": com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria
 }

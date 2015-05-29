@@ -1,7 +1,7 @@
 @MobileTest(appName = "InternationalMountains")
 @Test
 public void testMethod() throws InterruptedException {
-  MobileReporter.log("My Screenshot 1", true);
+  SeLionReporter.log("My Screenshot 1", true);
   List<WebElement> cells = Grid.iOSDriver().
     findElements(By.className("UIATableCell"));
   Assert.assertEquals(9, cells.size());
@@ -12,7 +12,7 @@ public void testMethod() throws InterruptedException {
   Thread.sleep(10 * 1000);
 
   // take a screenshot using the normal selenium api.
-  MobileReporter.log("My Screenshot 2", true);
+  SeLionReporter.log("My Screenshot 2", true);
 
   // access the content
   By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");

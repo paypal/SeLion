@@ -18,8 +18,8 @@ public void wdshDemo() throws ExecutionException {
   ResultSet rs = stmt.executeQuery();
   User user= new User();
   while(rs.next()){
-      user.setUserName(rs.getString("userName");
-      user.setUserName(rs.getString("password");
+    user.setUserName(rs.getString("userName");
+    user.setUserName(rs.getString("password");
   }
 
   //stop the WebDriverSessionHandler which leaves the WebDriver session to

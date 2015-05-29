@@ -8,12 +8,14 @@
   <ol>
       <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java JDK 1.7</a></li>
       <li><a href="http://maven.apache.org/download.html">Maven 3</a></li>
-      <li>Xcode 5.1.1+ (Mac installs only, required for iOS tests) or the Android SDK (for Android tests)
+      <li>Xcode 5.1.1+ (Mac installs only, required for iOS tests) and/or the Android SDK (for Android tests)
         <ul>
-          <li>For full details on how to setup your Mac for iOS testing with ios-driver, refer to the
+          <li>For full details on how to setup your Mac for iOS testing with ios-driver, refer to their
             <a href="http://ios-driver.github.io/ios-driver/?page=setup#tech">project site</a>.</li>
-          <li>For full details on how to setup your machine for Android testing with Selendroid, refer to the
+          <li>For full details on how to setup your machine for Android testing with Selendroid, refer to their
             <a href="http://selendroid.io/setup.html">project site</a>.</li>
+          <li>For details on how to setup your machine with Appium for Android and/or iOS testing, refer to their
+            <a href="http://appium.io/getting-started.html?lang=en">project site</a>.</li>
         </ul>
       </li>
   </ol>
@@ -43,13 +45,16 @@
   <p>Now run the following command in the project directory path from a command prompt:</p>
   <pre><code class="language-sh">mvn dependency:resolve</code></pre>
   <p>This command causes Maven to start downloading all of the required jar files.</p>
-  <h2>Creating Appium @MobileTest cases</h2>
+
+  <h2>Creating Appium @MobileTest Cases</h2>
   <p>For the purpose of demonstration, we are going to use a sample iOS native application from Apple called
     <a href="http://ios-driver.github.io/ios-driver/files/InternationalMountains.app.zip">International Mountains</a>
-    and Android native application from Selendroid called
+    and an Android native application from Selendroid called
     <a href="http://search.maven.org/remotecontent?filepath=io/selendroid/selendroid-test-app/0.15.0/selendroid-test-app-0.15.0.apk">Selendroid Test App</a>.
    </p>
-  <p>Executing an Appium test case needs a running Appium instance. Config parameter mobileNodeType should be set to "appium" for running an Appium test case in SeLion.</p>
+  <p>Executing an Appium test case needs a running Appium instance. Configration parameter <code>mobileNodeType</code> should
+    be set to <i>appium</i> for running an Appium test case in SeLion.</p>
+
   <h4>Creating an Appium iOS @MobileTest for Native App</h4>
   <p>Create the file <samp>AppiumIOSNativeAppMobileDemo.java</samp> under
       the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
@@ -69,53 +74,66 @@
   <p>Create the file <samp>AppiumAndroidBrowserMobileDemo.java</samp> under
       the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
   <pre data-src="../sample-files/appiumandroidbrowsermobile-sample.java"></pre>
-  <h2>Create a TestNG suite file to execute test cases.</h2>
+
+  <h4>Create a TestNG Suite File to Execute the Test Cases</h4>
   <p>
-    Currently, SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. First, create the folder <code>{project}/src/test/resources</code>. Then, create the TestNG Suite file <samp>AppiumSampleSuite.xml</samp> under the folder <code>{project}/src/test/resources</code> and copy the below contents:
+    SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. First, create the folder
+    <code>{project}/src/test/resources</code>. Then, create the TestNG Suite file <samp>AppiumSampleSuite.xml</samp>
+    under the folder <code>{project}/src/test/resources</code> and copy the below contents:
   </p>
 
   <pre data-src="../sample-files/appiumsuite-sample.xml"></pre>
   
-  <h2>Creating Appium @MobileTest cases to run on Sauce Cloud</h2>
-  <h4>Native App Test case</h4>
-  <p>This test case executes the mobile automation on the Sauce Cloud. <a href="http://search.maven.org/remotecontent?filepath=io/selendroid/selendroid-test-app/0.15.0/selendroid-test-app-0.15.0.apk">Selendroid Test App</a> should be uploaded to Sauce Cloud before trying this test case. Refer <a href="https://docs.saucelabs.com/reference/rest-api/#upload-file">Sauce Cloud upload API</a> to upload the Native app to Sauce temporary storage. Create the file <samp>AppiumNativeAppSauceCloudMobileDemo.java</samp> under the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
+  <h2>Creating Appium @MobileTest Cases to Run On the Sauce Cloud</h2>
+
+  <h4>Native App Test Case</h4>
+  <p>This test case executes the mobile automation on the Sauce Cloud. The
+    <a href="http://search.maven.org/remotecontent?filepath=io/selendroid/selendroid-test-app/0.15.0/selendroid-test-app-0.15.0.apk">Selendroid Test App</a>
+    should be uploaded to Sauce Cloud before trying this test case. Refer to the
+    <a href="https://docs.saucelabs.com/reference/rest-api/#upload-file">Sauce Cloud upload API</a> for more information
+    on uploading it to the Sauce temporary storage. Create the file <samp>AppiumNativeAppSauceCloudMobileDemo.java</samp>
+    under the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
   <pre data-src="../sample-files/appiumnativeapponsaucecloudmobile-sample.java"></pre>
-  <h4>Safari Test case</h4>
-  <p>This test case execute the mobile automation on Sauce Cloud. Create the file <samp>AppiumIOSSafariSauceCloudMobileDemo.java</samp> under the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
+
+  <h4>Safari Test Case</h4>
+  <p>This test case execute the mobile automation on Sauce Cloud. Create the file <samp>AppiumIOSSafariSauceCloudMobileDemo.java</samp>
+    under the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
   <pre data-src="../sample-files/appiumnsafarionsaucecloudmobile-sample.java"></pre>
-  <h2>Create a TestNG Suite file for executing the Appium test cases on Sauce Cloud</h2>
+
+  <h4>Create a TestNG Suite file to Execute the Test Cases on the Sauce Cloud</h4>
   <p>
-    To execute the test cases, create a TestNG Suite file <samp>AppiumSauceSampleSuite.xml</samp> under the folder <code>{project}/src/test/resources</code> and copy the
-    below contents:
+    SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. First, create the folder
+    <code>{project}/src/test/resources</code>. Then, create a TestNG Suite file <samp>AppiumSauceSampleSuite.xml</samp>
+    under the folder <code>{project}/src/test/resources</code> and copy the below contents:
   </p>
   <pre data-src="../sample-files/appiumsaucesuite-sample.xml"></pre>
 
   
   <h2>Creating an ios-driver @MobileTest</h2>
-  <p>Download the 
+  <p>Download and extract the
       <a href="http://ios-driver.github.io/ios-driver/files/InternationalMountains.app.zip">International Mountains</a>
-	to <samp>{project}/Applications</samp>.</p>
+    app to <samp>{project}/Applications</samp>.</p>
   <p>Executing an ios-driver @MobileTest locally can only be done on a Mac. Create the file <samp>IOSMobileDemo.java</samp> under
       the folder <code>{project}/src/test/java/com/mycompany/test</code> and copy the below contents:</p>
   <pre data-src="../sample-files/gettingstartedmobile-sample2.java"></pre>
 
-  <h2>Creating an Selendroid @MobileTest</h2>
-  <p> Download the <a href="http://search.maven.org/remotecontent?filepath=io/selendroid/selendroid-test-app/0.15.0/selendroid-test-app-0.15.0.apk">Selendroid Test App</a> file into <samp>{project}/Applications</samp></p>
+  <h2>Creating a Selendroid @MobileTest</h2>
+  <p> Download the <a href="http://search.maven.org/remotecontent?filepath=io/selendroid/selendroid-test-app/0.15.0/selendroid-test-app-0.15.0.apk">Selendroid Test App</a>
+    file into <samp>{project}/Applications</samp></p>
   <p>Create the file <samp>AndroidMobileDemo.java</samp> under the folder <code>{project}/src/test/java/com/mycompany/test</code>
       and copy the below contents:</p>
+  <pre data-src="../sample-files/gettingstartedmobile-sample3.java"></pre>
 
-    <pre data-src="../sample-files/gettingstartedmobile-sample3.java"></pre>
-
-  <h2>Create a TestNG Suite file</h2>
+  <h2>Create a TestNG Suite File to Execute the Tests Cases</h2>
   <p>
-    To execute the test cases create a TestNG Suite file <samp>SampleSuite.xml</samp> under the folder <code>{project}/src/test/resources</code> and copy the
-    below contents:
+    SeLion uses <a href="http://www.testng.org">TestNG</a> as the test runner. First, create the folder
+    <code>{project}/src/test/resources</code>. Then, create a TestNG Suite file <samp>SampleSuite.xml</samp> under the folder
+    <code>{project}/src/test/resources</code> and copy the below contents:
   </p>
-
-
   <pre data-src="../sample-files/gettingstartedmobile-sample1.xml"></pre>
+
   <h2>Execute the Test</h2>
-  <p>To execute the test, run the following command from the <code>{project}</code> directory by passing the respective suite file using -DsuiteXmlFile command line parameter.</p>
+  <p>To execute the test, run the following command from the <code>{project}</code> directory:</p>
   <pre><code class="language-sh">mvn clean test -DsuiteXmlFile=src/test/resources/SampleSuite.xml</code></pre>
 
   <br>
@@ -125,18 +143,21 @@
   <p>As seen from the above sample, a test can specify the application that it is trying to automate.
     There are a couple of things that can be specified via the <code>@MobileTest</code> annotation. For example:</p>
     <ol>
-      <li><code>appName</code> - The application name against which the automation test needs to be run. For all default apps this is mandatory</li>
-	  <li><code>appPath</code> - The application path against which the automation test needs to be run. For all Appium based native app testing this is mandatory </li>
+      <li><code>appName</code> - The application name against which the automation test needs to be run. For all default
+        apps this is mandatory</li>
+      <li><code>appPath</code> - The application path against which the automation test needs to be run. For all Appium based
+        native app testing this is mandatory </li>
       <li><code>mobileNodeType</code> - The mobile driver that can be used to execute the mobile tests.
-          Possible values are Appium, ios-driver and selendroid.</li>
+        Possible values are <i>appium</i>, <i>ios-driver</i> and <i>selendroid</i>.</li>
       <li><code>device</code> - The device type to be used. E.g. - an iPhone, an iPad, an Android device, etc</li>
       <li><code>language</code> - The application's language that is to be used.</li>
       <li><code>locale</code> - The application's locale that is to be used.</li>
     </ol>
-  <p>Refer to the SeLion <a href="java-docs/client-apis/index.html">client javadocs</a> for the complete list of annotation parameters.</p>
+  <p>Refer to the SeLion <a href="java-docs/client-apis/index.html">client javadocs</a> for the complete list of annotation
+    parameters.</p>
 
-  <p>Some of the defaults attributes for the <code>@MobileTest</code> annotation can be influenced via Java
-    system properties, environment variables, or via TestNG suite parameters. </p>
+  <p>Some of the defaults attributes for the <code>@MobileTest</code> annotation can be influenced via Java system
+    properties, environment variables, or via TestNG suite parameters. </p>
     <table class="table table-bordered table-hover table-condensed">
       <thead>
       <tr>

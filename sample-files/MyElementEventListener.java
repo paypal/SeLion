@@ -22,7 +22,7 @@ import com.paypal.selion.platform.html.support.events.Selectable;
 import com.paypal.selion.platform.html.support.events.Submitable;
 import com.paypal.selion.platform.html.support.events.Typeable;
 import com.paypal.selion.platform.html.support.events.Uncheckable;
-import com.paypal.selion.reports.runtime.WebReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 public class DebugScreenshotListener extends AbstractElementEventListener {
   private static ThreadLocal<Boolean> interactedWithPage = new ThreadLocal<Boolean>() {
@@ -54,7 +54,7 @@ public class DebugScreenshotListener extends AbstractElementEventListener {
   public void beforeClick(Clickable target, Object... expected) {
     // If an expected object is provided to the click method we take a screenshot.
     if (expected != null && expected.length != 0 && interactedWithPage.get()) {
-      WebReporter.log(Grid.driver().getTitle(), true, true);
+      SeLionReporter.log(Grid.driver().getTitle(), true, true);
     }
   }
 

@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /*
  * An ios-driver test case example for Native App using SeLion.
@@ -20,7 +20,7 @@ public class IOSMobileDemo {
     device = "iphone")
   @Test
   public void testMethod() throws InterruptedException {
-    MobileReporter.log("My Screenshot 1", true);
+    SeLionReporter.log("My Screenshot 1", true);
     List<WebElement> cells = Grid.driver()
       .findElements(By.className("UIATableCell"));
     Assert.assertEquals(9, cells.size());
@@ -31,7 +31,7 @@ public class IOSMobileDemo {
     Thread.sleep(10 * 1000);
 
     // take a screenshot using the normal selenium api.
-    MobileReporter.log("My Screenshot 2", true);
+    SeLionReporter.log("My Screenshot 2", true);
 
     // access the content
     By selector = By.xpath("//UIAStaticText[contains(@name,'climbed')]");

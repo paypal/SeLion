@@ -24,19 +24,17 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  */
 public class AppiumAndroidNativeAppMobileDemo  {
 
-    @Test
-    @MobileTest(appPath = "src/test/resources/apps/selendroid-test-app-0.15.0.apk", 
-    device = "android:5.0.1", deviceType = "Android Emulator")
-    public void testWithNativeApp() {
-
-        RemoteWebDriver driver = Grid.driver();
-        WebDriverWaitUtils
-                .waitUntilElementIsVisible("io.selendroid.testapp:id/my_text_field");
-        WebElement textField = driver.findElement(By
-                .id("io.selendroid.testapp:id/my_text_field"));
-        assertEquals("true", textField.getAttribute("enabled"));
-        textField.sendKeys("Appium Android Native Test");
-        assertEquals("Appium Android Native Test", textField.getText());
-
-    }
+  @Test
+  @MobileTest(appPath = "src/test/resources/apps/selendroid-test-app-0.15.0.apk", 
+  device = "android:5.0.1", deviceType = "Android Emulator")
+  public void testWithNativeApp() {
+    RemoteWebDriver driver = Grid.driver();
+    WebDriverWaitUtils
+            .waitUntilElementIsVisible("io.selendroid.testapp:id/my_text_field");
+    WebElement textField = driver.findElement(By
+            .id("io.selendroid.testapp:id/my_text_field"));
+    assertEquals("true", textField.getAttribute("enabled"));
+    textField.sendKeys("Appium Android Native Test");
+    assertEquals("Appium Android Native Test", textField.getText());
+  }
 }

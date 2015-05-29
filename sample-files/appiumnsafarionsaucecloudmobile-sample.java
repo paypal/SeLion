@@ -16,21 +16,21 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
  */
 public class AppiumIOSSafariSauceCloudMobileDemo {
 
-    @Test
-    @MobileTest(appName = "safari", device = "iphone:8.1", 
-    deviceType = "iPhone Simulator", mobileNodeType = "appium")
-    public void testWithSafari() {
-        RemoteWebDriver driver = Grid.driver();
-        assertNotNull(driver);
-        // And now use this to visit Google
-        driver.get("http://www.google.com");
-        // Find the text input element by its name
-        WebElement element = driver.findElement(By.name("q"));
-        // Enter something to search for
-        element.sendKeys("Cheese!");
-        // Now submit the form. WebDriver will find the form for us from the element
-        element.submit();
-        SeLionReporter.log("cheese!", true);
-    }
+  @Test
+  @MobileTest(appName = "safari", device = "iphone:8.1", 
+  deviceType = "iPhone Simulator", mobileNodeType = "appium")
+  public void testWithSafari() {
+    RemoteWebDriver driver = Grid.driver();
+    assertNotNull(driver);
+    // And now use this to visit Google
+    driver.get("http://www.google.com");
+    // Find the text input element by its name
+    WebElement element = driver.findElement(By.name("q"));
+    // Enter something to search for
+    element.sendKeys("Cheese!");
+    // Now submit the form. WebDriver will find the form for us from the element
+    element.submit();
+    SeLionReporter.log("cheese!", true);
+  }
 
 }

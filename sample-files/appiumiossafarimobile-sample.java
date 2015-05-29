@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.runtime.MobileReporter;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /**
  * This test demonstrates how to use SeLion for running tests against iOS 
@@ -24,21 +24,21 @@ import com.paypal.selion.reports.runtime.MobileReporter;
  */
 public class AppiumIOSSafariMobileDemo {
 
-    @Test
-    @MobileTest(appName = "safari", device = "iphone:8.1",
-    deviceType = "iPhone Simulator")
-    public void testWithSafari() {
-        RemoteWebDriver driver = Grid.driver();
-        assertNotNull(driver);
-        // And now use this to visit Google
-        driver.get("http://www.google.com");
-        // Find the text input element by its name
-        WebElement element = driver.findElement(By.name("q"));
-        // Enter something to search for
-        element.sendKeys("Cheese!");
-        // Now submit the form. WebDriver will find the form for us from the element
-        element.submit();
-        // take a screenshot
-        MobileReporter.log("cheese!", true);
-    }
+  @Test
+  @MobileTest(appName = "safari", device = "iphone:8.1",
+  deviceType = "iPhone Simulator")
+  public void testWithSafari() {
+    RemoteWebDriver driver = Grid.driver();
+    assertNotNull(driver);
+    // And now use this to visit Google
+    driver.get("http://www.google.com");
+    // Find the text input element by its name
+    WebElement element = driver.findElement(By.name("q"));
+    // Enter something to search for
+    element.sendKeys("Cheese!");
+    // Now submit the form. WebDriver will find the form for us from the element
+    element.submit();
+    // take a screenshot
+    SeLionReporter.log("cheese!", true);
+  }
 }
