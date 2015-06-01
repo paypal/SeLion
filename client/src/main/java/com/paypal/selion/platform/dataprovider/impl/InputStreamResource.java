@@ -13,47 +13,64 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
-import com.paypal.selion.platform.dataprovider.impl.XmlFileSystemResource;
-import com.paypal.selion.platform.dataprovider.pojos.KeyValueMap;
-import com.paypal.selion.platform.dataprovider.pojos.KeyValuePair;
+import java.io.InputStream;
+
+import com.paypal.selion.platform.dataprovider.DataResource;
 
 /**
- * This interface defines prototype to implement xml data provider implementation to parse the xml format data file.
+/**
+ * InputStreamResource defines input stream of the data source to be used for data provider consumption. Loading a
+ * file (Yaml, Xml, Json, xls for e.g.,) containing user-defined (complex) objects also requires passing in the object class.
+ * Passing in a complex object with nested complex objects does not require any additional parameters.
+ *
  */
-public interface XmlDataProvider extends SeLionDataProvider {
+public class InputStreamResource implements DataResource {
 
     /**
-     * Generates a two dimensional array for TestNG DataProvider from the XML data representing a map of name value
-     * collection.
-     * 
-     * This method needs the referenced {@link XmlFileSystemResource} to be instantiated using its constructors with
-     * parameter {@code Class<?> cls} and set to {@code KeyValueMap.class}. The implementation in this method is tightly
-     * coupled with {@link KeyValueMap} and {@link KeyValuePair}.
-     * 
-     * The hierarchy and name of the nodes are strictly as instructed. A name value pair should be represented as nodes
-     * 'key' and 'value' as child nodes contained in a parent node named 'item'. A sample data with proper tag names is
-     * shown here as an example :-
-     *
-     * <pre>
-     * <items>
-     *     <item>
-     *         <key>k1</key>
-     *         <value>val1</value>
-     *     </item>
-     *     <item>
-     *         <key>k2</key>
-     *         <value>val2</value>
-     *     </item>
-     *     <item>
-     *         <key>k3</key>
-     *         <value>val3</value>
-     *     </item>
-     * </items>
-     * </pre>
-     *
-     * @return A two dimensional object array.
+     * Input stream of the data file
      */
-    Object[][] getAllKeyValueData();
+    private InputStream stream = null;
+
+    /**
+     * User defined POJO to map with data file
+     */
+    private Class<?> cls = null;
+
+    /**
+     * Type of the data file which means extension of the file
+     */
+    private String type = null;
+
+    public InputStreamResource(InputStream stream, Class<?> cls, String type) {
+        this.stream = stream;
+        this.cls = cls;
+        this.type = type;
+    }
+
+    public InputStreamResource(InputStream stream, String type) {
+        this(stream, null, type);
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return this.stream;
+    }
+
+    @Override
+    public Class<?> getCls() {
+        return this.cls;
+    }
+
+    @Override
+    public void setCls(Class<?> cls) {
+        this.cls = cls;
+    }
+
+    @Override
+    public String getType() {
+        return this.type;
+    }
+
 }

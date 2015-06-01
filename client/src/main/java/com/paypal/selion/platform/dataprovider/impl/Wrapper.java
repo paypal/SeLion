@@ -13,47 +13,46 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
-import com.paypal.selion.platform.dataprovider.impl.XmlFileSystemResource;
-import com.paypal.selion.platform.dataprovider.pojos.KeyValueMap;
-import com.paypal.selion.platform.dataprovider.pojos.KeyValuePair;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This interface defines prototype to implement xml data provider implementation to parse the xml format data file.
+ * This class represents the root of the XML document wrapping a bound type list of generic objects obtained when an XML is unmarshalled. .
+ * @param <T>
+ *  The bound type.
  */
-public interface XmlDataProvider extends SeLionDataProvider {
+@XmlRootElement
+public class Wrapper<T> {
+
+    private List<T> list;
 
     /**
-     * Generates a two dimensional array for TestNG DataProvider from the XML data representing a map of name value
-     * collection.
-     * 
-     * This method needs the referenced {@link XmlFileSystemResource} to be instantiated using its constructors with
-     * parameter {@code Class<?> cls} and set to {@code KeyValueMap.class}. The implementation in this method is tightly
-     * coupled with {@link KeyValueMap} and {@link KeyValuePair}.
-     * 
-     * The hierarchy and name of the nodes are strictly as instructed. A name value pair should be represented as nodes
-     * 'key' and 'value' as child nodes contained in a parent node named 'item'. A sample data with proper tag names is
-     * shown here as an example :-
-     *
-     * <pre>
-     * <items>
-     *     <item>
-     *         <key>k1</key>
-     *         <value>val1</value>
-     *     </item>
-     *     <item>
-     *         <key>k2</key>
-     *         <value>val2</value>
-     *     </item>
-     *     <item>
-     *         <key>k3</key>
-     *         <value>val3</value>
-     *     </item>
-     * </items>
-     * </pre>
-     *
-     * @return A two dimensional object array.
+     * Default constructor initializes empty list. 
      */
-    Object[][] getAllKeyValueData();
+    public Wrapper() {
+        list = new ArrayList<T>();
+    }
+
+    /**
+     * Initializes instance with list.
+     * @param items
+     */
+    public Wrapper(List<T> items) {
+        this.list = items;
+    }
+
+    /**
+     * Returns list
+     * @return
+     *  The list.
+     */
+    @XmlAnyElement(lax = true)
+    public List<T> getList() {
+        return list;
+    }
 }

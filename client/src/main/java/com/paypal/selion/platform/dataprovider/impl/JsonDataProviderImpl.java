@@ -13,12 +13,15 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +34,9 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.DataProviderException;
+import com.paypal.selion.platform.dataprovider.DataResource;
+import com.paypal.selion.platform.dataprovider.SeLionDataProvider;
 import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -39,17 +45,18 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * a 2D Array and there are utility methods to get specific data by index when not all data is required and convert a
  * Json String to a specific type.
  */
-public final class JsonDataProvider {
+public final class JsonDataProviderImpl implements SeLionDataProvider {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
+    private DataResource resource;
 
-    private JsonDataProvider() {
-        // Hiding the constructor
+    public JsonDataProviderImpl(DataResource resource) {
+        this.resource = resource;
     }
 
     /**
      * Parses the JSON file as a 2D Object array for TestNg dataprovider usage.<br>
-     * 
+     *
      * <pre>
      *  <i>Array Of Objects mapped to a user defined type:</i>
      * [
@@ -88,23 +95,21 @@ public final class JsonDataProvider {
      *  "preintTest":100
      * }
      * ]
-     * 
+     *
      * <i>Test Method Signature</i>
-     * 
+     *
      * {@code public void readJsonArray(TestData testData)}
      * </pre>
-     * 
-     * 
-     * @param resource
-     *            The {@link FileSystemResource} denoting a JSON file and the type it needs to be mapped to (if any)
+     *
+     *
      * @return A {@link Object[][]} containing the data parsed from {@link FileSystemResource resource}
      */
-    public static Object[][] getAllJsonData(FileSystemResource resource) {
-        validateResourceParams(resource);
+    @Override
+    public Object[][] getAllData() {
         logger.entering(resource);
-        Class<?> arrayType = null;
+        Class<?> arrayType;
         Object[][] dataToBeReturned = null;
-        JsonReader reader = new JsonReader(resource.getReader());
+        JsonReader reader = new JsonReader(getReader(resource));
         try {
             // The type specified must be converted to array type for the parser
             // to deal with array of JSON objects
@@ -122,33 +127,47 @@ public final class JsonDataProvider {
 
     /**
      * Gets JSON data from a resource for the specified indexes.
-     * 
-     * 
-     * @param jsonResource
-     *            - The {@link FileSystemResource} denoting a JSON file and the type it needs to be mapped to (if any)
+     *
      * @param indexes
      *            - The set of indexes to be fetched from the JSON file.
      * @return A {@link Object[][]} containing the data as 2D array as per the specified indexes, parsed from
      *         {@link FileSystemResource resource}
      */
-    public static Object[][] getJsonObjectByIndex(FileSystemResource jsonResource, String indexes) {
-        validateResourceParams(jsonResource);
+    @Override
+    public Object[][] getDataByIndex(String indexes) {
+        validateResourceParams(resource);
         Preconditions.checkArgument(!StringUtils.isEmpty(indexes), "Indexes cannot be empty");
-        logger.entering(new Object[] { jsonResource, indexes });
-        int[] indexList = null;
+        logger.entering(indexes);
+        Object[][] requestedData = getDataByIndex(DataProviderHelper.parseIndexString(indexes));
+        logger.exiting(requestedData);
+        return requestedData;
+    }
+
+    /**
+     * Gets JSON data from a resource for the specified indexes.
+     *
+     * @param indexes
+     *            - The set of indexes to be fetched from the JSON file.
+     * @return A {@link Object[][]} containing the data as 2D array as per the specified indexes, parsed from
+     *         {@link FileSystemResource resource}
+     */
+    @Override
+    public Object[][] getDataByIndex(int[] indexes) {
+        validateResourceParams(resource);
+        Preconditions.checkArgument((indexes.length != 0), "Indexes cannot be empty");
+        logger.entering(indexes);
         Object[][] requestedData = null;
-        Class<?> arrayType = null;
+        Class<?> arrayType;
         JsonReader reader = null;
         try {
 
-            indexList = DataProviderHelper.parseIndexString(indexes);
-            requestedData = new Object[indexList.length][1];
-            reader = new JsonReader(jsonResource.getReader());
-            arrayType = Array.newInstance(jsonResource.getCls(), 0).getClass();
+            requestedData = new Object[indexes.length][1];
+            reader = new JsonReader(getReader(resource));
+            arrayType = Array.newInstance(resource.getCls(), 0).getClass();
             logger.log(Level.FINE, "The Json Data is mapped as", arrayType);
             Object[][] mappedData = mapJsonData(reader, arrayType);
             int i = 0;
-            for (int indexVal : indexList) {
+            for (int indexVal : indexes) {
                 indexVal--;
                 requestedData[i] = mappedData[indexVal];
                 i++;
@@ -164,26 +183,21 @@ public final class JsonDataProvider {
 
     /**
      * Gets JSON data from a resource by applying the given filter.
-     * 
-     * 
-     * @param jsonResource
-     *            - The {@link FileSystemResource} denoting a JSON file and the type it needs to be mapped to (if any)
-     * @param filter
+     *
+     * @param dataFilter
      *            an implementation class of {@link DataProviderFilter}
-     * @return A {@link Iterator<Object[]>} over a collection of Object Array as per the specified filter, parsed from
-     *         {@link FileSystemResource resource}
+     * @return A {@link Iterator<Object>} over a collection of Object Array as per the specified filter, parsed from
+     *         {@link FileSystemResource}
      */
-    public static Iterator<Object[]> getJsonObjectByFilter(FileSystemResource jsonResource,
-            DataProviderFilter dataFilter) {
-        Preconditions.checkArgument(jsonResource != null, "File resource cannot be null");
-        Preconditions.checkArgument(jsonResource.getFileName() != null,
-                "The resource must have a filename. filename cannot be null");
-        logger.entering(new Object[] { jsonResource, dataFilter });
-        Class<?> arrayType = null;
+    @Override
+    public Iterator<Object[]> getDataByFilter(DataProviderFilter dataFilter) {
+        Preconditions.checkArgument(resource != null, "File resource cannot be null");
+        logger.entering(dataFilter);
+        Class<?> arrayType;
         JsonReader reader = null;
         try {
-            reader = new JsonReader(jsonResource.getReader());
-            arrayType = Array.newInstance(jsonResource.getCls(), 0).getClass();
+            reader = new JsonReader(getReader(resource));
+            arrayType = Array.newInstance(resource.getCls(), 0).getClass();
             Gson myJson = new Gson();
             Object[] mappedData = myJson.fromJson(reader, arrayType);
             return prepareDataAsObjectArrayList(mappedData, dataFilter).iterator();
@@ -197,7 +211,7 @@ public final class JsonDataProvider {
     /**
      * A utility method to give out json data as HashTable. Please note this method works on the rule that the json
      * object that needs to be parsed MUST contain a key named "id".
-     * 
+     *
      * <pre>
      * [
      * {
@@ -218,41 +232,37 @@ public final class JsonDataProvider {
      * ]
      * Here the key to the data in the hashtable will be "test1"
      * </pre>
-     * 
-     * @param jsonResource
-     *            - The {@link FileSystemResource} denoting a JSON file
-     * @return - The json data as a {@link HashTable}
-     * @throws IOException
+     *
+     * @return - The json data as a {@link Hashtable}
      */
-    public static Hashtable<String, Hashtable<?, ?>> getJsonDataAsHashTable(FileSystemResource jsonResource) {
-        Preconditions.checkArgument(jsonResource != null, "File resource cannot be null");
-        Preconditions.checkArgument(jsonResource.getFileName() != null,
-                "The resource must have a filename. filename cannot be null");
-        logger.entering(jsonResource);
+    @Override
+    public Hashtable<String, Object> getDataAsHashtable() {
+        Preconditions.checkArgument(resource != null, "File resource cannot be null");
+        logger.entering();
         // Over-writing the resource because there is a possibility that a user
         // can give a type
-        jsonResource.setCls(Hashtable[].class);
-        Hashtable<String, Hashtable<?, ?>> dataAsHashTable = null;
+        resource.setCls(Hashtable[].class);
+        Hashtable<String, Object> dataAsHashTable = null;
         JsonReader reader = null;
         try {
-            reader = new JsonReader(jsonResource.getReader());
-            Object[][] dataObject = mapJsonData(reader, jsonResource.getCls());
-            dataAsHashTable = new Hashtable<String, Hashtable<?, ?>>();
-            for (int i = 0; i < dataObject.length; i++) {
-                Object currentData = dataObject[i][0];
+            reader = new JsonReader(getReader(resource));
+            Object[][] dataObject = mapJsonData(reader, resource.getCls());
+            dataAsHashTable = new Hashtable<>();
+            for (Object[] currentData : dataObject) {
                 // Its pretty safe to cast to array and its also known that a 1D
                 // array is packed
-                Hashtable<?, ?> value = (Hashtable<?, ?>) currentData;
+                Hashtable<?, ?> value = (Hashtable<?, ?>) currentData[0];
                 /*
                  * As per the json specification a Json Object is a unordered collection of name value pairs. To give
                  * out the json data as hash table , a key needs to be figured out. To keep things clear and easy the
                  * .json file must have all the objects with a key "id" whose value can be used as the key in the
                  * hashtable.Users can directly access the data from the hash table using the value.
-                 * 
+                 *
                  * Note: The id is harcoded purposefully here because to enforce the contract between data providers to
                  * have common methods.
                  */
-                dataAsHashTable.put((String) value.get("id"), value);
+                dataAsHashTable.put((String) value.get("id"), currentData);
+
             }
         } catch (NullPointerException n) {
             throw new DataProviderException(
@@ -267,34 +277,26 @@ public final class JsonDataProvider {
         return dataAsHashTable;
     }
 
-    /**
-     * Utility method to convert raw Json strings into a type.
-     * 
-     * @param jsonString
-     *            The Json data as a {@link String}
-     * @param typeToMap
-     *            The type to which the jsonString must be mapped to
-     * @return An {@link Object} that corresponds to the type specified.
-     */
-    public static Object convertJsonStringToObject(String jsonString, Type typeToMap) {
-        Preconditions.checkArgument(typeToMap != null, "typeToMap argument cannot be null");
-        Preconditions.checkArgument(!StringUtils.isEmpty(jsonString),
-                "A valid string is required to convert the Json to Object");
-        logger.entering(new Object[] { jsonString, typeToMap });
-        Gson jsonParser = new Gson();
-        Object parsedData = jsonParser.fromJson(jsonString, typeToMap);
-        logger.exiting(parsedData);
-        return parsedData;
+    @Override
+    public Object[][] getDataByKeys(String[] keys) {
+        logger.entering(Arrays.toString(keys));
+
+        Hashtable<String, Object> dataAsHashTable = getDataAsHashtable();
+
+        Object[][] objArray = DataProviderHelper.getDataByKeys(dataAsHashTable, keys);
+
+        logger.exiting(objArray);
+        return objArray;
     }
 
-    private static Object[][] mapJsonData(JsonReader reader, Type typeToMatch) throws IOException {
+    private Object[][] mapJsonData(JsonReader reader, Type typeToMatch) throws IOException {
         logger.entering(new Object[] { reader, typeToMatch });
         Gson myJson = new Gson();
         Object[] mappedData = myJson.fromJson(reader, typeToMatch);
         return prepareDataAsObjectArray(mappedData);
     }
 
-    private static Object[][] prepareDataAsObjectArray(Object[] dataToPack) {
+    private Object[][] prepareDataAsObjectArray(Object[] dataToPack) {
         logger.entering(dataToPack);
         int entitySize = dataToPack.length;
         logger.fine("Entity Size to be mapped to 2D array:" + entitySize);
@@ -308,10 +310,10 @@ public final class JsonDataProvider {
         return dataArray;
     }
 
-    private static List<Object[]> prepareDataAsObjectArrayList(Object[] dataToPack, DataProviderFilter dataFilter) {
+    private List<Object[]> prepareDataAsObjectArrayList(Object[] dataToPack, DataProviderFilter dataFilter) {
         logger.entering(dataToPack);
         logger.fine("Entity Size to be mapped to ArrayList :" + dataToPack.length);
-        List<Object[]> list = new ArrayList<Object[]>();
+        List<Object[]> list = new ArrayList<>();
         for (Object currentData : dataToPack) {
             if (dataFilter.filter(currentData)) {
                 list.add(new Object[] { currentData });
@@ -321,10 +323,12 @@ public final class JsonDataProvider {
         return list;
     }
 
-    private static void validateResourceParams(FileSystemResource jsonResource) {
+    private void validateResourceParams(DataResource jsonResource) {
         Preconditions.checkArgument(jsonResource != null, "File resource cannot be null");
         Preconditions.checkArgument(jsonResource.getCls() != null, "Cannot map json data to a null type");
-        Preconditions.checkArgument(jsonResource.getFileName() != null,
-                "The resource must have a filename. filename cannot be null");
+    }
+
+    private Reader getReader(DataResource resource) {
+        return new InputStreamReader(resource.getInputStream());
     }
 }

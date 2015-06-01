@@ -15,13 +15,13 @@
 
 package com.paypal.selion.platform.dataprovider.filter;
 
-import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.dataprovider.DataProviderException;
-import com.paypal.test.utilities.logging.SimpleLogger;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import java.lang.reflect.Field;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.DataProviderException;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * This filter implementation filters the data based on the filter key and its corresponding values provided.

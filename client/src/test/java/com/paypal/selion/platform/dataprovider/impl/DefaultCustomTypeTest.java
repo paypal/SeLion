@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -23,10 +23,9 @@ import java.lang.reflect.Method;
 
 import org.testng.annotations.Test;
 
-import com.paypal.selion.platform.dataprovider.DefaultCustomType;
-import com.paypal.selion.platform.dataprovider.ReflectionUtils.ReflectionException;
-import com.paypal.selion.platform.dataprovider.ReflectionUtilsTest.PhoneyClass;
-import com.paypal.selion.platform.dataprovider.ReflectionUtilsTest.PhoneyEnum;
+import com.paypal.selion.platform.dataprovider.impl.ReflectionUtils.ReflectionException;
+import com.paypal.selion.platform.dataprovider.impl.ReflectionUtilsTest.PhoneyClass;
+import com.paypal.selion.platform.dataprovider.impl.ReflectionUtilsTest.PhoneyEnum;
 
 public class DefaultCustomTypeTest {
     @Test(groups = "unit")

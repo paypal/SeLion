@@ -24,7 +24,6 @@ import org.openqa.grid.common.exception.GridException;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.LocalSelendroidNode;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**

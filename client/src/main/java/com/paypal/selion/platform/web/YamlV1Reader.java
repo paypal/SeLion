@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
-import com.paypal.selion.platform.dataprovider.FileSystemResource;
+import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
 
 /**
  * Concrete Yaml reader that is capable of reading Yaml v1 format file.

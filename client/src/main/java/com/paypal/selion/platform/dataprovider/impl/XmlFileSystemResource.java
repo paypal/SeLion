@@ -13,34 +13,22 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
 import java.util.Collections;
 import java.util.Map;
 
+import com.paypal.selion.platform.dataprovider.XmlDataSource;
+
+
 /**
  * Extends {@link FileSystemResource} class to support XML file as a DataProvider to be used by
- * {@link com.paypal.selion.platform.dataprovider.XmlDataProvider}.
+ * {@link com.paypal.selion.platform.dataprovider.impl.XmlDataProviderImpl}.
  *
  */
-public class XmlFileSystemResource extends FileSystemResource {
+public class XmlFileSystemResource extends FileSystemResource implements XmlDataSource {
 
     private Map<String, Class<?>> xpathMap = Collections.<String, Class<?>>emptyMap();
-
-    /**
-     * Constructor to accept XML filename at specified path, and declared type indicated by {@code cls} represented by
-     * the XML data.
-     * 
-     * @param pathName
-     *            The path representing the directory where the {@code fileName} is located.
-     * @param fileName
-     *            The name of the file.
-     * @param cls
-     *            The declared type modeled by the XML content in the file at {@code pathName}/{@code fileName}.
-     */
-    public XmlFileSystemResource(String pathName, String fileName, Class<?> cls) {
-        super(pathName, fileName, cls);
-    }
 
     /**
      * Constructor to accept full path of XML file, and declared type indicated by {@code cls} represented by the XML
@@ -56,22 +44,6 @@ public class XmlFileSystemResource extends FileSystemResource {
     }
 
     /**
-     * Constructor to accept XML filename at specified path, and multiple declared types at multiple XPaths represented
-     * by the XML data.
-     * 
-     * @param pathName
-     *            The path representing the directory where the {@code fileName} is located.
-     * @param fileName
-     *            The name of the file.
-     * @param xpathMap
-     *            The map containing the XPath string and the type represented by the node evaluated using the XPath.
-     */
-    public XmlFileSystemResource(String pathName, String fileName, Map<String, Class<?>> xpathMap) {
-        super(pathName, fileName);
-        this.setXpathMap(xpathMap);
-    }
-
-    /**
      * Constructor to accept full path of XML file, and multiple declared types at multiple XPaths represented by the
      * XML data.
      * 
@@ -82,7 +54,7 @@ public class XmlFileSystemResource extends FileSystemResource {
      */
     public XmlFileSystemResource(String fileName, Map<String, Class<?>> xpathMap) {
         super(fileName);
-        this.setXpathMap(xpathMap);
+        this.xpathMap = xpathMap;
     }
 
     /**
@@ -92,18 +64,9 @@ public class XmlFileSystemResource extends FileSystemResource {
      *         {@link XmlFileSystemResource#XmlFileSystemResource(String, Map)} or
      *         {@link XmlFileSystemResource#XmlFileSystemResource(String, String, Map)} constructors.
      */
+    @Override
     public Map<String, Class<?>> getXpathMap() {
         return xpathMap.isEmpty() ? null : xpathMap;
-    }
-
-    /**
-     * Private setter for xpathMap.
-     * 
-     * @param xpathMap
-     *            the xpathMap to set
-     */
-    private void setXpathMap(Map<String, Class<?>> xpathMap) {
-        this.xpathMap = xpathMap;
     }
 
 }

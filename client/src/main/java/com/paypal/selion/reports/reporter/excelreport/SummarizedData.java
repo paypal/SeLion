@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,7 +15,6 @@
 
 package com.paypal.selion.reports.reporter.excelreport;
 
-import com.paypal.selion.reports.reporter.excelreport.SummarizedData;
 
 /**
  * Represents summary counts like total passed, failed, skipped</br>

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 eBay Software Foundation                                                                        |
+Copyright (C) 2015 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,55 +15,54 @@
 
 package com.paypal.selion.platform.dataprovider;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.jxpath.JXPathNotFoundException;
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.platform.dataprovider.filter.CustomKeyFilter;
 import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter;
+import com.paypal.selion.platform.dataprovider.impl.XmlFileSystemResource;
+import com.paypal.selion.platform.dataprovider.impl.XmlInputStreamResource;
 import com.paypal.selion.platform.dataprovider.pojos.KeyValueMap;
 import com.paypal.selion.platform.dataprovider.pojos.KeyValuePair;
 import com.paypal.selion.platform.dataprovider.pojos.xml.Address;
 import com.paypal.selion.platform.dataprovider.pojos.xml.User;
+import com.paypal.selion.platform.utilities.FileAssistant;
 
 /*
  * Unit tests for {@code XmlDataProvider}.
  */
 public class XmlDataProviderTest {
-    private static String pathName = "src/test/resources/testdata/dataprovider/";
 
-    private static String listOfAddresses = "ListOfAddresses.xml";
-    private static String listOfKeyValuePairs = "ListOfKeyValuePairs.xml";
-    private static String listOfUsersWithInlineAddress = "ListOfUsersWithAddress.xml";
-    private static String listOfMultipleInlineObjects = "SampleMultipleUsersPerDocument.xml";
+    private static String listOfAddresses = "src/test/resources/testdata/dataprovider/ListOfAddresses.xml";
+    private static String listOfKeyValuePairs = "src/test/resources/testdata/dataprovider/ListOfKeyValuePairs.xml";
+    private static String listOfUsersWithInlineAddress = "src/test/resources/testdata/dataprovider/ListOfUsersWithAddress.xml";
+    private static String listOfMultipleInlineObjects = "src/test/resources/testdata/dataprovider/SampleMultipleUsersPerDocument.xml";
 
     private static String addr1 = "1234 Elm st";
     private static String addr2 = "12 Pico st";
-    private static String addr3 = "100 Never st";
-    private static String addr4 = "2014 Open st";
-
-    private static String[] expectedNames = { "Thomas", "rama" };
 
     private static String[] expectedKeys = { "k1", "k2", "k3" };
     private static String[] expectedValues = { "val1", "val2", "val3" };
 
     @DataProvider(name = "getListOfObjects")
     public static Object[][] dataProviderGetListOfAddresses() throws XPathExpressionException, IOException {
-        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfAddresses, Address.class);
-        Object[][] data = XmlDataProvider.getAllData(resource);
+        XmlDataSource resource = new XmlFileSystemResource(listOfAddresses, Address.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] data = dataProvider.getAllData();
         return data;
     }
 
@@ -76,9 +75,10 @@ public class XmlDataProviderTest {
     }
 
     @DataProvider(name = "getNameValueCollection")
-    public static Object[][] dataProviderGetNameValueFromXmlResource() {
-        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfKeyValuePairs, KeyValueMap.class);
-        Object[][] data = XmlDataProvider.getAllKeyValueData(resource);
+    public static Object[][] dataProviderGetNameValueFromXmlResource() throws IOException {
+        XmlDataSource resource = new XmlFileSystemResource(listOfKeyValuePairs, KeyValueMap.class);
+        XmlDataProvider dataProvider = (XmlDataProvider) DataProviderFactory.getDataProvider(resource);
+        Object[][] data = dataProvider.getAllKeyValueData();
         return data;
     }
 
@@ -90,9 +90,10 @@ public class XmlDataProviderTest {
     }
 
     @DataProvider(name = "getFilteredNameValueCollection")
-    public static Object[][] dataProviderGetFilteredNameValueFromXmlResource() {
-        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfKeyValuePairs, KeyValueMap.class);
-        Object[][] data = XmlDataProvider.getDataByKeys(resource, new String[] { "k2" });
+    public static Object[][] dataProviderGetFilteredNameValueFromXmlResource() throws IOException {
+        XmlDataSource resource = new XmlFileSystemResource(listOfKeyValuePairs, KeyValueMap.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] data = dataProvider.getDataByKeys(new String[] { "k2" });
         return data;
     }
 
@@ -105,18 +106,11 @@ public class XmlDataProviderTest {
 
     @DataProvider(name = "getListFromNestedObjects")
     public static Object[][] dataProviderGetListOfUsers() throws XPathExpressionException, IOException {
-        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfUsersWithInlineAddress, User.class);
-        Object[][] data = XmlDataProvider.getAllData(resource);
+        XmlDataSource resource = new XmlInputStreamResource(new BufferedInputStream(
+                FileAssistant.loadFile(listOfUsersWithInlineAddress)), User.class, "xml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] data = dataProvider.getAllData();
         return data;
-    }
-
-    @Test(groups = "unit", dataProvider = "getListFromNestedObjects")
-    public void testDataProviderGetListOfUsers(User user) {
-        assertNotNull(user);
-        assertTrue(Arrays.asList(expectedNames).contains(user.getName()));
-
-        String street = XmlDataProvider.readObjectByXpath(user, String.class, "address/street");
-        assertTrue(Arrays.asList(addr1, addr2).contains(street));
     }
 
     @DataProvider(name = "getMultipleObjectsUsingXpath")
@@ -126,71 +120,20 @@ public class XmlDataProviderTest {
         map.put("//transactions/transaction/user[1]", User.class);
         map.put("//transactions/transaction/user[2]", User.class);
 
-        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfMultipleInlineObjects, map);
-        Object[][] data = XmlDataProvider.getAllData(resource);
+        XmlDataSource resource = new XmlFileSystemResource(listOfMultipleInlineObjects, map);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] data = dataProvider.getAllData();
         return data;
-    }
-
-    @Test(groups = "unit", dataProvider = "getMultipleObjectsUsingXpath")
-    public void testDataProviderGetMultipleObjectsFromXmlResource(User fromUser, User toUser) {
-        assertNotNull(fromUser);
-        assertNotNull(toUser);
-
-        String fromStreet = XmlDataProvider.readObjectByXpath(fromUser, String.class, "address/street");
-        String toStreet = ((Address) XmlDataProvider.readObjectByXpath(toUser, Address.class, "address")).getStreet();
-
-        assertTrue(Arrays.asList(addr1, addr3).contains(fromStreet));
-        assertTrue(Arrays.asList(addr2, addr4).contains(toStreet));
-    }
-
-    @Test(groups = "unit")
-    public void testReadObjectByXpath() {
-        Address address = new Address("1234 Elm st");
-        User user = new User();
-        user.setName("Thomas");
-        user.setAddress(address);
-
-        String name = XmlDataProvider.readObjectByXpath(user, String.class, "name");
-        String street = XmlDataProvider.readObjectByXpath(user, String.class, "address/street");
-        Address readAddress = XmlDataProvider.readObjectByXpath(user, Address.class, "address");
-
-        assertEquals(name, "Thomas");
-        assertEquals(street, "1234 Elm st");
-        assertEquals(readAddress.getStreet(), "1234 Elm st");
-    }
-
-    @Test(groups = "unit")
-    public void testReadListByXpath() {
-        Address address = new Address("1234 Elm st");
-        User user = new User();
-        user.setName("Thomas");
-        user.setAddress(address);
-        user.setPhoneNumbers(new String[] { "4081231234", "4081234321" });
-
-        String name = XmlDataProvider.readObjectByXpath(user, String.class, "name");
-        List<String> phones = XmlDataProvider.readListByXpath(user, String.class, "phoneNumbers");
-
-        assertNotNull(phones);
-        assertEquals(name, "Thomas");
-        assertEquals(phones.size(), 2);
-        assertEquals(phones.get(0), "4081231234");
-        assertEquals(phones.get(1), "4081234321");
-    }
-
-    @Test(groups = "unit", expectedExceptions = { JXPathNotFoundException.class })
-    public void testExceptionWhenReadObjectByXpath() {
-        User user = new User();
-        user.accountNumber = 123456789L;
-
-        XmlDataProvider.readObjectByXpath(user, long.class, "accountNumber");
     }
 
     @DataProvider(name = "getDataFilterByIndexIndividual")
     public static Iterator<Object[]> dataProviderByFilterGetDataByIndexIndividual() throws IOException,
             DataProviderException {
-        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfAddresses, Address.class);
+        XmlDataSource resource = new XmlInputStreamResource(new BufferedInputStream(
+                FileAssistant.loadFile(listOfAddresses)), Address.class, "xml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1,3,5");
-        Iterator<Object[]> data = XmlDataProvider.getDataByFilter(resource, filter);
+        Iterator<Object[]> data = dataProvider.getDataByFilter(filter);
         return data;
     }
 
@@ -204,9 +147,10 @@ public class XmlDataProviderTest {
 
     @DataProvider(name = "getDataFromCustomKeyFilter")
     public static Iterator<Object[]> dataProviderUsingCustomKeyFilter() throws IOException, DataProviderException {
-        XmlFileSystemResource resource = new XmlFileSystemResource(pathName, listOfAddresses, Address.class);
+        XmlDataSource resource = new XmlFileSystemResource(listOfAddresses, Address.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         CustomKeyFilter filter = new CustomKeyFilter("street", "1234 Elm st");
-        Iterator<Object[]> data = XmlDataProvider.getDataByFilter(resource, filter);
+        Iterator<Object[]> data = dataProvider.getDataByFilter(filter);
         return data;
     }
 
@@ -218,4 +162,23 @@ public class XmlDataProviderTest {
         assertTrue(street.equals(addr1));
     }
 
+    @Test
+    public void getDataAsHashtable() throws XPathExpressionException, IOException {
+        XmlDataSource resource = new XmlFileSystemResource(listOfKeyValuePairs, KeyValueMap.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Hashtable<String, Object> data = dataProvider.getDataAsHashtable();
+        Assert.assertNotNull(data);
+        Assert.assertNotNull(data.get("k1"));
+        KeyValuePair k1 = (KeyValuePair) data.get("k1");
+        Assert.assertNotNull(k1.getKey());
+        Assert.assertNotNull(k1.getValue());
+        Assert.assertNotNull(data.get("k2"));
+        KeyValuePair k2 = (KeyValuePair) data.get("k2");
+        Assert.assertNotNull(k2.getKey());
+        Assert.assertNotNull(k2.getValue());
+        Assert.assertNotNull(data.get("k3"));
+        KeyValuePair k3 = (KeyValuePair) data.get("k3");
+        Assert.assertNotNull(k3.getKey());
+        Assert.assertNotNull(k3.getValue());
+    }
 }

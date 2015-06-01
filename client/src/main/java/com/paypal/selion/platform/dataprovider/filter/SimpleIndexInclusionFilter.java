@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.Arrays;
 
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.dataprovider.DataProviderHelper;
+import com.paypal.selion.platform.dataprovider.impl.DataProviderHelper;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**

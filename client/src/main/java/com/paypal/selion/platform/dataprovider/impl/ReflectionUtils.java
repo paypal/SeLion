@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,7 +13,9 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -25,8 +27,6 @@ import org.apache.commons.lang3.ClassUtils;
 
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A utility class that helps perform various Reflection related tasks.

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,40 +13,346 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import com.google.common.base.Preconditions;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.DataProviderException;
+import com.paypal.selion.platform.dataprovider.DataResource;
+import com.paypal.selion.platform.dataprovider.ExcelDataProvider;
+import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
 import com.paypal.test.utilities.logging.SimpleLogger;
-
-import org.apache.poi.ss.usermodel.Row;
 
 /**
  * This class provide several methods to retrieve test data from an Excel workbook. Users can get a single row of data
  * by providing the excel filename, the data sheet name, and they key. Or get the whole data sheet by providing excel
  * file name and the data sheet name.
+ *
+ * The first column is reserved for keys which are not part of the actual test data. Read <a
+ * href="http://paypal.github.io/SeLion/html/documentation.html#excel-data-provider">Excel Data Provider
+ * Documentation</a> for more information on the required format of the Excel sheet.
+ *
  */
+public class ExcelDataProviderImpl implements ExcelDataProvider {
 
-public abstract class AbstractExcelDataProvider {
-
+    protected DataResource resource;
     protected ExcelReader excelReader;
 
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
-    private List<DefaultCustomType> customTypes = new ArrayList<DefaultCustomType>();
+    private List<DefaultCustomType> customTypes = new ArrayList<>();
 
-    public AbstractExcelDataProvider(String pathName, String fileName) throws IOException {
-        excelReader = new ExcelReader(pathName, fileName);
+    /**
+     * The constructor will use the path name and the file name of the Excel workbook to initialize the input stream
+     * before the stream is being used by several methods to get the test data from the Excel workbook.
+     *
+     * If pathName is not null then the users deliberately specified the resource file in other location than the
+     * classpaths. If pathName is null, then the resouce file can be found using the classpath.
+     *
+     * <h3>Sample usage:</h3>
+     *
+     * <pre>
+     * String   pathName = "src/test/java";
+     * String   fileName = "DataReaderTest.xls"
+     * LOCAL_DATA myData = new LOCAL_DATA();
+     * Object [][] myObj;
+     *
+     * // To get a single row of excel sheet using a key associated with the data
+     * DataResource resource = new FileSystemResource(pathName, fileName, myData.class);
+     * myData = (LOCAL_DATA) SimpleExcelDataProvider dataProvider = new SimpleExcelDataProvider(
+     *                          resource).getSingleExcelRow("4");
+     *
+     * // To get a whole sheet of excel data. This will not need key.
+     * myObj =  new SimpleExcelDataProvider(resource).getAllData();
+     * myData = (LOCAL_DATA)myObj[1][0];
+     * System.out.println(myObj.seller.bank[0].name);
+     * </pre>
+     *
+     * @param resource
+     *            A {@link DataResource} object that represents an excel spreadsheet.
+     * @throws IOException
+     */
+    public ExcelDataProviderImpl(DataResource resource) throws IOException {
+        this.resource = resource;
+        excelReader = new ExcelReader(resource);
+    }
+
+
+    /**
+     * This function will read all rows of a specified excel sheet and store the data to a hash table. Users can get a
+     * row of data from the hash table by call a get with a specified key. This excel reader function is for users who
+     * want to control the data feed to the test cases manually without the benefit of TestNG DataProvider. <br>
+     * <br>
+     * <b>Note:</b> Unlike {@link ExcelDataProviderImpl#getAllData()} this method will skip ALL blank rows
+     * that may occur in between data in the spreadsheet. <br>
+     * Hence the number of rows that are fetched by this method and
+     * {@link ExcelDataProviderImpl#getAllData()} <b>NEED NOT</b> be the same.
+     *
+     * <h3>Example:</h3>
+     *
+     * <pre>
+     * ...
+     * MyDataStructure myObj = new MyDataStructure();
+     * HashTable&lt;String, Object&gt; myExcelTableData;
+     * ...
+     * myExceltableData = SimpleExcelDataProvider.getDataAsHashtable();
+     * </pre>
+     *
+     * @return an object of type {@link Hashtable} that represents the excel sheet data in form of hashTable.
+     */
+    @Override
+    public Hashtable<String, Object> getDataAsHashtable() {
+        logger.entering();
+        Hashtable<String, Object> hashTable = new Hashtable<>();
+
+        Sheet sheet = excelReader.fetchSheet(resource.getCls().getSimpleName());
+        int numRows = sheet.getPhysicalNumberOfRows();
+
+        for (int i = 2; i <= numRows; i++) {
+            Row row = sheet.getRow(i - 1);
+            if ((row != null) && (row.getCell(0) != null)) {
+                Object obj;
+                obj = getSingleExcelRow(getObject(), i, false);
+                String key = row.getCell(0).toString();
+                if ((key != null) && (obj != null)) {
+                    hashTable.put(key, obj);
+                }
+            }
+        }
+        logger.exiting(hashTable);
+        return hashTable;
+    }
+
+    /**
+     * This method fetches a specific row from an excel sheet which can be identified using a key and returns the data
+     * as an Object which can be cast back into the user's actual data type.
+     *
+     * @param key
+     *            - A string that represents a key to search for in the excel sheet
+     * @return - An Object which can be cast into the user's actual data type.
+     *
+     */
+    @Override
+    public Object getSingleExcelRow(String key) {
+        return getSingleExcelRow(getObject(), key, true);
+    }
+
+    /**
+     * This method can be used to fetch a particular row from an excel sheet.
+     *
+     * @param index
+     *            - The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
+     *            (which is where your data exists) in your excel sheet, the value for index would be 1. <b>This method
+     *            assumes that your excel sheet would have a header which it would EXCLUDE.</b> When specifying index
+     *            value always remember to ignore the header, since this method will look for a particular row ignoring
+     *            the header row.
+     * @return - An object that represents the data for a given row in the excel sheet.
+     */
+    @Override
+    public Object getSingleExcelRow(int index) {
+        return getSingleExcelRow(getObject(), index, true);
+    }
+
+    /**
+     * This function will use the input string representing the indexes to collect and return the correct excel sheet
+     * data rows as two dimensional object to be used as TestNG DataProvider.
+     *
+     * @param indexes
+     *            the string represent the keys for the search and return the wanted rows. It is in the format of: <li>
+     *            "1, 2, 3" for individual indexes. <li>"1-4, 6-8, 9-10" for ranges of indexes. <li>
+     *            "1, 3, 5-7, 10, 12-14" for mixing individual and range of indexes.
+     * @return Object[][] Two dimensional object to be used with TestNG DataProvider
+     */
+    @Override
+    public Object[][] getDataByIndex(String indexes) {
+        logger.entering(indexes);
+        int[] arrayIndex = DataProviderHelper.parseIndexString(indexes);
+
+        Object[][] obj = getDataByIndex(arrayIndex);
+
+        logger.exiting(obj);
+        return obj;
+    }
+
+    /**
+     * This function will use the input string representing the indexes to collect and return the correct excel sheet
+     * data rows as two dimensional object to be used as TestNG DataProvider.
+     *
+     * @param indexes
+     *            the string represent the keys for the search and return the wanted rows. It is in the format of: <li>
+     *            "1, 2, 3" for individual indexes. <li>"1-4, 6-8, 9-10" for ranges of indexes. <li>
+     *            "1, 3, 5-7, 10, 12-14" for mixing individual and range of indexes.
+     * @return Object[][] Two dimensional object to be used with TestNG DataProvider
+     */
+    @Override
+    public Object[][] getDataByIndex(int[] indexes) {
+        logger.entering(indexes);
+
+        Object[][] obj = new Object[indexes.length][1];
+        for (int i = 0; i < indexes.length; i++) {
+            int actualIndex = indexes[i] + 1;
+            obj[i][0] = getSingleExcelRow(getObject(), actualIndex, false);
+        }
+        logger.exiting(obj);
+        return obj;
+    }
+
+    /**
+     * This function will use the input string representing the keys to collect and return the correct excel sheet data
+     * rows as two dimensional object to be used as TestNG DataProvider.
+     *
+     * @param keys
+     *            the string represents the list of key for the search and return the wanted row. It is in the format of
+     *            {"row1", "row3", "row5"}
+     * @return Object[][] two dimensional object to be used with TestNG DataProvider
+     */
+    @Override
+    public Object[][] getDataByKeys(String[] keys) {
+        logger.entering(Arrays.toString(keys));
+        Object[][] obj = new Object[keys.length][1];
+
+        for (int i = 0; i < keys.length; i++) {
+            obj[i][0] = getSingleExcelRow(getObject(), keys[i], true);
+        }
+        logger.exiting(obj);
+        return obj;
+    }
+
+    /**
+     * This function will read the whole excel sheet and map the data into two-dimensional array of object which is
+     * compatible with TestNG DataProvider to provide real test data driven development. This function will ignore all
+     * rows in which keys are preceded by "#" as a comment character.
+     *
+     * For the function to work, the sheet names have to be exactly named as the user defined data type. In the example
+     * below, there must be a sheet name "LOCAL_DATA" in the workbook.
+     *
+     * <h3>Example how to use TestNG DataProvider:</h3>
+     *
+     * <pre>
+     * '@DataProvider(name = "dataProvider1")'
+     * public Object[][] createData1() throws Exception {
+     *
+     *     // Declare your objects
+     *     String pathName = "src/test/java/com/paypal/test/datareader";
+     *     String fileName = "DataReader.xls";
+     *
+     *     // Declare your data block
+     *     LOCAL_DATA myData = new LOCAL_DATA();
+     *
+     *     // Pass your data block to "getAllExcelRows"
+     *     FileSystemResource resource = new FileSystemResource(pathName, fileName, myData.class);
+     *     Object[][] object = new SimpleExcelDataProvider(resource).getAllData();
+     *
+     *     // return the two-dimensional array object
+     *     return object;
+     * }
+     *
+     * // Specify our TestNG DataProvider
+     * '@Test(dataProvider = "dataProvider1")'
+     * public void verifyLocalData1(LOCAL_DATA data) {
+     *     // Your data will be distribute to your test case
+     *     // one row per instance, and all can be run at the same time.
+     *     System.out.println("Name: " + data.name);
+     *     System.out.println("Password: " + data.password);
+     *     System.out.println("the bank: " + data.bank.bankName);
+     *
+     *     System.out.println("Ph1: " + data.phone.areaCode);
+     *     System.out.println("Ph2: " + data.cell.areaCode);
+     *     System.out.println("Bank Address: " + data.bank.address.street);
+     *     System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+     * }
+     * </pre>
+     *
+     * @return Object[][] a two-dimensional object to be used with TestNG DataProvider
+     */
+    @Override
+    public Object[][] getAllData() {
+        logger.entering();
+        int i;
+        Object[][] obj = null;
+        Field[] fields = resource.getCls().getDeclaredFields();
+
+        // Extracting number of rows of data to read
+        // Notice that numRows is returning the actual
+        // number of non-blank rows. Thus if there are
+        // blank rows in the sheet then we will miss
+        // some last rows of data.
+        List<Row> rowToBeRead = excelReader.getAllExcelRows(resource.getCls().getSimpleName(), false);
+        if (!rowToBeRead.isEmpty()) {
+            i = 0;
+            obj = new Object[rowToBeRead.size()][1];
+            for (Row row : rowToBeRead) {
+                List<String> excelRowData = excelReader.getRowContents(row, fields.length);
+                if (excelRowData.size() != 0) {
+                    try {
+                        obj[i++][0] = prepareObject(getObject(), fields, excelRowData);
+                    } catch (IllegalAccessException e) {
+                        throw new DataProviderException("Unable to create instance of type '"
+                                + resource.getCls().getName() + "'", e);
+                    }
+                }
+            }
+        }
+        logger.exiting(obj);
+        return obj;
+    }
+
+    /**
+     * Gets data from Excel sheet by applying the given filter.
+     *
+     * @param dataFilter
+     *            an implementation class of {@link DataProviderFilter}
+     * @return An iterator over a collection of Object Array to be used with TestNG DataProvider
+     */
+    @Override
+    public Iterator<Object[]> getDataByFilter(DataProviderFilter dataFilter) {
+        logger.entering(dataFilter);
+        List<Object[]> objs = new ArrayList<>();
+        Field[] fields = resource.getCls().getDeclaredFields();
+
+        // Extracting number of rows of data to read
+        // Notice that numRows is returning the actual number of non-blank rows.
+        // Thus if there are blank rows in the sheet then we will miss some last rows of data.
+        List<Row> rowToBeRead = excelReader.getAllExcelRows(resource.getCls().getSimpleName(), false);
+        for (Row row : rowToBeRead) {
+            List<String> excelRowData = excelReader.getRowContents(row, fields.length);
+            if (excelRowData.size() != 0) {
+                try {
+                    Object temp = prepareObject(getObject(), fields, excelRowData);
+                    if (dataFilter.filter(temp)) {
+                        objs.add(new Object[] { temp });
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new DataProviderException("Unable to create instance of type '" + resource.getCls().getName()
+                            + "'", e);
+                }
+            }
+        }
+        logger.exiting(objs.iterator());
+        return objs.iterator();
+    }
+
+    private Object getObject() {
+        try {
+            return resource.getCls().newInstance();
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new DataProviderException("Unable to create instance of type '" + resource.getCls().getName()
+                    + "'", e);
+        }
     }
 
     /**
@@ -60,28 +366,9 @@ public abstract class AbstractExcelDataProvider {
     }
 
     /**
-     * @param myObj
-     *            - the user defined type object which provide details structure.
-     * @return an object of type {@link Hashtable} that represents the excel sheet data in form of hashTable.
-     */
-    public abstract Hashtable<String, Object> getAllRowsAsHashTable(Object myObj);
-
-    /**
      * This method fetches a specific row from an excel sheet which can be identified using a key and returns the data
      * as an Object which can be cast back into the user's actual data type.
-     * 
-     * @param userObj
-     *            - An Object into which data is to be packed into
-     * @param key
-     *            - A string that represents a key to search for in the excel sheet
-     * @return - An Object which can be cast into the user's actual data type.
-     */
-    public abstract Object getSingleExcelRow(Object userObj, String key);
-
-    /**
-     * This method fetches a specific row from an excel sheet which can be identified using a key and returns the data
-     * as an Object which can be cast back into the user's actual data type.
-     * 
+     *
      * @param userObj
      *            - An Object into which data is to be packed into
      * @param key
@@ -122,9 +409,9 @@ public abstract class AbstractExcelDataProvider {
      *            the header row.
      * @param isExternalCall
      *            - A boolean that helps distinguish internally if the call is being made internally or by the user.
-     * 
+     *
      * @return - An object that represents the data for a given row in the excel sheet.
-     * 
+     *
      */
     protected Object getSingleExcelRow(Object userObj, int index, boolean isExternalCall) {
         if (isExternalCall) {
@@ -132,7 +419,7 @@ public abstract class AbstractExcelDataProvider {
 
         }
         logger.entering(new Object[] { userObj, index });
-        Object obj = null;
+        Object obj;
 
         Class<?> cls;
         try {
@@ -159,62 +446,6 @@ public abstract class AbstractExcelDataProvider {
         return obj;
     }
 
-    /**
-     * This method can be used to fetch a particular row from an excel sheet.
-     * 
-     * @param userObj
-     *            - The User defined object into which the data is to be packed into.
-     * @param index
-     *            - The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
-     *            (which is where your data exists) in your excel sheet, the value for index would be 1. <b>This method
-     *            assumes that your excel sheet would have a header which it would EXCLUDE.</b> When specifying index
-     *            value always remember to ignore the header, since this method will look for a particular row ignoring
-     *            the header row.
-     * @return - An object that represents the data for a given row in the excel sheet.
-     */
-    public abstract Object getSingleExcelRow(Object userObj, int index);
-
-    /**
-     * This function will use the input string representing the indexes to collect and return the correct excel sheet
-     * data rows as two dimensional object to be used as TestNG DataProvider.
-     * 
-     * @param myData
-     *            the user defined type object which provide details structure to this function.
-     * @param indexes
-     *            the string represent the keys for the search and return the wanted rows. It is in the format of: <li>
-     *            "1, 2, 3" for individual indexes. <li>"1-4, 6-8, 9-10" for ranges of indexes. <li>
-     *            "1, 3, 5-7, 10, 12-14" for mixing individual and range of indexes.
-     * @return Object[][] Two dimensional object to be used with TestNG DataProvider
-     */
-    public abstract Object[][] getExcelRows(Object myData, String indexes);
-
-    /**
-     * This function will use the input string representing the keys to collect and return the correct excel sheet data
-     * rows as two dimensional object to be used as TestNG DataProvider.
-     * 
-     * @param myObj
-     *            the user defined type object which provides details structure to this function.
-     * @param keys
-     *            the string represents the list of key for the search and return the wanted row. It is in the format of
-     *            {"row1", "row3", "row5"}
-     * @return Object[][] two dimensional object to be used with TestNG DataProvider
-     */
-    public abstract Object[][] getExcelRows(Object myObj, String[] keys);
-
-    /**
-     * This function will read the whole excel sheet and map the data into two-dimensional array of object which is
-     * compatible with TestNG DataProvider to provide real test data driven development. This function will ignore all
-     * rows in which keys are preceded by "#" as a comment character.
-     * 
-     * For the function to work, the sheet names have to be exactly named as the user defined data type.
-     * 
-     * 
-     * @param myObj
-     *            the user defined type object which provide details structure to this function.
-     * @return Object[][] a two-dimensional object to be used with TestNG DataProvider
-     */
-    public abstract Object[][] getAllExcelRows(Object myObj);
-
     private DefaultCustomType fetchMatchingCustomType(Class<?> type) {
         for (DefaultCustomType eachCustomType : customTypes) {
             if (type.equals(eachCustomType.getCustomTypeClass())) {
@@ -234,8 +465,8 @@ public abstract class AbstractExcelDataProvider {
      * <li>5. User defined data type.</li>
      * <li>6. Array of user defined data type.</li>
      * </ul>
-     * 
-     * 
+     *
+     *
      * @param userObj
      *            this object is used by the function to extract the object info, such as class name, objects
      *            declarations, object data structure...
@@ -308,7 +539,7 @@ public abstract class AbstractExcelDataProvider {
 
     /**
      * A utility method that setups up data members which are arrays.
-     * 
+     *
      * @param memberInfo
      *            - A {@link DataMemberInformation} object that represents values pertaining to every data member.
      * @throws IllegalAccessException
@@ -326,7 +557,7 @@ public abstract class AbstractExcelDataProvider {
 
         // We are dealing with arrays
         String[] arrayData = data.split(",");
-        Object arrayObject = null;
+        Object arrayObject;
         // Check if its an array of primitive data type
         if (ReflectionUtils.isPrimitiveArray(eachFieldType)) {
             arrayObject = ReflectionUtils.instantiatePrimitiveArray(eachFieldType, arrayData);
@@ -362,10 +593,10 @@ public abstract class AbstractExcelDataProvider {
 
     /**
      * A utility method that setups up data members which are NOT arrays.
-     * 
+     *
      * @param memberInfo
      *            - A {@link DataMemberInformation} object that represents values pertaining to every data member.
-     * 
+     *
      * @throws IllegalAccessException
      * @throws InstantiationException
      * @throws IllegalArgumentException
@@ -416,13 +647,12 @@ public abstract class AbstractExcelDataProvider {
         // sheet in the excel sheet.
         eachField.set(objectToSetDataInto, getSingleExcelRow(eachFieldType.newInstance(), data, true));
         logger.exiting();
-        return;
     }
 
     /**
      * Using the specified rowIndex to search for the row from the specified Excel sheet, then return the row contents
      * in a list of string format.
-     * 
+     *
      * @param rowIndex
      *            - The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
      *            (which is where your data exists) in your excel sheet, the value for index would be 1. <b>This method
@@ -439,7 +669,7 @@ public abstract class AbstractExcelDataProvider {
 
     /**
      * Get all excel rows from a specified sheet.
-     * 
+     *
      * @param sheetName
      *            - A String that represents the Sheet name from which data is to be read
      * @param heading

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,7 +17,7 @@ package com.paypal.selion.platform.web;
 
 import java.io.IOException;
 
-import com.paypal.selion.platform.dataprovider.FileSystemResource;
+import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
 
 /**
  * This interface represents the abilities of any concrete implementation that deals with parsing GUI Object map for 

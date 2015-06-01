@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,14 +13,14 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.utilities.FileAssistant;
+import com.paypal.selion.platform.dataprovider.DataResource;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -48,44 +48,29 @@ class ExcelReader {
     private SimpleLogger logger = SeLionLogger.getLogger();
 
     /**
-     * @param pathName
-     *            - the path where the excel file is located. If the path is <code>null</code>, then we attempt to load
-     *            the file from the current classpath.
+     * Use this constructor when a file that is available in the classpath is to be read by the ExcelDataProvider for
+     * supporting Data Driven Tests.
      * 
-     * @param fileName
-     *            the name of the excel file to be read.
+     * @param fileStream
+     *            the stream of the excel file to be read.
      * @throws IOException
      *             If the file cannot be located, or cannot read by the method.
      */
-    public ExcelReader(String pathName, String fileName) throws IOException {
+    public ExcelReader(DataResource resource) throws IOException {
 
-        logger.entering(new Object[] { pathName, fileName });
+        logger.entering(resource);
 
-        if ((fileName == null) || (fileName.trim().isEmpty())) {
-            throw new IllegalArgumentException("fileName cannot be null/empty");
+        if (resource == null || StringUtils.isBlank(resource.getType())) {
+            throw new IllegalArgumentException("resource cannot be null/empty");
         }
-
-        String resourcePath = fileName;
-        String pad = "/";
-
-        // Append path if it is non-null and non empty.
-        if (pathName != null && !pathName.trim().isEmpty()) {
-            // Checking the last "/" from the pathName
-            if (pathName.endsWith("/")) {
-                pad = "";
-            }
-            resourcePath = pathName + pad + fileName;
-        }
-        logger.info("resourcePath: " + resourcePath);
 
         try {
-            InputStream fileStream = FileAssistant.loadFile(resourcePath);
-            if (fileName.toLowerCase().endsWith("xlsx")) {
-                workBook = new XSSFWorkbook(fileStream);
-            } else if (fileName.toLowerCase().endsWith("xls")) {
-                workBook = new HSSFWorkbook(fileStream);
+            if (resource.getType().toLowerCase().endsWith("xlsx")) {
+                workBook = new XSSFWorkbook(resource.getInputStream());
+            } else if (resource.getType().toLowerCase().endsWith("xls")) {
+                workBook = new HSSFWorkbook(resource.getInputStream());
             }
-            IOUtils.closeQuietly(fileStream);
+            IOUtils.closeQuietly(resource.getInputStream());
         } catch (IOException e) {
             // We are never going to end up with an IOException because FileAssistant.loadFile() tests this part
             // explicitly and throws a RuntimeException. So no point in throwing an IOException when it is never
@@ -101,19 +86,6 @@ class ExcelReader {
         }
 
         logger.exiting();
-    }
-
-    /**
-     * Use this constructor when a file that is available in the classpath is to be read by the ExcelDataProvider for
-     * supporting Data Driven Tests.
-     * 
-     * @param fileName
-     *            the name of the excel file to be read.
-     * @throws IOException
-     *             If the file cannot be located, or cannot read by the method.
-     */
-    public ExcelReader(String fileName) throws IOException {
-        this(null, fileName);
     }
 
     /**

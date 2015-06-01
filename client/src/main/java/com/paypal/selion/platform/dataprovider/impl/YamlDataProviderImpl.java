@@ -13,13 +13,12 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -32,6 +31,9 @@ import org.yaml.snakeyaml.composer.ComposerException;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.DataProviderException;
+import com.paypal.selion.platform.dataprovider.DataResource;
+import com.paypal.selion.platform.dataprovider.SeLionDataProvider;
 import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -41,18 +43,16 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * can be retrieved by indexes. If the yaml file is formatted to return a LinkedHashMap data type from Snakeyaml, user
  * can get an Object 2D array containing data for select keys or get the entire contents of the yaml file in a Hashtable
  * instead of an Object 2D array.
- * 
+ *
  */
 
-public final class YamlDataProvider {
+public final class YamlDataProviderImpl implements SeLionDataProvider {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
+    private DataResource resource;
 
-    /**
-     * Hiding constructor for class that contains only static methods
-     */
-    private YamlDataProvider() {
-        super();
+    public YamlDataProviderImpl(DataResource resource) {
+        this.resource = resource;
     }
 
     /**
@@ -61,122 +61,122 @@ public final class YamlDataProvider {
      * consumption. User-defined objects can be passed in to be added/mapped into the Snakeyaml constructor. <br>
      * <br>
      * YAML file example: Block List Of Strings
-     * 
+     *
      * <pre>
      * -US - GB - AU
      * </pre>
-     * 
+     *
      * Object array returned:
-     * 
+     *
      * <pre>
      * Object[0][0] = US
      * Object[1][0] = GB
      * Object[2][0] = AU
      * </pre>
-     * 
+     *
      * Test method signature example:
-     * 
+     *
      * <pre>
      * public void testExample(String countryCode)
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * YAML file example: Inline List Of Strings
-     * 
+     *
      * <pre>
      * [US, GB, AU]
      * </pre>
-     * 
+     *
      * Object array returned:
-     * 
+     *
      * <pre>
      * Object[0][0] = US
      * Object[1][0] = GB
      * Object[2][0] = AU
      * </pre>
-     * 
+     *
      * Test method signature example:
-     * 
+     *
      * <pre>
      * public void testExample(String countryCode)
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * YAML file example: Block List of Inline Associative Arrays
-     * 
+     *
      * <pre>
      * - {name: 1, userEmail: user1@paypal.com, userId: 10686626}
      * - {name: 2, email: user2@paypal.com, userId: 10686627}
-     * 
+     *
      * </pre>
-     * 
+     *
      * Object array returned (LinkedHashMap):
-     * 
+     *
      * <pre>
      * Object[0][0] = {name=1, email=user1@paypal.com, userId=10686626}
      * Object[1][0] = {name=2, email=user2@paypal.com, userId=10686627}
      * </pre>
-     * 
+     *
      * Test method signature example:
-     * 
+     *
      * <pre>
      * public void testExample(LinkedHashMap<?, ?> test)
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * YAML file example: Block Associative Arrays of Associative Arrays
-     * 
+     *
      * <pre>
-     * test1: 
+     * test1:
      *     name: 1
      *     email: user1@paypal.com
      *     userId: 10686626
-     * test2: 
+     * test2:
      *     name: 2
      *     email: user2@paypal.com
      *     userId: 10686627
      * </pre>
-     * 
+     *
      * Object array returned (contains LinkedHashMap):
-     * 
+     *
      * <pre>
      * Object[0][0] = {name=1, email=user1@paypal.com, userId=10686626}
      * Object[1][0] = {name=2, email=user2@paypal.com, userId=10686627}
      * </pre>
-     * 
+     *
      * Test method signature example:
-     * 
+     *
      * <pre>
      * public void testExample(LinkedHashMap<?, ?> test)
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * YAML file example: Document separated Inline Associative Arrays
-     * 
+     *
      * <pre>
      * ---
      * {name: 1, email: user1@paypal.com, userId: 10686626}
      * ---
      * {name: 2, email: user2@paypal.com, userId: 10686627}
      * </pre>
-     * 
+     *
      * Object array returned (contains LinkedHashMap):
-     * 
+     *
      * <pre>
      * Object[0][0] = {name=1, email=user1@paypal.com, userId=10686626}
      * Object[1][0] = {name=2, email=user2@paypal.com, userId=10686627}
      * </pre>
-     * 
+     *
      * Test method signature example:
-     * 
+     *
      * <pre>
      * public void testExample(LinkedHashMap<?, ?> test)
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * <br>
@@ -191,7 +191,7 @@ public final class YamlDataProvider {
      * for the user-defined object or else an exception will be thrown while attempting to load the yaml file. <br>
      * <br>
      * YAML file example: List of MyObject
-     * 
+     *
      * <pre>
      * - !!com.paypal.test.resources.MyObject
      *     name: 1
@@ -202,10 +202,10 @@ public final class YamlDataProvider {
      *     email: user2@paypal.com
      *     userId: 10686626
      * </pre>
-     * 
+     *
      * <br>
      * YAML file example: List of MyObject mapped with tag "MyObject"
-     * 
+     *
      * <pre>
      * - !MyObject
      *     name: 1
@@ -216,39 +216,38 @@ public final class YamlDataProvider {
      *     email: user2@paypal.com
      *     userId: 10686626
      * </pre>
-     * 
+     *
      * Object array returned:
-     * 
+     *
      * <pre>
      * Object[1][0] = com.paypal.test.dataobject.MyObject@54bb7759
      * Object[2][0] = com.paypal.test.dataobject.MyObject@5f989f84
      * </pre>
-     * 
+     *
      * Test method signature example:
-     * 
+     *
      * <pre>
      * public void testExample(MyObject myObject)
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * For sample yaml formats, use utility methods:
      * <ul>
-     * <li>{@link #serializeObjectToYamlString(Object)}
-     * <li>{@link #serializeObjectToYamlStringAsList(Object...)}
-     * <li>{@link #serializeObjectToYamlStringAsMap(Object...)}
-     * <li>{@link #serializeObjectToYamlStringAsDocuments(Object...)}
+     * <li>{@link DataProviderHelper#serializeObjectToYamlString(Object)}
+     * <li>{@link DataProviderHelper#serializeObjectToYamlStringAsList(Object...)}
+     * <li>{@link DataProviderHelper#serializeObjectToYamlStringAsMap(Object...)}
+     * <li>{@link DataProviderHelper#serializeObjectToYamlStringAsDocuments(Object...)}
      * </ul>
      * <br>
      * <br>
-     * 
-     * @param resource
-     *            - A {@link FileSystemResource} that represents a data source.
+     *
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
      * @throws IOException
      */
-    public static Object[][] getAllData(FileSystemResource resource) throws IOException {
-        logger.entering(resource);
+    @Override
+    public Object[][] getAllData() throws IOException {
+        logger.entering();
 
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
@@ -279,17 +278,16 @@ public final class YamlDataProvider {
     /**
      * Gets yaml data by applying the given filter. Throws {@link DataProviderException} when unexpected error occurs
      * during processing of YAML file data by filter
-     * 
-     * @param resource
-     *            A {@link FileSystemResource} that represents a data source.
+     *
      * @param dataFilter
      *            an implementation class of {@link DataProviderFilter}
      * @return An iterator over a collection of Object Array to be used with TestNG DataProvider
      * @throws IOException
      */
-    public static Iterator<Object[]> getDataByFilter(FileSystemResource resource, DataProviderFilter dataFilter)
+    @Override
+    public Iterator<Object[]> getDataByFilter(DataProviderFilter dataFilter)
             throws IOException {
-        logger.entering(new Object[] { resource, dataFilter });
+        logger.entering(dataFilter);
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
 
@@ -318,27 +316,26 @@ public final class YamlDataProvider {
      * Gets yaml data by key identifiers. Only compatible with a yaml file formatted to return a map. <br>
      * <br>
      * YAML file example:
-     * 
+     *
      * <pre>
-     * test1: 
+     * test1:
      *     name: 1
      *     email: user1@paypal.com
      *     userId: 10686626
-     * test2: 
+     * test2:
      *     name: 2
      *     email: user2@paypal.com
      *     userId: 10686627
      * </pre>
-     * 
-     * @param resource
-     *            - A {@link FileSystemResource} object that represents the yaml resource to be read from.
+     *
      * @param keys
      *            - A String array that represents the keys.
-     * 
+     *
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
      */
-    public static Object[][] getDataByKeys(FileSystemResource resource, String[] keys) {
-        logger.entering(new Object[] { resource, Arrays.toString(keys) });
+    @Override
+    public Object[][] getDataByKeys(String[] keys) {
+        logger.entering(Arrays.toString(keys));
 
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
@@ -356,24 +353,23 @@ public final class YamlDataProvider {
      * formatted to return a map. <br>
      * <br>
      * YAML file example:
-     * 
+     *
      * <pre>
-     * test1: 
+     * test1:
      *     name: 1
      *     email: user1@paypal.com
      *     userId: 10686626
-     * test2: 
+     * test2:
      *     name: 2
      *     email: user2@paypal.com
      *     userId: 10686627
      * </pre>
-     * 
-     * @param resource
-     *            A {@link FileSystemResource} that represents a data source.
+     *
      * @return yaml data in form of a Hashtable.
      */
-    public static Hashtable<String, Object> getDataAsHashtable(FileSystemResource resource) {
-        logger.entering(resource);
+    @Override
+    public Hashtable<String, Object> getDataAsHashtable() {
+        logger.entering();
 
         InputStream inputStream = resource.getInputStream();
         Yaml yaml = constructYaml(resource.getCls());
@@ -392,23 +388,43 @@ public final class YamlDataProvider {
 
     /**
      * Gets yaml data for requested indexes.
-     * 
-     * @param resource
-     * @param indexes
-     * 
+     *
+     * @param indexes - the input string represent the indexes to be parse
+     *
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
      * @throws IOException
      */
-    public static Object[][] getDataByIndex(FileSystemResource resource, String indexes) throws IOException,
+    @Override
+    public Object[][] getDataByIndex(String indexes) throws IOException,
             DataProviderException {
-        logger.entering(new Object[] { resource, indexes });
-        int[] arrayIndex = DataProviderHelper.parseIndexString(indexes);
 
-        Object[][] yamlObj = getAllData(resource);
-        Object[][] yamlObjRequested = new Object[arrayIndex.length][yamlObj[0].length];
+        logger.entering(indexes);
+        int[] arrayIndex = DataProviderHelper.parseIndexString(indexes);
+        Object[][] yamlObjRequested = getDataByIndex(arrayIndex);
+        logger.exiting(yamlObjRequested);
+        return yamlObjRequested;
+    }
+
+    /**
+     * Generates an object array in iterator as TestNG DataProvider from the YAML data filtered per given indexes. This
+     * method may throw {@link DataProviderException} when an unexpected error occurs during data provision from YAML
+     * file.
+     *
+     * @param indexes
+     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     *
+     * @return An Object[][] object to be used with TestNG DataProvider.
+     * @throws IOException
+     */
+    @Override
+    public Object[][] getDataByIndex(int[] indexes) throws IOException {
+        logger.entering(indexes);
+
+        Object[][] yamlObj = getAllData();
+        Object[][] yamlObjRequested = new Object[indexes.length][yamlObj[0].length];
 
         int i = 0;
-        for (Integer index : arrayIndex) {
+        for (Integer index : indexes) {
             index--;
             yamlObjRequested[i] = yamlObj[index];
             i++;
@@ -419,83 +435,16 @@ public final class YamlDataProvider {
     }
 
     /**
-     * Gets yaml data for tests that require multiple arguments. Saves a tester from needing to define another JavaBean
-     * just to get multiple arguments passed in as one.
-     * 
-     * <br>
-     * <br>
-     * Example dataprovider:
-     * 
-     * <pre>
-     * public static Object[][] dataProviderGetMultipleArguments() throws IOException {
-     *     Object[][] data = null;
-     *     List&lt;YamlResource&gt; yamlResources = new ArrayList&lt;YamlResource&gt;();
-     *     yamlResources.add(new YamlResource(pathName, userDocuments, USER.class));
-     *     yamlResources.add(new YamlResource(pathName, user2Documents, USER.class));
-     * 
-     *     data = new YamlDataProvider().getAllDataMultipleArgs(yamlResources);
-     * 
-     *     return data;
-     * }
-     * </pre>
-     * 
-     * Test method signature example:
-     * 
-     * <pre>
-     * public void testExample(USER user1, USER user2)
-     * </pre>
-     * 
-     * @param resources
-     *            - A List of {@link FileSystemResource} that represents data sources.
-     * @return Object[][] Two dimensional object to be used with TestNG DataProvider
-     * @throws IOException
-     */
-    public static Object[][] getAllDataMultipleArgs(List<FileSystemResource> resources) throws IOException {
-        logger.entering(resources);
-        List<Object[][]> dataproviders = new ArrayList<>();
-        Object[][] data;
-
-        for (FileSystemResource r : resources) {
-            Object[][] resourceData = getAllData(r);
-            dataproviders.add(resourceData);
-        }
-
-        int maxLength = 0;
-        for (Object[][] d : dataproviders) {
-            if (d.length > maxLength) {
-                maxLength = d.length;
-            }
-        }
-
-        data = new Object[maxLength][resources.size()];
-
-        int i = 0;
-        for (Object[][] d : dataproviders) {
-            for (int j = 0; j < maxLength; j++) {
-                try {
-                    data[j][i] = d[j][0];
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    data[j][i] = null;
-                }
-            }
-            i++;
-        }
-
-        logger.exiting(data);
-        return data;
-    }
-
-    /**
      * Converts a yaml file into an Object 2D array for <a
      * href="http://testng.org/doc/documentation-main.html#parameters-dataproviders"> TestNG Dataprovider</a>
      * consumption.
-     * 
+     *
      * <br>
      * A proper <a href="https://code.google.com/p/snakeyaml/wiki/Documentation#JavaBeans">JavaBean</a> must be defined
      * or else an exception will be thrown while attempting to load the yaml file. <br>
      * <br>
      * YAML file example:
-     * 
+     *
      * <pre>
      * ---
      * MyObject:
@@ -508,27 +457,27 @@ public final class YamlDataProvider {
      *     email: user2@paypal.com
      *     userId: 10686626
      * </pre>
-     * 
+     *
      * Object array returned:
-     * 
+     *
      * <pre>
      * Object[1][0] = com.paypal.test.dataobject.MyObject@54bb7759
      * Object[2][0] = com.paypal.test.dataobject.MyObject@5f989f84
      * </pre>
-     * 
+     *
      * Test method signature example:
-     * 
+     *
      * <pre>
      * public void testExample(MyObject myObject)
      * </pre>
-     * 
+     *
      * @param yaml
      *            - A {@link Yaml} object that represents a Yaml document.
      * @param inputStream
      *            - A {@link InputStream} object.
      * @return an List containing multiple yaml documents loaded by SnakeYaml
      */
-    private static List<Object> loadDataFromDocuments(Yaml yaml, InputStream inputStream) {
+    private List<Object> loadDataFromDocuments(Yaml yaml, InputStream inputStream) {
         logger.entering(new Object[] { yaml, inputStream });
         Iterator<?> documents = yaml.loadAll(inputStream).iterator();
         List<Object> objList = new ArrayList<>();
@@ -541,7 +490,7 @@ public final class YamlDataProvider {
         return objList;
     }
 
-    private static Yaml constructYaml(Class<?> cls) {
+    private Yaml constructYaml(Class<?> cls) {
         if (cls != null) {
             Constructor constructor = new Constructor();
             constructor.addTypeDescription(new TypeDescription(cls, "!" + cls.getSimpleName()));
@@ -549,76 +498,6 @@ public final class YamlDataProvider {
         }
 
         return new Yaml();
-    }
-
-    /**
-     * Use this utility method to print and return a yaml string to help serialize the object passed in.
-     * 
-     * @param object
-     *            - The Object that is to be serialised.
-     * @return a yaml string representation of the object passed in
-     */
-    public static String serializeObjectToYamlString(Object object) {
-        logger.entering(object);
-        Yaml yaml = new Yaml();
-        String output = yaml.dump(object);
-        logger.exiting(output);
-        return output;
-    }
-
-    /**
-     * Use this utility method to print and return a yaml string to help serialize the object passed in as an ArrayList.
-     * 
-     * @param objects
-     *            - One or more objects that are to be serialised.
-     * @return a yaml string representation of the object(s) passed in
-     */
-    public static String serializeObjectToYamlStringAsList(Object... objects) {
-        logger.entering(new Object[] { objects });
-        String output = serializeObjectToYamlString(Arrays.asList(objects).iterator());
-        logger.exiting(output);
-        return output;
-    }
-
-    /**
-     * Use this utility method to print and return a yaml string to help serialize the object passed in as a
-     * LinkedHashMap.
-     * 
-     * @param objects
-     *            - One or more objects that are to be serialised.
-     * @return a yaml string representation of the object(s) passed in
-     */
-    public static String serializeObjectToYamlStringAsDocuments(Object... objects) {
-        logger.entering(new Object[] { objects });
-        Yaml yaml = new Yaml();
-        String output = yaml.dumpAll(Arrays.asList(objects).iterator());
-        logger.exiting(output);
-        return output;
-    }
-
-    /**
-     * Use this utility method to print and return a yaml string to help serialize the object passed in as multiple
-     * documents.
-     * 
-     * @param objects
-     *            - The objects that are to be serialised.
-     * @return a yaml string representation of the object(s) passed in
-     */
-    public static String serializeObjectToYamlStringAsMap(Object... objects) {
-        logger.entering(new Object[] { objects });
-        HashMap<String, Object> objMap = new LinkedHashMap<>();
-
-        String key;
-        int i = 0;
-        for (Object obj : objects) {
-            key = "uniqueKey" + Integer.toString(i);
-            objMap.put(key, obj);
-            i++;
-        }
-
-        String output = serializeObjectToYamlString(objMap);
-        logger.exiting(output);
-        return output;
     }
 
 }

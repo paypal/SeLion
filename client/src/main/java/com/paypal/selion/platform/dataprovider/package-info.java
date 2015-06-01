@@ -1,5 +1,4 @@
 /**
- * A collection of classes which load external data sources for data driven test scenarios. 
- * Commonly used with TestNG's DataProvider.
+ * A collection of interfaces which provides declaration of SeLion data providers.
  */
 package com.paypal.selion.platform.dataprovider;

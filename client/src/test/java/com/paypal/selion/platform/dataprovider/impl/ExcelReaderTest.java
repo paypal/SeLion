@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.platform.dataprovider.impl;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -28,22 +28,21 @@ import org.apache.poi.ss.usermodel.Row;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.platform.dataprovider.ExcelReader;
+import com.paypal.selion.platform.dataprovider.impl.ExcelReader;
 import com.paypal.selion.platform.dataprovider.pojos.excel.USER;
 
 public class ExcelReaderTest {
-    private static String pathName = "src/test/resources/";
-    private static String fileName_User = "User.xlsx";
+    private static String fileName_User = "src/test/resources/User.xlsx";
     private ExcelReader excelReader = null;
 
     @BeforeClass(alwaysRun = true)
     public void init() throws IOException {
-        excelReader = new ExcelReader(pathName, fileName_User);
+        excelReader = new ExcelReader(new FileSystemResource(fileName_User));
     }
 
     @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class })
     public void testNegativeCaseEmptyFileName() throws IOException {
-        new ExcelReader("");
+        new ExcelReader(new FileSystemResource(""));
     }
 
     @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class })
@@ -53,7 +52,7 @@ public class ExcelReaderTest {
 
     @Test(groups = "unit", expectedExceptions = { IOException.class })
     public void testFileDoesntExist() throws IOException {
-        new ExcelReader("YouCantSeeMe.xls");
+        new ExcelReader(new FileSystemResource("YouCantSeeMe.xls"));
     }
 
     @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class })

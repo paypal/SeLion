@@ -15,44 +15,55 @@
 
 package com.paypal.selion.platform.dataprovider;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.dataprovider.impl.ExcelDataProviderImpl;
+import com.paypal.selion.platform.dataprovider.impl.JsonDataProviderImpl;
+import com.paypal.selion.platform.dataprovider.impl.XmlDataProviderImpl;
+import com.paypal.selion.platform.dataprovider.impl.YamlDataProviderImpl;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * This class represents the root of the XML document wrapping a bound type list of generic objects obtained when an XML is unmarshalled. .
- * @param <T>
- *  The bound type.
+ * This factory class is responsible for providing the data provider implementation instance based on data type.
+ *
  */
-@XmlRootElement
-public class Wrapper<T> {
+public final class DataProviderFactory {
 
-    private List<T> list;
+    private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    /**
-     * Default constructor initializes empty list. 
-     */
-    public Wrapper() {
-        list = new ArrayList<T>();
+    private DataProviderFactory() {
+        // Utility class. So hide the constructor
     }
 
     /**
-     * Initializes instance with list.
-     * @param items
+     * Load the Data provider implementation for the data file type
+     *
+     * @param resource - resource of the data file
+     * @return Data provider Impl
+     * @throws IOException
      */
-    public Wrapper(List<T> items) {
-        this.list = items;
-    }
+    public static SeLionDataProvider getDataProvider(DataResource resource)
+            throws IOException {
+        logger.entering(resource);
 
-    /**
-     * Returns list
-     * @return
-     *  The list.
-     */
-    @XmlAnyElement(lax = true)
-    public List<T> getList() {
-        return list;
-    }
+        if(resource == null) {
+            return null;
+        }
+
+        switch (resource.getType().toUpperCase()) {
+        case "XML":
+            return new XmlDataProviderImpl((XmlDataSource) resource);
+        case "JSON":
+            return new JsonDataProviderImpl(resource);
+        case "YAML":
+        case "YML":
+            return new YamlDataProviderImpl(resource);
+        case "XLSX":
+        case "XLS":
+            return new ExcelDataProviderImpl(resource);
+        default:
+            return null;
+        }
+     }
 }
