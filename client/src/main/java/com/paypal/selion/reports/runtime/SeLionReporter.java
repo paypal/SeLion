@@ -97,16 +97,15 @@ public class SeLionReporter {
             if (Grid.driver() != null) {
                 PageContents source = new PageContents(Grid.driver().getPageSource(), getBaseFileName());
                 saver.saveSources(source);
+                href = "sources" + File.separator + getBaseFileName() + ".source.txt";
+                getLog().setHref(href);
             }
-            href = "sources" + File.separator + getBaseFileName() + ".source.txt";
         }
-        BaseLog log = (BaseLog) getLog();
-        log.setHref(href);
         for (LogAction eachAction : actionList) {
             eachAction.perform();
         }
 
-        return log;
+        return getLog();
     }
 
     protected void generateLog(boolean takeScreenshot, boolean saveSrc) {

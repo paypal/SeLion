@@ -15,6 +15,19 @@
 
 package com.paypal.selion.platform.grid;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.ITestResult;
+import org.testng.Reporter;
+
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -24,11 +37,8 @@ import com.paypal.selion.internal.grid.SauceLabsHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
+import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.test.utilities.logging.SimpleLogger;
-import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.util.*;
 
 /**
  * A class for loading and representing the {@link WebTest}/{@link MobileTest} annotation basic parameters. Also
@@ -198,14 +208,41 @@ public abstract class AbstractTestSession {
      */
     public final void closeSession() {
         logger.entering();
-        if ((isStarted()) && (Grid.driver() != null)) {
+
+        if (isStarted() && Grid.driver() != null) {
             new SauceLabsHelper().embedSauceLabsJobUrlToTestReport();
-            Grid.driver().quit();
+
+            // If driver.quit() throws some exception then rest of the listeners will not get invoked, To handle this
+            // we are gobbling this exception
+            try {
+                // let's attempt to capture a screenshot if there was a failure from Selenium or SeLion PageObject.
+                // That way a user can see the how the page looked like when a test failed.
+                ITestResult testResult = Reporter.getCurrentTestResult();
+                if (testResult.getStatus() == ITestResult.FAILURE
+                        && testResult.getThrowable() instanceof WebDriverException) {
+                    warnUserOfTestFailures(testResult);
+                }
+                Grid.driver().quit();
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "An error occurred while closing the Selenium session: " + e.getMessage(), e);
+            }
         }
+
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
         this.isStarted = false;
         logger.exiting();
+    }
+
+    private void warnUserOfTestFailures(ITestResult testResult) {
+        String errMsg = "";
+        if (testResult.getThrowable() != null) {
+            errMsg = testResult.getThrowable().getMessage();
+        }
+        if (StringUtils.isEmpty(errMsg)) {
+            errMsg = "Test Failure screenshot";
+        }
+        SeLionReporter.log(errMsg, true, true);
     }
 
     public final boolean hasDependentMethods() {

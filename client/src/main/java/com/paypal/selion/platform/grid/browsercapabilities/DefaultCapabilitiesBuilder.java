@@ -47,13 +47,6 @@ public abstract class DefaultCapabilitiesBuilder {
         
         capability.setCapability(ExtendedConfig.TEST_NAME.getConfig(), Grid.getTestSession().getTestName());
 
-
-        // Set the capability to capture screenshots based on the config property
-
-        if (Config.getBoolConfigProperty(ConfigProperty.AUTO_SCREEN_SHOT)) {
-            capability.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-        }
-
         capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
         // refer here : http://code.google.com/p/selenium/wiki/DesiredCapabilities#Read-write_capabilities
