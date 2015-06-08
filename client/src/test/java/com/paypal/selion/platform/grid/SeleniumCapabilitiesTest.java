@@ -24,45 +24,46 @@ import com.paypal.selion.platform.grid.Grid;
 
 @Test(groups = "SeleniumCapabilitiesTest")
 public class SeleniumCapabilitiesTest {
-    @Test(groups = "unit")
+    @Test(groups = "functional")
     @WebTest(browser = "*firefox")
     public void testDefaultBrowser() {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
         assertTrue(userAgent.toLowerCase().contains("firefox"));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = "functional")
     @WebTest()
     public void testDefaultBrowser1() {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
         assertTrue(userAgent.toLowerCase().contains("firefox"));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = "functional")
     @WebTest(browser = "")
     public void testDefaultBrowser2() {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
         assertTrue(userAgent.toLowerCase().contains("firefox"));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = "functional")
     @WebTest(browser = "*iexplore")
     public void testIexploreBrowser() {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
         assertTrue(userAgent.toLowerCase().contains("msie"));
     }
 
-    @Test(groups = "unit")
+    @Test(groups = "functional")
     @WebTest(browser = "*chrome")
     public void testChromeBrowser() {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
         assertTrue(userAgent.toLowerCase().contains("chrome"));
     }
 
-    @Test(groups = "unit", expectedExceptions = { RuntimeException.class })
+    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class })
     @WebTest(browser = "*mybrowser")
     public void testWrongBrowser() {
-        fail("No such browser and hence Exception should have been thrown.");
+        Grid.driver().executeScript("return navigator.userAgent", "");
+        fail("No such browser and hence and IllegalArgumentException should have been thrown.");
     }
 
 }

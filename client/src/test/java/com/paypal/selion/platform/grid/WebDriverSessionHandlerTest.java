@@ -29,7 +29,7 @@ import com.paypal.test.utilities.server.TestServerUtils;
 
 public class WebDriverSessionHandlerTest {
 
-    @Test(groups = "unit", expectedExceptions = IllegalStateException.class, 
+    @Test(groups = "functional", expectedExceptions = IllegalStateException.class, 
             expectedExceptionsMessageRegExp = "WebDriverSessionHandler is already started")
     @WebTest
     public void testStartWebDriverSession() throws ExecutionException {
@@ -38,7 +38,7 @@ public class WebDriverSessionHandlerTest {
         m.start();
     }
 
-    @Test(groups = "unit", expectedExceptions = IllegalStateException.class, 
+    @Test(groups = "functional", expectedExceptions = IllegalStateException.class, 
             expectedExceptionsMessageRegExp = "\\QPlease call startSession() before calling endSession()\\E")
     @WebTest
     public void testEndWebDriverSession() throws ExecutionException {

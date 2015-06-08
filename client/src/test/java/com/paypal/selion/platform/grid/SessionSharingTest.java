@@ -27,10 +27,10 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.test.utilities.server.TestServerUtils;
 
 @WebTest
-@Test(singleThreaded=true)
+@Test(singleThreaded = true)
 public class SessionSharingTest {
 
-    @Test(groups = { "unit" },priority=1)
+    @Test(groups = { "functional" }, priority = 1)
     public void testSessionSharing_part1() {
         Grid.open(TestServerUtils.getTestEditableURL());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
@@ -40,7 +40,7 @@ public class SessionSharingTest {
         return Grid.driver().getSessionId();
     }
 
-    @Test(groups = { "unit" }, priority=2)
+    @Test(groups = { "functional" }, priority = 2)
     public void testSessionSharing_part2() throws IOException {
         // should already be on test Page
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);

@@ -38,7 +38,7 @@ import com.paypal.test.utilities.server.TestServerUtils;
 
 public class HtmlElementUtilsTest {
 	
-    @Test(groups = { "unit" })
+    @Test(groups = { "functional" })
     @WebTest
     public void validateCssLocationStrategy() throws IOException {
         Grid.open(TestServerUtils.getTestEditableURL());
@@ -105,7 +105,7 @@ public class HtmlElementUtilsTest {
         HtmlElementUtils.locateElements("name=foo|id=bar");
     }
 
-    @Test(groups = { "unit" })
+    @Test(groups = { "functional" })
     @WebTest
     public void testIsElementPresent() {
         Grid.open(TestServerUtils.getTestEditableURL());

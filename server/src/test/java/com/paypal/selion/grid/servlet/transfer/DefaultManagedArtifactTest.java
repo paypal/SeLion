@@ -17,10 +17,10 @@ package com.paypal.selion.grid.servlet.transfer;
 
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 import java.util.EnumMap;
 
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
@@ -35,7 +35,7 @@ import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.RequestHeaders;
 import com.paypal.selion.utils.ConfigParser;
 
-@PrepareForTest({ ConfigParser.class, DefaultManagedArtifact.class })
+@PrepareForTest({ ConfigParser.class })
 public class DefaultManagedArtifactTest extends PowerMockTestCase {
 
     private String artifactFileOnePath;
@@ -49,9 +49,9 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
 
     @BeforeMethod
     public void setUpBeforeEveryMethod() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
+        ConfigParser configParser = mock(ConfigParser.class);
         mockStatic(ConfigParser.class);
-        when(ConfigParser.getInstance()).thenReturn(configParser);
+        when(ConfigParser.parse()).thenReturn(configParser);
         when(configParser.getLong("artifactExpiryInMilliSec")).thenReturn(86400000L);
     }
 

@@ -15,14 +15,12 @@
 
 package com.paypal.selion.grid;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -32,16 +30,14 @@ import com.paypal.selion.pojos.SeLionGridConstants;
 public class FileDownloaderTest {
 
     File downloadedFile = null;
-    File homeDir = null;
-    
+    File downloadDir = null;
+
     @BeforeClass
-    public void createHomeDir() throws IOException{
-        //Re-setting the path -just in case if any other test changes the SeLion_home_dir constant
-        SeLionGridConstants.SELION_HOME_DIR= SystemUtils.USER_HOME + "/.selion/";
-        homeDir = new File(SeLionGridConstants.SELION_HOME_DIR+"/downloads/");
-        homeDir.mkdirs();
+    public void mkDownloadDir() throws IOException {
+        downloadDir = new File(SeLionGridConstants.DOWNLOADS_DIR);
+        downloadDir.mkdirs();
     }
-    
+
     @Test(expectedExceptions = { UnsupportedOperationException.class })
     public void testUnsupportedFileType() {
         // gz compression type is not supported.
@@ -57,7 +53,7 @@ public class FileDownloaderTest {
         downloadedFile = new File(result);
         assertTrue(downloadedFile.exists());
     }
-    
+
     @Test
     public void testInvalidChecksum() {
         String testUrl = "https://chromedriver.storage.googleapis.com/2.14/chromedriver_win32.zip";
@@ -68,7 +64,7 @@ public class FileDownloaderTest {
 
     @AfterClass(alwaysRun = true)
     public void cleanUpFile() {
-      FileUtils.deleteQuietly(downloadedFile);
-      FileUtils.deleteQuietly(homeDir);
+        FileUtils.deleteQuietly(downloadedFile);
+        FileUtils.deleteQuietly(downloadDir);
     }
 }

@@ -117,7 +117,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
 
         protected AbstractUploadRequestProcessor(TransferContext transferContext) {
             super();
-            MAX_FILE_SIZE = ConfigParser.getInstance().getInt(MAX_FILE_CONFIG_PROPERTY);
+            MAX_FILE_SIZE = ConfigParser.parse().getInt(MAX_FILE_CONFIG_PROPERTY);
             this.transferContext = transferContext;
             this.httpServletRequest = transferContext.getHttpServletRequest();
             repository = ManagedArtifactRepository.getInstance();

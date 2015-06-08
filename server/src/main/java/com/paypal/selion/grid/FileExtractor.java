@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -31,6 +32,7 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.io.IOUtils;
+import org.openqa.selenium.Platform;
 
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.ProcessNames;
@@ -40,17 +42,42 @@ final class FileExtractor {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(FileExtractor.class.getName());
 
-    private FileExtractor() {
+    FileExtractor() {
         // Utility class. So hiding the constructor
     }
 
-    private static String getFileNameFromPath(String name) {
+    static String getFileNameFromPath(String name) {
         String[] path = name.split("/");
         String s = path[path.length - 1];
         return s;
     }
 
-    public static List<String> extractArchive(String archiveFile) {
+    /**
+     * Utility method to return the executable names for the specified platform.
+     *
+     * @return {@link List} of {@link String} containing the executable file names.
+     */
+    
+    static List<String> getExecutableNames() {
+        List<String> executableNames = new ArrayList<String>();
+        switch (Platform.getCurrent()) {
+        case MAC:
+        case UNIX:
+        case LINUX: {
+            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getUnixImageName(),
+                    ProcessNames.CHROMEDRIVER.getUnixImageName());
+            break;
+        }
+        default: {
+            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getWindowsImageName(),
+                    ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName());
+            break;
+        }
+        }
+        return executableNames;
+    }
+
+    static List<String> extractArchive(String archiveFile) {
         LOGGER.entering(archiveFile);
 
         LOGGER.info("Extracting " + archiveFile);
@@ -95,10 +122,9 @@ final class FileExtractor {
         // TODO: For any new archive formats a simple else-if will suffice
 
         OutputStream outputFileStream = null;
-        List<String> executableNameList = new ArrayList<String>();
         LOGGER.fine("Getting file list for archive " + archiveFile);
-        executableNameList = ProcessNames.getExecutableNames();
 
+        List<String> executableNameList = FileExtractor.getExecutableNames();
         LOGGER.fine("Executable list: " + executableNameList.toString());
 
         ArchiveInputStream archiveStream = null;

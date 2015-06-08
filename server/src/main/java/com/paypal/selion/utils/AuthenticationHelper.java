@@ -29,6 +29,7 @@ import java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.io.IOUtils;
 
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
@@ -44,17 +45,19 @@ import com.paypal.selion.pojos.SeLionGridConstants;
  * 
  */
 public final class AuthenticationHelper {
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AuthenticationHelper.class);
+
     private static final String HASH_ALGORITHM = "SHA-256";
-
-    private AuthenticationHelper() {
-
-    }
 
     final static String AUTH_FILE_LOCATION = SeLionGridConstants.SELION_HOME_DIR + ".authFile";
 
     final static String DEFAULT_USERNAME = "admin";
 
     final static String DEFAULT_PASSWORD = "admin";
+
+    private AuthenticationHelper() {
+        // defeat instantiation
+    }
 
     /**
      * Tries authenticating a given credentials and returns <code>true</code> if the credentials were valid.
@@ -64,6 +67,7 @@ public final class AuthenticationHelper {
      * @return - <code>true</code> if the credentials were valid.
      */
     public static boolean authenticate(String userName, String userPassword) {
+        LOGGER.entering(userName, userPassword.replaceAll(".", "*"));
         boolean validLogin = false;
         byte[] currentAuthData;
         byte[] hashedInputData;
@@ -82,8 +86,8 @@ public final class AuthenticationHelper {
         } catch (Exception e) {
             validLogin = false;
         }
+        LOGGER.exiting(validLogin);
         return validLogin;
-
     }
 
     /**
@@ -94,6 +98,7 @@ public final class AuthenticationHelper {
      * @return <code>true</code> if the password was successfully changed.
      */
     public static boolean changePassword(String userName, String newPassword) {
+        LOGGER.entering(userName, newPassword.replaceAll(".", "*"));
         boolean changeSucceeded = false;
         File authFile = new File(AUTH_FILE_LOCATION);
         try {
@@ -104,7 +109,7 @@ public final class AuthenticationHelper {
         } catch (Exception e) {
             changeSucceeded = false;
         }
-
+        LOGGER.exiting(changeSucceeded);
         return changeSucceeded;
     }
 
@@ -115,10 +120,12 @@ public final class AuthenticationHelper {
     }
 
     public static byte[] hashData(String userName, String password) throws NoSuchAlgorithmException {
+        LOGGER.entering(userName, password.replaceAll(".", "*"));
         String data = userName + ":" + password;
         MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
         md.update(data.getBytes());
         byte[] hashedData = md.digest();
+        LOGGER.exiting(hashedData);
         return hashedData;
     }
 

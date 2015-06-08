@@ -85,9 +85,9 @@ public class UnixProcessHandler extends AbstractProcessHandler implements Proces
         // as in the case of chromedriver process (or) it can be at the end of the command
         // as in the case of binaries such as firefox
         // or in the middle as in the case of chrome browser
-        // so we need to look at all the places places
-        for (ProcessNames eachImage : ProcessNames.values()) {
-            String img = eachImage.getUnixImageName();
+        // so we need to look at all the places
+        for (ProcessNames process : ProcessNames.values()) {
+            String img = process.getUnixImageName();
             if (image.startsWith(img) || image.contains(img) || image.endsWith(img)) {
                 LOGGER.exiting(true);
                 return true;

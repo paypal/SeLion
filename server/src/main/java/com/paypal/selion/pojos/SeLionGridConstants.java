@@ -20,14 +20,17 @@ import org.apache.commons.lang.SystemUtils;
 /**
  * A Class which contains String constants used throughout SeLion Grid
  * 
- * Patterns & conventions used in naming the constants for this class</br></br> 
- * - Anything that is a *DIR* ends with a '/' </br> 
- * - Anything that is a *FILE* is a file </br> 
- * - Anything that is a *URL* is relative to http://{hostname}:{port} </br> 
- * - Anything that is a *RESOURCE* is a jar resource that can be loaded via the CLASSPATH </br> 
- * - Anything that is a *PAGE* is a HTML page </br> 
- * - Anything that is a *ARG* is a program argument </br> 
- * - Any single constant may utilize more than one of these patterns/conventions</br>
+ * Patterns & conventions used in naming the constants for this class
+ * </br>
+ * </br> - Anything that is a *DIR* ends with a trailing separator. File system dirs are platform specific ('\' Windows, 
+ * '/' Unix). CLASSPATH resource dirs will always be '/'.
+ * </br> - Anything that is a *FILE* is a file 
+ * </br> - Anything that is a *URL* is relative to http://{hostname}:{port} 
+ * </br> - Anything that is a *RESOURCE* is a jar resource that can be loaded via the CLASSPATH
+ * </br> - Anything that is a *PAGE* is a HTML page 
+ * </br> - Anything that is a *ARG* is a program argument 
+ * </br> - Any single constant may utilize more than one of these patterns/conventions
+ * </br>
  */
 public class SeLionGridConstants {
 
@@ -35,7 +38,7 @@ public class SeLionGridConstants {
         // Restricting Object creation
     }
 
-    private static final String PLATFORM_DIR = SystemUtils.IS_OS_WINDOWS ? "windows/" : "unix/";
+    private static final String PLATFORM_RESOURCE_DIR = SystemUtils.IS_OS_WINDOWS ? "windows/" : "unix/";
 
     /**
      * Path prefix to pages along with the Grid API endpoint
@@ -62,6 +65,12 @@ public class SeLionGridConstants {
         if (!SELION_HOME_DIR.endsWith("/") && !SELION_HOME_DIR.endsWith("\\")) {
             SELION_HOME_DIR += "/";
         }
+
+        SELION_HOME_DIR = adjustFileSeparatorForPlatform(SELION_HOME_DIR);
+    }
+
+    static String adjustFileSeparatorForPlatform(String path) {
+        return path.replace("/", SystemUtils.FILE_SEPARATOR);
     }
 
     /**
@@ -82,7 +91,7 @@ public class SeLionGridConstants {
     /**
      * Relative directory for config files
      */
-    public static final String CONFIG_DIR = "config/";
+    private static final String CONFIG_DIR = "config/";
 
     /**
      * Resource path to the download.json file
@@ -92,12 +101,13 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the download.json file
      */
-    public static final String DOWNLOAD_JSON_FILE = SELION_HOME_DIR + CONFIG_DIR + "download.json";
+    public static final String DOWNLOAD_JSON_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+            + "download.json");
 
     /**
      * Installed path to the downloads directory
      */
-    public static final String DOWNLOADS_DIR = SELION_HOME_DIR + "downloads/";
+    public static final String DOWNLOADS_DIR = adjustFileSeparatorForPlatform(SELION_HOME_DIR + "downloads/");
 
     /**
      * URL to the grid home page
@@ -127,12 +137,14 @@ public class SeLionGridConstants {
     /**
      * Resource path to the default SeLionConfig.json file
      */
-    public static final String SELION_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + PLATFORM_DIR + "SeLionConfig.json";
+    public static final String SELION_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + PLATFORM_RESOURCE_DIR
+            + "SeLionConfig.json";
 
     /**
      * Installed/Extracted path to the SeLionConfig.json file
      */
-    public static final String SELION_CONFIG_FILE = SELION_HOME_DIR + CONFIG_DIR + "SeLionConfig.json";
+    public static final String SELION_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+            + "SeLionConfig.json");
 
     /**
      * Resource path to the default hubConfig.json file
@@ -147,12 +159,14 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the hubConfig.json file
      */
-    public static final String HUB_CONFIG_FILE = SELION_HOME_DIR + CONFIG_DIR + "hubConfig.json";
+    public static final String HUB_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+            + "hubConfig.json");
 
     /**
      * Installed/Extracted path to the hubSauceConfig.json file
      */
-    public static final String HUB_SAUCE_CONFIG_FILE = SELION_HOME_DIR + CONFIG_DIR + "hubSauceConfig.json";
+    public static final String HUB_SAUCE_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+            + "hubSauceConfig.json");
 
     /**
      * Resource path to the default sauceConfig.json file
@@ -162,7 +176,8 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the sauceConfig.json file
      */
-    public static final String SAUCE_CONFIG_FILE = SELION_HOME_DIR + CONFIG_DIR + "sauceConfig.json";
+    public static final String SAUCE_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+            + "sauceConfig.json");
 
     /**
      * Resource path to the default logging.properties file
@@ -172,22 +187,24 @@ public class SeLionGridConstants {
     /**
      * Installed/Extracted path to the logging.properties file
      */
-    public static final String LOGGING_PROPERTIES_FILE = SELION_HOME_DIR + CONFIG_DIR + "logging.properties";
+    public static final String LOGGING_PROPERTIES_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+            + "logging.properties");
 
     /**
      * Installed path to the SeLion-Grid log files
      */
-    public static final String LOGS_DIR = SELION_HOME_DIR + "logs/";
+    public static final String LOGS_DIR = adjustFileSeparatorForPlatform(SELION_HOME_DIR + "logs/");
 
     /**
      * Resource path to the default nodeConfig.json file
      */
-    public static final String NODE_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + PLATFORM_DIR + "nodeConfig.json";
+    public static final String NODE_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + PLATFORM_RESOURCE_DIR + "nodeConfig.json";
 
     /**
      * Installed/Extracted path to the nodeConfig.json file
      */
-    public static final String NODE_CONFIG_FILE = SELION_HOME_DIR + CONFIG_DIR + "nodeConfig.json";
+    public static final String NODE_CONFIG_FILE = adjustFileSeparatorForPlatform(SELION_HOME_DIR + CONFIG_DIR
+            + "nodeConfig.json");
 
     /**
      * Dash argument for specifying an alternative Selion Grid json config file

@@ -15,22 +15,56 @@
 
 package com.paypal.selion.utils;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.*;
 
+import java.io.File;
+
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.testng.PowerMockTestCase;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class ConfigParserTest {
+@PrepareForTest(ConfigParser.class)
+public class ConfigParserTest extends PowerMockTestCase {
+
+    @BeforeClass
+    public void before() throws Exception {
+        mockStatic(ConfigParser.class);
+        doCallRealMethod().when(ConfigParser.class, "setConfigFile", Mockito.anyString());
+        when(ConfigParser.parse()).thenCallRealMethod();
+
+        // use the mock instance to allow for invocation of setConfigFile
+        ConfigParser.setConfigFile(new File(ConfigParserTest.class.getResource("/config/DummySeLionConfig.json")
+                .getPath()).getAbsolutePath());
+    }
 
     @Test
-    public void testSetConfig() {
-        // Mock the location of the config file
-        ConfigParser.setConfigFile("src/test/resources/config/DummySeLionConfig.json");
-        ConfigParser parser = ConfigParser.getInstance();
-        int key1 = parser.getInt("Key1");
-        String key2 = parser.getString("Key2");
-        long key3 = parser.getLong("Key3");
-        assertEquals(1000, key1);
-        assertEquals("Sample", key2);
-        assertEquals(250000000, key3);
+    public void testGets() throws Exception {
+        ConfigParser config = ConfigParser.parse();
+
+        //access properties that should only exist in the mock
+        int i = config.getInt("Key1");
+        String s = config.getString("Key2");
+        long l = config.getLong("Key3");
+
+        assertEquals(i, 1000);
+        assertEquals(s, "Sample");
+        assertEquals(l, 250000000L);
+    }
+
+    @Test
+    public void testGetsWithDefault() throws Exception {
+        ConfigParser config = ConfigParser.parse();
+
+        // access properties that do not exist.
+        long maxFileSize = config.getLong("along", 10L);
+        String managedArtifact = config.getString("astring", "default");
+        int sessionCount = config.getInt("anint", 10);
+
+        assertEquals(maxFileSize, 10L);
+        assertEquals(managedArtifact, "default");
+        assertEquals(sessionCount, 10);
     }
 }

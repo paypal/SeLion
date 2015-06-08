@@ -15,25 +15,28 @@
 
 package com.paypal.selion.node.servlets;
 
+import static org.powermock.api.mockito.PowerMockito.*;
+
+import com.paypal.selion.pojos.ProcessNames;
 import com.paypal.selion.utils.ConfigParser;
-import org.powermock.api.mockito.PowerMockito;
+
+import org.apache.commons.lang.SystemUtils;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
+import org.powermock.reflect.Whitebox;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
 import static org.testng.Assert.assertTrue;
 
-@PrepareForTest({ ConfigParser.class })
+@PrepareForTest({ ConfigParser.class, ProcessNames.class })
 public class ProcessShutdownHandlerTest extends PowerMockTestCase {
 
     @BeforeClass
     public void setUp() {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
+        ConfigParser configParser = mock(ConfigParser.class);
         mockStatic(ConfigParser.class);
-        when(ConfigParser.getInstance()).thenReturn(configParser);
+        when(ConfigParser.parse()).thenReturn(configParser);
 
         if (System.getProperty("os.name").startsWith("Windows")) {
             when(configParser.getString("customProcessHandler")).thenReturn(
@@ -42,12 +45,19 @@ public class ProcessShutdownHandlerTest extends PowerMockTestCase {
             when(configParser.getString("customProcessHandler")).thenReturn(
                     "com.paypal.selion.utils.process.UnixProcessHandler");
         }
+
+        mockStatic(ProcessNames.class);
+        Whitebox.setInternalState(ProcessNames.PHANTOMJS, "unixImageName", "phantomjs");
+        Whitebox.setInternalState(ProcessNames.PHANTOMJS, "windowsImageName", "notepad.exe");
+
+        when(ProcessNames.values()).thenReturn(new ProcessNames[] { ProcessNames.PHANTOMJS });
     }
 
     @Test
     public void testShutdownProcesses() throws Exception {
         // Start phantomJS (it's available in CI)
-        Process phantom = Runtime.getRuntime().exec(new String[] {"phantomjs"} );
+        String app = SystemUtils.IS_OS_WINDOWS ? "notepad.exe" : "phantomjs";
+        Process phantom = Runtime.getRuntime().exec(new String[] { app });
         ProcessShutdownHandler shutdownHandler = new ProcessShutdownHandler();
         shutdownHandler.shutdownProcesses();
         phantom.waitFor();

@@ -72,7 +72,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private int getUniqueSessionCount() {
         try {
-            return ConfigParser.getInstance().getInt("uniqueSessionCount");
+            return ConfigParser.parse().getInt("uniqueSessionCount");
         } catch (ConfigParserException e) {// NOSONAR
             // Purposely gobbling the exception here and NOT doing anything with it.
             // We cannot afford to throw exceptions from within a Proxy

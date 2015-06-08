@@ -15,23 +15,17 @@
 
 package com.paypal.selion.pojos;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.openqa.selenium.Platform;
-
 /**
  * This enum contains the list of processes that are of interest for the SeLion Grid.
- *
  */
 public enum ProcessNames {
-    INTERNET_EXPLORER("iexplore.exe", "iexplore"),
-    FIREFOX("firefox.exe", "firefox"),
-    CHROME("chrome.exe", "chrome"),
-    CHROMEDRIVER("chromedriver.exe", "chromedriver"),
-    IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"),
-    PHANTOMJS("phantomjs.exe", "phantomjs");
+    INTERNET_EXPLORER("iexplore.exe", "iexplore"), 
+    FIREFOX("firefox.exe", "firefox"), 
+    CHROME("chrome.exe", "chrome"), 
+    CHROMEDRIVER("chromedriver.exe", "chromedriver"), 
+    IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"), 
+    PHANTOMJS("phantomjs.exe", "phantomjs"),
+    JAVA("java.exe", "java");
 
     private ProcessNames(String windowsImageName, String unixImageName) {
         this.windowsImageName = windowsImageName;
@@ -48,29 +42,4 @@ public enum ProcessNames {
     public String getUnixImageName() {
         return unixImageName;
     }
-
-    /**
-     * Utility method to return the executable names for the specified platform.
-     *
-     * @return {@link List} of {@link String} containing the executable file names.
-     */
-    public static List<String> getExecutableNames() {
-        List<String> executableNames = new ArrayList<String>();
-        switch (Platform.getCurrent()) {
-        case MAC:
-        case UNIX:
-        case LINUX: {
-            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getUnixImageName(),
-                    ProcessNames.CHROMEDRIVER.getUnixImageName());
-            break;
-        }
-        default: {
-            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getWindowsImageName(),
-                    ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName());
-            break;
-        }
-        }
-        return executableNames;
-    }
-
 }

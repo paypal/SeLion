@@ -65,7 +65,7 @@ public class DefaultManagedArtifact implements ManagedArtifact {
     public DefaultManagedArtifact(String pathName) {
         this.filePath = pathName;
         artifactFile = new File(this.filePath);
-        timeToLiveInMillis = ConfigParser.getInstance().getLong(EXPIRY_CONFIG_PROPERTY);
+        timeToLiveInMillis = ConfigParser.parse().getLong(EXPIRY_CONFIG_PROPERTY);
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, "Time To Live configured in Grid: " + timeToLiveInMillis + " milli seconds.");
         }

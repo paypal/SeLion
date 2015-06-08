@@ -30,7 +30,7 @@ public final class ProcessHandlerFactory {
 
     public static ProcessHandler createInstance() {
         String customHandler = "";
-        customHandler = ConfigParser.getInstance().getString("customProcessHandler");
+        customHandler = ConfigParser.parse().getString("customProcessHandler");
         return createCustomHandlerInstance(customHandler);
     }
 

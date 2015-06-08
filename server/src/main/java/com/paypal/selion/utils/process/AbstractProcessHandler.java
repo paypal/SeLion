@@ -84,7 +84,7 @@ public abstract class AbstractProcessHandler {
     protected void killProcess(String[] killCommand, List<ProcessInfo> process) throws ProcessHandlerException {
         try {
             for (ProcessInfo eachProcess : process) {
-                LOGGER.info("Killing process : " + eachProcess);
+                LOGGER.info("Killing process: " + eachProcess);
                 String[] cmd = Arrays.copyOf(killCommand, killCommand.length + 1);
                 cmd[cmd.length - 1] = eachProcess.getProcessId();
                 Process output = Runtime.getRuntime().exec(cmd);

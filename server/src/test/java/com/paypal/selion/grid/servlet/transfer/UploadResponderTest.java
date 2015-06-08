@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
@@ -53,9 +52,9 @@ public class UploadResponderTest extends PowerMockTestCase {
 
     @BeforeMethod
     public void setUpBeforeEveryMethod() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
+        ConfigParser configParser = mock(ConfigParser.class);
         mockStatic(ConfigParser.class);
-        when(ConfigParser.getInstance()).thenReturn(configParser);
+        when(ConfigParser.parse()).thenReturn(configParser);
         when(configParser.getString("managedCriteria")).thenReturn(
                 "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria");
     }
@@ -66,13 +65,13 @@ public class UploadResponderTest extends PowerMockTestCase {
         UploadRequestProcessor<ManagedArtifact> requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-        ManagedArtifact managedArtifact = PowerMockito.mock(ManagedArtifact.class);
+        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
 
         String expected = "{\"files\":[{\"fileName\":\"InternationalMountains_app.zip\",\"url\":\"http://localhost:4444/path/TransferServlet/userOne/InternationalMountains_app.zip\"}]}";
         EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
         map.put(RequestHeaders.FILENAME, "InternationalMountains_app.zip");
         map.put(RequestHeaders.USERID, "userOne");
-        
+
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -86,7 +85,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         when(transferContext.getHttpServletResponse()).thenReturn(httpServletResponse);
         when(transferContext.getUploadRequestProcessor()).thenReturn(requestProcessor);
         when(transferContext.getHeadersMap()).thenReturn(map);
-        
+
         when(httpServletRequest.getRequestURL()).thenReturn(stringBuffer);
         when(httpServletResponse.getWriter()).thenReturn(printWriter);
         doNothing().when(httpServletResponse).setContentType(Mockito.anyString());
@@ -105,13 +104,13 @@ public class UploadResponderTest extends PowerMockTestCase {
         UploadRequestProcessor<ManagedArtifact> requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-        ManagedArtifact managedArtifact = PowerMockito.mock(ManagedArtifact.class);
+        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
 
         String expected = "fileName=InternationalMountains_app.zip,url=http://localhost:4444/path/TransferServlet/userOne/InternationalMountains_app.zip;";
         EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
         map.put(RequestHeaders.FILENAME, "InternationalMountains_app.zip");
         map.put(RequestHeaders.USERID, "userOne");
-        
+
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -125,7 +124,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         when(transferContext.getHttpServletResponse()).thenReturn(httpServletResponse);
         when(transferContext.getUploadRequestProcessor()).thenReturn(requestProcessor);
         when(transferContext.getHeadersMap()).thenReturn(map);
-        
+
         when(httpServletRequest.getRequestURL()).thenReturn(stringBuffer);
         when(httpServletResponse.getWriter()).thenReturn(printWriter);
         doNothing().when(httpServletResponse).setContentType(Mockito.anyString());
@@ -158,7 +157,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         when(transferContext.getHttpServletResponse()).thenReturn(httpServletResponse);
         when(transferContext.getUploadRequestProcessor()).thenReturn(requestProcessor);
         when(transferContext.getHeadersMap()).thenReturn(map);
-        
+
         when(httpServletRequest.getRequestURL()).thenReturn(stringBuffer);
         when(httpServletResponse.getWriter()).thenReturn(printWriter);
         doNothing().when(httpServletResponse).setContentType(Mockito.anyString());

@@ -59,7 +59,7 @@ final class FileDownloader {
     /**
      * This method is used to cleanup all the files already downloaded
      */
-    public static void cleanup() {
+    static void cleanup() {
         LOGGER.entering();
 
         for (String temp : files) {
@@ -75,7 +75,7 @@ final class FileDownloader {
      * This method will check whether the download.json file got modified and download all the files in
      * download.json
      */
-    public static void checkForDownloads() {
+    static void checkForDownloads() {
         LOGGER.entering();
 
         File downloadFile = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
@@ -104,7 +104,7 @@ final class FileDownloader {
             StringBuilder msg = new StringBuilder();
             msg.append("Downloading from URL: ").append(url).append("...");
             msg.append("[").append(checksum).append("] will be used for checksum validation.");
-            LOGGER.info(msg.toString());
+            LOGGER.fine(msg.toString());
             String result;
             while ((result = downloadFile(url, checksum)) == null) {
                 // TODO: Need to add a measurable wait to skip downloading after 'n' tries
@@ -116,7 +116,7 @@ final class FileDownloader {
                 files.addAll(extractedFileList);
             }
         }
-        LOGGER.info("Files after download and extract: " + files.toString());
+        LOGGER.fine("Files after download and extract: " + files.toString());
         LOGGER.exiting();
     }
 
@@ -158,7 +158,7 @@ final class FileDownloader {
             }
         }
         if (checksum.equals(sb.toString())) {
-            LOGGER.info("checksum matched for " + filename);
+            LOGGER.fine("checksum matched for " + filename);
             return true;
         }
         return false;
@@ -229,10 +229,10 @@ final class FileDownloader {
             }
         }
         if (checksum.equals(sb.toString())) {
-            LOGGER.info("checksum matched for " + url);
+            LOGGER.fine("checksum matched for " + url);
             return filename;
         }
-        LOGGER.info("checksum did not match for " + url);
+        LOGGER.fine("checksum did not match for " + url);
         return null;
     }
 
@@ -245,7 +245,7 @@ final class FileDownloader {
      *            - checksum to downloaded file.
      * @return the downloaded file path.
      */
-    public static String downloadFile(String artifactUrl, String checksum) {
+    static String downloadFile(String artifactUrl, String checksum) {
         LOGGER.entering(new Object[] { artifactUrl, checksum });
         Preconditions.checkArgument(artifactUrl != null && !artifactUrl.isEmpty(),
                 "Invalid URL: Cannot be null or empty");

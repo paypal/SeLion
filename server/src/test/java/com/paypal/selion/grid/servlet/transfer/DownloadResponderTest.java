@@ -29,11 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.grid.servlets.transfer.ArtifactDownloadException;
@@ -47,17 +45,13 @@ import com.paypal.selion.utils.ConfigParser;
 @PrepareForTest({ DownloadResponder.class, ConfigParser.class })
 public class DownloadResponderTest extends PowerMockTestCase {
 
-    @BeforeMethod
-    public void setUpBeforeEveryMethod() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
-        mockStatic(ConfigParser.class);
-        when(ConfigParser.getInstance()).thenReturn(configParser);
-        when(configParser.getString("managedCriteria")).thenReturn(
-                "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria");
-    }
-
     @Test
     public void testSuccessWritingToServletResponse() throws Exception {
+        ConfigParser configParser = mock(ConfigParser.class);
+        mockStatic(ConfigParser.class);
+        when(ConfigParser.parse()).thenReturn(configParser);
+        when(configParser.getString("managedCriteria")).thenReturn(
+                "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria");
 
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
@@ -88,9 +82,9 @@ public class DownloadResponderTest extends PowerMockTestCase {
 
     @Test(expectedExceptions = ArtifactDownloadException.class)
     public void testFailedToGetArtifact() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
+        ConfigParser configParser = mock(ConfigParser.class);
         mockStatic(ConfigParser.class);
-        when(ConfigParser.getInstance()).thenReturn(configParser);
+        when(ConfigParser.parse()).thenReturn(configParser);
         when(configParser.getString("managedCriteria")).thenReturn("xxxx");
 
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);

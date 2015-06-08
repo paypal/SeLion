@@ -23,7 +23,6 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
@@ -37,7 +36,7 @@ import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.ManagedArtifactRepository;
 import com.paypal.selion.utils.ConfigParser;
 
-@PrepareForTest({ ManagedArtifactRepository.class, ConfigParser.class })
+@PrepareForTest({ManagedArtifactRepository.class, ConfigParser.class })
 public class ManagedArtifactRepositoryTest extends PowerMockTestCase {
 
     @BeforeClass
@@ -47,9 +46,9 @@ public class ManagedArtifactRepositoryTest extends PowerMockTestCase {
 
     @BeforeMethod
     public void setUpBeforeEveryMethod() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
+        ConfigParser configParser = mock(ConfigParser.class);
         mockStatic(ConfigParser.class);
-        when(ConfigParser.getInstance()).thenReturn(configParser);
+        when(ConfigParser.parse()).thenReturn(configParser);
         when(configParser.getLong("artifactExpiryInMilliSec")).thenReturn(86400000L);
         when(configParser.getString("managedArtifact")).thenReturn(
                 "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact");

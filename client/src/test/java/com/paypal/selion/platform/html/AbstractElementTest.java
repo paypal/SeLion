@@ -45,7 +45,7 @@ import com.paypal.test.utilities.server.TestServerUtils;
 public class AbstractElementTest {
 
     // TODO this is failing
-    @Test(groups = { "unit" })
+    @Test(groups = { "functional" })
     @WebTest
     public void validateGetElements() {
         Grid.open(TestServerUtils.getContainerURL());

@@ -15,22 +15,29 @@
 
 package com.paypal.selion.utils;
 
+import static org.powermock.api.mockito.PowerMockito.*;
+import static org.testng.Assert.*;
+
 import java.io.File;
 
 import org.apache.commons.lang.SystemUtils;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.testng.PowerMockTestCase;
+import org.powermock.reflect.Whitebox;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
 
 import com.paypal.selion.pojos.SeLionGridConstants;
 
-public class AuthenticationHelperTest {
+@PrepareForTest(SeLionGridConstants.class)
+public class AuthenticationHelperTest extends PowerMockTestCase {
 
     @BeforeClass
-    public void mockTestPath() {
-        SeLionGridConstants.SELION_HOME_DIR = SystemUtils.USER_DIR + "/src/test/resources/";
+    public void mockTestPath() throws Exception {
+        mockStatic(SeLionGridConstants.class);
+        Whitebox.setInternalState(SeLionGridConstants.class, "SELION_HOME_DIR", SystemUtils.USER_DIR + "/target/temp/");
+        new File(SeLionGridConstants.SELION_HOME_DIR).mkdirs();
     }
 
     @Test
@@ -63,7 +70,7 @@ public class AuthenticationHelperTest {
         assertFalse(isValidUser);
     }
 
-    @AfterClass(alwaysRun=true)
+    @AfterClass(alwaysRun = true)
     public void cleanUpAuthFile() {
         File authFile = new File(SeLionGridConstants.SELION_HOME_DIR + ".authFile");
         authFile.delete();

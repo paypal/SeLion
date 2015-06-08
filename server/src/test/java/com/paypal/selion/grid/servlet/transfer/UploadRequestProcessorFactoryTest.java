@@ -22,7 +22,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.powermock.reflect.Whitebox;
@@ -49,9 +48,9 @@ public class UploadRequestProcessorFactoryTest extends PowerMockTestCase {
     @Test
     @SuppressWarnings({ "rawtypes" })
     public void testMultipartRequestProcessor() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
+        ConfigParser configParser = mock(ConfigParser.class);
         mockStatic(ConfigParser.class);
-        when(ConfigParser.getInstance()).thenReturn(configParser);
+        when(ConfigParser.parse()).thenReturn(configParser);
         when(configParser.getLong("artifactMaxFileSize")).thenReturn(86400000L);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
@@ -68,10 +67,10 @@ public class UploadRequestProcessorFactoryTest extends PowerMockTestCase {
     @Test
     @SuppressWarnings({ "rawtypes" })
     public void testUrlEncodedRequestProcessor() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
-        PowerMockito.mockStatic(ConfigParser.class);
-        PowerMockito.when(ConfigParser.getInstance()).thenReturn(configParser);
-        PowerMockito.when(configParser.getLong("artifactMaxFileSize")).thenReturn(86400000L);
+        ConfigParser configParser = mock(ConfigParser.class);
+        mockStatic(ConfigParser.class);
+        when(ConfigParser.parse()).thenReturn(configParser);
+        when(configParser.getLong("artifactMaxFileSize")).thenReturn(86400000L);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
 
@@ -87,10 +86,10 @@ public class UploadRequestProcessorFactoryTest extends PowerMockTestCase {
     @Test(expectedExceptions = ArtifactUploadException.class)
     @SuppressWarnings({ "rawtypes" })
     public void testUnknownContentType() throws Exception {
-        ConfigParser configParser = PowerMockito.mock(ConfigParser.class);
-        PowerMockito.mockStatic(ConfigParser.class);
-        PowerMockito.when(ConfigParser.getInstance()).thenReturn(configParser);
-        PowerMockito.when(configParser.getLong("artifactMaxFileSize")).thenReturn(86400000L);
+        ConfigParser configParser = mock(ConfigParser.class);
+        mockStatic(ConfigParser.class);
+        when(ConfigParser.parse()).thenReturn(configParser);
+        when(configParser.getLong("artifactMaxFileSize")).thenReturn(86400000L);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
 

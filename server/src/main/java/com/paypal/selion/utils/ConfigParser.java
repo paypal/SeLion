@@ -15,6 +15,8 @@
 
 package com.paypal.selion.utils;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -44,7 +47,7 @@ public final class ConfigParser {
      * @return A {@link ConfigParser} object that can be used to retrieve values from the Configuration object as
      *         represented by the JSON file passed via the JVM argument <b>SeLionConfig</b>
      */
-    public static ConfigParser getInstance() {
+    public static ConfigParser parse() {
         LOGGER.entering();
         if (parser == null) {
             parser = new ConfigParser();
@@ -163,8 +166,9 @@ public final class ConfigParser {
     }
 
     private void readConfigFileContents() throws IOException {
+        LOGGER.entering();
         InputStream stream = null;
-        if (isBlank(configFile)) {
+        if (StringUtils.isBlank(configFile)) {
             LOGGER.fine("Config file will be loaded as a resource.");
             stream = this.getClass().getResourceAsStream(SeLionGridConstants.SELION_CONFIG_FILE_RESOURCE);
         } else {
@@ -190,26 +194,7 @@ public final class ConfigParser {
         } catch (JsonSyntaxException e) {
             throw new ConfigParserException(e);
         }
-
-    }
-
-    private static void checkArgument(boolean expression, Object errorMessage) {
-        if (!expression) {
-            throw new IllegalArgumentException(String.valueOf(errorMessage));
-        }
-    }
-
-    private static boolean isBlank(CharSequence cs) {
-        int strLen;
-        if (cs == null || (strLen = cs.length()) == 0) {
-            return true;
-        }
-        for (int i = 0; i < strLen; i++) {
-            if (Character.isWhitespace(cs.charAt(i)) == false) {
-                return false;
-            }
-        }
-        return true;
+        LOGGER.exiting();
     }
 
     @Override

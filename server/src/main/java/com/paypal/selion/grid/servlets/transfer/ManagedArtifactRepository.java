@@ -203,7 +203,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     private ManagedArtifact getManagedArtifact(String pathName) {
         ManagedArtifact managedArtifact = null;
         try {
-            String managedArtifactClassName = ConfigParser.getInstance().getString(ARTIFACT_CONFIG_PROPERTY);
+            String managedArtifactClassName = ConfigParser.parse().getString(ARTIFACT_CONFIG_PROPERTY);
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "ManagedArtifact class name configured in grid: " + managedArtifactClassName);
             }
@@ -216,7 +216,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
             throw new ArtifactUploadException(exe.getCause().getMessage(), exe);
         } catch (Exception exe) {
             throw new ArtifactUploadException(exe.getClass().getSimpleName() + " in creating ManagedArtifact : "
-                    + ConfigParser.getInstance().getString(ARTIFACT_CONFIG_PROPERTY), exe);
+                    + ConfigParser.parse().getString(ARTIFACT_CONFIG_PROPERTY), exe);
         }
     }
 

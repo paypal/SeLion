@@ -198,13 +198,13 @@ public abstract class AbstractTestSession {
      */
     public final void closeSession() {
         logger.entering();
-        new SauceLabsHelper().embedSauceLabsJobUrlToTestReport();
-        if (Grid.driver() != null) {
+        if ((isStarted()) && (Grid.driver() != null)) {
+            new SauceLabsHelper().embedSauceLabsJobUrlToTestReport();
             Grid.driver().quit();
-            Grid.getThreadLocalWebDriver().set(null);
-            Grid.getThreadLocalTestSession().set(null);
-
         }
+        Grid.getThreadLocalWebDriver().set(null);
+        Grid.getThreadLocalTestSession().set(null);
+        this.isStarted = false;
         logger.exiting();
     }
 

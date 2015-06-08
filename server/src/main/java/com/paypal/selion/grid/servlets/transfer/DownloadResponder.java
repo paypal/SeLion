@@ -86,7 +86,7 @@ public class DownloadResponder {
         if (requestedCriteria == null) {
             EnumMap<RequestHeaders, String> parametersMap = getParametersMap();
             try {
-                String criteriaClassName = ConfigParser.getInstance().getString(CRITERIA_CONFIG_PROPERTY);
+                String criteriaClassName = ConfigParser.parse().getString(CRITERIA_CONFIG_PROPERTY);
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, "Criteria class name configured in grid: " + criteriaClassName);
                 }
@@ -99,7 +99,7 @@ public class DownloadResponder {
                 throw new ArtifactDownloadException(exe.getCause().getMessage(), exe);
             } catch (Exception exe) {
                 throw new ArtifactDownloadException(exe.getClass().getSimpleName() + " in creating Criteria: "
-                        + ConfigParser.getInstance().getString(CRITERIA_CONFIG_PROPERTY), exe);
+                        + ConfigParser.parse().getString(CRITERIA_CONFIG_PROPERTY), exe);
             }
         }
         return requestedCriteria;

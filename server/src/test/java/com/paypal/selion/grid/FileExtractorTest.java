@@ -15,73 +15,87 @@
 
 package com.paypal.selion.grid;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.SystemUtils;
+import org.mockito.Mockito;
 import org.openqa.selenium.Platform;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.pojos.SeLionGridConstants;
 
-public class FileExtractorTest {
-    File extractedFile = null;
-    File tarFile = null;
+@PrepareForTest({ FileExtractor.class })
+public class FileExtractorTest extends PowerMockTestCase {
+    File extractedFile;
+    File tarFile;
 
-    @BeforeClass
-    public void mockTestPaths() {
-        SeLionGridConstants.SELION_HOME_DIR = SystemUtils.USER_DIR + "/";
-        tarFile = new File(SeLionGridConstants.SELION_HOME_DIR
-                + "src/test/resources/archives/DummyBz2Archive.tar");
+    static final String DUMMY_BZ2_ARCHIVE_FILE_PATH = new File(FileExtractorTest.class.getResource(
+            "/artifacts/DummyBz2Archive.tar.bz2").getPath()).getAbsolutePath();
+
+    static final String DUMMY_ZIP_ARCHIVE_FILE_PATH = new File(FileExtractorTest.class.getResource(
+            "/artifacts/DummyArchive.zip").getPath()).getAbsolutePath();
+
+    private static List<String> processNames;
+    static {
+        processNames = new ArrayList<String>();
+
+        switch (Platform.getCurrent()) {
+        case MAC:
+        case UNIX:
+        case LINUX: {
+            processNames.add("dummyapp");
+            break;
+        }
+        default: {
+            processNames.add("dummyapp.exe");
+            break;
+        }
+        }
     }
-    
-    @BeforeMethod
-    public void initExtractedFile(){
-        extractedFile = new File(SeLionGridConstants.SELION_HOME_DIR + getExtractedFileName());
+
+    @BeforeMethod(alwaysRun = true)
+    public void setUp() {
+        mockStatic(FileExtractor.class);
+        when(FileExtractor.getExecutableNames()).thenReturn(processNames);
+        when(FileExtractor.extractArchive(Mockito.anyString())).thenCallRealMethod();
+        when(FileExtractor.getFileNameFromPath(Mockito.anyString())).thenCallRealMethod();
+
+        extractedFile = new File(SeLionGridConstants.SELION_HOME_DIR + processNames.get(0));
     }
 
     @Test
     public void testExtractingZip() {
-        List<String> files = FileExtractor.extractArchive(SeLionGridConstants.SELION_HOME_DIR
-                + "src/test/resources/archives/DummyArchive.zip");
+        List<String> files = FileExtractor.extractArchive(DUMMY_ZIP_ARCHIVE_FILE_PATH);
         assertTrue(extractedFile.exists());
         assertTrue(files.size() == 1);
     }
 
     @Test
     public void testExtractingBzip2() {
-        List<String> files = FileExtractor.extractArchive(SeLionGridConstants.SELION_HOME_DIR
-                + "src/test/resources/archives/DummyBz2Archive.tar.bz2");
+        List<String> files = FileExtractor.extractArchive(DUMMY_BZ2_ARCHIVE_FILE_PATH);
         assertTrue(extractedFile.exists());
+
+        tarFile = new File(
+                new File(FileExtractorTest.class.getResource("/artifacts/DummyBz2Archive.tar").getPath())
+                        .getAbsolutePath());
+
         assertTrue(tarFile.exists());
         assertTrue(files.size() == 2);
     }
-    
-    @AfterMethod
-    public void cleanExtractedFiles(){
+
+    @AfterMethod(alwaysRun = true)
+    public void cleanExtractedFiles() {
         extractedFile.delete();
-        if(tarFile.exists()){
+        if (tarFile != null && tarFile.exists()) {
             tarFile.delete();
         }
-    }
-    
-    private String getExtractedFileName() {
-        String fileName = null;
-        switch (Platform.getCurrent()) {
-        case LINUX:
-        case MAC:
-        case UNIX:
-            fileName = "phantomjs";
-            break;
-        default:
-            fileName = "phantomjs.exe";
-            break;
-        }
-        return fileName;
     }
 }

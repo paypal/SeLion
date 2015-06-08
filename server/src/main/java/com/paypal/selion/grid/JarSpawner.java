@@ -69,7 +69,7 @@ public class JarSpawner {
             ConfigParser.setConfigFile(commands.get(commands.indexOf(SELION_CONFIG_ARG) + 1));
         }
 
-        long interval = ConfigParser.getInstance().getLong("restartCycle", 60000L);
+        long interval = ConfigParser.parse().getLong("restartCycle", 60000L);
         LOGGER.info("Restart cycle will check every " + interval + " ms");
         while (true) {
             FileDownloader.checkForDownloads();
@@ -241,7 +241,7 @@ public class JarSpawner {
 
         // remove any duplicates that were already in the existing classpath. add the left-overs
         String classpath = System.getProperty("java.class.path");
-        uniqueClassPathEntries.addAll(Arrays.asList(classpath.split(":")));
+        uniqueClassPathEntries.addAll(Arrays.asList(classpath.split(SystemUtils.PATH_SEPARATOR)));
 
         // build the -cp [option]
         StringBuffer buf = new StringBuffer();
