@@ -565,26 +565,34 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        if (ListenerManager.executeCurrentMethod(this) == false) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-        Test testMethod = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
-        if (testMethod != null) {
-            String testName = testMethod.testName();
-            if (StringUtils.isNotEmpty(testName)) {
-                testResult.setAttribute(TEST_NAME_KEY, testName);
+        try {
+            if (ListenerManager.executeCurrentMethod(this) == false) {
+                logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+                return;
             }
+            Test testMethod = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
+            if (testMethod != null) {
+                String testName = testMethod.testName();
+                if (StringUtils.isNotEmpty(testName)) {
+                    testResult.setAttribute(TEST_NAME_KEY, testName);
+                }
+            }
+        } catch (Exception e) { //NOSONAR
+            logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
         }
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
-        // Failing to do so can have un-predictable results.
-        if (ListenerManager.executeCurrentMethod(this) == false) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
+        try {
+            // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
+            // Failing to do so can have un-predictable results.
+            if (ListenerManager.executeCurrentMethod(this) == false) {
+                logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+                return;
+            }
+        } catch (Exception e) { //NOSONAR
+            logger.log(Level.WARNING, "An error occurred while processing afterInvocation: " + e.getMessage(), e);
         }
     }
 }

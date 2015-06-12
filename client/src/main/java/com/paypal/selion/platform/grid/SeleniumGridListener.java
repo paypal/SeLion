@@ -81,35 +81,40 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
 
         logger.entering(new Object[] { method, testResult });
-        if (ListenerManager.executeCurrentMethod(this) == false) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        if (!method.isTestMethod()) {
-            return;
-        }
-
-        boolean isWebTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(WebTest.class) != null;
-        boolean isMobileTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(MobileTest.class) != null;
-
-        if ((isWebTestClass || isMobileTestClass)) {
-            if (isLowPriority(method)) {
-                // For session sharing tests, Need to create new session only for Test (Web or Mobile) with lowest
-                // priority (first test) in the class.
-                testSessionSharingRules(method);
-            } else {
+        try {
+            if (ListenerManager.executeCurrentMethod(this) == false) {
+                logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }
-        }
 
-        AbstractTestSession testSession = TestSessionFactory.newInstance(method);
-        Grid.getThreadLocalTestSession().set(testSession);
-        InvokedMethodInformation methodInfo = TestNGUtils.getInvokedMethodInformation(method, testResult);
-        testSession.initializeTestSession(methodInfo);
-        if (!(testSession instanceof BasicTestSession)) {
-            // BasicTestSession are non selenium tests. So no need to start the Local hub.
-            LocalGridManager.spawnLocalHub(testSession);
+            if (!method.isTestMethod()) {
+                return;
+            }
+
+            Class<?> cls = method.getTestMethod().getInstance().getClass();
+            boolean isWebTestClass = cls.getAnnotation(WebTest.class) != null;
+            boolean isMobileTestClass = cls.getAnnotation(MobileTest.class) != null;
+
+            if ((isWebTestClass || isMobileTestClass)) {
+                if (isLowPriority(method)) {
+                    // For session sharing tests, Need to create new session only for Test (Web or Mobile) with lowest
+                    // priority (first test) in the class.
+                    testSessionSharingRules(method);
+                } else {
+                    return;
+                }
+            }
+
+            AbstractTestSession testSession = TestSessionFactory.newInstance(method);
+            Grid.getThreadLocalTestSession().set(testSession);
+            InvokedMethodInformation methodInfo = TestNGUtils.getInvokedMethodInformation(method, testResult);
+            testSession.initializeTestSession(methodInfo);
+            if (!(testSession instanceof BasicTestSession)) {
+                // BasicTestSession are non selenium tests. So no need to start the Local hub.
+                LocalGridManager.spawnLocalHub(testSession);
+            }
+        } catch (Exception e) { //NOSONAR
+            logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
         }
 
         logger.exiting();
@@ -183,24 +188,29 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         logger.entering(new Object[] { method, testResult });
-        if (ListenerManager.executeCurrentMethod(this) == false) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-        if (!method.isTestMethod()) {
-            return;
-        }
-        boolean isWebTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(WebTest.class) != null;
-        boolean isMobileTestClass = method.getTestMethod().getInstance().getClass().getAnnotation(MobileTest.class) != null;
+        try {
+            if (ListenerManager.executeCurrentMethod(this) == false) {
+                logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+                return;
+            }
+            if (!method.isTestMethod()) {
+                return;
+            }
+            Class<?> cls = method.getTestMethod().getInstance().getClass();
+            boolean isWebTestClass = cls.getAnnotation(WebTest.class) != null;
+            boolean isMobileTestClass = cls.getAnnotation(MobileTest.class) != null;
 
-        if ((isWebTestClass || isMobileTestClass) && !isHighPriority(method)) {
-            // For session sharing tests, Need to close session only for Test (Web or Mobile) with highest priority
-            // (last test) in the class.
-            return;
-        }
+            if ((isWebTestClass || isMobileTestClass) && !isHighPriority(method)) {
+                // For session sharing tests, Need to close session only for Test (Web or Mobile) with highest priority
+                // (last test) in the class.
+                return;
+            }
 
-        AbstractTestSession testSession = Grid.getTestSession();
-        testSession.closeSession();
+            AbstractTestSession testSession = Grid.getTestSession();
+            testSession.closeSession();
+        } catch (Exception e) { //NOSONAR
+            logger.log(Level.WARNING, "An error occurred while processing afterInvocation: " + e.getMessage(), e);
+        }
 
         logger.exiting();
     }

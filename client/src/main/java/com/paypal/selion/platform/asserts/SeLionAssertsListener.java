@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -14,6 +14,8 @@
 \*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.platform.asserts;
+
+import java.util.logging.Level;
 
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
@@ -46,29 +48,37 @@ public class SeLionAssertsListener implements IInvokedMethodListener {
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
 
         logger.entering(new Object[] { method, testResult });
-        if (ListenerManager.executeCurrentMethod(this) == false) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
+        try {
+            if (ListenerManager.executeCurrentMethod(this) == false) {
+                logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+                return;
+            }
+            // Initialize soft asserts for this test method instance.
+            SeLionSoftAssert softAsserts = new SeLionSoftAssert();
+            testResult.setAttribute(SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME, softAsserts);
+        } catch (Exception e) { //NOSONAR
+            logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
         }
-        // Initialize soft asserts for this test method instance.
-        SeLionSoftAssert softAsserts = new SeLionSoftAssert();
-        testResult.setAttribute(SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME, softAsserts);
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         logger.entering(new Object[] { method, testResult });
-        if (ListenerManager.executeCurrentMethod(this) == false) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-        // Assert all the soft asserts captured as part of this test method instance.
-        if (Reporter.getCurrentTestResult() != null) {
-            SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
-                    SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
-            if (sa != null) {
-                sa.assertAll();
+        try {
+            if (ListenerManager.executeCurrentMethod(this) == false) {
+                logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+                return;
             }
+            // Assert all the soft asserts captured as part of this test method instance.
+            if (Reporter.getCurrentTestResult() != null) {
+                SeLionSoftAssert sa = (SeLionSoftAssert) Reporter.getCurrentTestResult().getAttribute(
+                        SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME);
+                if (sa != null) {
+                    sa.assertAll();
+                }
+            }
+        } catch (Exception e) { //NOSONAR
+            logger.log(Level.WARNING, "An error occurred while processing afterInvocation: " + e.getMessage(), e);
         }
     }
 }

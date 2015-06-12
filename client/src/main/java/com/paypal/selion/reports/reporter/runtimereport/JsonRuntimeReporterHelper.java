@@ -173,7 +173,7 @@ public class JsonRuntimeReporterHelper {
         }
 
         for (TestMethodInfo temp : runningTest) {
-            if (temp.getResult().equals(result)) {
+            if (temp.getResult().getMethod().equals(result.getMethod())) {
                 runningTest.remove(temp);
                 appendFile(jsonCompletedTest, test1.toJson().concat(",\n"));
                 break;
@@ -248,7 +248,7 @@ public class JsonRuntimeReporterHelper {
         }
 
         for (ConfigMethodInfo temp : runningConfig) {
-            if (temp.getResult().equals(result)) {
+            if (temp.getResult().getMethod().equals(result.getMethod())) {
                 runningConfig.remove(temp);
                 break;
             }

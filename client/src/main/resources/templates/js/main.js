@@ -522,13 +522,16 @@ function displaySource(src, title) {
   function matchTestCase(testCase, val) {
     if(!matchValue(testCase.status, val) || !matchValue(testCase.suite, val)  || !matchValue(testCase.test, val) ||
       !matchValue(testCase.packageInfo, val) || !matchValue(testCase.className, val) ||
-      !matchValue(testCase.methodName, val)) {
+      !matchValue(testCase.methodName, val) || !matchValue(testCase.stacktrace, val)) {
       return true;
     }
     return false;
   }
 
   function matchValue(left, right) {
+    if(left === undefined) {
+      left = "";
+    }
     var text = left.replace(/\s+/g, ' ').toLowerCase();
     return !~text.indexOf(right);
   }
