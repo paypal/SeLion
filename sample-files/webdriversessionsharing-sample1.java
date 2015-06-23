@@ -1,5 +1,5 @@
-@Test(groups = {"sessionSharingWebTests"})
-@WebTest(sessionName="login-flow",keepSessionOpen=true)
-public void testLoginFlow() {
-  // code to login
+@WebTest
+@Test(singleThreaded = true)
+public class SessionSharingTest {
+    // Add code to UI operation.
 }
