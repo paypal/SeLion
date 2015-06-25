@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -22,10 +22,15 @@ package com.paypal.selion.configuration;
  */
 public class ListenerInfo {
 
+    // A system default value.
+    private final static boolean ENABLE_LISTENER_BY_DEFAULT = true;
+    
     private String listenerClassName;
-    private boolean enabled = true;
+    private boolean listenerEnabled = true;
 
     /**
+     * Saves information about listener class which is enabled/disabled per its VM argument. When VM argument for
+     * the listener is not defined, the listener is enabled by system default.
      * 
      * @param className
      *            - The Class name.
@@ -33,24 +38,62 @@ public class ListenerInfo {
      *            - The JVM argument that should be read to decide if the listener is to be enabled/disabled.
      */
     public ListenerInfo(Class<?> className, String jvmArgToParse) {
-        this.listenerClassName = className.getCanonicalName();
-        this.enabled = getBooleanValFromVMArg(jvmArgToParse);
+        this(className, jvmArgToParse, ENABLE_LISTENER_BY_DEFAULT);
     }
 
+    /**
+     * Saves information about listener class which is enabled/disabled per its VM argument. When VM argument is
+     * not defined, whether it is enabled/disabled is decided by the caller via (@code defaultStateWhenNotDefined}.
+     * 
+     * @param className
+     *            - The Class name.
+     * @param jvmArgToParse
+     *            - The JVM argument that should be read to decide whether the listener is to be enabled/disabled.
+     * @param defaultStateWhenNotDefined
+     *            - The default boolean for whether enabled/disabled when the JVM argument is not defined.
+     */
+    public ListenerInfo(Class<?> className, String jvmArgToParse, boolean defaultStateWhenNotDefined) {
+        this.listenerClassName = className.getCanonicalName();
+        this.listenerEnabled = getBooleanValFromVMArg(jvmArgToParse, defaultStateWhenNotDefined);
+    }
+
+    /**
+     * Gets the class name of the listener.
+     */
     public String getListenerClassName() {
         return listenerClassName;
     }
 
     /**
+     * Gets a boolean indicating whether or not the listener is enabled.
+     * 
      * @return - <code>true</code> if the listener is to be enabled, <code>false</code> otherwise.
      */
     public boolean isEnabled() {
-        return enabled;
+        return this.listenerEnabled;
     }
 
+    /**
+     * Returns boolean value of the JVM argument when defined, else returns true (system default behavior).
+     * 
+     * @param vmArgValue
+     *          The VM argument name.
+     */
     static boolean getBooleanValFromVMArg(String vmArgValue) {
-        boolean flag = true;
+        return getBooleanValFromVMArg(vmArgValue, ENABLE_LISTENER_BY_DEFAULT);
+    }
+
+    /**
+     * Returns boolean value of the JVM argument when defined, else returns the {@code defaultStateWhenNotDefined}.
+     * 
+     * @param vmArgValue
+     *      The VM argument name.
+     * @param defaultStateWhenNotDefined
+     *      A boolean to indicate default state of the listener.
+     */
+    static boolean getBooleanValFromVMArg(String vmArgValue, boolean defaultStateWhenNotDefined) {
         String sysProperty = System.getProperty(vmArgValue);
+        boolean flag = defaultStateWhenNotDefined;
         if ((sysProperty != null) && (!sysProperty.isEmpty())) {
             flag = Boolean.parseBoolean(sysProperty);
         }
@@ -67,7 +110,7 @@ public class ListenerInfo {
             builder.append(", ");
         }
         builder.append("State=");
-        if (enabled) {
+        if (listenerEnabled) {
             builder.append("Enabled");
         } else {
             builder.append("Disabled");

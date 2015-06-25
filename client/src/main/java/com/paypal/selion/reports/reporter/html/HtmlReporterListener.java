@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -90,8 +90,8 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
     private Map<Integer, String> statusMap = new HashMap<Integer, String>();
 
     public HtmlReporterListener() {
-        // Lets register this listener with the ListenerManager
-        ListenerManager.registerListener(new ListenerInfo(this.getClass(), ENABLE_HTML_REPORTER_LISTENER));
+        // Register this listener with the ListenerManager; disabled by default when not defined in VM argument.
+        ListenerManager.registerListener(new ListenerInfo(this.getClass(), ENABLE_HTML_REPORTER_LISTENER, false));
 
         ve = new VelocityEngine();
 

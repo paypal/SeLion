@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -83,12 +83,15 @@ public class ReportMap<V> {
     private List<BaseReport<V>> constructReport(int iTypeOfReport) {
         logger.entering(iTypeOfReport);
         List<BaseReport<V>> lb = new ArrayList<BaseReport<V>>();
+        @SuppressWarnings("rawtypes")
         BaseReport b;
         for (String indReport : this.reportData.keySet()) {
             if (iTypeOfReport == 0) {
                 b = new SummaryReport(indReport);
-            } else {
+            } else if (1 == iTypeOfReport) {
                 b = new DetailsReport(indReport);
+            } else {
+                b = new TestOutputReport(indReport);
             }
 
             b.setLstEntities(this.reportData.get(indReport));

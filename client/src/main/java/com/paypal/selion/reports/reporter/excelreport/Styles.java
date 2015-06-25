@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,11 +25,11 @@ import org.apache.poi.hssf.util.HSSFColor;
 /**
  * Creates different styles applied to different cells in the ExcelSheet
  */
-public final class Styles {
+final class Styles {
 
     private static HSSFWorkbook wb1;
-    private static HSSFCellStyle headingStyle, subHeading1Style, subHeading2Style, thinBorderStyle,
-            styleBorderThinCenter, hyperLinkStyle;
+    private static HSSFCellStyle headingStyle, subHeading1Style, subHeading2Style, subHeading2StyleThinBorder,
+            thinBorderStyle, styleBorderThinCenter, styleBorderThinLeftTop, hyperLinkStyle;
 
     private Styles() {
         // Utility class. So hide the constructor
@@ -77,12 +77,21 @@ public final class Styles {
                 HSSFCellStyle.ALIGN_CENTER));
         setSubHeading2Style(setAllBorders(HSSFCellStyle.BORDER_MEDIUM, getSubHeading2Style()));
 
+        setSubHeading2StyleThinBorder(createCustomStyle(createCustomFont(HSSFColor.BROWN.index, HSSFFont.U_NONE),
+                HSSFCellStyle.ALIGN_LEFT));
+        setSubHeading2StyleThinBorder(setAllBorders(HSSFCellStyle.BORDER_THIN, getSubHeading2StyleThinBorder()));
+
         setThinBorderStyle(wb.createCellStyle());
         setThinBorderStyle(setAllBorders(HSSFCellStyle.BORDER_THIN, getThinBorderStyle()));
 
         setStyleBorderThinCenter(wb.createCellStyle());
         setStyleBorderThinCenter(setAllBorders(HSSFCellStyle.BORDER_THIN, getStyleBorderThinCenter()));
         getStyleBorderThinCenter().setAlignment(HSSFCellStyle.ALIGN_CENTER);
+
+        setStyleBorderThinLeftTop(wb.createCellStyle());
+        setStyleBorderThinLeftTop(setAllBorders(HSSFCellStyle.BORDER_THIN, getStyleBorderThinLeftTop()));
+        getStyleBorderThinLeftTop().setAlignment(HSSFCellStyle.ALIGN_LEFT);
+        getStyleBorderThinLeftTop().setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
 
         setHyperLinkStyle(wb.createCellStyle());
         setHyperLinkStyle(setAllBorders(HSSFCellStyle.BORDER_THIN, getHyperLinkStyle()));
@@ -95,7 +104,7 @@ public final class Styles {
         return headingStyle;
     }
 
-    public static void setHeadingStyle(HSSFCellStyle headingStyle) {
+    private static void setHeadingStyle(HSSFCellStyle headingStyle) {
         Styles.headingStyle = headingStyle;
     }
 
@@ -103,31 +112,72 @@ public final class Styles {
         return subHeading2Style;
     }
 
-    public static void setSubHeading2Style(HSSFCellStyle subHeading2Style) {
+    private static void setSubHeading2Style(HSSFCellStyle subHeading2Style) {
         Styles.subHeading2Style = subHeading2Style;
     }
 
+    /**
+     * Cell Style used by the Test Output worksheet.
+     * 
+     * @return HSSF supported cell style.
+     */
+    public static HSSFCellStyle getSubHeading2StyleThinBorder() {
+        return subHeading2StyleThinBorder;
+    }
+
+    private static void setSubHeading2StyleThinBorder(HSSFCellStyle style) {
+        Styles.subHeading2StyleThinBorder = style;
+    }
+
+    /**
+     * Cell Style used by the Summary worksheets viz. TestSummary and Detailed Groupwise Summary.
+     * 
+     * @return HSSF supported cell style.
+     */
     public static HSSFCellStyle getStyleBorderThinCenter() {
         return styleBorderThinCenter;
     }
 
-    public static void setStyleBorderThinCenter(HSSFCellStyle styleBorderThinCenter) {
+    private static void setStyleBorderThinCenter(HSSFCellStyle styleBorderThinCenter) {
         Styles.styleBorderThinCenter = styleBorderThinCenter;
     }
 
+    /**
+     * Cell style used by the Detailed worksheets viz. TestCasewise Report and Failure List.
+     * 
+     * @return HSSF supported cell style.
+     */
+    public static HSSFCellStyle getStyleBorderThinLeftTop() {
+        return styleBorderThinLeftTop;
+    }
+
+    private static void setStyleBorderThinLeftTop(HSSFCellStyle styleBorderThinLeftTop) {
+        Styles.styleBorderThinLeftTop = styleBorderThinLeftTop;
+    }
+
+    /**
+     * Cell style used for values like owner of run, current datetime on the TestSummary sheet.
+     * 
+     * @return HSSF supported cell style.
+     */
     public static HSSFCellStyle getThinBorderStyle() {
         return thinBorderStyle;
     }
 
-    public static void setThinBorderStyle(HSSFCellStyle thinBorderStyle) {
+    private static void setThinBorderStyle(HSSFCellStyle thinBorderStyle) {
         Styles.thinBorderStyle = thinBorderStyle;
     }
 
+    /**
+     * Cell style used for cells that contain a hyperlink.
+     * 
+     * @return HSSF supported cell style.
+     */
     public static HSSFCellStyle getHyperLinkStyle() {
         return hyperLinkStyle;
     }
 
-    public static void setHyperLinkStyle(HSSFCellStyle hyperLinkStyle) {
+    private static void setHyperLinkStyle(HSSFCellStyle hyperLinkStyle) {
         Styles.hyperLinkStyle = hyperLinkStyle;
     }
 }

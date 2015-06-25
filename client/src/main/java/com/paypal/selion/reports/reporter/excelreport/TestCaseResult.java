@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,11 +18,16 @@ package com.paypal.selion.reports.reporter.excelreport;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 
+import com.paypal.selion.internal.reports.model.BaseLog;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -40,11 +45,11 @@ public class TestCaseResult implements Comparable<TestCaseResult> {
     private String testDescription;
     private List<String> sGroup;
     private long durationTaken;
-    private ArrayList<String> sSSMsg;
-    private String sSSLink;
+    private List<String> sSSMsg;
     private int iStatus;
 
     public static final String NA = "NA";
+    public static final String NEWLINE = "\n";
     private static String sOutputDir;
 
     public static void setOutputDirectory(String outputDirectory) {
@@ -59,7 +64,6 @@ public class TestCaseResult implements Comparable<TestCaseResult> {
         this.lstError = new ArrayList<String>();
         this.testDescription = null;
         this.sGroup = new ArrayList<String>();
-        this.sSSLink = null;
         this.sSSMsg = new ArrayList<String>();
 
     }
@@ -91,16 +95,69 @@ public class TestCaseResult implements Comparable<TestCaseResult> {
             this.setGroup(Arrays.asList(singleMethod.getGroups()));
         }
 
-        this.sSSLink = "file:" + File.separator + File.separator + sOutputDir + File.separator + "html"
-                + File.separator + singleMethod.getId() + ".html";
+        this.sSSMsg = makeContentForLinksColumn(iTestResult);
 
         // if failed, then add error details
         if (iStatus == ITestResult.FAILURE) {
-            lstError.add(iTestResult.getThrowable().toString());
+            String stacktrace = StringUtils.substringBetween(ExceptionUtils.getStackTrace(iTestResult.getThrowable()),
+                    NEWLINE, "\tat sun.reflect");
+            stacktrace = StringUtils
+                    .defaultString(stacktrace, ExceptionUtils.getStackTrace(iTestResult.getThrowable()));
+            lstError.add(iTestResult.getThrowable().toString() + NEWLINE + stacktrace.replace("\t", "\t\t"));
             String defectMsg = TestCaseErrors.getInstance().debugError(iTestResult.getThrowable());
             lstDefectMsg.add(defectMsg == null ? "Assert Failed or Script error" : defectMsg);
         }
         logger.exiting();
+    }
+
+    /*
+     * Generates a list of textual content of the test output that includes test parameters, screenshot file, page
+     * source file and other custom message logged in TestNG output for the given test result.
+     * 
+     * @return Test Output in List of string.
+     */
+    private List<String> makeContentForLinksColumn(ITestResult result) {
+        List<String> fileLinks = new LinkedList<String>();
+        Object[] parameters = result.getParameters();
+        boolean hasParameters = parameters != null && parameters.length > 0;
+        List<String> msgs = Reporter.getOutput(result);
+        boolean hasReporterOutput = msgs.size() > 0;
+        Throwable exception = result.getThrowable();
+        boolean hasThrowable = exception != null;
+
+        if (hasReporterOutput || hasThrowable) {
+            if (hasParameters) {
+                fileLinks.add("parameters:");
+                for (int i = 0; i < parameters.length; i++) {
+                    Object p = parameters[i];
+                    String paramAsString = "null";
+                    if (p != null) {
+                        paramAsString = p.toString() + "(" + p.getClass().getSimpleName() + ")";
+                    }
+                    fileLinks.add(paramAsString);
+                }
+            }
+
+            for (String line : msgs) {
+                BaseLog logLine = new BaseLog(line);
+                if (logLine.getScreen() != null) {
+                    fileLinks.add("screen capture: file:" + File.separator + File.separator + sOutputDir
+                            + File.separator + logLine.getScreenURL());
+                }
+
+                if ((logLine.getHref() != null) && (logLine.getHref().length() > 1)) {
+                    fileLinks.add("page source: file:" + File.separator + File.separator + sOutputDir + File.separator
+                            + logLine.getHref());
+                    fileLinks.add("page URL: " + logLine.getLocation());
+                }
+                if ((logLine.getMsg() != null) && !logLine.getMsg().isEmpty()) {
+                    fileLinks.add("message: " + logLine.getMsg());
+                }
+            }
+
+        }
+
+        return fileLinks;
     }
 
     public void setClassName(String className) {
@@ -159,12 +216,8 @@ public class TestCaseResult implements Comparable<TestCaseResult> {
         return this.durationTaken;
     }
 
-    public ArrayList<String> getssmsg() {
+    public List<String> getssmsg() {
         return this.sSSMsg;
-    }
-
-    public String getsslink() {
-        return this.sSSLink;
     }
 
     public int getStatus() {
