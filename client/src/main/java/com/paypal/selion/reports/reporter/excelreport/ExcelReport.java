@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,10 +15,12 @@
 
 package com.paypal.selion.reports.reporter.excelreport;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -43,8 +46,8 @@ import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.xml.XmlSuite;
 
+import com.google.common.base.Preconditions;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.reports.reporter.html.ReportDataGenerator;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -52,13 +55,14 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * 
  * <br>
  * Add this class as listener to generate an ExcelReport for a suite run after the SoftAssertCapabilities file. </br>
- * Implements the IReporter interface to fetch data from TestNG. Depends on BFReporter to generate links based data
+ * Implements the IReporter interface to fetch data from TestNG.
  */
 @SuppressWarnings("unchecked")
 public class ExcelReport implements IReporter {
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
     private HSSFWorkbook wb;
+    private String reportFileName = "Excel_Report.xls";
 
     private List<SummarizedData> lSuites = new ArrayList<SummarizedData>();
     private List<SummarizedData> lTests = new ArrayList<SummarizedData>();
@@ -70,6 +74,7 @@ public class ExcelReport implements IReporter {
     private List<List<String>> tcPassedData = new ArrayList<List<String>>();
     private List<List<String>> tcSkippedData = new ArrayList<List<String>>();
     private List<List<String>> tcDefectData = new ArrayList<List<String>>();
+    private List<List<String>> tcOutputData = new ArrayList<List<String>>();
 
     private Map<String, SummarizedData> mpGroupClassData = new HashMap<String, SummarizedData>();
 
@@ -85,8 +90,8 @@ public class ExcelReport implements IReporter {
             logger.log(Level.INFO, "Generating ExcelReport");
         }
 
-        ReportDataGenerator.initReportData(suites);
         TestCaseResult.setOutputDirectory(sOpDirectory);
+
         // Generate data to suit excel report.
         this.generateSummaryData(suites);
         this.generateTCBasedData(allTestsResults);
@@ -95,9 +100,15 @@ public class ExcelReport implements IReporter {
         this.createExcelReport();
 
         // Render the report
-        File outputFile = new File(sOpDirectory + "/Excel_Report.xls");
+        Path p = Paths.get(sOpDirectory, reportFileName);
+
         try {
-            FileOutputStream fOut = new FileOutputStream(outputFile);
+            Path opDirectory = Paths.get(sOpDirectory);
+            if (!Files.exists(opDirectory)) {
+                Files.createDirectories(Paths.get(sOpDirectory));
+            }
+
+            FileOutputStream fOut = new FileOutputStream(p.toFile());
             wb.write(fOut);
             fOut.flush();
         } catch (FileNotFoundException e) {
@@ -105,9 +116,20 @@ public class ExcelReport implements IReporter {
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
+
         if (logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, "Excel File Created @ " + outputFile.getAbsolutePath());
+            logger.log(Level.INFO, "Excel File Created @ " + p.toAbsolutePath().toString());
         }
+    }
+
+    /*
+     * Sets the output file name for the Excel Report. The file should have 'xls' extension.
+     * 
+     * @param fileName The file name without any path.
+     */
+    public void setExcelFileName(String fileName) {
+        Preconditions.checkArgument(StringUtils.endsWith(fileName, ".xls"), "Excel file name must end with '.xls'.");
+        reportFileName = fileName;
     }
 
     /**
@@ -127,7 +149,7 @@ public class ExcelReport implements IReporter {
         this.createReportMap();
 
         // Render reports in the Workbook
-        for (ReportMap rm : fullReportMap) {
+        for (@SuppressWarnings("rawtypes") ReportMap rm : fullReportMap) {
             List<BaseReport<?>> allReports = rm.getGeneratedReport();
             allReports.iterator().next().generateRep(this.wb, rm.getName(), rm.getGeneratedReport());
         }
@@ -193,7 +215,7 @@ public class ExcelReport implements IReporter {
 
         SummarizedData naGroupData = new SummarizedData();
         naGroupData.setsName(TestCaseResult.NA);
-        groupsClone.add(naGroupData);
+        groupsClone.add(naGroupData); 
         subReportMap = new LinkedHashMap<String, List<SummarizedData>>();
         for (SummarizedData group : groupsClone) {
 
@@ -232,8 +254,16 @@ public class ExcelReport implements IReporter {
         BaseReport<List<String>> bR = (BaseReport<List<String>>) fullReportMap.get(fullReportMap.size() - 1)
                 .getGeneratedReport().iterator().next();
         List<String> lsTitles = Arrays.asList(new String[] { "Class Name", "Method/Testcase id", "Test Description",
-                "Group[s]", "Time taken", "Link", "Error Message", "Error Details" });
+                "Group[s]", "Time taken", "Output Logs", "Error Message", "Error Details" });
         bR.setColTitles(lsTitles);
+        
+        // TestCase Output Details Report
+        Map<String, List<List<String>>> fifthTestOutputSubReportMap = new LinkedHashMap<String, List<List<String>>>();
+        fifthTestOutputSubReportMap.put("Test Output", tcOutputData);
+
+        ReportMap<List<String>> fifthReportSheet = new ReportMap<List<String>>(ReportSheetNames.TESTOUTPUTDETAILSREPORT.getName(),
+                fifthTestOutputSubReportMap, 2);
+        fullReportMap.add(fifthReportSheet);
         logger.exiting();
     }
 
@@ -359,6 +389,7 @@ public class ExcelReport implements IReporter {
         logger.entering(allTestsList);
         SummarizedData tempClass = null, tempGroupClass = null;
         Map<String, SummarizedData> mpClassData = new HashMap<String, SummarizedData>();
+        int outputSheetRowCounter = 3;
 
         for (TestCaseResult tcResult : allTestsList) {
 
@@ -402,32 +433,41 @@ public class ExcelReport implements IReporter {
             str.add(tcResult.getTestDesc());
             str.add(tcResult.getGroup().toString());
             str.add(String.valueOf(tcResult.getDurationTaken()));
-            str.add(tcResult.getsslink());
+            str.add("'" + ReportSheetNames.TESTOUTPUTDETAILSREPORT.getName() + "'!B" + Integer.toString(outputSheetRowCounter));
+            
+            List<String> outputStr = new ArrayList<String>();
+            outputStr.add("Class Name:" + tcResult.getClassName());
+            outputStr.add("Method/Testcase id:" + tcResult.getMethodName());
+            outputStr.addAll(tcResult.getssmsg());
 
             // Based on status, incrementing class count and adding str to correct
             // list for TC detailed report
             switch (tcResult.getStatus()) {
-            case ITestResult.FAILURE: {
-                tcFailedData.add(str);
-                // For failed cases adding data for defect description sheet
-                for (int iErrorCount = 0; iErrorCount < tcResult.getError().size(); iErrorCount++) {
-                    List<String> tmpList = new ArrayList<String>();
-                    tmpList.addAll(0, str);
-                    tmpList.add(tcResult.getDefect().get(iErrorCount));
-                    tmpList.add(tcResult.getError().get(iErrorCount));
-                    tcDefectData.add(tmpList);
+                case ITestResult.FAILURE: {
+                    tcFailedData.add(str);
+                    // For failed cases adding data for defect description sheet
+                    for (int iErrorCount = 0; iErrorCount < tcResult.getError().size(); iErrorCount++) {
+                        List<String> tmpList = new ArrayList<String>();
+                        tmpList.addAll(0, str);
+                        tmpList.add(tcResult.getDefect().get(iErrorCount));
+                        tmpList.add(tcResult.getError().get(iErrorCount));
+                        outputStr.add("Stacktrace:" + tcResult.getError().get(iErrorCount));
+                        tcDefectData.add(tmpList);
+                    }
+                    break;
                 }
-                break;
+                case ITestResult.SUCCESS: {
+                    tcPassedData.add(str);
+                    break;
+                }
+                case ITestResult.SKIP: {
+                    tcSkippedData.add(str);
+                    break;
+                }
             }
-            case ITestResult.SUCCESS: {
-                tcPassedData.add(str);
-                break;
-            }
-            case ITestResult.SKIP: {
-                tcSkippedData.add(str);
-                break;
-            }
-            }
+            tcOutputData.add(outputStr);
+            outputSheetRowCounter = outputSheetRowCounter + 1 + outputStr.size();
+
             tempClass.incrementCount(tcResult.getStatus());
             // Add to the total runtime of the class
             tempClass.setlRuntime(tempClass.getlRuntime() + tcResult.getDurationTaken());

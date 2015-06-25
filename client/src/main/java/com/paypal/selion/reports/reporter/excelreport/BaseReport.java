@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -77,7 +77,7 @@ public abstract class BaseReport<T> {
         return this.getColTitles();
     }
 
-    public List<T> getLstEntities() {
+    protected List<T> getLstEntities() {
         return lstData;
     }
 
@@ -111,14 +111,17 @@ public abstract class BaseReport<T> {
         logger.entering(new Object[] { sheet, rowNum, iColStart, style });
         HSSFRow row = sheet.createRow(rowNum);
         HSSFCell newCell;
-        int iColEnd = this.getColTitles().size() + iColStart - 1;
-        sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, iColStart, iColEnd));
 
+        int iColEnd = (this.getColTitles().size() > 0) ? (this.getColTitles().size() + iColStart - 1)
+                : (iColStart + 1);
+
+        sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, iColStart, iColEnd));
         for (int iTempCol = iColStart; iTempCol <= iColEnd; iTempCol++) {
             newCell = row.createCell(iTempCol);
             newCell.setCellStyle(style);
             newCell.setCellValue(this.sReportName);
         }
+
         logger.exiting();
     }
 

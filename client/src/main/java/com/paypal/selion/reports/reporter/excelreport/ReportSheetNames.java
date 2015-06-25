@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -29,7 +29,8 @@ public enum ReportSheetNames {
     GROUPSUMMARYREPORT("Detailed Groupwise Summary", new ArrayList<String>()),
     TESTCASEREPORT("TestCasewise Report", Arrays.asList(new String[] { "Failed TC List", "Passed TC List", 
             "Skipped TC List" })), 
-    DEFECTREPORT("Failure List", Arrays.asList(new String[] { "Defect Summary" }));
+    DEFECTREPORT("Failure List", Arrays.asList(new String[] { "Defect Summary" })),
+    TESTOUTPUTDETAILSREPORT("Test Output", Arrays.asList("Test Output"));
 
     private String sRepName;
     private List<String> lsSubReportNames;
