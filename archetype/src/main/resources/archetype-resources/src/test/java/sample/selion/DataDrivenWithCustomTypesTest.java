@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,20 +15,22 @@
 
 package ${package}.sample.selion;
 
-import com.paypal.selion.platform.dataprovider.DefaultCustomType;
-import com.paypal.selion.platform.dataprovider.SimpleExcelDataProvider;
+import static org.testng.Assert.assertTrue;
 
-import ${package}.sample.dataobjects.Country;
-import ${package}.sample.dataobjects.CustomData;
+import java.io.IOException;
+import java.lang.reflect.Method;
 
 import org.testng.Reporter;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-
-import static org.testng.Assert.assertTrue;
+import com.paypal.selion.platform.dataprovider.DataProviderFactory;
+import com.paypal.selion.platform.dataprovider.DataResource;
+import com.paypal.selion.platform.dataprovider.ExcelDataProvider;
+import com.paypal.selion.platform.dataprovider.impl.DefaultCustomType;
+import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
+import ${package}.sample.dataobjects.Country;
+import ${package}.sample.dataobjects.CustomData;
 
 /**
  * This test class demonstrates how to use SeLion's data driven support abilities and read test data from 
@@ -39,9 +41,8 @@ public class DataDrivenWithCustomTypesTest {
     @DataProvider(name = "simpleReader")
     public Object[][] setupExcelDataProvider () throws IOException, NoSuchMethodException {
         //Lets first initialize the data provider and specify the file from which data is to be read from.
-        SimpleExcelDataProvider
-            dataProvider =
-            new SimpleExcelDataProvider("src/test/resources/testdata/MyDataFile.xls");
+        DataResource resource = new FileSystemResource("src/test/resources/testdata/MyDataFile.xls", CustomData.class);
+        ExcelDataProvider dataProvider = (ExcelDataProvider) DataProviderFactory.getDataProvider(resource);
         //Since we now would like to use a custom data type that is known only to our test project and
         //since SeLion has no idea about it, lets tell the excel data provider as to how should it
         //work with our custom type (enum in this case), but passing a custom type object wherein
@@ -56,7 +57,7 @@ public class DataDrivenWithCustomTypesTest {
 
         //Now we specify the sheet from which we need the excel data provider to read values from
         //by passing it a dummy object whose class name matches with the worksheet name .
-        return dataProvider.getAllExcelRows(new CustomData());
+        return dataProvider.getAllData();
     }
 
     @Test(dataProvider = "simpleReader")

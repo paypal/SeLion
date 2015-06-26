@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,28 +15,30 @@
 
 package ${package}.sample.selion;
 
-import com.paypal.selion.platform.dataprovider.FileSystemResource;
-import com.paypal.selion.platform.dataprovider.YamlDataProvider;
-import ${package}.sample.dataobjects.AddressInformation;
-import ${package}.sample.dataobjects.AreaCode;
-import ${package}.sample.dataobjects.BankInformation;
-import ${package}.sample.dataobjects.UserInformation;
-
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.paypal.selion.platform.dataprovider.DataProviderFactory;
+import com.paypal.selion.platform.dataprovider.DataResource;
+import com.paypal.selion.platform.dataprovider.SeLionDataProvider;
+import com.paypal.selion.platform.dataprovider.impl.DataProviderHelper;
+import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
+import ${package}.sample.dataobjects.AddressInformation;
+import ${package}.sample.dataobjects.AreaCode;
+import ${package}.sample.dataobjects.BankInformation;
+import ${package}.sample.dataobjects.UserInformation;
 
 /**
  * In this sample we will see how can SeLion be used for running data driven tests wherein the data for the data driven
@@ -46,11 +48,10 @@ import static org.testng.Assert.assertTrue;
  */
 public class YamlPoweredDataDrivenTest {
 
-    private static final String pathName = "src/test/resources/testdata/";
-    private static String documentSeparatedUsers = "DocumentSeparatedUsers.yaml";
-    private static String list = "List.yaml";
-    private static String listOfUsers = "ListOfUsers.yaml";
-    private static String associativeArrayOfUsers = "AssociativeArrayOfUsers.yaml";
+    private static String documentSeparatedUsers = "src/test/resources/testdata/DocumentSeparatedUsers.yaml";
+    private static String list = "src/test/resources/testdata/List.yaml";
+    private static String listOfUsers = "src/test/resources/testdata/ListOfUsers.yaml";
+    private static String associativeArrayOfUsers = "src/test/resources/testdata/AssociativeArrayOfUsers.yaml";
     private static UserInformation user1 = new UserInformation();
     private static UserInformation user2 = new UserInformation();
     private static UserInformation user3 = new UserInformation();
@@ -147,8 +148,9 @@ public class YamlPoweredDataDrivenTest {
 
     @Test
     public void howToGetAllDataFromDocuments() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(documentSeparatedUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getAllData();
         List<String> fetchedNames = getUserNames(allUsers);
         String[] expectedNames = new String[] { "Nemo", "Rambo", "Shifu", "Simba", null, "Simba" };
         assertEquals(fetchedNames.toArray(), expectedNames);
@@ -156,8 +158,9 @@ public class YamlPoweredDataDrivenTest {
 
     @Test
     public void howToGetAllDataFromMap() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(associativeArrayOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getAllData();
         List<String> fetchedNames = getUserNames(allUsers);
         String[] expectedNames = { "Nemo", "Rambo", "Shifu", "Simba", null };
         assertEquals(fetchedNames.toArray(), expectedNames);
@@ -165,8 +168,9 @@ public class YamlPoweredDataDrivenTest {
 
     @Test
     public void howToGetAllDataFromList() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(listOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getAllData();
         List<String> fetchedNames = getUserNames(allUsers);
         String[] expectedNames = { "Nemo", "Rambo", "Shifu", "Simba", null, "Simba" };
         assertEquals(fetchedNames.toArray(), expectedNames);
@@ -174,8 +178,11 @@ public class YamlPoweredDataDrivenTest {
 
     @Test
     public void howToGetAllDataFromTaggedList() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, "UserTaggedList.yaml", UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(
+                "src/test/resources/testdata/UserTaggedList.yaml",
+                UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getAllData();
         List<String> fetchedNames = getUserNames(allUsers);
         String[] expectedNames = { "Nemo", "Rambo", "Shifu", "Simba", null, "Simba" };
         assertEquals(fetchedNames.toArray(), expectedNames);
@@ -183,8 +190,9 @@ public class YamlPoweredDataDrivenTest {
 
     @Test
     public void howToGetAllDataFromStringList() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, list);
-        Object[][] allStrings = YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(list);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allStrings = dataProvider.getAllData();
         List<String> fetchedStrings = transferStringDataIntoList(allStrings);
         String[] expectedStrings = { "string1", "string2", "string3" };
         assertEquals(fetchedStrings.toArray(), expectedStrings);
@@ -192,8 +200,9 @@ public class YamlPoweredDataDrivenTest {
 
     @Test
     public void howToGetAllDataAsHashtable() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, UserInformation.class);
-        Hashtable<String, Object> allUsers = YamlDataProvider.getDataAsHashtable(resource);
+        FileSystemResource resource = new FileSystemResource(associativeArrayOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Hashtable<String, Object> allUsers = dataProvider.getDataAsHashtable();
         // Keys cannot be repeated in a map, so only expecting one "Simba"
         assertTrue(((UserInformation) allUsers.get("tom")).getName().equals("Nemo"));
         assertTrue(((UserInformation) allUsers.get("1")).getName().equals("Rambo"));
@@ -203,48 +212,54 @@ public class YamlPoweredDataDrivenTest {
 
     @Test
     public void howToGetDataByASingleKey() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getDataByKeys(resource, new String[] { "tom" });
+        FileSystemResource resource = new FileSystemResource(associativeArrayOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getDataByKeys(new String[] { "tom" });
         List<String> fetchedNames = getUserNames(allUsers);
         assertEquals(fetchedNames.toArray(), new String[] { "Nemo" });
     }
 
     @Test
     public void howToGetDataByMultipleKeys() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getDataByKeys(resource, new String[] { "tom", "Shifu" });
+        FileSystemResource resource = new FileSystemResource(associativeArrayOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getDataByKeys(new String[] { "tom", "Shifu" });
         List<String> fetchedNames = getUserNames(allUsers);
         assertEquals(fetchedNames.toArray(), new String[] { "Nemo", "Shifu" });
     }
 
     @Test
     public void howToGetDataByASingleIndex() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "1");
+        FileSystemResource resource = new FileSystemResource(associativeArrayOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getDataByIndex("1");
         List<String> fetchedNames = getUserNames(allUsers);
         assertEquals(fetchedNames.toArray(), new String[] { "Nemo" });
     }
 
     @Test
     public void howToGetDataByMultipleIndexes() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "2,3");
+        FileSystemResource resource = new FileSystemResource(documentSeparatedUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getDataByIndex("2,3");
         List<String> fetchedNames = getUserNames(allUsers);
         assertEquals(fetchedNames.toArray(), new String[] { "Rambo", "Shifu" });
     }
 
     @Test
     public void howToGetDataByARangeOfIndexes() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "1-2");
+        FileSystemResource resource = new FileSystemResource(documentSeparatedUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getDataByIndex("1-2");
         List<String> fetchedNames = getUserNames(allUsers);
         assertEquals(fetchedNames.toArray(), new String[] { "Nemo", "Rambo" });
     }
 
     @Test
     public void howToGetDataByIndividualAndRangeOfIndexes() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, UserInformation.class);
-        Object[][] allUsers = YamlDataProvider.getDataByIndex(resource, "1-2,4,6");
+        FileSystemResource resource = new FileSystemResource(documentSeparatedUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        Object[][] allUsers = dataProvider.getDataByIndex("1-2,4,6");
         List<String> fetchedNames = getUserNames(allUsers);
         assertEquals(fetchedNames.toArray(), new String[] { "Nemo", "Rambo", "Simba", "Simba" });
     }
@@ -268,98 +283,118 @@ public class YamlPoweredDataDrivenTest {
 
     @DataProvider(name = "getList")
     public static Object[][] dataProviderGetList() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, list);
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(list);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getListOfLists")
     public static Object[][] dataProviderGetListOfLists() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, "ListOfLists.yaml");
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource("src/test/resources/testdata/ListOfLists.yaml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getListOfAssociativeArrays")
     public static Object[][] dataProviderGetListOfAssociativeArrays() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, "ListOfAssociativeArrays.yaml");
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource("src/test/resources/testdata/ListOfAssociativeArrays.yaml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getListOfUsers")
     public static Object[][] dataProviderGetListOfUsers() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, listOfUsers);
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(listOfUsers);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArray")
     public static Object[][] dataProviderGetAssociativeArray() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, "AssociativeArrays.yaml");
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource("src/test/resources/testdata/AssociativeArrays.yaml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArrayOfLists")
     public static Object[][] dataProviderGetAssociativeArrayOfLists() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, "AssociativeArrayOfLists.yaml");
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(
+                "src/test/resources/testdata/AssociativeArrayOfLists.yaml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArrayOfArrays")
     public static Object[][] dataProviderGetAssociativeArrayOfArrays() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, "AssociativeArraysOfArrays.yaml");
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(
+                "src/test/resources/testdata/AssociativeArraysOfArrays.yaml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArrayOfUsers")
     public static Object[][] dataProviderGetAssociativeArrayOfUsers() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers);
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(associativeArrayOfUsers);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDocumentSeparatedLists")
     public static Object[][] dataProviderGetDocumentSeparatedLists() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, "DocumentSeparatedLists.yaml");
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(
+                "src/test/resources/testdata/DocumentSeparatedLists.yaml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDocumentSeparatedAssociativeArrays")
     public static Object[][] dataProviderGetDocumentSeparatedAssociativeArrays() throws IOException
              {
-        FileSystemResource resource = new FileSystemResource(pathName, "DocumentSeparatedAssociativeArrays.yaml");
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(
+                "src/test/resources/testdata/DocumentSeparatedAssociativeArrays.yaml");
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDocumentSeparatedUsers")
     public static Object[][] dataProviderGetDocumentSeparatedUsers() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, documentSeparatedUsers, UserInformation.class);
-        return YamlDataProvider.getAllData(resource);
+        FileSystemResource resource = new FileSystemResource(documentSeparatedUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDataByKeys")
     public static Object[][] dataProviderGetDataByKeys() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, associativeArrayOfUsers, UserInformation.class);
-        return YamlDataProvider.getDataByKeys(resource, new String[] { "tom", "1", "Shifu", "3" });
+        FileSystemResource resource = new FileSystemResource(associativeArrayOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getDataByKeys(new String[] { "tom", "1", "Shifu", "3" });
     }
 
     @DataProvider(name = "getDataByIndex")
     public static Object[][] dataProviderGetDataByIndex() throws IOException {
-        FileSystemResource resource = new FileSystemResource(pathName, listOfUsers, UserInformation.class);
-        return YamlDataProvider.getDataByIndex(resource, "1-6");
+        FileSystemResource resource = new FileSystemResource(listOfUsers, UserInformation.class);
+        SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
+        return dataProvider.getDataByIndex("1-6");
     }
 
     @DataProvider(name = "getMultipleStringArguments")
     public static Object[][] dataProviderGetMultipleStringArguments() throws IOException {
-        List<FileSystemResource> yamlResources = Arrays.asList(new FileSystemResource(pathName, list),
-                new FileSystemResource(pathName, list));
+        List<DataResource> yamlResources = new ArrayList<>();
+        yamlResources.add(new FileSystemResource(list));
+        yamlResources.add(new FileSystemResource("src/test/resources/testdata/list.yaml"));
 
-        return YamlDataProvider.getAllDataMultipleArgs(yamlResources);
+        return DataProviderHelper.getAllDataMultipleArgsFromYAML(yamlResources);
     }
 
     @DataProvider(name = "getMultipleArguments")
     public static Object[][] dataProviderGetMultipleArguments() throws IOException {
-        List<FileSystemResource> yamlResources = new ArrayList<>();
-        yamlResources.add(new FileSystemResource(pathName, documentSeparatedUsers, UserInformation.class));
-        yamlResources.add(new FileSystemResource(pathName, "DocumentSeparatedUsers.yaml", UserInformation.class));
+        List<DataResource> yamlResources = new ArrayList<>();
+        yamlResources.add(new FileSystemResource(documentSeparatedUsers, UserInformation.class));
+        yamlResources.add(new FileSystemResource(
+                "src/test/resources/testdata/DocumentSeparatedUsers.yaml",
+                UserInformation.class));
 
-        return YamlDataProvider.getAllDataMultipleArgs(yamlResources);
+        return DataProviderHelper.getAllDataMultipleArgsFromYAML(yamlResources);
 
     }
 
