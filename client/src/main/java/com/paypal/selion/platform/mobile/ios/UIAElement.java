@@ -17,7 +17,7 @@ package com.paypal.selion.platform.mobile.ios;
 
 import java.util.EnumMap;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
