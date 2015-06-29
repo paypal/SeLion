@@ -15,14 +15,8 @@
 
 package com.paypal.selion.platform.grid;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
 import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang.StringUtils;
-import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 
@@ -38,75 +32,48 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local ios driver node.
  */
 @Beta
-class LocalIOSNode extends BaseNode implements LocalServerComponent {
+final class LocalIOSNode extends AbstractBaseLocalServerComponent implements LocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalIOSNode instance;
-    private int port;
-    private boolean isRunning = false;
-    private IOSDriverJarSpawner launcher;
-    private ExecutorService executor;
-    private String host;
 
-    static synchronized LocalIOSNode getInstance() {
+    static synchronized final LocalServerComponent getSingleton() {
         if (instance == null) {
-            instance = new LocalIOSNode();
-
-            instance.host = new NetworkUtils().getIpOfLoopBackIp4();
-            instance.port = PortProber.findFreePort();
-
-            try {
-                String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-                String hub = String.format("http://%s:%s/grid/register", instance.host, hubPort);
-
-                String[] folder = new String[] { "", "" };
-                String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
-                if (StringUtils.isNotEmpty(autFolder)) {
-                    folder = new String[] { "-folder", autFolder };
-                }
-
-                ProcessLauncherOptions processOptions = new ProcessLauncherOptions().setContinuouslyRestart(false)
-                        .setIncludeJarsInPresentWorkingDir(false).setIncludeParentProcessClassPath(false)
-                        .setIncludeJavaSystemProperties(false);
-
-                instance.launcher = new IOSDriverJarSpawner(new String[] {
-                        "-port", String.valueOf(instance.port),
-                        "-host", instance.host,
-                        "-hub", hub,
-                        folder[0], folder[1],
-                        "-sessionTimeout", checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT) },
-                        processOptions);
-
-            } catch (IllegalArgumentException e) {
-                // TODO refactor #checkAndValidateParameters to fallback on the default value rather than throw this
-                // exception
-            }
+            instance = new LocalIOSNode().getLocalServerComponent();
         }
         return instance;
     }
 
-    public synchronized void shutdown() {
-        if (!getInstance().isRunning) {
-            return;
-        }
+    synchronized final LocalIOSNode getLocalServerComponent() {
+        if (instance == null) {
+            instance = new LocalIOSNode();
 
-        if (getInstance().executor != null) {
-            try {
-                getInstance().launcher.shutdown();
-                getInstance().executor.shutdownNow();
-                while (!getInstance().executor.isTerminated()) {
-                    getInstance().executor.awaitTermination(30, TimeUnit.SECONDS);
-                }
-                getInstance().isRunning = false;
-                LOGGER.info("Local ios-driver node has been stopped");
-            } catch (Exception e) { // NOSONAR
-                String errorMsg = "An error occurred while attempting to shut down the ios-driver local Node.";
-                LOGGER.log(Level.SEVERE, errorMsg, e);
+            instance.setHost(new NetworkUtils().getIpOfLoopBackIp4());
+            instance.setPort(PortProber.findFreePort());
+
+            String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
+            String hub = String.format("http://%s:%s/grid/register", instance.getHost(), hubPort);
+
+            String[] folder = new String[] { "", "" };
+            String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
+            if (StringUtils.isNotEmpty(autFolder)) {
+                folder = new String[] { "-folder", autFolder };
             }
+
+            ProcessLauncherOptions processOptions = new ProcessLauncherOptions().setContinuouslyRestart(false)
+                    .setIncludeJarsInPresentWorkingDir(false).setIncludeParentProcessClassPath(false)
+                    .setIncludeJavaSystemProperties(false).setFileDownloadCheckTimeStampOnInvocation(false)
+                    .setFileDownloadCleanupOnInvocation(false);
+
+            instance.setLauncher(new IOSDriverJarSpawner(new String[] { "-port", String.valueOf(instance.getPort()),
+                    "-host", instance.getHost(), "-hub", hub, folder[0], folder[1], "-sessionTimeout",
+                    Config.getConfigProperty(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT) }, processOptions));
         }
+        return instance;
     }
 
-    public synchronized void boot(AbstractTestSession testSession) {
-        LOGGER.entering(testSession.getPlatform());
+    @Override
+    public void boot(AbstractTestSession testSession) {
+        LOGGER.entering(testSession);
 
         // don't allow non-mobile test case to spawn the ios-driver node
         if ((testSession.getPlatform() != WebDriverPlatform.IOS) && !(testSession instanceof MobileTestSession)) {
@@ -117,22 +84,35 @@ class LocalIOSNode extends BaseNode implements LocalServerComponent {
             return;
         }
 
-        if (getInstance().isRunning) {
+        try {
+            validateConfiguredOptions();
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+
+        if (instance == null) {
+            getLocalServerComponent();
+        }
+        super.boot(testSession);
+        LOGGER.exiting();
+    }
+
+    @Override
+    public void shutdown() {
+        LOGGER.entering();
+        if (instance == null) {
             LOGGER.exiting();
             return;
         }
+        super.shutdown();
+        LOGGER.exiting();
+    }
 
-        getInstance().executor = Executors.newSingleThreadExecutor();
-        Runnable worker = getInstance().launcher;
+    private void validateConfiguredOptions() {
         try {
-            getInstance().executor.execute(worker);
-            waitForNodeToComeUp(getPort(),
-                    "Unable to contact Node after 60 seconds.");
-            getInstance().isRunning = true;
-            LOGGER.log(Level.INFO, "Local ios-driver Node spawned");
-        } catch (IllegalStateException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            throw new GridException("Failed to start a local ios-driver Node", e);
+            checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
+        } catch (Exception e) { // NO SONAR
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
     }
 
@@ -144,37 +124,30 @@ class LocalIOSNode extends BaseNode implements LocalServerComponent {
      * @param configProperty
      *            a SeLion {@link ConfigProperty} to validate
      */
-    private static String checkAndValidateParameters(ConfigProperty configProperty) {
+    private void checkAndValidateParameters(ConfigProperty configProperty) {
         LOGGER.entering(configProperty);
-        String validatedValue = null;
-        switch (configProperty) {
-        case MOBILE_DRIVER_SESSION_TIMEOUT:
-            try {
+        try {
+            switch (configProperty) {
+            case MOBILE_DRIVER_SESSION_TIMEOUT: {
                 int receivedValue = Config.getIntConfigProperty(configProperty) / 1000;
                 if (receivedValue == 0) {
                     String errorMessage = "Insufficient value received for configuration property "
                             + configProperty.getName() + ", probably value is less than 1000 milliseconds.";
                     throw new IllegalArgumentException(errorMessage);
-                } else {
-                    validatedValue = String.valueOf(receivedValue);
                 }
-            } catch (ConversionException exe) {
-                String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
-                        + ", probably not an integer for milliseconds.";
-                throw new IllegalArgumentException(errorMessage, exe);
+                break;
             }
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "Invalid ios-server configuration received for validation, configuration property = "
-                            + configProperty.getName());
+            default: {
+                throw new IllegalArgumentException(
+                        "Invalid ios-server configuration received for validation, configuration property = "
+                                + configProperty.getName());
+            }
+            }
+        } catch (ConversionException exe) {
+            String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
+                    + ", probably not an integer for milliseconds.";
+            throw new IllegalArgumentException(errorMessage, exe);
         }
-        LOGGER.exiting(validatedValue);
-        return validatedValue;
+        LOGGER.exiting();
     }
-
-    int getPort() {
-        return getInstance().port;
-    }
-
 }

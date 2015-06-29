@@ -57,10 +57,27 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
     private DefaultExecuteResultHandler handler;
     private ProcessLauncherOptions processLauncherOptions;
 
-    /**
+    /*
      * The command line to run
      */
-    CommandLine cmdLine;
+    private CommandLine cmdLine;
+
+    /**
+     * @return the command line to invoke as a {@link CommandLine}
+     */
+    CommandLine getCommandLine() {
+        return cmdLine;
+    }
+
+    /**
+     * Set the command line to invoke
+     * 
+     * @param commandLine
+     *            a {@link CommandLine} to invoke
+     */
+    void setCommandLine(CommandLine commandLine) {
+        this.cmdLine = commandLine;
+    }
 
     /**
      * Init with the supplied dash arguments and the default {@link ProcessLauncherOptions}
@@ -82,6 +99,9 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
         InstallHelper.firstTimeSetup();
 
+        List<String> commands = new LinkedList<String>(Arrays.asList(args));
+        setCommands(commands);
+
         commands = new LinkedList<String>(Arrays.asList(args));
         processLauncherOptions.setContinuouslyRestart(!Arrays.asList(args).contains(SELION_NOCONTINUOS_ARG));
         // setup the SeLion config if the user want to override the default
@@ -100,8 +120,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      * @throws IOException
      * @throws InterruptedException
      */
-    final void continuouslyRestart(long interval, boolean squelch) throws IOException,
-            InterruptedException {
+    final void continuouslyRestart(long interval, boolean squelch) throws IOException, InterruptedException {
         LOGGER.entering(new Object[] { interval, squelch });
 
         startProcess(squelch);
@@ -148,9 +167,14 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     @Override
     public void run() {
-        addJVMShutDownHook();
         try {
-            FileDownloader.checkForDownloads(getType());
+            if (!isInitialized()) {
+                addJVMShutDownHook();
+                FileDownloader.checkForDownloads(getType());
+                setInitialized(true);
+            }
+
+            List<String> commands = getCommands();
 
             if (commands.contains(HELP_ARG) || commands.contains("-h")) {
                 startProcess(true);
@@ -163,8 +187,14 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
                 long interval = ConfigParser.parse().getLong("restartCycle", 60000L);
                 LOGGER.info("Restart cycle will check every " + interval + " ms");
                 while (true) {
+                    if (!isInitialized()) {
+                        FileDownloader.checkForDownloads(getType(),
+                                processLauncherOptions.isFileDownloadCheckTimeStampOnInvocation(),
+                                processLauncherOptions.isFileDownladCleanupOnInvocation());
+                    }
                     continuouslyRestart(interval, false);
                     LOGGER.info("Application exited. Restarting it.");
+                    setInitialized(false);
                 }
             }
 
@@ -179,14 +209,15 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     abstract void printUsageInfo();
 
-
-    
     /**
      * Shuts down the instance represented by this launcher. First, attempts to call the {@link NodeForceRestartServlet}
      * which must be available on the instance. Otherwise, the {@link ProcessHandlerFactory} is used as a fallback
      * mechanism.
      */
     public void shutdown() {
+        if (!isRunning()) {
+            return;
+        }
         // TODO This might not be needed anymore
         // clean up any stale processes
         try {
@@ -294,8 +325,8 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         }
 
         // include the WebDriver binary paths for Chromedriver, IEDriver, and PhantomJs
-        if (processLauncherOptions.isIncludeWebDriverBinaryPaths() &&
-                (getType().equals(InstanceType.SELENIUM_NODE) || getType().equals(InstanceType.SELENIUM_STANDALONE))) {
+        if (processLauncherOptions.isIncludeWebDriverBinaryPaths()
+                && (getType().equals(InstanceType.SELENIUM_NODE) || getType().equals(InstanceType.SELENIUM_STANDALONE))) {
             // Make sure we setup WebDriver binary paths for the child process
             if (SystemUtils.IS_OS_WINDOWS && System.getProperty("webdriver.ie.driver") == null) {
                 args.add("-Dwebdriver.ie.driver=" + SeLionConstants.SELION_HOME_DIR + SeLionConstants.IE_DRIVER);

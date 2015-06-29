@@ -22,13 +22,19 @@ import com.paypal.selion.grid.RunnableLauncher.InstanceType;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import static com.paypal.selion.pojos.SeLionGridConstants.*;
@@ -39,12 +45,52 @@ import static com.paypal.selion.pojos.SeLionGridConstants.*;
 abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AbstractBaseLauncher.class);
+
+    /*
+     * Whether this launcher has been initialized.
+     */
+    private boolean initialized = false;
+
+    /*
+     * the current instance type
+     */
     private InstanceType type;
 
-    /**
+    /*
      * The received launcher commands
      */
-    List<String> commands;
+    private List<String> commands;
+
+    public final boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * Set this launchers to initialized
+     * 
+     * @param state
+     *            the new state
+     */
+    final void setInitialized(boolean state) {
+        this.initialized = state;
+    }
+
+    /**
+     * Set this launchers commands
+     * 
+     * @param commands
+     *            the launcher commands
+     */
+    final void setCommands(List<String> commands) {
+        this.commands = commands;
+    }
+
+    /**
+     * @return the launcher commands
+     */
+    final List<String> getCommands() {
+        return commands;
+    }
 
     /**
      * Get the {@link InstanceType} this launcher represents. If type has not been established by a previous call to
@@ -279,6 +325,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     private String getSeleniumConfigFilePath() {
         LOGGER.entering();
         String result = null;
+        InstanceType type = getType();
         if (type.equals(InstanceType.SELENIUM_NODE)) {
             if (commands.contains("-nodeConfig")) {
                 result = commands.get(commands.indexOf("-nodeConfig" + 1));
@@ -302,6 +349,60 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
         // not specified
         LOGGER.exiting(result);
         return result;
+    }
+
+    public boolean isRunning() {
+        LOGGER.entering();
+        if (!isInitialized()) {
+            return false;
+        }
+
+        boolean result = false;
+        InstanceType type = getType();
+        try {
+            if (type.equals(InstanceType.SELENIUM_HUB)) {
+                String url = String.format("http://%s:%d/grid/api/hub", getHost(), getPort());
+                URLConnection hubConnection = new URL(url).openConnection();
+
+                JsonObject fullResponse = extractObject(hubConnection.getInputStream());
+                if (fullResponse != null) {
+                    result = fullResponse.get("success").getAsBoolean();
+                }
+            } else {
+                // instance is a node or a standalone -- this should work for both
+                String endPoint = String.format("http://%s:%d/wd/hub/status", getHost(), getPort());
+                URLConnection hubConnection = new URL(endPoint).openConnection();
+
+                JsonObject fullResponse = extractObject(hubConnection.getInputStream());
+                if (fullResponse != null) {
+                    result = (fullResponse.get("status").getAsInt() == 0);
+                }
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+
+        LOGGER.exiting(result);
+        return result;
+    }
+
+    JsonObject extractObject(InputStream inputStream) throws IOException {
+        LOGGER.entering();
+        StringBuffer information = new StringBuffer();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(inputStream));
+            String eachLine;
+            while ((eachLine = br.readLine()) != null) {
+                information.append(eachLine);
+            }
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(br);
+        }
+
+        LOGGER.exiting(information.toString());
+        return new JsonParser().parse(information.toString()).getAsJsonObject();
     }
 
 }

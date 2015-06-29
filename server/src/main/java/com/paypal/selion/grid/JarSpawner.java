@@ -36,7 +36,7 @@ import com.paypal.selion.logging.SeLionGridLogger;
  * fashion. Health checks for the {@link SeLionGridLauncher} process are configurable via the property 'restartCycle' in
  * the SeLion Grid JSON config file.
  */
-public class JarSpawner extends AbstractBaseProcessLauncher {
+public final class JarSpawner extends AbstractBaseProcessLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(JarSpawner.class);
     private static final String SEPARATOR = "\n----------------------------------\n";
@@ -45,14 +45,14 @@ public class JarSpawner extends AbstractBaseProcessLauncher {
         init(args);
     }
 
-    public static void main(String[] args) {
+    public static final void main(String[] args) {
         new JarSpawner(args).run();
     }
 
     /**
      * Print the usage of SeLion Grid jar
      */
-    void printUsageInfo() {
+    final void printUsageInfo() {
         StringBuffer usage = new StringBuffer();
         usage.append(SEPARATOR);
         usage.append("To use SeLion Grid");
@@ -85,8 +85,8 @@ public class JarSpawner extends AbstractBaseProcessLauncher {
     }
 
     @Override
-    void startProcess(boolean squelch) throws IOException {
-        cmdLine = createJavaCommandForChildProcess();
+    final void startProcess(boolean squelch) throws IOException {
+        setCommandLine(createJavaCommandForChildProcess());
         super.startProcess(squelch);
     }
 
@@ -142,7 +142,7 @@ public class JarSpawner extends AbstractBaseProcessLauncher {
     }
 
     @Override
-    public void shutdown() {
+    public final void shutdown() {
         // TODO NodeForceRestartServlet isn't a good option for Hubs
         // TODO Make process handler consider PID files
         CloseableHttpClient client = HttpClientBuilder.create().build();

@@ -16,10 +16,22 @@
 package com.paypal.selion.grid;
 
 /**
- * Interface which extends {@link Runnable} and adds a shutdown method
+ * Interface which extends {@link Runnable} and adds some additional methods
  */
-interface RunnableLauncher extends Runnable {
+public interface RunnableLauncher extends Runnable {
+    /**
+     * Shutdown the launcher
+     */
     abstract void shutdown();
+    /**
+     * @return Whether the launcher has completed it's initialization phase which includes downloading dependencies.
+     */ 
+    abstract boolean isInitialized();
+    
+    /**
+     * @return Whether the {@link InstanceType} for this launcher is up and running.
+     */
+    abstract boolean isRunning();
 
     /**
      * Maps to a type of WebDriver instance.

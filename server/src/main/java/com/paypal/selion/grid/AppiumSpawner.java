@@ -29,7 +29,7 @@ import com.paypal.selion.utils.ConfigParser;
  * A {@link MobileProcessLauncher} for appium.
  */
 @Beta
-public class AppiumSpawner extends MobileProcessLauncher {
+public final class AppiumSpawner extends MobileProcessLauncher {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AppiumSpawner.class);
 
     public AppiumSpawner(String[] args) {
@@ -37,20 +37,20 @@ public class AppiumSpawner extends MobileProcessLauncher {
         setType(InstanceType.APPIUM);
     }
 
-    public static void main(String[] args) {
+    public static final void main(String[] args) {
         new AppiumSpawner(args).run();
     }
 
     @Override
-    public void run() {
+    public final void run() {
         defaultArgs = ConfigParser.parse().getJsonObject("appiumDefaultArgs",
                 new JsonParser().parse("{}").getAsJsonObject());
         super.run();
     }
 
     @Override
-    public void startProcess(boolean squelch) throws IOException {
-        cmdLine = createCommandForChildProcess();
+    public final void startProcess(boolean squelch) throws IOException {
+        setCommandLine(createCommandForChildProcess());
         super.startProcess(squelch);
     }
 

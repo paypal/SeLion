@@ -584,7 +584,7 @@ public final class Config {
         /**
          * Timeout for an execution command, in milliseconds.<br>
          * <br>
-         * Used in SeLion to configure Selenium timeouts/<br>
+         * Used in SeLion to configure Selenium timeouts<br>
          * Default is set to <b>120000</b>
          */
         EXECUTION_TIMEOUT("executionTimeout", "120000", false),

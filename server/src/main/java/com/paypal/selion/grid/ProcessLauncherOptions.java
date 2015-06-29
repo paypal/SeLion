@@ -15,6 +15,40 @@ public final class ProcessLauncherOptions {
     private boolean setupLoggingForJavaSubProcess = true;
     private boolean includeWebDriverBinaryPaths = true;
     private boolean continuousRestart = true;
+    private boolean fileDownloadCleanupOnInvocation = true;
+    private boolean fileDownloadCheckTimeStampOnInvocation = true;
+
+    /**
+     * Enable/Disable clean up of previously downloaded artifacts for subsequent calls to {@link FileDownloader} .
+     * Default: enabled.
+     */
+    public ProcessLauncherOptions setFileDownloadCleanupOnInvocation(boolean val) {
+        fileDownloadCleanupOnInvocation = val;
+        return this;
+    }
+
+    /**
+     * @return the configured state.
+     */
+    public boolean isFileDownladCleanupOnInvocation() {
+        return fileDownloadCleanupOnInvocation;
+    }
+
+    /**
+     * Enable/Disable download.json time stamp check. If enabled, subsequent calls to {@link FileDownloader} will
+     * immediately return if the time stamp is unchanged. Default: enabled.
+     */
+    public ProcessLauncherOptions setFileDownloadCheckTimeStampOnInvocation(boolean val) {
+        fileDownloadCheckTimeStampOnInvocation = val;
+        return this;
+    }
+
+    /**
+     * @return the configured state.
+     */
+    public boolean isFileDownloadCheckTimeStampOnInvocation() {
+        return fileDownloadCheckTimeStampOnInvocation;
+    }
 
     /**
      * Enable/Disable forwarding of current Java System Properties to sub process. Default: enabled.

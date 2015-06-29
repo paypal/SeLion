@@ -15,15 +15,12 @@
 
 package com.paypal.selion.platform.grid;
 
-import static com.paypal.selion.platform.asserts.SeLionAsserts.assertFalse;
-import static com.paypal.selion.platform.asserts.SeLionAsserts.assertNotNull;
-import static com.paypal.selion.platform.asserts.SeLionAsserts.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -48,31 +45,35 @@ public class LocalGridManagerTest {
         try {
             WebTestSession testSession = new WebTestSession();
             LocalGridManager.spawnLocalHub(testSession);
-            assertTrue(getHubStatus(), "The Hub should have started locally");
+            assertTrue(LocalHub.getSingleton().getLauncher().isRunning(), "The Hub should have started locally");
+            assertTrue(LocalNode.getSingleton().getLauncher().isRunning(), "A Node should have started locally");
+
             JsonObject nodeStatus = getNodeStatus();
             assertNotNull(nodeStatus, "The node status should not have been null");
-            assertTrue(nodeStatus.get("success").getAsBoolean(),
-                    "The node should have started properly and hooked itself to the local Grid.");
+            // assertTrue(nodeStatus.get("success").getAsBoolean(),
+            // "The node should have started properly and hooked itself to the local Grid.");
             assertTrue(nodeStatus.get("msg").getAsString().contains(msg), "The node should have been found");
         } finally {
             LocalGridManager.shutDownHub();
             Config.setConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY, runLocally);
-            assertFalse(getHubStatus(), "The Hub should have been shutDown");
+            assertFalse(LocalHub.getSingleton().getLauncher().isRunning(), "The Hub should have been shutDown");
         }
     }
 
-    public JsonObject getNodeStatus() throws MalformedURLException, IOException {
+    private JsonObject getNodeStatus() throws MalformedURLException, IOException {
+        String url = String.format("http://%s:%d/grid/api/proxy?id=http://%s:%d", LocalHub.getSingleton().getHost(),
+                LocalHub.getSingleton().getPort(), LocalNode.getSingleton().getHost(), 
+                LocalNode.getSingleton().getPort());
+
+        StringBuffer actualResponse = new StringBuffer();
         JsonObject nodeStatus = null;
-        String port = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-        String url = "http://127.0.0.1:" + port + "/grid/api/proxy?id=http://127.0.0.1:"
-                + LocalNode.getInstance().getPort();
         URLConnection connection = null;
         InputStream isr = null;
-        BufferedReader br = new BufferedReader(new InputStreamReader(isr));
+        BufferedReader br = null;
         try {
             connection = new URL(url).openConnection();
             isr = connection.getInputStream();
-            StringBuffer actualResponse = new StringBuffer();
+            br = new BufferedReader(new InputStreamReader(isr));
             String eachLine = null;
             while ((eachLine = br.readLine()) != null) {
                 actualResponse.append(eachLine);
@@ -86,34 +87,5 @@ public class LocalGridManagerTest {
         }
         return nodeStatus;
 
-    }
-
-    public boolean getHubStatus() throws MalformedURLException, IOException {
-        boolean hubStatus = false;
-        String port = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-        String url = "http://127.0.0.1:" + port + "/grid/api/hub";
-        URLConnection hubConnection = new URL(url).openConnection();
-        InputStream isr = hubConnection.getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(isr));
-        try {
-            StringBuffer information = new StringBuffer();
-            String eachLine = null;
-            while ((eachLine = br.readLine()) != null) {
-                information.append(eachLine);
-            }
-            JsonObject fullResponse = new JsonParser().parse(information.toString()).getAsJsonObject();
-            if (fullResponse != null) {
-                hubStatus = fullResponse.get("success").getAsBoolean();
-            }
-        } catch (ConnectException e) {
-            e.printStackTrace();
-            hubStatus = false;
-        }
-        finally {
-            isr.close();
-            br.close();
-        }
-
-        return hubStatus;
     }
 }

@@ -56,7 +56,8 @@ final class FileDownloader {
     }
 
     /**
-     * This method is used to cleanup all the files already downloaded
+     * Cleanup all the files already downloaded within the same JVM process. Automatically called internally by
+     * {@link #checkForDownloads(InstanceType)} and {@link #checkForDownloads(InstanceType, boolean)}.
      */
     static void cleanup() {
         LOGGER.entering();
@@ -71,19 +72,55 @@ final class FileDownloader {
     }
 
     /**
-     * This method will check whether the download.json file got modified and download all the files in download.json
+     * Check download.json and download files based on {@link InstanceType}. Returns without downloading if it detects a
+     * last modified time stamp is unchanged from the last check. Cleans up previous downloads from the same JVM
+     * 
+     * @param instanceType
+     *            the {@link InstanceType} to process downloads for
      */
     static void checkForDownloads(InstanceType instanceType) {
+        checkForDownloads(instanceType, true, true);
+    }
+
+    /**
+     * Check download.json and download files based on {@link InstanceType}. Cleans up previous downloads from the same
+     * JVM
+     * 
+     * @param instanceType
+     *            the {@link InstanceType} to process downloads for
+     * @param checkTimeStamp
+     *            whether to check the last modified time stamp of the downlaod.json file. Returns immediately on
+     *            subsequent calls if <code>true</code> and last modified is unchanged.
+     */
+    static void checkForDownloads(InstanceType instanceType, boolean checkTimeStamp) {
+        checkForDownloads(instanceType, checkTimeStamp, true);
+    }
+
+    /**
+     * Check download.json and download files based on {@link InstanceType}
+     * 
+     * @param instanceType
+     *            the {@link InstanceType} to process downlaods for
+     * @param checkTimeStamp
+     *            whether to check the last modified time stamp of the downlaod.json file. Returns immediately on
+     *            subsequent calls if <code>true</code> and last modified is unchanged.
+     * @param cleanup
+     *            whether to cleanup previous downloads from a previous call to
+     *            {@link #checkForDownloads(InstanceType, boolean, boolean)} in the same JVM
+     */
+    static void checkForDownloads(InstanceType instanceType, boolean checkTimeStamp, boolean cleanup) {
         LOGGER.entering();
 
         File downloadFile = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
 
-        if (lastModifiedTime == downloadFile.lastModified()) {
+        if ((lastModifiedTime == downloadFile.lastModified()) && checkTimeStamp) {
             return;
         }
         lastModifiedTime = downloadFile.lastModified();
 
-        cleanup();
+        if (cleanup) {
+            cleanup();
+        }
 
         LOGGER.info("Current Platform: " + Platform.getCurrent());
         List<URLChecksumEntity> artifactDetails = new ArrayList<ArtifactDetails.URLChecksumEntity>();
@@ -175,12 +212,12 @@ final class FileDownloader {
     }
 
     /**
-     * this method is used to download a file from the specified url
+     * Download a file from the specified url
      *
      * @param artifactUrl
-     *            - url of the file to be downloaded.
+     *            url of the file to be downloaded.
      * @param checksum
-     *            - checksum to downloaded file.
+     *            checksum to downloaded file.
      * @return the downloaded file path.
      */
     static String downloadFile(String artifactUrl, String checksum) {
@@ -199,7 +236,7 @@ final class FileDownloader {
         LOGGER.exiting(result);
         return result;
     }
-    
+
     private static boolean isValidSHA1(String s) {
         return s.matches("[a-fA-F0-9]{40}");
     }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,6 +15,8 @@
 
 package com.paypal.selion.platform.grid;
 
+import com.paypal.selion.grid.RunnableLauncher;
+
 /**
  * This interface represents the common functionality possessed by a hub or node.
  */
@@ -23,7 +25,7 @@ interface LocalServerComponent {
      * Brings up the node/hub based on the platform.
      * 
      * @param testSession
-     *            A {@link AbstractTestSession} that represents the test session.
+     *            an {@link AbstractTestSession} that represents the test session.
      */
     void boot(AbstractTestSession testSession);
 
@@ -31,4 +33,19 @@ interface LocalServerComponent {
      * Shuts down the node/hub running locally.
      */
     void shutdown();
+
+    /**
+     * @return the port used for the {@link LocalServerComponent}
+     */
+    int getPort();
+
+    /**
+     * @return the host used for the {@link LocalServerComponent}
+     */
+    String getHost();
+
+    /**
+     * @return the {@link RunnableLauncher} used for the {@link LocalServerComponent}o
+     */
+    RunnableLauncher getLauncher();
 }

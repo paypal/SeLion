@@ -25,6 +25,7 @@ import org.apache.commons.lang.SystemUtils;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -33,10 +34,9 @@ import java.util.logging.Level;
  * <strong>Important</strong>: selenium-server and it's dependencies MUST be included in the caller's CLASSPATH before
  * calling {@link #run()} on this object
  */
-public class ThreadedLauncher extends AbstractBaseLauncher {
+public final class ThreadedLauncher extends AbstractBaseLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ThreadedLauncher.class);
-    private static volatile boolean intialized = false;
     private SeLionGridLauncher launcher;
 
     /**
@@ -47,11 +47,10 @@ public class ThreadedLauncher extends AbstractBaseLauncher {
      *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      */
     public ThreadedLauncher(String[] args) {
-        if (!intialized) {
-            InstallHelper.firstTimeSetup();
-        }
+        InstallHelper.firstTimeSetup();
 
-        commands = new LinkedList<String>(Arrays.asList(args));
+        List<String> commands = new LinkedList<String>(Arrays.asList(args));
+        setCommands(commands);
 
         // setup the SeLion config if the user want to override the default
         if (commands.contains(SELION_CONFIG_ARG)) {
@@ -60,13 +59,13 @@ public class ThreadedLauncher extends AbstractBaseLauncher {
     }
 
     @Override
-    public void run() {
+    public final void run() {
         LOGGER.entering();
         try {
             InstanceType type = getType();
-            if (!intialized) {
-                FileDownloader.checkForDownloads(type);
-                intialized = true;
+            if (!isInitialized()) {
+                FileDownloader.checkForDownloads(type, false, false);
+                setInitialized(true);
             }
 
             // Setup the WebDriver binary paths
@@ -89,7 +88,7 @@ public class ThreadedLauncher extends AbstractBaseLauncher {
             // Update the program arguments with any defaults
             String[] args = getProgramArguments();
 
-            LOGGER.info("Invoking " + SeLionGridLauncher.class.getSimpleName() + " with arguments: "
+            LOGGER.fine("Invoking " + SeLionGridLauncher.class.getSimpleName() + " with arguments: "
                     + Arrays.asList(args).toString());
             launcher = new SeLionGridLauncher();
             launcher.boot(args);
@@ -102,8 +101,12 @@ public class ThreadedLauncher extends AbstractBaseLauncher {
     /**
      * Shutdown the instance. Calls {@link SeLionGridLauncher#shutdown()} for the instance associated with this object.
      */
-    public void shutdown() {
+    public final void shutdown() {
         LOGGER.entering();
+        if (!isRunning()) {
+            return;
+        }
+
         try {
             launcher.shutdown();
         } catch (Exception e) { // NOSONAR

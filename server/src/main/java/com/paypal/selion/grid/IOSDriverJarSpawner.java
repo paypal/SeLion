@@ -32,7 +32,7 @@ import com.paypal.selion.utils.ConfigParser;
  * <strong>org.uiautomation.ios.server.IOSServer</strong>.
  */
 @Beta
-public class IOSDriverJarSpawner extends MobileProcessLauncher {
+public final class IOSDriverJarSpawner extends MobileProcessLauncher {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(IOSDriverJarSpawner.class);
     private String mainClass;
 
@@ -46,12 +46,12 @@ public class IOSDriverJarSpawner extends MobileProcessLauncher {
         setType(InstanceType.IOS_DRIVER);
     }
 
-    public static void main(String[] args) {
+    public static final void main(String[] args) {
         new IOSDriverJarSpawner(args).run();
     }
 
     @Override
-    public void run() {
+    public final void run() {
         if (!SystemUtils.IS_OS_MAC_OSX) {
             throw new UnsupportedOperationException("ios-driver requires OS X");
         }
@@ -67,8 +67,8 @@ public class IOSDriverJarSpawner extends MobileProcessLauncher {
     }
 
     @Override
-    void startProcess(boolean squelch) throws IOException {
-        cmdLine = createJavaCommandForChildProcess();
+    final void startProcess(boolean squelch) throws IOException {
+        setCommandLine(createJavaCommandForChildProcess());
         super.startProcess(squelch);
     }
 

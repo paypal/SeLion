@@ -31,7 +31,7 @@ import com.paypal.selion.utils.ConfigParser;
  * <strong>io.selendroid.standalone.SelendroidLauncher</strong>.
  */
 @Beta
-public class SelendroidJarSpawner extends MobileProcessLauncher {
+public final class SelendroidJarSpawner extends MobileProcessLauncher {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SelendroidJarSpawner.class);
     private String mainClass;
 
@@ -45,12 +45,12 @@ public class SelendroidJarSpawner extends MobileProcessLauncher {
         setType(InstanceType.SELENDROID);
     }
 
-    public static void main(String[] args) {
+    public static final void main(String[] args) {
         new SelendroidJarSpawner(args).run();
     }
 
     @Override
-    public void run() {
+    public final void run() {
         mainClass = ConfigParser.parse()
                 .getString("selendroidMainClass", "io.selendroid.standalone.SelendroidLauncher");
         defaultArgs = ConfigParser.parse().getJsonObject("selendroidDefaultArgs",
@@ -64,8 +64,8 @@ public class SelendroidJarSpawner extends MobileProcessLauncher {
     }
 
     @Override
-    void startProcess(boolean squelch) throws IOException {
-        cmdLine = createJavaCommandForChildProcess();
+    final void startProcess(boolean squelch) throws IOException {
+        setCommandLine(createJavaCommandForChildProcess());
         super.startProcess(squelch);
     }
 
