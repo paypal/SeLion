@@ -215,11 +215,13 @@ public abstract class AbstractTestSession {
             // If driver.quit() throws some exception then rest of the listeners will not get invoked, To handle this
             // we are gobbling this exception
             try {
-                // let's attempt to capture a screenshot if there was a failure from Selenium or SeLion PageObject.
+                // let's attempt to capture a screenshot in case of failure from Selenium or SeLion PageObject
+                // or when there was an assertion failure.
                 // That way a user can see the how the page looked like when a test failed.
                 ITestResult testResult = Reporter.getCurrentTestResult();
                 if (testResult.getStatus() == ITestResult.FAILURE
-                        && testResult.getThrowable() instanceof WebDriverException) {
+                        && (testResult.getThrowable() instanceof WebDriverException ||
+                            testResult.getThrowable() instanceof AssertionError)) {
                     warnUserOfTestFailures(testResult);
                 }
                 Grid.driver().quit();
@@ -243,6 +245,7 @@ public abstract class AbstractTestSession {
             errMsg = "Test Failure screenshot";
         }
         SeLionReporter.log(errMsg, true, true);
+        logger.info("Please review the test report for the screenshot at the time of failure.");
     }
 
     public final boolean hasDependentMethods() {

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -41,7 +41,7 @@ public class DetailsReport extends BaseReport<List<String>> {
     public DetailsReport() {
         super();
         String[] sTitles = new String[] { "Class Name", "Method/Testcase id", "Test Description", "Group[s]",
-                "Time taken", "Link" };
+                "Time taken", "Output Logs" };
 
         List<String> colTitles = new ArrayList<String>();
         for (String title : sTitles) {
@@ -63,30 +63,31 @@ public class DetailsReport extends BaseReport<List<String>> {
     int fillData(HSSFSheet sheet, int rowNum, HSSFCellStyle style) {
         logger.entering(new Object[] { sheet, rowNum, style });
         HSSFRow row;
+        // Overriding style for Details Reports, as these do not have counts.
+        // The details content are the test logs and stack trace.
+        style = Styles.getStyleBorderThinLeftTop();
 
         for (List<String> dataString : this.getLstEntities()) {
             row = sheet.createRow(rowNum);
             int iColNum = iStartColNum;
             for (int i = 0; i < this.getColTitles().size(); i++) {
                 row.createCell(iColNum);
-                row.getCell(iColNum).setCellStyle(Styles.getThinBorderStyle());
+                row.getCell(iColNum).setCellStyle(style);
 
                 // Displaying time after converting to minutes
-                if (this.getColTitles().get(i).toString().contains("Time")) {
+                if (this.getColTitles().get(i).contains("Time")) {
                     Long timeInMilli = Long.parseLong(dataString.get(i));
                     row.getCell(iColNum).setCellValue(formatMilliSecondTime(timeInMilli));
                 }
-                // Change style and datatype for link columns to make data appear and behave
-                // as links
-                else if (this.getColTitles().get(i).toString().contains("Link")) {
-
-                    Hyperlink link = new HSSFHyperlink(Hyperlink.LINK_URL);
+                else if (this.getColTitles().get(i).contains("Output Logs")) {
+                    Hyperlink link = new HSSFHyperlink(Hyperlink.LINK_DOCUMENT);
                     link.setAddress(dataString.get(i));
                     row.getCell(iColNum).setCellStyle(Styles.getHyperLinkStyle());
                     row.getCell(iColNum).setCellValue("Link to details");
                     row.getCell(iColNum).setHyperlink(link);
-
-                } else {
+                }
+                else {
+                    row.getCell(iColNum).setCellStyle(style);
                     row.getCell(iColNum).setCellValue(dataString.get(i));
                 }
                 sheet.autoSizeColumn(iColNum++);
