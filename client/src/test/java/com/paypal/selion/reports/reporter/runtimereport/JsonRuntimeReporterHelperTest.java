@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,12 +18,15 @@ package com.paypal.selion.reports.reporter.runtimereport;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
+import java.util.List;
+
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class JsonRuntimeReporterHelperTest {
 
@@ -46,10 +49,11 @@ public class JsonRuntimeReporterHelperTest {
         helper.insertTestMethod(suiteName, testName, packageName, className, result);
         result.setStatus(1);
         helper.insertTestMethod(suiteName, testName, packageName, className, result);
-        JsonArray jsonArray = helper.getCompletedTestContent();
+        List<TestMethodInfo> completedTests = helper.getCompletedTestContent();
 
-        assertEquals(jsonArray.size(), 1);
-        JsonObject jsonObject = (JsonObject) jsonArray.get(0);
+        assertEquals(completedTests.size(), 1);
+        TestMethodInfo testMethod = completedTests.get(0);
+        JsonObject jsonObject = new JsonParser().parse(testMethod.toJson()).getAsJsonObject();;
         assertEquals(jsonObject.get("suite").getAsString(), suiteName);
         assertEquals(jsonObject.get("test").getAsString(), testName);
         assertEquals(jsonObject.get("packageInfo").getAsString(), packageName);

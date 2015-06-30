@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,11 +17,12 @@ package com.paypal.selion.reports.reporter.runtimereport;
 
 import java.io.File;
 
+import org.testng.IInvokedMethod;
+import org.testng.IInvokedMethodListener;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.internal.IResultListener2;
 
 import com.paypal.selion.annotations.DoNotReport;
 import com.paypal.selion.configuration.ListenerInfo;
@@ -33,7 +34,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * RuntimeReporter is a listener which gets invoked when a test method or configuration method starts or completed.
  * 
  */
-public class RuntimeReporterListener implements IResultListener2, ISuiteListener {
+public class RuntimeReporterListener implements IInvokedMethodListener, ISuiteListener {
 
     private String outputDirectory;
     private JsonRuntimeReporterHelper jsonHelper;
@@ -49,96 +50,27 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
     public RuntimeReporterListener() {
-
         // Lets register this listener with the ListenerManager
         ListenerManager.registerListener(new ListenerInfo(this.getClass(), ENABLE_RUNTIME_REPORTER_LISTENER));
 
         jsonHelper = new JsonRuntimeReporterHelper();
     }
 
-    public void onTestStart(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { result });
-
-        if (result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(DoNotReport.class) != null) {
-            return;
-        }
-
-        updateTestDetails(result);
-
-        logger.exiting();
-
-    }
-
-    @Override
-    public void onTestSuccess(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { result });
-
-        if (result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(DoNotReport.class) != null) {
-            return;
-        }
-
-        updateTestDetails(result);
-
-        logger.exiting();
-
-    }
-
-    @Override
-    public void onTestFailure(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { result });
-
-        updateTestDetails(result);
-
-        logger.exiting();
-
-    }
-
-    @Override
-    public void onTestSkipped(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { result });
-
-        if (result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(DoNotReport.class) != null) {
-            return;
-        }
-
-        updateTestDetails(result);
-
-        logger.exiting();
-    }
-
-    public void updateTestDetails(ITestResult result) {
-
+    /**
+     * Update the test results to the JSON helper which will feed the data to HTML and JSON report.
+     * @param result
+     */
+    private void updateTestDetails(ITestResult result) {
         logger.entering(new Object[] { result });
 
         String fullClassName = result.getTestClass().getName();
 
         String className = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
 
-        String packageName = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
+        String packageName = "default";
+        if(fullClassName.contains(".")) {
+            packageName = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
+        }
 
         jsonHelper.insertTestMethod(result.getTestContext().getSuite().getName(), result.getTestContext()
                 .getCurrentXmlTest().getName(), packageName, className, result);
@@ -146,97 +78,23 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
         jsonHelper.writeJSON(outputDirectory, false);
 
         logger.exiting();
-
     }
 
-    @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-
-    }
-
-    @Override
-    public void onStart(ITestContext context) {
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { context });
-        jsonHelper.generateLocalConfigSummary(context.getSuite().getName(), context.getCurrentXmlTest().getName());
-        logger.exiting();
-
-    }
-
-    @Override
-    public void onFinish(ITestContext context) {
-
-    }
-
-    @Override
-    public void onConfigurationSuccess(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { result });
-
-        updateConfigDetails(result);
-
-        logger.exiting();
-
-    }
-
-    @Override
-    public void onConfigurationFailure(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { result });
-
-        updateConfigDetails(result);
-
-        logger.exiting();
-
-    }
-
-    @Override
-    public void onConfigurationSkip(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-        logger.entering(new Object[] { result });
-        updateConfigDetails(result);
-        logger.exiting();
-
-    }
-
-    @Override
-    public void beforeConfiguration(ITestResult result) {
-
-        if (!ListenerManager.executeCurrentMethod(this)) {
-            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
-            return;
-        }
-
-    }
-
-    public void updateConfigDetails(ITestResult result) {
-
+    /**
+     * Update the configuration results to the JSON helper which will feed the data to HTML and JSON report.
+     * @param result
+     */
+    private void updateConfigDetails(ITestResult result) {
         logger.entering(new Object[] { result });
 
         String fullClassName = result.getTestClass().getName();
 
         String className = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
 
-        String packageName = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
+        String packageName = "default";
+        if(fullClassName.contains(".")) {
+            packageName = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
+        }
 
         jsonHelper.insertConfigMethod(result.getTestContext().getSuite().getName(), result.getTestContext()
                 .getCurrentXmlTest().getName(), packageName, className, result);
@@ -244,7 +102,6 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
         jsonHelper.writeJSON(outputDirectory, false);
 
         logger.exiting();
-
     }
 
     @Override
@@ -279,7 +136,51 @@ public class RuntimeReporterListener implements IResultListener2, ISuiteListener
         jsonHelper.writeJSON(outputDirectory, true);
 
         logger.exiting();
+    }
 
+    @Override
+    public void beforeInvocation(IInvokedMethod method, ITestResult result) {
+        if (!ListenerManager.executeCurrentMethod(this)) {
+            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+            return;
+        }
+
+        logger.entering(new Object[] { method, result });
+
+        if(method.isTestMethod()) {
+
+            ITestContext context = result.getTestContext();
+            jsonHelper.generateLocalConfigSummary(context.getSuite().getName(), context.getCurrentXmlTest().getName());
+
+            if (result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(DoNotReport.class) != null) {
+                return;
+            }
+            updateTestDetails(result);
+        } else {
+            updateConfigDetails(result);
+        }
+
+        logger.exiting();
+    }
+
+    @Override
+    public void afterInvocation(IInvokedMethod method, ITestResult result) {
+        if (!ListenerManager.executeCurrentMethod(this)) {
+            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+            return;
+        }
+
+        logger.entering(new Object[] { method, result });
+
+        if (result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(DoNotReport.class) != null) {
+            return;
+        }
+
+        if(method.isTestMethod()) {
+            updateTestDetails(result);
+        }
+
+        logger.exiting();
     }
 
 }

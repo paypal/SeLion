@@ -37,6 +37,7 @@ import com.paypal.selion.internal.grid.SauceLabsHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
+import com.paypal.selion.reports.reporter.runtimereport.JsonRuntimeReporterHelper;
 import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -208,17 +209,16 @@ public abstract class AbstractTestSession {
      */
     public final void closeSession() {
         logger.entering();
+        ITestResult testResult = Reporter.getCurrentTestResult();
 
         if (isStarted() && Grid.driver() != null) {
             new SauceLabsHelper().embedSauceLabsJobUrlToTestReport();
-
             // If driver.quit() throws some exception then rest of the listeners will not get invoked, To handle this
             // we are gobbling this exception
             try {
                 // let's attempt to capture a screenshot in case of failure from Selenium or SeLion PageObject
                 // or when there was an assertion failure.
                 // That way a user can see the how the page looked like when a test failed.
-                ITestResult testResult = Reporter.getCurrentTestResult();
                 if (testResult.getStatus() == ITestResult.FAILURE
                         && (testResult.getThrowable() instanceof WebDriverException ||
                             testResult.getThrowable() instanceof AssertionError)) {
@@ -233,6 +233,7 @@ public abstract class AbstractTestSession {
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
         this.isStarted = false;
+        testResult.setAttribute(JsonRuntimeReporterHelper.IS_COMPLETED, true);
         logger.exiting();
     }
 

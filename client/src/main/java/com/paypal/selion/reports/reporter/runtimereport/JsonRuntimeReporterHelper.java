@@ -56,6 +56,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 public class JsonRuntimeReporterHelper {
 
+    public static final String IS_COMPLETED = "isCompleted";
     private static final int ONE_MINUTE = 60000;
     private static final String AFTER_METHOD = "AfterMethod";
     private static final String AFTER_CLASS = "AfterClass";
@@ -69,6 +70,7 @@ public class JsonRuntimeReporterHelper {
     private static final String BEFORE_SUITE = "BeforeSuite";
     private List<TestMethodInfo> runningTest = new ArrayList<TestMethodInfo>();;
     private List<ConfigMethodInfo> runningConfig = new ArrayList<ConfigMethodInfo>();
+    private List<TestMethodInfo> completedTest = new ArrayList<TestMethodInfo>();
 
     private File jsonCompletedTest;
     private File jsonCompletedConfig;
@@ -136,7 +138,11 @@ public class JsonRuntimeReporterHelper {
 
             json.addProperty("suite", suiteName);
             json.addProperty("test", testName);
-            this.testJsonLocalConfigSummary.add(json);
+            // Sometimes json objects getting null value when data provider parallelism enabled
+            // To solve this added synchronized block
+            synchronized (this) {
+                this.testJsonLocalConfigSummary.add(json);
+            }
         } catch (JsonParseException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ReporterException(e);
@@ -160,7 +166,6 @@ public class JsonRuntimeReporterHelper {
      * @param result
      *            - ITestResult instance of the test method.
      */
-
     public synchronized void insertTestMethod(String suite, String test, String packages, String classname,
             ITestResult result) {
         logger.entering(new Object[] { suite, test, packages, classname, result });
@@ -175,7 +180,7 @@ public class JsonRuntimeReporterHelper {
         for (TestMethodInfo temp : runningTest) {
             if (temp.getResult().getMethod().equals(result.getMethod())) {
                 runningTest.remove(temp);
-                appendFile(jsonCompletedTest, test1.toJson().concat(",\n"));
+                completedTest.add(test1);
                 break;
             }
         }
@@ -278,8 +283,29 @@ public class JsonRuntimeReporterHelper {
         }
         previousTime = currentTime;
 
+        parseCompletedTest();
+
         generateReports(outputDirectory);
 
+        logger.exiting();
+    }
+
+    /**
+     * Parse the list of completed test and write to the completed temp file
+     */
+    private void parseCompletedTest() {
+        logger.entering();
+
+        List<TestMethodInfo> tempCompletedTest = new ArrayList<TestMethodInfo>();
+        for (TestMethodInfo temp : completedTest) {
+            Object isCompleted = temp.getResult().getAttribute(IS_COMPLETED);
+            if(isCompleted != null && (boolean)isCompleted) {
+                appendFile(jsonCompletedTest, temp.toJson().concat(",\n"));
+            } else {
+                tempCompletedTest.add(temp);
+            }
+        }
+        completedTest = tempCompletedTest;
         logger.exiting();
     }
 
@@ -353,6 +379,10 @@ public class JsonRuntimeReporterHelper {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         JsonArray testObjects = loadJSONArray(jsonCompletedTest);
+
+        for (TestMethodInfo temp : completedTest) {
+            testObjects.add(gson.fromJson(temp.toJson(), JsonElement.class));
+        }
 
         for (TestMethodInfo temp : runningTest) {
             testObjects.add(gson.fromJson(temp.toJson(), JsonElement.class));
@@ -461,11 +491,21 @@ public class JsonRuntimeReporterHelper {
         return testObjects;
     }
 
-    public JsonArray getCompletedTestContent() throws JsonParseException {
-        return loadJSONArray(jsonCompletedTest);
+    /**
+     * Get list of test methods.
+     * 
+     * @return A list of {@link TestMethodInfo}.
+     */
+    public List<TestMethodInfo> getCompletedTestContent() {
+        return completedTest;
     }
 
-    public JsonArray getCompletedConfigContent() throws JsonParseException {
+    /**
+     * Get list of configuration methods as a {@link JsonArray}.
+     * 
+     * @return A {@link JsonArray}.
+     */
+    public JsonArray getCompletedConfigContent() {
         return loadJSONArray(jsonCompletedConfig);
     }
 }

@@ -4613,6 +4613,7 @@ a.thumbnail.active {
   padding: 9px;
   color: #2c3e50;
   overflow: auto;
+  word-wrap: break-word;
 }
 .alert {
   padding: 15px;

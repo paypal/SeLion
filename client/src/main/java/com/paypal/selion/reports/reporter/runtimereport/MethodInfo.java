@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -54,6 +54,20 @@ public class MethodInfo {
     private List<LogInfo> logs;
     private transient ITestResult result;
 
+    /**
+     * Constructor.
+     * 
+     * @param suite
+     *            name of the suite
+     * @param test
+     *            name of the test
+     * @param packages
+     *            name of the package without class name
+     * @param classname
+     *            name of the class without package name
+     * @param result
+     *            ITestResult of the method which need to be reported
+     */
     public MethodInfo(String suite, String test, String packages, String classname, ITestResult result) {
 
         this.suite = suite;
@@ -62,6 +76,13 @@ public class MethodInfo {
         this.className = classname;
         this.result = result;
         this.methodName = result.getName();
+    }
+
+    /**
+     * Parse the test results and convert to the MethodInfo fields
+     */
+    private void parseResults() {
+        logger.entering();
 
         if (result.getStatus() == ITestResult.SUCCESS) {
             this.status = "Passed";
@@ -90,10 +111,11 @@ public class MethodInfo {
         }
 
         loadMethodInfo(result);
+
+        logger.exiting();
     }
 
     private void loadMethodInfo(ITestResult result) {
-
         boolean isWebTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(WebTest.class) != null;
         boolean isDeviceTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(MobileTest.class) != null;
 
@@ -130,13 +152,17 @@ public class MethodInfo {
      * @return StackTrace as String
      */
     public String getStackTraceInfo(Throwable aThrowable) {
-
         final Writer localWriter = new StringWriter();
         final PrintWriter printWriter = new PrintWriter(localWriter);
         aThrowable.printStackTrace(printWriter);
         return localWriter.toString();
     }
 
+    /**
+     * Gets the current test result.
+     * 
+     * @return An {@link ITestResult}.
+     */
     public ITestResult getResult() {
         return result;
     }
@@ -148,8 +174,10 @@ public class MethodInfo {
      * @return - JSON string
      */
     public String toJson() {
-
         logger.entering();
+
+        parseResults();
+
         Gson gson = new GsonBuilder().setPrettyPrinting()
                 .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT).create();
         String json = gson.toJson(this);
