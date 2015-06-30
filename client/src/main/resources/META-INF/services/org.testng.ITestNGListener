@@ -3,3 +3,4 @@ com.paypal.selion.platform.asserts.SeLionAssertsListener
 com.paypal.selion.reports.reporter.html.HtmlReporterListener
 com.paypal.selion.reports.reporter.runtimereport.RuntimeReporterListener
 com.paypal.selion.platform.grid.SessionSharingMethodInterceptor
+ com.paypal.selion.reports.reporter.excelreport.ExcelReport

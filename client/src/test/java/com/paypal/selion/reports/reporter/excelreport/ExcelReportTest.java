@@ -32,6 +32,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.testng.ISuite;
 import org.testng.ITestContext;
 import org.testng.SuiteRunner;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.internal.Configuration;
@@ -49,6 +51,23 @@ public class ExcelReportTest {
     private String excelReportFileName = "dummy_excel_test.xls";
     private String strReportsDirectory;
     private Path excelFile;
+    private boolean currentState = false;
+
+    @BeforeGroups(groups = { "excel-report-test" })
+    public void beforeClass() {
+        currentState = (System.getProperty(ExcelReport.ENABLE_EXCEL_REPORTER_LISTENER) != null) ? Boolean
+                .getBoolean(System.getProperty(ExcelReport.ENABLE_EXCEL_REPORTER_LISTENER)) : false;
+        // make sure the listener is enabled.
+        if (!currentState) {
+            System.setProperty(ExcelReport.ENABLE_EXCEL_REPORTER_LISTENER, "true");
+        }
+    }
+
+    @AfterGroups(groups = { "excel-report-test" })
+    public void afterClass() {
+        // allow the listener to return to it's original state
+        System.setProperty(ExcelReport.ENABLE_EXCEL_REPORTER_LISTENER, String.valueOf(currentState));
+    }
 
     @BeforeMethod(groups = { "excel-report-test" })
     public void removeExcelFileBeforeTest(ITestContext context) {

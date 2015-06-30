@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import com.paypal.selion.configuration.ListenerInfo;
+import com.paypal.selion.configuration.ListenerManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -52,14 +54,19 @@ import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * 
- * <br>
  * Add this class as listener to generate an ExcelReport for a suite run after the SoftAssertCapabilities file. </br>
  * Implements the IReporter interface to fetch data from TestNG.
+ *
  */
 @SuppressWarnings("unchecked")
 public class ExcelReport implements IReporter {
     private static SimpleLogger logger = SeLionLogger.getLogger();
+
+    /**
+     * This String constant represents the JVM argument that can be enabled/disabled to enable/disable
+     * {@link ExcelReport}
+     */
+    public static final String ENABLE_EXCEL_REPORTER_LISTENER = "enable.excel.reporter.listener";
 
     private HSSFWorkbook wb;
     private String reportFileName = "Excel_Report.xls";
@@ -80,12 +87,22 @@ public class ExcelReport implements IReporter {
 
     private static List<ReportMap<?>> fullReportMap = new ArrayList<ReportMap<?>>();
 
+    public ExcelReport() {
+        // Register this listener with the ListenerManager; disabled by default when not defined in VM argument.
+        ListenerManager.registerListener(new ListenerInfo(this.getClass(), ENABLE_EXCEL_REPORTER_LISTENER, false));
+    }
+
     /**
      * The first method that gets called when generating the report. Generates data in way the Excel should appear.
      * Creates the Excel Report and writes it to a file.
      */
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String sOpDirectory) {
         logger.entering(new Object[] { xmlSuites, suites, sOpDirectory });
+        if (ListenerManager.executeCurrentMethod(this) == false) {
+            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+            return;
+        }
+
         if (logger.isLoggable(Level.INFO)) {
             logger.log(Level.INFO, "Generating ExcelReport");
         }
