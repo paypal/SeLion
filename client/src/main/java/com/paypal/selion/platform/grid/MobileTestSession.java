@@ -168,7 +168,7 @@ public class MobileTestSession extends AbstractTestSession {
                 if (this.appPath.startsWith(SELION_HUB_STORAGE)) {
                     // parse and construct the absolute url for selion hub storage
                     this.appPath = getSelionHubStorageUrl(this.appPath);
-                } else if (!this.appPath.startsWith(SAUCE_URL)) {
+                } else if (!this.appPath.startsWith(SAUCE_URL) && !StringUtils.startsWithIgnoreCase(appPath, "http")) {
 
                     // construct the absolute url for apps exist in resource folder.
                     Path p = Paths.get(appPath);
