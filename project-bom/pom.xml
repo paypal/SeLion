@@ -56,6 +56,12 @@
                 <version>1.4.01</version>
             </dependency>
 
+            <dependency>
+                <groupId>net.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
+                <version>1.0</version>
+            </dependency>
+
             <!-- WebDriver now by default seems to be attempting to trigger a registration of org.openqa.selenium.phantomjs 
                 .PhantomJSDriver and com.opera.core.systems.OperaDriver. But both these libraries are outside the realms of Selenium/WebDriver. 
                 So adding an explicit dependency on them to ensure that our logs dont show up any INFO level ClassNotFoundException, when 

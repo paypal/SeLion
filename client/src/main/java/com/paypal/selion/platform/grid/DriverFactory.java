@@ -15,11 +15,36 @@
 
 package com.paypal.selion.platform.grid;
 
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.grid.browsercapabilities.DesiredCapabilitiesFactory;
+import com.paypal.selion.platform.html.support.events.ElementEventListener;
+import com.paypal.test.utilities.logging.SimpleLogger;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.selendroid.client.SelendroidCommandExecutor;
 import io.selendroid.client.SelendroidDriver;
+import net.sf.uadetector.OperatingSystem;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
+import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.uiautomation.ios.IOSCapabilities;
+import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,29 +53,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
-
-import net.sf.uadetector.OperatingSystem;
-import net.sf.uadetector.ReadableUserAgent;
-import net.sf.uadetector.UserAgentStringParser;
-import net.sf.uadetector.service.UADetectorServiceFactory;
-
-import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.HttpCommandExecutor;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.uiautomation.ios.IOSCapabilities;
-import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
-
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.configuration.ConfigManager;
-import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.browsercapabilities.DesiredCapabilitiesFactory;
-import com.paypal.selion.platform.html.support.events.ElementEventListener;
-import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * This factory class is responsible for providing the framework with a {@link RemoteWebDriver} instance based on the
@@ -80,12 +82,18 @@ public final class DriverFactory {
         case CHROME:
         case INTERNET_EXPLORER:
         case HTMLUNIT:
-        case IPHONE:
-        case IPAD:
         case OPERA:
         case PHANTOMJS:
         case SAFARI:
-            driver = createDriverInstance(getURL(), capability);
+            if (Config.getBoolConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY)) {
+                driver = LocalDriverFactory.newWebDriver(browser, capability);
+                try {
+                    appendListeners(driver);
+                } catch (Throwable t) {//NOSONAR
+                }
+            } else {
+                driver = createDriverInstance(getURL(), capability);
+            }
             break;
         case GENERIC:
             MobileTestSession mobileSession = Grid.getMobileTestSession();
@@ -108,6 +116,27 @@ public final class DriverFactory {
         }
         printDebugInfoForUser(driver);
         return driver;
+    }
+
+    private static void appendListeners(RemoteWebDriver driver) throws Throwable {
+        List<EventListener> listeners = getSeLionEventListeners();
+        if (listeners.isEmpty()) {
+            return;
+        }
+        CommandExecutor currentExecutor = driver.getCommandExecutor();
+        CommandExecutor newExecutor = new EventFiringCommandExecutor(currentExecutor, listeners);
+        Class clz = findBaseClass(driver.getClass());
+        Method m = clz.getDeclaredMethod("setCommandExecutor", CommandExecutor.class);
+        m.setAccessible(true);
+        MethodHandle mh = MethodHandles.lookup().unreflect(m);
+        mh.invokeExact((RemoteWebDriver) driver, newExecutor);
+    }
+
+    private static Class findBaseClass(Class clazz) {
+        do {
+            clazz = clazz.getSuperclass();
+        } while (clazz != RemoteWebDriver.class || clazz != Object.class);
+        return clazz;
     }
 
     private static AndroidDriver createAppiumAndroidInstance(URL url, DesiredCapabilities capability) {

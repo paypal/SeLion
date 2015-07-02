@@ -34,7 +34,6 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.platform.grid.LocalGridManager;
 
 public class LocalGridManagerTest {
 
@@ -46,7 +45,7 @@ public class LocalGridManagerTest {
         String msg = "proxy found";
         try {
             WebTestSession testSession = new WebTestSession();
-            LocalGridManager.spawnLocalHub(testSession);
+            LocalGridManager.spawnLocalNode(testSession);
             assertTrue(getHubStatus(), "The Hub should have started locally");
             JSONObject nodeStatus = getNodeStatus();
             assertNotNull(nodeStatus, "The node status should not have been null");
@@ -54,7 +53,7 @@ public class LocalGridManagerTest {
                     "The node should have started properly and hooked itself to the local Grid.");
             assertTrue(nodeStatus.getString("msg").contains(msg), "The node should have been found");
         } finally {
-            LocalGridManager.shutDownHub();
+            LocalGridManager.shutDownLocalNode();
             Config.setConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY, runLocally);
             assertFalse(getHubStatus(), "The Hub should have been shutDown");
         }
