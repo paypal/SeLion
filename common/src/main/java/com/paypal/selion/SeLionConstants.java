@@ -46,4 +46,20 @@ public class SeLionConstants {
      * Platform specific executable name for phantomjs
      */
     public static final String PHANTOMJS_DRIVER = SystemUtils.IS_OS_WINDOWS ? "phantomjs.exe" : "phantomjs";
+
+    /**
+     * Selenium system property for defining the location of chrome driver
+     */
+    public static final String WEBDRIVER_CHROME_DRIVER_PROPERTY = "webdriver.chrome.driver";
+    
+    /**
+     * Selenium system property for defining the location of ie driver.
+     */
+    public static final String WEBDRIVER_IE_DRIVER_PROPERTY = "webdriver.ie.driver";
+    
+    /**
+     * Selenium system property for defining the location of phantomjs
+     */
+    public static final String WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY = "phantomjs.binary.path";
+
 }

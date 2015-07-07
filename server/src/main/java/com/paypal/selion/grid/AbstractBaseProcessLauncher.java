@@ -39,8 +39,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
 import com.paypal.selion.SeLionConstants;
+import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.utils.ConfigParser;
 import com.paypal.selion.utils.process.ProcessHandler;
@@ -55,7 +55,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AbstractBaseProcessLauncher.class);
 
     private DefaultExecuteResultHandler handler;
-    private ProcessLauncherOptions processLauncherOptions;
+    private ProcessLauncherOptions launcherOptions;
 
     /*
      * The command line to run
@@ -85,25 +85,27 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      * @param args
      */
     void init(String[] args) {
-        init(args, new ProcessLauncherOptions());
+        init(args, null);
     }
 
     /**
-     * Init with the supplied dash arguments and the supplied additional {@link ProcessLauncherOptions}
+     * Init with the supplied dash arguments and the supplied {@link ProcessLauncherOptions}
      * 
      * @param args
      * @param options
      */
     void init(String[] args, ProcessLauncherOptions options) {
-        processLauncherOptions = options;
+        setLauncherOptions(options);
 
         InstallHelper.firstTimeSetup();
 
         List<String> commands = new LinkedList<String>(Arrays.asList(args));
         setCommands(commands);
 
-        commands = new LinkedList<String>(Arrays.asList(args));
-        processLauncherOptions.setContinuouslyRestart(!Arrays.asList(args).contains(SELION_NOCONTINUOS_ARG));
+        if (Arrays.asList(args).contains(SELION_NOCONTINUOUS_ARG)) {
+            getLauncherOptions().setContinuouslyRestart(false);
+        }
+
         // setup the SeLion config if the user want to override the default
         if (commands.contains(SELION_CONFIG_ARG)) {
             ConfigParser.setConfigFile(commands.get(commands.indexOf(SELION_CONFIG_ARG) + 1));
@@ -115,30 +117,35 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      *
      * @param interval
      *            How often should the application check if the command is still running or if it exit.
-     * @param squelch
-     *            Whether to make calls to logger.info
      * @throws IOException
      * @throws InterruptedException
      */
-    final void continuouslyRestart(long interval, boolean squelch) throws IOException, InterruptedException {
-        LOGGER.entering(new Object[] { interval, squelch });
+    final void continuouslyRestart(long interval) throws IOException, InterruptedException {
+        LOGGER.entering(new Object[] { interval });
 
-        startProcess(squelch);
-
-        while (!handler.hasResult()) {
-            LOGGER.fine("Child process still running. Going back to sleep.");
-            Thread.sleep(interval);
-        }
-
-        if (handler.hasResult()) {
-            ExecuteException e = handler.getException();
-            if (e != null) {
-                LOGGER.log(Level.SEVERE, handler.getException().getMessage(), handler.getException());
+        while (true) {
+            if (!isInitialized()) {
+                FileDownloader.checkForDownloads(getType(),
+                        getLauncherOptions().isFileDownloadCheckTimeStampOnInvocation(),
+                        getLauncherOptions().isFileDownladCleanupOnInvocation());
             }
-        }
-        LOGGER.info("Child process quit.");
 
-        LOGGER.exiting();
+            startProcess(false);
+
+            while (!handler.hasResult()) {
+                LOGGER.fine("Child process still running. Going back to sleep.");
+                Thread.sleep(interval);
+            }
+
+            if (handler.hasResult()) {
+                ExecuteException e = handler.getException();
+                if (e != null) {
+                    LOGGER.log(Level.SEVERE, handler.getException().getMessage(), handler.getException());
+                }
+            }
+            LOGGER.info("Child process quit. Restarting it.");
+            setInitialized(false);
+        }
     }
 
     /**
@@ -146,8 +153,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      *
      * @param squelch
      *            Whether to show command executed as a logger.info message
-     * @param cmdLine
-     *            the {@link CommandLine} to run
+     * @throws IOException
      */
     void startProcess(boolean squelch) throws IOException {
         LOGGER.entering(squelch);
@@ -170,32 +176,23 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         try {
             if (!isInitialized()) {
                 addJVMShutDownHook();
-                FileDownloader.checkForDownloads(getType());
+                FileDownloader.checkForDownloads(getType(),
+                        getLauncherOptions().isFileDownloadCheckTimeStampOnInvocation(),
+                        getLauncherOptions().isFileDownladCleanupOnInvocation());
                 setInitialized(true);
             }
 
-            List<String> commands = getCommands();
-
-            if (commands.contains(HELP_ARG) || commands.contains("-h")) {
+            if (getCommands().contains(HELP_ARG) || getCommands().contains("-h")) {
                 startProcess(true);
                 handler.waitFor();
                 printUsageInfo();
                 return;
             }
 
-            if (processLauncherOptions.isContinuouslyRestart()) {
+            if (getLauncherOptions().isContinuouslyRestart()) {
                 long interval = ConfigParser.parse().getLong("restartCycle", 60000L);
                 LOGGER.info("Restart cycle will check every " + interval + " ms");
-                while (true) {
-                    if (!isInitialized()) {
-                        FileDownloader.checkForDownloads(getType(),
-                                processLauncherOptions.isFileDownloadCheckTimeStampOnInvocation(),
-                                processLauncherOptions.isFileDownladCleanupOnInvocation());
-                    }
-                    continuouslyRestart(interval, false);
-                    LOGGER.info("Application exited. Restarting it.");
-                    setInitialized(false);
-                }
+                continuouslyRestart(interval);
             }
 
             // non-continuous process.
@@ -210,9 +207,8 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
     abstract void printUsageInfo();
 
     /**
-     * Shuts down the instance represented by this launcher. First, attempts to call the {@link NodeForceRestartServlet}
-     * which must be available on the instance. Otherwise, the {@link ProcessHandlerFactory} is used as a fallback
-     * mechanism.
+     * Shuts down the instance represented by this launcher. Uses the {@link ProcessHandlerFactory} to find sub
+     * processes.
      */
     public void shutdown() {
         if (!isRunning()) {
@@ -255,7 +251,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         Set<String> uniqueClassPathEntries = new LinkedHashSet<String>();
 
         // find all jars in the SELION_HOME_DIR
-        if (processLauncherOptions.isIncludeJarsInSeLionHomeDir()) {
+        if (getLauncherOptions().isIncludeJarsInSeLionHomeDir()) {
             Collection<File> homeFiles = FileUtils.listFiles(new File(SeLionConstants.SELION_HOME_DIR),
                     new String[] { "jar" }, false);
             for (File file : homeFiles) {
@@ -266,7 +262,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         }
 
         // find all jars in the current working directory
-        if (processLauncherOptions.isIncludeJarsInPresentWorkingDir()) {
+        if (getLauncherOptions().isIncludeJarsInPresentWorkingDir()) {
             Collection<File> localFiles = FileUtils.listFiles(SystemUtils.getUserDir(), new String[] { "jar" }, false);
             for (File file : localFiles) {
                 uniqueClassPathEntries.add(file.getName());
@@ -274,13 +270,13 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         }
 
         // remove any duplicates that were already in the existing classpath. add the left-overs
-        if (processLauncherOptions.isIncludeParentProcessClassPath()) {
+        if (getLauncherOptions().isIncludeParentProcessClassPath()) {
             String classpath = SystemUtils.JAVA_CLASS_PATH;
             uniqueClassPathEntries.addAll(Arrays.asList(classpath.split(SystemUtils.PATH_SEPARATOR)));
         }
 
         // build the -cp [option]
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (String s : uniqueClassPathEntries) {
             buf.append(s + SystemUtils.PATH_SEPARATOR);
         }
@@ -306,7 +302,32 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         List<String> args = new LinkedList<String>();
 
         // Next, FWD all JVM -D args to the child process
-        if (processLauncherOptions.isIncludeJavaSystemProperties()) {
+        args.addAll(Arrays.asList(getPresentJavaSystemPropertiesArguments()));
+
+        // Setup logging for child process
+        args.addAll(Arrays.asList(getLoggingSystemPropertiesArguments()));
+
+        LOGGER.exiting(args.toString());
+        return args.toArray(new String[args.size()]);
+    }
+
+    private String[] getLoggingSystemPropertiesArguments() throws IOException {
+        LOGGER.entering();
+        List<String> args = new LinkedList<String>();
+
+        if (getLauncherOptions().isSetupLoggingForJavaSubProcess()) {
+            InstallHelper.createLoggingPropertiesFile(getType());
+            args.add("-Djava.util.logging.config.file=" + LOGGING_PROPERTIES_FILE + "." + getType().getFriendlyName());
+        }
+        LOGGER.exiting(args.toString());
+        return args.toArray(new String[args.size()]);
+    }
+
+    private String[] getPresentJavaSystemPropertiesArguments() {
+        LOGGER.entering();
+        List<String> args = new LinkedList<String>();
+
+        if (getLauncherOptions().isIncludeJavaSystemProperties()) {
             for (String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
                 // add all system properties the user specified except 'java.util.loggin.config.file'
                 if (jvmArg.startsWith("-D")) {
@@ -317,31 +338,20 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
                 }
             }
         }
-
-        // Setup logging for child process
-        if (processLauncherOptions.isSetupLoggingForJavaSubProcess()) {
-            InstallHelper.createLoggingPropertiesFile(getType());
-            args.add("-Djava.util.logging.config.file=" + LOGGING_PROPERTIES_FILE + "." + getType().getFriendlyType());
-        }
-
-        // include the WebDriver binary paths for Chromedriver, IEDriver, and PhantomJs
-        if (processLauncherOptions.isIncludeWebDriverBinaryPaths()
-                && (getType().equals(InstanceType.SELENIUM_NODE) || getType().equals(InstanceType.SELENIUM_STANDALONE))) {
-            // Make sure we setup WebDriver binary paths for the child process
-            if (SystemUtils.IS_OS_WINDOWS && System.getProperty("webdriver.ie.driver") == null) {
-                args.add("-Dwebdriver.ie.driver=" + SeLionConstants.SELION_HOME_DIR + SeLionConstants.IE_DRIVER);
-            }
-            if (System.getProperty("webdriver.chrome.driver") == null) {
-                args.add("-Dwebdriver.chrome.driver=" + SeLionConstants.SELION_HOME_DIR + SeLionConstants.CHROME_DRIVER);
-            }
-            if (System.getProperty("phantomjs.binary.path") == null) {
-                args.add("-Dphantomjs.binary.path=" + SeLionConstants.SELION_HOME_DIR
-                        + SeLionConstants.PHANTOMJS_DRIVER);
-            }
-        }
-
         LOGGER.exiting(args.toString());
         return args.toArray(new String[args.size()]);
+    }
+
+    <T extends ProcessLauncherOptions> void setLauncherOptions(T launcherOptions) {
+        this.launcherOptions = launcherOptions;
+    }
+
+    @Override
+    ProcessLauncherOptions getLauncherOptions() {
+        if (launcherOptions == null) {
+            launcherOptions = new ProcessLauncherOptionsImpl();
+        }
+        return launcherOptions;
     }
 
     Thread shutDownHook = new Thread() {

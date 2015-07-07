@@ -24,6 +24,7 @@ import com.google.common.annotations.Beta;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.grid.ProcessLauncherOptions;
+import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 import com.paypal.selion.grid.SelendroidJarSpawner;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -32,7 +33,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local selendroid node.
  */
 @Beta
-final class LocalSelendroidNode extends AbstractBaseLocalServerComponent implements LocalServerComponent {
+final class LocalSelendroidNode extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalSelendroidNode instance;
 
@@ -64,7 +65,7 @@ final class LocalSelendroidNode extends AbstractBaseLocalServerComponent impleme
                 forceReinstall = ("-forceReinstall");
             }
 
-            ProcessLauncherOptions processOptions = new ProcessLauncherOptions().setContinuouslyRestart(false)
+            ProcessLauncherOptions processOptions = new ProcessLauncherOptionsImpl().setContinuouslyRestart(false)
                     .setIncludeJarsInPresentWorkingDir(false).setIncludeParentProcessClassPath(false)
                     .setIncludeJavaSystemProperties(false).setFileDownloadCheckTimeStampOnInvocation(false)
                     .setFileDownloadCleanupOnInvocation(false);
@@ -126,9 +127,19 @@ final class LocalSelendroidNode extends AbstractBaseLocalServerComponent impleme
     private void validateConfiguredOptions() {
         // Make sure the configured internal selendroid server port is not already in use
         int selendroidServerPort = Config.getIntConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT);
-        if (PortProber.pollPort(selendroidServerPort)) {
-            throw new IllegalArgumentException("Specified SELENDROID_SERVER_PORT is already in use.");
+        String portInUseError = String.format("Port %d is already in use. Please shutdown the service "
+                + "listening on this port or configure a different selendroid server port.", selendroidServerPort);
+        boolean free = false;
+        try {
+            free = PortProber.pollPort(selendroidServerPort);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(portInUseError, e);
+        } finally {
+            if (!free) {
+                throw new IllegalArgumentException(portInUseError);
+            }
         }
+
         try {
             checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
             checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);

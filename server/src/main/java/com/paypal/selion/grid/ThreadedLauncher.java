@@ -17,11 +17,8 @@ package com.paypal.selion.grid;
 
 import static com.paypal.selion.pojos.SeLionGridConstants.*;
 
-import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.ConfigParser;
-
-import org.apache.commons.lang.SystemUtils;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -29,8 +26,9 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * A {@link Runnable} launcher for SeLion Grid. This launcher will perform all install operations and then call
- * {@link SeLionGridLauncher}. This launcher does not support continuous restarting of the instance. </br> </br>
+ * A {@link RunnableLauncher} for SeLion Grid. This launcher will perform install operations and then call
+ * {@link SeLionGridLauncher}. This launcher does not support continuous restarting of the instance. <br>
+ * <br>
  * <strong>Important</strong>: selenium-server and it's dependencies MUST be included in the caller's CLASSPATH before
  * calling {@link #run()} on this object
  */
@@ -38,16 +36,49 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ThreadedLauncher.class);
     private SeLionGridLauncher launcher;
+    private List<String> downloadList;
 
     /**
      * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
-     * <code>-selionConfig</code>
+     * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
      * 
      * @param args
      *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      */
     public ThreadedLauncher(String[] args) {
+        this(args, null);
+    }
+
+    /**
+     * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
+     * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
+     * 
+     * @param args
+     *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
+     * @param launcherOptions
+     *            the {@link LauncherOptions} to use
+     */
+    public ThreadedLauncher(String[] args, LauncherOptions launcherOptions) {
+        this(args, launcherOptions, null);
+    }
+
+    /**
+     * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
+     * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
+     * 
+     * @param args
+     *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
+     * @param launcherOptions
+     *            the {@link LauncherOptions} to use
+     * @param downloadList
+     *            The list of binaries to download. These names MUST match the names from the download.json file
+     */
+    public ThreadedLauncher(String[] args, LauncherOptions launcherOptions, List<String> downloadList) {
+        setLauncherOptions(launcherOptions);
+
         InstallHelper.firstTimeSetup();
+
+        this.downloadList = downloadList;
 
         List<String> commands = new LinkedList<String>(Arrays.asList(args));
         setCommands(commands);
@@ -62,28 +93,11 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
     public final void run() {
         LOGGER.entering();
         try {
-            InstanceType type = getType();
-            if (!isInitialized()) {
-                FileDownloader.checkForDownloads(type, false, false);
-                setInitialized(true);
+            if (!isInitialized() && downloadList != null) {
+                FileDownloader.checkForDownloads(downloadList, getLauncherOptions().isFileDownloadCheckTimeStampOnInvocation(),
+                        getLauncherOptions().isFileDownladCleanupOnInvocation());
             }
-
-            // Setup the WebDriver binary paths
-            if (type.equals(InstanceType.SELENIUM_NODE) || type.equals(InstanceType.SELENIUM_STANDALONE)) {
-                // Make sure we setup WebDriver binary paths for the child process
-                if (SystemUtils.IS_OS_WINDOWS && System.getProperty("webdriver.ie.driver") == null) {
-                    System.setProperty("webdriver.ie.driver", SeLionConstants.SELION_HOME_DIR
-                            + SeLionConstants.IE_DRIVER);
-                }
-                if (System.getProperty("webdriver.chrome.driver") == null) {
-                    System.setProperty("webdriver.chrome.driver", SeLionConstants.SELION_HOME_DIR
-                            + SeLionConstants.CHROME_DRIVER);
-                }
-                if (System.getProperty("phantomjs.binary.path") == null) {
-                    System.setProperty("phantomjs.binary.path", SeLionConstants.SELION_HOME_DIR
-                            + SeLionConstants.PHANTOMJS_DRIVER);
-                }
-            }
+            setInitialized(true);
 
             // Update the program arguments with any defaults
             String[] args = getProgramArguments();

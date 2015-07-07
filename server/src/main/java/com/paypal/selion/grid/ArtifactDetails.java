@@ -60,9 +60,8 @@ class ArtifactDetails {
      *            the {@link InstanceType} of the current instance
      * @return A {@link List} containing the URL and CheckSum
      */
-    static List<URLChecksumEntity> getArtifactDetailsForCurrentPlatformAndRole(File downloadFile,
-            InstanceType instanceType)
-            throws FileNotFoundException {
+    static List<URLChecksumEntity> getArtifactDetailsForCurrentPlatformByRole(File downloadFile,
+            InstanceType instanceType) throws FileNotFoundException {
         Preconditions.checkNotNull(downloadFile, "The JSON to get artifact details cannot be null");
         List<URLChecksumEntity> artifactDetails = new ArrayList<URLChecksumEntity>();
 
@@ -76,7 +75,32 @@ class ArtifactDetails {
                 if (platformJson != null) {
                     JsonObject platform = platformJson.getAsJsonObject();
                     // only add the artifact if it is used for the current role/instanceType
-                    if (rolesJson.contains(new JsonParser().parse(instanceType.getFriendlyType()))) {
+                    if (rolesJson.contains(new JsonParser().parse(instanceType.getFriendlyName()))) {
+                        String url = platform.get(URL).getAsString();
+                        String checksum = platform.get(CHECKSUM).getAsString();
+                        URLChecksumEntity entity = getEntityFromProp(URL, url, CHECKSUM, checksum);
+                        artifactDetails.add(entity);
+                    }
+                }
+            }
+        }
+
+        return artifactDetails;
+    }
+
+    static List<URLChecksumEntity> getArtifactDetailsForCurrentPlatformByNames(File downloadFile,
+            List<String> artifactNames) throws FileNotFoundException {
+        Preconditions.checkNotNull(downloadFile, "The JSON to get artifact details cannot be null");
+        List<URLChecksumEntity> artifactDetails = new ArrayList<URLChecksumEntity>();
+
+        JsonArray downloads = (new JsonParser()).parse(new FileReader(downloadFile)).getAsJsonArray();
+        for (String artifactName : artifactNames) {
+            for (int i = 0; i < downloads.size(); i++) {
+                JsonObject artifact = (JsonObject) downloads.get(i);
+                if (artifact.has(NAME) && artifact.get(NAME).getAsString().equalsIgnoreCase(artifactName)) {
+                    JsonElement platformJson = artifact.has("any") ? artifact.get("any") : artifact.get(getPlatform());
+                    if (platformJson != null) {
+                        JsonObject platform = platformJson.getAsJsonObject();
                         String url = platform.get(URL).getAsString();
                         String checksum = platform.get(CHECKSUM).getAsString();
                         URLChecksumEntity entity = getEntityFromProp(URL, url, CHECKSUM, checksum);
@@ -121,5 +145,4 @@ class ArtifactDetails {
             return checksum;
         }
     }
-
 }

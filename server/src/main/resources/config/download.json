@@ -8,7 +8,7 @@
     }
   },
   {
-    "name": "chrome",
+    "name": "chromedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
       "url": "https://chromedriver.storage.googleapis.com/2.14/chromedriver_win32.zip",
@@ -40,7 +40,7 @@
     }
   },
   {
-    "name": "ie",
+    "name": "iedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
       "url": "https://selenium-release.storage.googleapis.com/2.45/IEDriverServer_Win32_2.45.0.zip",

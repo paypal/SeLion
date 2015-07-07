@@ -48,16 +48,16 @@ final class FileDownloader {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(FileDownloader.class);
     private static List<String> files = new ArrayList<String>();
     private static long lastModifiedTime = 0;
-    private static List<String> supportedTypes = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR,
+    private static final List<String> SUPPORTED_TYPES = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR,
             ArchiveStreamFactory.JAR, "bz2");
+    private static final File DOWNLOAD_FILE = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
 
     private FileDownloader() {
         // Utility class. Hide the constructor
     }
 
     /**
-     * Cleanup all the files already downloaded within the same JVM process. Automatically called internally by
-     * {@link #checkForDownloads(InstanceType)} and {@link #checkForDownloads(InstanceType, boolean)}.
+     * Cleanup all the files already downloaded within the same JVM process. Automatically called internally.
      */
     static void cleanup() {
         LOGGER.entering();
@@ -72,6 +72,68 @@ final class FileDownloader {
     }
 
     /**
+     * Check download.json and download files based on artifact names. Returns without downloading if it detects a
+     * last modified time stamp is unchanged from the last check. Cleans up previous downloads from the same JVM
+     * 
+     * @param artifactNames
+     *            the artifact names to download
+     */
+    static void checkForDownloads(List<String> artifactNames) {
+        checkForDownloads(artifactNames, true);
+    }
+
+    /**
+     * Check download.json and download files based on artifact names. Cleans up previous downloads from the same
+     * JVM
+     * 
+     * @param artifactNames
+     *            the artifact names to download
+     * @param checkTimeStamp
+     *            whether to check the last modified time stamp of the downlaod.json file. Returns immediately on
+     *            subsequent calls if <code>true</code> and last modified is unchanged.
+     */
+    static void checkForDownloads(List<String> artifactNames, boolean checkTimeStamp) {
+        checkForDownloads(artifactNames, true, true);
+    }
+
+    /**
+     * Check download.json and download files based on artifact names
+     * 
+     * @param artifactNames
+     *            the artifact names to download
+     * @param checkTimeStamp
+     *            whether to check the last modified time stamp of the downlaod.json file. Returns immediately on
+     *            subsequent calls if <code>true</code> and last modified is unchanged.
+     * @param cleanup
+     *            whether to cleanup previous downloads from a previous call to
+     *            checkForDownloads in the same JVM
+     */
+    static void checkForDownloads(List<String> artifactNames, boolean checkTimeStamp, boolean cleanup) {
+        LOGGER.entering();
+
+        if (checkTimeStamp && (lastModifiedTime == DOWNLOAD_FILE.lastModified())) {
+            return;
+        }
+        lastModifiedTime = DOWNLOAD_FILE.lastModified();
+
+        if (cleanup) {
+            cleanup();
+        }
+
+        List<URLChecksumEntity> artifactDetails = new ArrayList<ArtifactDetails.URLChecksumEntity>();
+
+        try {
+            artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatformByNames(DOWNLOAD_FILE, artifactNames);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Unable to open download.json file", e);
+            throw new RuntimeException(e);
+        }
+
+        downloadAndExtractArtifacts(artifactDetails);
+        LOGGER.exiting();
+    }
+
+    /**
      * Check download.json and download files based on {@link InstanceType}. Returns without downloading if it detects a
      * last modified time stamp is unchanged from the last check. Cleans up previous downloads from the same JVM
      * 
@@ -79,7 +141,7 @@ final class FileDownloader {
      *            the {@link InstanceType} to process downloads for
      */
     static void checkForDownloads(InstanceType instanceType) {
-        checkForDownloads(instanceType, true, true);
+        checkForDownloads(instanceType, true);
     }
 
     /**
@@ -106,31 +168,35 @@ final class FileDownloader {
      *            subsequent calls if <code>true</code> and last modified is unchanged.
      * @param cleanup
      *            whether to cleanup previous downloads from a previous call to
-     *            {@link #checkForDownloads(InstanceType, boolean, boolean)} in the same JVM
+     *            checkForDownloads in the same JVM
      */
     static void checkForDownloads(InstanceType instanceType, boolean checkTimeStamp, boolean cleanup) {
         LOGGER.entering();
 
-        File downloadFile = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
-
-        if ((lastModifiedTime == downloadFile.lastModified()) && checkTimeStamp) {
+        if (checkTimeStamp && (lastModifiedTime == DOWNLOAD_FILE.lastModified())) {
             return;
         }
-        lastModifiedTime = downloadFile.lastModified();
+        lastModifiedTime = DOWNLOAD_FILE.lastModified();
 
         if (cleanup) {
             cleanup();
         }
 
-        LOGGER.info("Current Platform: " + Platform.getCurrent());
         List<URLChecksumEntity> artifactDetails = new ArrayList<ArtifactDetails.URLChecksumEntity>();
 
         try {
-            artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatformAndRole(downloadFile, instanceType);
+            artifactDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatformByRole(DOWNLOAD_FILE, instanceType);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Unable to open download.json file", e);
             throw new RuntimeException(e);
         }
+
+        downloadAndExtractArtifacts(artifactDetails);
+        LOGGER.exiting();
+    }
+
+    private static void downloadAndExtractArtifacts(List<URLChecksumEntity> artifactDetails) {
+        LOGGER.fine("Current Platform: " + Platform.getCurrent());
 
         for (Iterator<URLChecksumEntity> iterator = artifactDetails.iterator(); iterator.hasNext();) {
             URLChecksumEntity entity = (URLChecksumEntity) iterator.next();
@@ -152,12 +218,11 @@ final class FileDownloader {
             }
         }
         LOGGER.fine("Files after download and extract: " + files.toString());
-        LOGGER.exiting();
     }
 
     private static boolean checkLocalFile(String filename, String checksum, String algorithm) {
         MessageDigest md = null;
-        StringBuffer sb = new StringBuffer("");
+        StringBuilder sb = new StringBuilder("");
         try {
             md = MessageDigest.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e1) {
@@ -181,10 +246,10 @@ final class FileDownloader {
 
     private static String decideFilePath(String fileName) {
         if (fileName.endsWith(".jar")) {
-            return new StringBuffer().append(SeLionConstants.SELION_HOME_DIR).append(fileName).toString();
+            return new StringBuilder().append(SeLionConstants.SELION_HOME_DIR).append(fileName).toString();
         } else {
             // Encountered a archive type: at this point it is sure the valid archive types come in
-            return new StringBuffer().append(SeLionGridConstants.DOWNLOADS_DIR).append(fileName).toString();
+            return new StringBuilder().append(SeLionGridConstants.DOWNLOADS_DIR).append(fileName).toString();
         }
     }
 
@@ -248,7 +313,7 @@ final class FileDownloader {
     private static void isValidFileType(String url) {
         // Obtaining only the file extension
         String fileType = url.substring(url.lastIndexOf('.') + 1);
-        if (!supportedTypes.contains(fileType)) {
+        if (!SUPPORTED_TYPES.contains(fileType)) {
             throw new UnsupportedOperationException("Unsupported file format: " + fileType
                     + ". Supported file types are .zip,.tar and bz2");
         }

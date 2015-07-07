@@ -25,6 +25,7 @@ import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.grid.IOSDriverJarSpawner;
 import com.paypal.selion.grid.ProcessLauncherOptions;
+import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -32,7 +33,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local ios driver node.
  */
 @Beta
-final class LocalIOSNode extends AbstractBaseLocalServerComponent implements LocalServerComponent {
+final class LocalIOSNode extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalIOSNode instance;
 
@@ -59,7 +60,7 @@ final class LocalIOSNode extends AbstractBaseLocalServerComponent implements Loc
                 folder = new String[] { "-folder", autFolder };
             }
 
-            ProcessLauncherOptions processOptions = new ProcessLauncherOptions().setContinuouslyRestart(false)
+            ProcessLauncherOptions processOptions = new ProcessLauncherOptionsImpl().setContinuouslyRestart(false)
                     .setIncludeJarsInPresentWorkingDir(false).setIncludeParentProcessClassPath(false)
                     .setIncludeJavaSystemProperties(false).setFileDownloadCheckTimeStampOnInvocation(false)
                     .setFileDownloadCleanupOnInvocation(false);

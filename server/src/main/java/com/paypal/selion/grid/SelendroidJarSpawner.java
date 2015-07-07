@@ -36,8 +36,7 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
     private String mainClass;
 
     public SelendroidJarSpawner(String[] args) {
-        super(args);
-        setType(InstanceType.SELENDROID);
+        this(args, null);
     }
 
     public SelendroidJarSpawner(String[] args, ProcessLauncherOptions options) {

@@ -15,18 +15,29 @@
 
 package com.paypal.selion.platform.grid;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.os.CommandLine;
 
+import com.paypal.selion.SeLionConstants;
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.LauncherOptions;
 import com.paypal.selion.grid.ThreadedLauncher;
+import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local node.
  */
-final class LocalNode extends AbstractBaseLocalServerComponent implements LocalServerComponent {
+final class LocalNode extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalNode instance;
 
@@ -44,9 +55,14 @@ final class LocalNode extends AbstractBaseLocalServerComponent implements LocalS
             instance.setHost(new NetworkUtils().getIpOfLoopBackIp4());
             instance.setPort(PortProber.findFreePort());
 
+            LauncherOptions launcherOptions = new LauncherOptionsImpl()
+                    .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
+
+            List<String> downloadList = determineListOfDownloadsToProcess();
+
             instance.setLauncher(new ThreadedLauncher(new String[] { "-role", "node", "-port",
                     String.valueOf(instance.getPort()), "-proxy", DefaultRemoteProxy.class.getName(), "-host",
-                    instance.getHost(), "-hubHost", instance.getHost() }));
+                    instance.getHost(), "-hubHost", instance.getHost() }, launcherOptions, downloadList));
         }
         return instance;
     }
@@ -74,5 +90,65 @@ final class LocalNode extends AbstractBaseLocalServerComponent implements LocalS
         }
         super.shutdown();
         LOGGER.exiting();
+    }
+
+    /*
+     * Based on platform type and current Config, determine whether dependent binaries are in place. Otherwise, add them
+     * to the list of things to download.
+     */
+    private List<String> determineListOfDownloadsToProcess() {
+        List<String> list = new ArrayList<>();
+
+        // for IEDriver
+        if (SystemUtils.IS_OS_WINDOWS) {
+            if (!checkForPresenceOf(ConfigProperty.SELENIUM_IEDRIVER_PATH,
+                    SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY,
+                    SeLionConstants.IE_DRIVER)) {
+                Config.setConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
+                        + SeLionConstants.IE_DRIVER);
+                list.add("iedriver");
+            }
+
+        }
+
+        // for chromedriver
+        if (!checkForPresenceOf(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH,
+                SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY,
+                SeLionConstants.CHROME_DRIVER)) {
+            Config.setConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
+                    + SeLionConstants.CHROME_DRIVER);
+            list.add("chromedriver");
+        }
+
+        // for phantomjs
+        if (!checkForPresenceOf(ConfigProperty.SELENIUM_PHANTOMJS_PATH,
+                SeLionConstants.WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY,
+                SeLionConstants.PHANTOMJS_DRIVER)) {
+            Config.setConfigProperty(ConfigProperty.SELENIUM_PHANTOMJS_PATH, SeLionConstants.SELION_HOME_DIR
+                    + SeLionConstants.PHANTOMJS_DRIVER);
+            list.add("phantomjs");
+        }
+
+        return list;
+    }
+
+    /*
+     * Return true when one of the following conditions is met
+     * 
+     * 1. ConfigProperty for driverBinary is specified and not blank or null. 
+     * 2. System Property which Selenium uses to find driverBinary is present. 
+     * 3. driverBinary exists in the current working directory OR the PATH
+     */
+    private boolean checkForPresenceOf(ConfigProperty property, String systemProperty, String driverBinary) {
+        if (StringUtils.isBlank(Config.getConfigProperty(property)) && System.getProperty(systemProperty) == null) {
+            // check the CWD and PATH for the driverBinary
+            @SuppressWarnings("deprecation")
+            String location = CommandLine.find(driverBinary.replace(".exe", ""));
+            if (location != null) {
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
 }

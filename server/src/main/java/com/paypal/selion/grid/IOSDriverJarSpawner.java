@@ -37,8 +37,7 @@ public final class IOSDriverJarSpawner extends MobileProcessLauncher {
     private String mainClass;
 
     public IOSDriverJarSpawner(String[] args) {
-        super(args);
-        setType(InstanceType.IOS_DRIVER);
+        this(args, null);
     }
     
     public IOSDriverJarSpawner(String[] args, ProcessLauncherOptions options) {

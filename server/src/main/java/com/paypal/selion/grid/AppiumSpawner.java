@@ -29,11 +29,15 @@ import com.paypal.selion.utils.ConfigParser;
  * A {@link MobileProcessLauncher} for appium.
  */
 @Beta
-public final class AppiumSpawner extends MobileProcessLauncher {
+final class AppiumSpawner extends MobileProcessLauncher {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AppiumSpawner.class);
 
     public AppiumSpawner(String[] args) {
-        super(args);
+        this(args, null);
+    }
+
+    public AppiumSpawner(String[] args, ProcessLauncherOptions options) {
+        super(args, options);
         setType(InstanceType.APPIUM);
     }
 

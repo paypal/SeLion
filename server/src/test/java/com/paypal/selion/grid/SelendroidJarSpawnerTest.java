@@ -36,7 +36,7 @@ public class SelendroidJarSpawnerTest {
             attempts += 1;
         }
 
-        if (attempts == 3) {
+        if (attempts == 12) {
             fail("SelendroidJarSpawner did not start the server process");
         }
     }

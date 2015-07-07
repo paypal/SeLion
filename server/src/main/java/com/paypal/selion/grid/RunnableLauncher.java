@@ -22,16 +22,16 @@ public interface RunnableLauncher extends Runnable {
     /**
      * Shutdown the launcher
      */
-    abstract void shutdown();
+    void shutdown();
     /**
      * @return Whether the launcher has completed it's initialization phase which includes downloading dependencies.
      */ 
-    abstract boolean isInitialized();
+    boolean isInitialized();
     
     /**
      * @return Whether the {@link InstanceType} for this launcher is up and running.
      */
-    abstract boolean isRunning();
+    boolean isRunning();
 
     /**
      * Maps to a type of WebDriver instance.
@@ -54,7 +54,7 @@ public interface RunnableLauncher extends Runnable {
         /**
          * @return the friendly {@link String} representation of this {@link InstanceType}
          */
-        String getFriendlyType() {
+        String getFriendlyName() {
             return this.value;
         }
     }

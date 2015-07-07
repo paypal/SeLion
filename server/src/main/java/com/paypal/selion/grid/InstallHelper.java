@@ -95,7 +95,7 @@ final class InstallHelper {
     static void createLoggingPropertiesFile(InstanceType type) throws IOException {
         LOGGER.entering(type);
 
-        String installedFile = LOGGING_PROPERTIES_FILE + "." + type.getFriendlyType();
+        String installedFile = LOGGING_PROPERTIES_FILE + "." + type.getFriendlyName();
         if (!new File(installedFile).exists()) {
 
             // Need to change the backward slash to forward, so that logger able to locate path in windows
@@ -103,7 +103,7 @@ final class InstallHelper {
 
             String value = IOUtils.toString(JarSpawner.class.getResourceAsStream(LOGGING_PROPERTIES_FILE_RESOURCE),
                     "UTF-8");
-            value = value.concat("\njava.util.logging.FileHandler.pattern=" + logPath + "selion-grid-" + type.getFriendlyType()
+            value = value.concat("\njava.util.logging.FileHandler.pattern=" + logPath + "selion-grid-" + type.getFriendlyName()
                     + "-%g.log");
             FileUtils.writeStringToFile(new File(installedFile), value);
             LOGGER.fine("Logger file created successfully. Path is " + installedFile);

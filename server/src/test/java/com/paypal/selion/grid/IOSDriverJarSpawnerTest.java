@@ -8,6 +8,7 @@ import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 
 @Test(singleThreaded = true, groups = { "iosdriver" })
 public class IOSDriverJarSpawnerTest {
@@ -20,8 +21,9 @@ public class IOSDriverJarSpawnerTest {
     public void beforeClass() {
         host = new NetworkUtils().getIpOfLoopBackIp4();
         port = PortProber.findFreePort();
-        spawner = new IOSDriverJarSpawner(new String[] { "-noContinuousRestart", "-host", host, "-port",
-                String.valueOf(port) });
+        
+        spawner = new IOSDriverJarSpawner(new String[] { "-host", host, "-port",
+                String.valueOf(port) }, new ProcessLauncherOptionsImpl().setContinuouslyRestart(false));
         thread = new Thread(spawner);
     }
 
@@ -36,7 +38,7 @@ public class IOSDriverJarSpawnerTest {
             attempts += 1;
         }
 
-        if (attempts == 3) {
+        if (attempts == 12) {
             fail("IOSDriverJarSpawner did not start the server process");
         }
     }

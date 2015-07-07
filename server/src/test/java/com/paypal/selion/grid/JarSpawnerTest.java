@@ -8,6 +8,8 @@ import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
+
 @Test(singleThreaded = true)
 public class JarSpawnerTest {
     private Thread thread;
@@ -19,7 +21,9 @@ public class JarSpawnerTest {
     public void beforeClass() {
         host = new NetworkUtils().getIpOfLoopBackIp4();
         port = PortProber.findFreePort();
-        spawner = new JarSpawner(new String[] { "-noContinuousRestart", "-host", host, "-port", String.valueOf(port) });
+        spawner = new JarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
+                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false));
+
         thread = new Thread(spawner);
     }
 
@@ -34,7 +38,7 @@ public class JarSpawnerTest {
             attempts += 1;
         }
 
-        if (attempts == 3) {
+        if (attempts == 12) {
             fail("JarSpawner did not start the server process");
         }
     }

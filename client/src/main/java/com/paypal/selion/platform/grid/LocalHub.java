@@ -19,6 +19,8 @@ import org.openqa.selenium.net.NetworkUtils;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.LauncherOptions;
+import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.grid.ThreadedLauncher;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -26,7 +28,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local Hub.
  */
-final class LocalHub extends AbstractBaseLocalServerComponent implements LocalServerComponent {
+final class LocalHub extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalHub instance;
 
@@ -44,8 +46,11 @@ final class LocalHub extends AbstractBaseLocalServerComponent implements LocalSe
             instance.setHost(new NetworkUtils().getIpOfLoopBackIp4());
             instance.setPort(Integer.parseInt(Config.getConfigProperty(ConfigProperty.SELENIUM_PORT)));
 
+            LauncherOptions launcherOptions = new LauncherOptionsImpl()
+                    .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
+
             instance.setLauncher(new ThreadedLauncher(new String[] { "-role", "hub", "-port",
-                    String.valueOf(instance.getPort()), "-host", instance.getHost() }));
+                    String.valueOf(instance.getPort()), "-host", instance.getHost() }, launcherOptions));
         }
         return instance;
     }

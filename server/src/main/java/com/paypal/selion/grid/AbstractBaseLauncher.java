@@ -15,9 +15,12 @@
 
 package com.paypal.selion.grid;
 
+import static com.paypal.selion.pojos.SeLionGridConstants.*;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.grid.RunnableLauncher.InstanceType;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
@@ -37,14 +40,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
-import static com.paypal.selion.pojos.SeLionGridConstants.*;
-
 /**
  * An abstract base {@link RunnableLauncher} for SeLion Grid components
  */
 abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AbstractBaseLauncher.class);
+    
+    /*
+     * Launcher options to consider.
+     */
+    private LauncherOptions launcherOptions;
 
     /*
      * Whether this launcher has been initialized.
@@ -52,7 +58,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     private boolean initialized = false;
 
     /*
-     * the current instance type
+     * The current instance type
      */
     private InstanceType type;
 
@@ -128,10 +134,10 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     private InstanceType determineType(List<String> commands) {
         LOGGER.entering(commands.toString());
         type = InstanceType.SELENIUM_STANDALONE;
-        if (commands.contains(ROLE_ARG) && commands.contains(InstanceType.SELENIUM_NODE.getFriendlyType())) {
+        if (commands.contains(ROLE_ARG) && commands.contains(InstanceType.SELENIUM_NODE.getFriendlyName())) {
             type = InstanceType.SELENIUM_NODE;
         }
-        if (commands.contains(ROLE_ARG) && commands.contains(InstanceType.SELENIUM_HUB.getFriendlyType())) {
+        if (commands.contains(ROLE_ARG) && commands.contains(InstanceType.SELENIUM_HUB.getFriendlyName())) {
             type = InstanceType.SELENIUM_HUB;
         }
         LOGGER.exiting(type);
@@ -146,12 +152,10 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
      */
     String[] getProgramArguments() throws IOException {
         LOGGER.entering();
-        List<String> args = new LinkedList<String>();
 
-        // add back the program args we already know about.
-        for (int i = 0; i < commands.size(); i++) {
-            args.add(commands.get(i));
-        }
+        InstanceType type = getType();
+        // start with the commands we have
+        List<String> args = new LinkedList<String>(commands);
 
         // add the default hub or node config arguments
         if (InstanceType.SELENIUM_NODE.equals(type)) {
@@ -212,7 +216,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
             String hubConfig = HUB_CONFIG_FILE;
 
             // To verify this is SeLion Sauce Grid or not
-            if (commands.contains(TYPE_ARG) && commands.contains(InstanceType.SELION_SAUCE_HUB.getFriendlyType())) {
+            if (commands.contains(TYPE_ARG) && commands.contains(InstanceType.SELION_SAUCE_HUB.getFriendlyName())) {
                 hubConfig = HUB_SAUCE_CONFIG_FILE;
                 InstallHelper.copyFileFromResources(HUB_SAUCE_CONFIG_FILE_RESOURCE, HUB_SAUCE_CONFIG_FILE);
                 InstallHelper.copyFileFromResources(SAUCE_CONFIG_FILE_RESOURCE, SAUCE_CONFIG_FILE);
@@ -324,29 +328,22 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
      */
     private String getSeleniumConfigFilePath() {
         LOGGER.entering();
+        
         String result = null;
         InstanceType type = getType();
+        
         if (type.equals(InstanceType.SELENIUM_NODE)) {
+            result = SeLionGridConstants.NODE_CONFIG_FILE;
             if (commands.contains("-nodeConfig")) {
                 result = commands.get(commands.indexOf("-nodeConfig" + 1));
-                LOGGER.exiting(result);
-                return result;
             }
-            result = SeLionGridConstants.NODE_CONFIG_FILE;
-            LOGGER.entering(result);
-            return result;
         }
         if (type.equals(InstanceType.SELENIUM_HUB)) {
+            result = SeLionGridConstants.HUB_CONFIG_FILE;
             if (commands.contains("-hubConfig")) {
                 result = commands.get(commands.indexOf("-hubConfig" + 1));
-                LOGGER.exiting(result);
-                return result;
             }
-            result = SeLionGridConstants.HUB_CONFIG_FILE;
-            LOGGER.exiting(result);
-            return result;
         }
-        // not specified
         LOGGER.exiting(result);
         return result;
     }
@@ -388,7 +385,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     JsonObject extractObject(InputStream inputStream) throws IOException {
         LOGGER.entering();
-        StringBuffer information = new StringBuffer();
+        StringBuilder information = new StringBuilder();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(inputStream));
@@ -403,6 +400,17 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
         LOGGER.exiting(information.toString());
         return new JsonParser().parse(information.toString()).getAsJsonObject();
+    }
+
+    <T extends LauncherOptions> void setLauncherOptions(T launcherOptions) {
+        this.launcherOptions = launcherOptions;
+    }
+
+    LauncherOptions getLauncherOptions() {
+        if (launcherOptions == null) {
+            launcherOptions = new LauncherOptionsImpl();
+        }
+        return launcherOptions;
     }
 
 }

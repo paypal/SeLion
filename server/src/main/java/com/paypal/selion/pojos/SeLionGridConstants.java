@@ -18,23 +18,23 @@ package com.paypal.selion.pojos;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 
-import static com.paypal.selion.SeLionConstants.*;
+import com.paypal.selion.grid.RunnableLauncher;
 
-import com.paypal.selion.grid.JarSpawner;
+import static com.paypal.selion.SeLionConstants.*;
 
 /**
  * A Class which contains String constants used throughout SeLion Grid
  * 
- * Patterns & conventions used in naming the constants for this class
- * </br>
- * </br> - Anything that is a *DIR* ends with a trailing separator. File system dirs are platform specific ('\' Windows, 
- * '/' Unix). CLASSPATH resource dirs will always be '/'.
+ * Patterns & conventions used in naming the constants for this class 
+ * </br> 
+ * </br> - Anything that is a *DIR* ends with a trailing separator. File system dirs are platform specific  ('\' Windows, 
+ * '/' Unix). CLASSPATH resource dirs will always be '/'. 
  * </br> - Anything that is a *FILE* is a file 
  * </br> - Anything that is a *URL* is relative to http://{hostname}:{port} 
- * </br> - Anything that is a *RESOURCE* is a jar resource that can be loaded via the CLASSPATH
+ * </br> - Anything that is a *RESOURCE* is a jar resource that can be loaded via the CLASSPATH 
  * </br> - Anything that is a *PAGE* is a HTML page 
  * </br> - Anything that is a *ARG* is a program argument 
- * </br> - Any single constant may utilize more than one of these patterns/conventions
+ * </br> - Any single constant may utilize more than one of these patterns/conventions 
  * </br>
  */
 public class SeLionGridConstants {
@@ -199,7 +199,7 @@ public class SeLionGridConstants {
     public static final String HELP_ARG = "-help";
 
     /**
-     * Dash argument for disabling continuous restart nature of {@link JarSpawner}
+     * Dash argument for disabling continuous restart nature of any {@link RunnableLauncher} which spawns a new process
      */
-    public static final String SELION_NOCONTINUOS_ARG = "-noContinuousRestart";
+    public static final String SELION_NOCONTINUOUS_ARG = "-noContinuousRestart";
 }

@@ -18,14 +18,19 @@ package com.paypal.selion.grid;
 import static com.paypal.selion.pojos.SeLionGridConstants.*;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.google.common.base.Preconditions;
+import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.grid.RunnableLauncher.InstanceType;
 import com.paypal.selion.logging.SeLionGridLogger;
 
@@ -42,7 +47,11 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
     private static final String SEPARATOR = "\n----------------------------------\n";
 
     public JarSpawner(String[] args) {
-        init(args);
+        this(args, null);
+    }
+
+    public JarSpawner(String[] args, ProcessLauncherOptions options) {
+        init(args, options);
     }
 
     public static final void main(String[] args) {
@@ -53,7 +62,7 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
      * Print the usage of SeLion Grid jar
      */
     final void printUsageInfo() {
-        StringBuffer usage = new StringBuffer();
+        StringBuilder usage = new StringBuilder();
         usage.append(SEPARATOR);
         usage.append("To use SeLion Grid");
         usage.append(SEPARATOR);
@@ -67,7 +76,7 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
         usage.append("       sauce proxy \n");
         usage.append("    " + SELION_CONFIG_ARG + " <config file name>: \n");
         usage.append("       A SeLion Grid configuration JSON file \n");
-        usage.append("    " + SELION_NOCONTINUOS_ARG + "\n");
+        usage.append("    " + SELION_NOCONTINUOUS_ARG + "\n");
         usage.append("       Disable continuous restarting of node/hub sub-process \n");
         usage.append("\n");
         usage.append("  Selenium Options: \n");
@@ -113,6 +122,44 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
 
         LOGGER.exiting(cmdLine.toString());
         return cmdLine;
+    }
+
+    @Override
+    String[] getJavaSystemPropertiesArguments() throws IOException {
+        LOGGER.entering();
+        List<String> args = new LinkedList<String>();
+        
+        // include everything a typical process launcher would add for a java process
+        args.addAll(Arrays.asList(super.getJavaSystemPropertiesArguments()));
+
+        // include the WebDriver binary paths for Chromedriver, IEDriver, and PhantomJs
+        args.addAll(Arrays.asList(getWebDriverBinarySystemPropertiesArguments()));
+
+        LOGGER.exiting(args.toString());
+        return args.toArray(new String[args.size()]);
+    }
+
+    private String[] getWebDriverBinarySystemPropertiesArguments() {
+        LOGGER.entering();
+        List<String> args = new LinkedList<String>();
+        if (getLauncherOptions().isIncludeWebDriverBinaryPaths()
+                && (getType().equals(InstanceType.SELENIUM_NODE) || getType().equals(InstanceType.SELENIUM_STANDALONE))) {
+            // Make sure we setup WebDriver binary paths for the child process
+            if (SystemUtils.IS_OS_WINDOWS && System.getProperty(SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY) == null) {
+                args.add("-D" + SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY + "="
+                        + SeLionConstants.SELION_HOME_DIR + SeLionConstants.IE_DRIVER);
+            }
+            if (System.getProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY) == null) {
+                args.add("-D" + SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY + "="
+                        + SeLionConstants.SELION_HOME_DIR + SeLionConstants.CHROME_DRIVER);
+            }
+            if (System.getProperty(SeLionConstants.WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY) == null) {
+                args.add("-D" + SeLionConstants.WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY + "="
+                        + SeLionConstants.SELION_HOME_DIR + SeLionConstants.PHANTOMJS_DRIVER);
+            }
+        }
+        LOGGER.exiting(args.toString());
+        return args.toArray(new String[args.size()]);
     }
 
     /**

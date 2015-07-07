@@ -30,7 +30,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
 import org.testng.ITestContext;
 
-import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventListener;
 import com.paypal.selion.platform.grid.MobileNodeType;
@@ -392,18 +391,21 @@ public final class Config {
 
         /**
          * The path to the chromedriver executable on the local machine. This parameter is taken into consideration for
-         * local runs involving googlechrome browser alone.
+         * local runs involving the Google Chrome browser.
          */
-        SELENIUM_CHROMEDRIVER_PATH("chromeDriverPath", SeLionConstants.SELION_HOME_DIR
-                + SeLionConstants.CHROME_DRIVER, true),
+        SELENIUM_CHROMEDRIVER_PATH("chromeDriverPath", "", true),
 
         /**
          * The path to the PhantomJS executable on the local machine. This parameter is taken into consideration for
-         * local runs involving PhantomJS browser alone. The binary can be downloaded from <a
-         * href="http://phantomjs.org/download.html">here</a>
+         * local runs involving the PhantomJS browser.
          */
-        SELENIUM_PHANTOMJS_PATH("phantomjsPath", SeLionConstants.SELION_HOME_DIR
-                + SeLionConstants.PHANTOMJS_DRIVER, true),
+        SELENIUM_PHANTOMJS_PATH("phantomjsPath", "", true),
+                
+        /**
+         * The path to the IEDriver executable on the local machine. This parameter is taken into consideration for
+         * local runs involving the IE browser.
+         */
+        SELENIUM_IEDRIVER_PATH("ieDriverPath", "", true),
 
         /**
          * Use this parameter to set the user agent for firefox when working with Mobile version. This parameter should

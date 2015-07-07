@@ -19,7 +19,6 @@ import static com.paypal.selion.pojos.SeLionGridConstants.*;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -29,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.annotations.Beta;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.paypal.selion.grid.ProcessLauncherOptions;
 import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
@@ -43,7 +43,7 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
     JsonObject defaultArgs;
 
     public MobileProcessLauncher(String[] args) {
-        init(args);
+        this(args, null);
     }
 
     public MobileProcessLauncher(String[] args, ProcessLauncherOptions options) {
@@ -59,13 +59,11 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
     @Override
     String[] getProgramArguments() throws IOException {
         LOGGER.entering();
-        List<String> args = new LinkedList<String>();
-        args.addAll(Arrays.asList(super.getProgramArguments()));
+        List<String> args = new LinkedList<String>(Arrays.asList(super.getProgramArguments()));
 
         // add the defaults which we don't already have a value for
-        Iterator<Entry<String, JsonElement>> iterator = defaultArgs.entrySet().iterator();
-        while (iterator.hasNext()) {
-            String key = iterator.next().getKey();
+        for (Entry<String, JsonElement> entry : defaultArgs.entrySet()) {
+            String key = entry.getKey();
             if (!args.contains(key)) {
                 args.add(key);
                 String val = defaultArgs.get(key).getAsString();
@@ -78,10 +76,10 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
         // filter out SeLion Grid specific args which do not apply
         List<String> filteredArgs = new LinkedList<String>();
         filteredArgs.add(SELION_CONFIG_ARG);
-        filteredArgs.add(SELION_NOCONTINUOS_ARG);
+        filteredArgs.add(SELION_NOCONTINUOUS_ARG);
 
         for (String filter : filteredArgs) {
-            if (!filter.equals(SELION_NOCONTINUOS_ARG)) {
+            if (!filter.equals(SELION_NOCONTINUOUS_ARG)) {
                 args.remove(args.indexOf(filter) + 1);
             }
             args.remove(filter);
@@ -92,7 +90,7 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
     }
 
     void printUsageInfo() {
-        StringBuffer usage = new StringBuffer();
+        StringBuilder usage = new StringBuilder();
         usage.append(SEPARATOR);
         usage.append("To use SeLion Grid");
         usage.append(SEPARATOR);
@@ -103,7 +101,7 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
         usage.append("  Options:\n");
         usage.append("    " + SELION_CONFIG_ARG + " <config file name>: \n");
         usage.append("       A SeLion Grid configuration JSON file \n");
-        usage.append("    " + SELION_NOCONTINUOS_ARG + "\n");
+        usage.append("    " + SELION_NOCONTINUOUS_ARG + "\n");
         usage.append("       Disable continuous restarting of node/hub sub-process \n");
         usage.append("\n");
         usage.append("  Driver Options: \n");
