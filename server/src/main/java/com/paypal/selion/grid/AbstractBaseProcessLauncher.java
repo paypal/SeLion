@@ -92,7 +92,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
                 f.setAccessible(true);
                 Integer pid = (Integer) f.get(process);
                 return pid;
-            } catch (Exception e) {
+            } catch (Exception e) { //NOSONAR
                 throw new RuntimeException("Couldn't detect sub process pid", e);
             }
         }
