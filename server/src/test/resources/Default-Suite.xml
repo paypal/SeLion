@@ -5,8 +5,7 @@
     <test verbose="2" name="Default Tests" annotations="JDK">
         <groups>
             <run>
-                <exclude name="selendroid" />
-                <exclude name="iosdriver" />
+                <exclude name="downloads-dependencies" />
             </run>
         </groups>
         <packages>

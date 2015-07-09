@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 
-@Test(singleThreaded = true)
+@Test(singleThreaded = true, groups = { "downloads-dependencies" } )
 public class JarSpawnerTest {
     private Thread thread;
     private RunnableLauncher spawner;

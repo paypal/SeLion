@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 
 
-@Test(singleThreaded = true, groups = { "selendroid" })
+@Test(singleThreaded = true, groups = { "android-only", "downloads-dependencies" })
 public class SelendroidJarSpawnerTest {
     private Thread thread;
     private RunnableLauncher spawner;
