@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 
-@Test(singleThreaded = true, groups = { "iosdriver" })
+@Test(singleThreaded = true, groups = { "ios-only", "downloads-dependencies" })
 public class IOSDriverJarSpawnerTest {
     private Thread thread;
     private RunnableLauncher spawner;
