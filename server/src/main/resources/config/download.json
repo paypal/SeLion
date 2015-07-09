@@ -15,11 +15,11 @@
       "checksum": "00c70587c3e215f030307d546b315323"
     },
     "linux": {
-      "url": "http://chromedriver.storage.googleapis.com/2.14/chromedriver_linux64.zip",
+      "url": "https://chromedriver.storage.googleapis.com/2.14/chromedriver_linux64.zip",
       "checksum": "8368d266bd832ff2ea292baedbc770be"
     },
     "mac": {
-      "url": "http://chromedriver.storage.googleapis.com/2.14/chromedriver_mac32.zip",
+      "url": "https://chromedriver.storage.googleapis.com/2.14/chromedriver_mac32.zip",
       "checksum": "2b8a3e7249c80dec95264cbb55c897ed"
     }
   },
