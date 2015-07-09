@@ -26,7 +26,7 @@ import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.ConfigParser;
 
 /**
- * A {@link MobileProcessLauncher} for appium.
+ * A {@link MobileProcessLauncher} for appium. Requires appium to be installed and in the PATH.
  */
 @Beta
 final class AppiumSpawner extends MobileProcessLauncher {

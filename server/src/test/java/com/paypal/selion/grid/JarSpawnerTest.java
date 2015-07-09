@@ -1,8 +1,10 @@
 package com.paypal.selion.grid;
 
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
 
+import org.apache.commons.lang.SystemUtils;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
@@ -22,7 +24,7 @@ public class JarSpawnerTest {
         host = new NetworkUtils().getIpOfLoopBackIp4();
         port = PortProber.findFreePort();
         spawner = new JarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
-                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false));
+                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false));
 
         thread = new Thread(spawner);
     }
@@ -40,6 +42,10 @@ public class JarSpawnerTest {
 
         if (attempts == 12) {
             fail("JarSpawner did not start the server process");
+        }
+
+        if (! SystemUtils.IS_OS_WINDOWS) {
+            assertNotNull(((JarSpawner) spawner).getProcessPID());
         }
     }
 

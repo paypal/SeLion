@@ -16,35 +16,38 @@
 package com.paypal.selion.grid;
 
 import static com.paypal.selion.pojos.SeLionGridConstants.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.os.ProcessUtils;
 
 import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.pojos.ProcessInfo;
 import com.paypal.selion.utils.ConfigParser;
-import com.paypal.selion.utils.process.ProcessHandler;
-import com.paypal.selion.utils.process.ProcessHandlerException;
 import com.paypal.selion.utils.process.ProcessHandlerFactory;
 
 /**
@@ -56,11 +59,87 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     private DefaultExecuteResultHandler handler;
     private ProcessLauncherOptions launcherOptions;
+    private boolean shutdownCalled = false;
+    private SeLionExecuteWatchDog watchdog = new SeLionExecuteWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
 
     /*
      * The command line to run
      */
     private CommandLine cmdLine;
+
+    /**
+     * Get the sub-process pid as an integer
+     */
+    int getProcessPID() {
+        return watchdog.getProcessId();
+    }
+
+    class SeLionExecuteWatchDog extends ExecuteWatchdog {
+        boolean starting = false;
+        Process process;
+
+        SeLionExecuteWatchDog(long timeout) {
+            super(timeout);
+        }
+
+        public int getProcessId() {
+            if (SystemUtils.IS_OS_WINDOWS) {
+                //TODO implement me 
+                throw new IllegalStateException("Implementation missing.. No means to detect sub process pid on Windows");
+            }
+            try {
+                Field f = process.getClass().getDeclaredField("pid");
+                f.setAccessible(true);
+                Integer pid = (Integer) f.get(process);
+                return pid;
+            } catch (Exception e) {
+                throw new RuntimeException("Couldn't detect sub process pid", e);
+            }
+        }
+
+        @Override
+        public synchronized void start(Process process) {
+            this.process = process;
+            starting = false;
+            super.start(process);
+        }
+
+        public void reset() {
+            starting = true;
+        }
+
+        private void waitForProcessStarted() {
+            while (starting) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new WebDriverException(e);
+                }
+            }
+        }
+
+        private void waitForTerminationAfterDestroy(int duration, TimeUnit unit) {
+            long end = System.currentTimeMillis() + unit.toMillis(duration);
+            while (isRunning() && System.currentTimeMillis() < end) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new WebDriverException(e);
+                }
+            }
+        }
+
+        public void destroyProcessForcefully() {
+            ProcessUtils.killProcess(process);
+        }
+    }
+
+    Thread shutDownHook = new Thread() {
+        @Override
+        public void run() {
+            shutdown();
+        }
+    };
 
     /**
      * @return the command line to invoke as a {@link CommandLine}
@@ -121,13 +200,13 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      * @throws InterruptedException
      */
     final void continuouslyRestart(long interval) throws IOException, InterruptedException {
-        LOGGER.entering(new Object[] { interval });
+        LOGGER.entering(new Object[]{interval});
 
         while (true) {
             if (!isInitialized()) {
-                FileDownloader.checkForDownloads(getType(),
-                        getLauncherOptions().isFileDownloadCheckTimeStampOnInvocation(),
-                        getLauncherOptions().isFileDownladCleanupOnInvocation());
+                FileDownloader.checkForDownloads(getType(), getLauncherOptions()
+                        .isFileDownloadCheckTimeStampOnInvocation(), getLauncherOptions()
+                        .isFileDownladCleanupOnInvocation());
             }
 
             startProcess(false);
@@ -162,7 +241,9 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
             LOGGER.info("Executing command " + cmdLine.toString());
         }
 
+        watchdog.reset();
         DefaultExecutor executor = new DefaultExecutor();
+        executor.setWatchdog(watchdog);
         executor.setStreamHandler(new PumpStreamHandler());
         executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
         handler = new DefaultExecuteResultHandler();
@@ -176,9 +257,9 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         try {
             if (!isInitialized()) {
                 addJVMShutDownHook();
-                FileDownloader.checkForDownloads(getType(),
-                        getLauncherOptions().isFileDownloadCheckTimeStampOnInvocation(),
-                        getLauncherOptions().isFileDownladCleanupOnInvocation());
+                FileDownloader.checkForDownloads(getType(), getLauncherOptions()
+                        .isFileDownloadCheckTimeStampOnInvocation(), getLauncherOptions()
+                        .isFileDownladCleanupOnInvocation());
                 setInitialized(true);
             }
 
@@ -199,8 +280,11 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
             startProcess(false);
             handler.waitFor();
         } catch (InterruptedException | IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            System.exit(1);
+            //log the exception and exit, if shutdown was not called
+            if (!shutdownCalled) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                System.exit(1);
+            }
         }
     }
 
@@ -211,17 +295,18 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      * processes.
      */
     public void shutdown() {
-        if (!isRunning()) {
-            return;
-        }
-        // TODO This might not be needed anymore
-        // clean up any stale processes
-        try {
-            ProcessHandler ph = ProcessHandlerFactory.createInstance();
-            List<ProcessInfo> processes = ph.potentialProcessToBeKilled();
-            ph.killProcess(processes);
-        } catch (ProcessHandlerException e) {
-            // ignore
+        shutdownCalled = true;
+        if (isRunning()) {
+            watchdog.waitForProcessStarted();
+            watchdog.destroyProcess();
+            watchdog.waitForTerminationAfterDestroy(2, SECONDS);
+            if (isRunning()) {
+                watchdog.destroyProcessForcefully();
+                watchdog.waitForTerminationAfterDestroy(1, SECONDS);
+                if (isRunning()) {
+                    LOGGER.severe(String.format("Unable to kill process with PID %s", watchdog.getProcessId()));
+                }
+            }
         }
 
         // if shutdown() was called by something other than the shutdown hook, we don't need the shutdown hook anymore
@@ -353,13 +438,6 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         }
         return launcherOptions;
     }
-
-    Thread shutDownHook = new Thread() {
-        @Override
-        public void run() {
-            shutdown();
-        }
-    };
 
     final void addJVMShutDownHook() {
         shutDownHook.setName("SeLionJarSpawnerShutdownHook");

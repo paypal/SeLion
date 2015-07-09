@@ -590,6 +590,14 @@ public final class Config {
          * Default is set to <b>120000</b>
          */
         EXECUTION_TIMEOUT("executionTimeout", "120000", false),
+        
+        /**
+         * Timeout for downloading dependencies, in milliseconds.<br>
+         * <br>
+         * Used in SeLion to configure the download timeout<br>
+         * Default is set to <b>600000</b>
+         */
+        DOWNLOAD_TIMEOUT("executionTimeout", "600000", false),
 
         /**
          * Automatically log pages source code.<br>

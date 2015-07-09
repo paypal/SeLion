@@ -22,8 +22,9 @@ public class IOSDriverJarSpawnerTest {
         host = new NetworkUtils().getIpOfLoopBackIp4();
         port = PortProber.findFreePort();
         
-        spawner = new IOSDriverJarSpawner(new String[] { "-host", host, "-port",
-                String.valueOf(port) }, new ProcessLauncherOptionsImpl().setContinuouslyRestart(false));
+        spawner = new IOSDriverJarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
+                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false)
+                        .setIncludeParentProcessClassPath(false));
         thread = new Thread(spawner);
     }
 

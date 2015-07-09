@@ -23,23 +23,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
-import com.google.common.base.Preconditions;
 import com.paypal.selion.SeLionConstants;
-import com.paypal.selion.grid.RunnableLauncher.InstanceType;
 import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
- * This is a stand alone class which sets up SeLion dependencies and spawns {@link SeLionGridLauncher}. This class
- * functions much like {@link ThreadedLauncher} but with a few exceptions. Mainly, it starts {@link SeLionGridLauncher}
- * in a separate process. It also continuously restarts {@link SeLionGridLauncher}, if it exits in an unexpected
- * fashion. Health checks for the {@link SeLionGridLauncher} process are configurable via the property 'restartCycle' in
- * the SeLion Grid JSON config file.
+ * This is a stand alone class which sets up SeLion dependencies and spawns {@link SeLionGridLauncher}.
  */
 public final class JarSpawner extends AbstractBaseProcessLauncher {
 
@@ -160,54 +150,5 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
         }
         LOGGER.exiting(args.toString());
         return args.toArray(new String[args.size()]);
-    }
-
-    /**
-     * Returns the <strong>{host}:{port}/{servletpath}</strong> for an {@link InstanceType#SELENIUM_HUB},
-     * {@link InstanceType#SELION_SAUCE_HUB}, and {@link InstanceType#SELENIUM_NODE}. Returns
-     * <code>null<code> for other {@link InstanceType}s
-     * 
-     * @param servlet
-     *            the HttpServlet simple name.
-     * @throws IOException
-     */
-    private String getHostPortAndServletPath(String servlet) throws IOException {
-        LOGGER.entering(servlet);
-        Preconditions.checkArgument(StringUtils.isNotEmpty(servlet), "servlet name must not be empty or null");
-        InstanceType type = getType();
-
-        String result = null;
-        if (type.equals(InstanceType.SELENIUM_NODE)) {
-            result = getHost() + ":" + getPort() + "/extra/" + servlet;
-        }
-        if (type.equals(InstanceType.SELENIUM_HUB)) {
-            result = getHost() + ":" + getPort() + "/grid/" + servlet;
-        }
-        // standalone
-        LOGGER.exiting(result);
-        return result;
-    }
-
-    @Override
-    public final void shutdown() {
-        // TODO NodeForceRestartServlet isn't a good option for Hubs
-        // TODO Make process handler consider PID files
-        CloseableHttpClient client = HttpClientBuilder.create().build();
-        StringBuilder url = new StringBuilder();
-        try {
-            url.append("http://");
-            url.append(getHostPortAndServletPath("NodeForceRestartServlet"));
-            HttpPost post = new HttpPost(url.toString());
-            client.execute(post);
-        } catch (IOException e) {
-            // ignore
-        } finally {
-            try {
-                client.close();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-        super.shutdown();
     }
 }

@@ -60,7 +60,7 @@ abstract class AbstractBaseLocalServerComponent implements LocalServerComponent 
         Runnable worker = getLauncher();
         try {
             getExecutor().execute(worker);
-            waitForInitialization(Long.parseLong(Config.getConfigProperty(ConfigProperty.EXECUTION_TIMEOUT)));
+            waitForInitialization(Long.parseLong(Config.getConfigProperty(ConfigProperty.DOWNLOAD_TIMEOUT)));
             waitForComponentToComeUp();
             LOGGER.info(String.format("%s spawned", this.getClass().getSimpleName()));
         } catch (IllegalStateException e) {

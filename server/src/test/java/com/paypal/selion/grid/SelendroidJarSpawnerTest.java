@@ -8,6 +8,8 @@ import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
+
 
 @Test(singleThreaded = true, groups = { "selendroid" })
 public class SelendroidJarSpawnerTest {
@@ -20,8 +22,9 @@ public class SelendroidJarSpawnerTest {
     public void beforeClass() {
         host = new NetworkUtils().getIpOfLoopBackIp4();
         port = PortProber.findFreePort();
-        spawner = new SelendroidJarSpawner(new String[] { "-noContinuousRestart", "-host", host, "-port",
-                String.valueOf(port) });
+        spawner = new SelendroidJarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
+                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false)
+                        .setIncludeParentProcessClassPath(false));
         thread = new Thread(spawner);
     }
 

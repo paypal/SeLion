@@ -52,13 +52,14 @@ class ArtifactDetails {
     }
 
     /**
-     * Utility method to return the {@link ArtifactDetails} as a {@link List} specific to {@link Platform}
+     * Utility method to return the {@link ArtifactDetails} as a {@link List} specific to {@link Platform} and by 'role'
      *
      * @param downloadFile
      *            containing the artifact details
      * @param instanceType
      *            the {@link InstanceType} of the current instance
      * @return A {@link List} containing the URL and CheckSum
+     * @throws FileNotFoundException
      */
     static List<URLChecksumEntity> getArtifactDetailsForCurrentPlatformByRole(File downloadFile,
             InstanceType instanceType) throws FileNotFoundException {
@@ -88,6 +89,15 @@ class ArtifactDetails {
         return artifactDetails;
     }
 
+    /**
+     * Utility method to return the {@link ArtifactDetails} as a {@link List} specific to {@link Platform} and by 'names'
+     * @param downloadFile
+     *            containing the artifact details
+     * @param artifactNames
+     *            the {@link List} of artifact names
+     * @return A {@link List} containing the URL and CheckSum
+     * @throws FileNotFoundException
+     */
     static List<URLChecksumEntity> getArtifactDetailsForCurrentPlatformByNames(File downloadFile,
             List<String> artifactNames) throws FileNotFoundException {
         Preconditions.checkNotNull(downloadFile, "The JSON to get artifact details cannot be null");
