@@ -17,7 +17,6 @@ package com.paypal.selion.platform.grid.browsercapabilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -32,7 +31,7 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-        if (isLocalRun()) {
+        if (isLocalRun() && StringUtils.isNotBlank(getBinaryPath())) {
             System.setProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY, getBinaryPath());
         }
         capabilities.setBrowserName(DesiredCapabilities.chrome().getBrowserName());
@@ -53,13 +52,9 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     /*
      * Returns the location of chromedriver or "" if it can not be determined.
      */
-    @SuppressWarnings("deprecation")
     private String getBinaryPath() {
         String location = System.getProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY,
                 Config.getConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH));
-        if (StringUtils.isBlank(location)) {
-            location = CommandLine.find(SeLionConstants.CHROME_DRIVER.replace(".exe", ""));
-        }
-        return (location != null) ? location : "";
+        return location;
     }
 }

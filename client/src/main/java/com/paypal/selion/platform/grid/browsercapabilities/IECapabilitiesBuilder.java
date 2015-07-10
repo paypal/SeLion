@@ -17,7 +17,6 @@ package com.paypal.selion.platform.grid.browsercapabilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -32,7 +31,7 @@ class IECapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-        if (isLocalRun()) {
+        if (isLocalRun() && StringUtils.isNotBlank(getBinaryPath())) {
             System.setProperty(SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY, getBinaryPath());
         }
         capabilities.setBrowserName(DesiredCapabilities.internetExplorer().getBrowserName());
@@ -46,13 +45,9 @@ class IECapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     /*
      * Returns the location of iedriverserver or "" if it can not be determined.
      */
-    @SuppressWarnings("deprecation")
     private String getBinaryPath() {
         String location = System.getProperty(SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY,
                 Config.getConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH));
-        if (StringUtils.isBlank(location)) {
-            location = CommandLine.find(SeLionConstants.IE_DRIVER.replace(".exe", ""));
-        }
-        return (location != null) ? location : "";
+        return location;
     }
 }
