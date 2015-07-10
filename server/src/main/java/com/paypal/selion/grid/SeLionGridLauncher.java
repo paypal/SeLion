@@ -100,7 +100,7 @@ public class SeLionGridLauncher {
         if (helper.isParamPresent("-help") || helper.isParamPresent("-h")) {
             String separator = "\n----------------------------------\n";
             RemoteControlLauncher.usage(separator + "To use as a standalone server" + separator);
-            GridDocHelper.printHelp(separator + "To use in a grid environment :" + separator, false);
+            GridDocHelper.printHubHelp(separator + "To use in a grid environment :" + separator, false);
             return;
         }
 
@@ -139,7 +139,7 @@ public class SeLionGridLauncher {
                 throw new RuntimeException("NI");
             }
         } catch (GridConfigurationException e) {
-            GridDocHelper.printHelp(e.getMessage());
+            GridDocHelper.printHubHelp(e.getMessage());
             e.printStackTrace();
         } catch (RuntimeException rex) {
             rex.printStackTrace();
