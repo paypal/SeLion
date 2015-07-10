@@ -44,7 +44,7 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     @BeforeClass
     public void setUpBeforeClass() {
         artifactFileOnePath = DefaultManagedArtifactTest.class.getResource(
-                "/artifacts/userOne/InternationalMountains_app.zip").getFile();
+                "/artifacts/userOne/DummyArtifact.any").getFile();
     }
 
     @BeforeMethod
@@ -59,7 +59,7 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     // Enable this test case for testing time difference
     public void testIsExpired() {
         ManagedArtifact managedArtifact = new DefaultManagedArtifact(
-                "src/test/resources/artifacts/userOne/userFolder/InternationalMountains_app.zip");
+                "src/test/resources/artifacts/userOne/userFolder/DummyArtifact.any");
         Assert.assertEquals(managedArtifact.isExpired(), true, "Artifact is not expired after a day");
     }
 
@@ -97,7 +97,7 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     public void testMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
         EnumMap<RequestHeaders, String> firstMap = new EnumMap<>(RequestHeaders.class);
-        firstMap.put(RequestHeaders.FILENAME, "InternationalMountains_app.zip");
+        firstMap.put(RequestHeaders.FILENAME, "DummyArtifact.any");
         firstMap.put(RequestHeaders.USERID, "userOne");
         Criteria criteria = new DefaultCriteria(firstMap);
         Assert.assertEquals(managedArtifact.matches(criteria), true, "Artifact does not match the expected criteria");
@@ -107,7 +107,7 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     public void testUnEqualFileNameMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
         EnumMap<RequestHeaders, String> firstMap = new EnumMap<>(RequestHeaders.class);
-        firstMap.put(RequestHeaders.FILENAME, "InternationalMountains_app4.zip");
+        firstMap.put(RequestHeaders.FILENAME, "DummyArtifact4.zip");
         firstMap.put(RequestHeaders.USERID, "userOne");
         Criteria criteria = new DefaultCriteria(firstMap);
         Assert.assertEquals(managedArtifact.matches(criteria), false, "Artifact matches for different file name");
@@ -117,7 +117,7 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     public void testUnEqualUserIdMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
         EnumMap<RequestHeaders, String> firstMap = new EnumMap<>(RequestHeaders.class);
-        firstMap.put(RequestHeaders.FILENAME, "InternationalMountains_app.zip");
+        firstMap.put(RequestHeaders.FILENAME, "DummyArtifact.any");
         firstMap.put(RequestHeaders.USERID, "userTwo");
         Criteria criteria = new DefaultCriteria(firstMap);
         Assert.assertEquals(managedArtifact.matches(criteria), false, "Artifact matches for different userId");
@@ -126,7 +126,7 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     @Test
     public void testFileName() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        Assert.assertEquals(managedArtifact.getArtifactName(), "InternationalMountains_app.zip",
+        Assert.assertEquals(managedArtifact.getArtifactName(), "DummyArtifact.any",
                 "Artifact file name does not match");
     }
 

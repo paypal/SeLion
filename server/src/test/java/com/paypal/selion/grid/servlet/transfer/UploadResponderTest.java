@@ -67,9 +67,9 @@ public class UploadResponderTest extends PowerMockTestCase {
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
 
-        String expected = "{\"files\":[{\"fileName\":\"InternationalMountains_app.zip\",\"url\":\"http://localhost:4444/path/TransferServlet/userOne/InternationalMountains_app.zip\"}]}";
+        String expected = "{\"files\":[{\"fileName\":\"DummyArtifact.any\",\"url\":\"http://localhost:4444/path/TransferServlet/userOne/DummyArtifact.any\"}]}";
         EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
-        map.put(RequestHeaders.FILENAME, "InternationalMountains_app.zip");
+        map.put(RequestHeaders.FILENAME, "DummyArtifact.any");
         map.put(RequestHeaders.USERID, "userOne");
 
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
@@ -80,7 +80,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         TransferContext transferContext = mock(TransferContext.class);
 
         when(managedArtifact.getFolderName()).thenReturn("userOne");
-        when(managedArtifact.getArtifactName()).thenReturn("InternationalMountains_app.zip");
+        when(managedArtifact.getArtifactName()).thenReturn("DummyArtifact.any");
         when(transferContext.getHttpServletRequest()).thenReturn(httpServletRequest);
         when(transferContext.getHttpServletResponse()).thenReturn(httpServletResponse);
         when(transferContext.getUploadRequestProcessor()).thenReturn(requestProcessor);
@@ -106,9 +106,9 @@ public class UploadResponderTest extends PowerMockTestCase {
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
 
-        String expected = "fileName=InternationalMountains_app.zip,url=http://localhost:4444/path/TransferServlet/userOne/InternationalMountains_app.zip;";
+        String expected = "fileName=DummyArtifact.any,url=http://localhost:4444/path/TransferServlet/userOne/DummyArtifact.any;";
         EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
-        map.put(RequestHeaders.FILENAME, "InternationalMountains_app.zip");
+        map.put(RequestHeaders.FILENAME, "DummyArtifact.any");
         map.put(RequestHeaders.USERID, "userOne");
 
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
@@ -119,7 +119,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         TransferContext transferContext = mock(TransferContext.class);
 
         when(managedArtifact.getFolderName()).thenReturn("userOne");
-        when(managedArtifact.getArtifactName()).thenReturn("InternationalMountains_app.zip");
+        when(managedArtifact.getArtifactName()).thenReturn("DummyArtifact.any");
         when(transferContext.getHttpServletRequest()).thenReturn(httpServletRequest);
         when(transferContext.getHttpServletResponse()).thenReturn(httpServletResponse);
         when(transferContext.getUploadRequestProcessor()).thenReturn(requestProcessor);
@@ -145,7 +145,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
 
         EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
-        map.put(RequestHeaders.FILENAME, "InternationalMountains_app.zip");
+        map.put(RequestHeaders.FILENAME, "DummyArtifact.any");
         map.put(RequestHeaders.USERID, "userOne");
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();

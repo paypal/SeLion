@@ -63,7 +63,7 @@ public class DownloadResponderTest extends PowerMockTestCase {
         TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);
         transferContext.setDownloadRequestProcessor(downloadProcessor);
 
-        when(httpServletRequest.getPathInfo()).thenReturn("/userOne/InternationalMountains_app.zip");
+        when(httpServletRequest.getPathInfo()).thenReturn("/userOne/DummyArtifact.any");
         when(downloadProcessor.getArtifact(Mockito.any(Criteria.class))).thenReturn(managedArtifact);
         when(managedArtifact.getArtifactContents()).thenReturn(bytes);
         when(httpServletResponse.getOutputStream()).thenReturn(new ServletOutputStream() {
@@ -94,7 +94,7 @@ public class DownloadResponderTest extends PowerMockTestCase {
         TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);
         transferContext.setDownloadRequestProcessor(downloadProcessor);
 
-        when(httpServletRequest.getPathInfo()).thenReturn("/userOne/InternationalMountains_app.zip");
+        when(httpServletRequest.getPathInfo()).thenReturn("/userOne/DummyArtifact.any");
         when(downloadProcessor.getArtifact(Mockito.any(Criteria.class))).thenThrow(new ArtifactDownloadException(""));
 
         DownloadResponder downloadResponder = spy(new DownloadResponder(transferContext));
