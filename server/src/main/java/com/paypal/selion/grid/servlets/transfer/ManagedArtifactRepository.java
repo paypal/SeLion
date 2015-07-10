@@ -87,8 +87,8 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     private static String initializeBaseDir() {
         LOGGER.entering();
         String repoFolderName = System.getProperty(ARTIFACT_BASE_CONFIG_PROPERTY,
-                ConfigParser.parse().getString(ARTIFACT_BASE_CONFIG_PROPERTY));
-        repoFolderName = StringUtils.defaultIfBlank(repoFolderName, "repository");
+                ConfigParser.parse().getString(ARTIFACT_BASE_CONFIG_PROPERTY, "repository"));
+        repoFolderName = StringUtils.defaultIfEmpty(repoFolderName, "repository");
         LOGGER.exiting(repoFolderName);
         return repoFolderName;
     }
