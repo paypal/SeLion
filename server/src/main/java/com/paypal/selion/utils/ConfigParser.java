@@ -86,6 +86,7 @@ public final class ConfigParser {
      * @param defaultVal
      *            default value to use if the key does not exist or has an malformed value
      * @return
+     *            An integer value.
      */
     public int getInt(String key, int defaultVal) {
         LOGGER.entering(key);
@@ -116,6 +117,7 @@ public final class ConfigParser {
      * @param defaultVal
      *            default value to use if the key does not exist or has an malformed value
      * @return
+     *            A long integer.
      */
     public long getLong(String key, long defaultVal) {
         LOGGER.entering(key);
@@ -146,6 +148,7 @@ public final class ConfigParser {
      * @param defaultVal
      *            default value to use if the key does not exist or has an malformed value
      * @return
+     *            A string value.
      */
     public String getString(String key, String defaultVal) {
         LOGGER.entering(key);

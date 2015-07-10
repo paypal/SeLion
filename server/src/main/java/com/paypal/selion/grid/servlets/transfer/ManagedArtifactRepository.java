@@ -41,19 +41,27 @@ import com.paypal.selion.utils.ConfigParser;
  */
 public class ManagedArtifactRepository implements ServerRepository<ManagedArtifact, Criteria> {
 
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ManagedArtifactRepository.class);
+
     /*
      * The folder used for storing artifacts. Make sure this folder is available in the classpath or this string is
      * represented as a system property
      */
-    private static final String REPO_FOLDER_NAME = "repository";
+    private static final String REPO_FOLDER_NAME = ManagedArtifactRepository.initializeBaseDir();
 
     /*
-     * Configuration property name for custom managed artifacts
+     * Configuration property name for custom managed artifacts.
      */
     private static final String ARTIFACT_CONFIG_PROPERTY = "managedArtifact";
-
-    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ManagedArtifactRepository.class);
-
+    
+    /*
+     * Configuration property name for base directory under {@link SeLionGridConstants#SELION_HOME_DIR} that contains
+     * directories and managed artifacts.
+     * 
+     * Supports a name or a forward slash separated path. E.g. "repository", "repository/subrepository".
+     */
+    private static final String ARTIFACT_BASE_CONFIG_PROPERTY = "managedArtifactBaseDir";
+    
     private static ManagedArtifactRepository instance = new ManagedArtifactRepository();
 
     private File repoFolder = null;
@@ -70,6 +78,19 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
 
     public static synchronized ManagedArtifactRepository getInstance() {
         return instance;
+    }
+
+    /*
+     * Initializes the value of the {@link ManagedArtifactRepository#REPO_FOLDER_NAME} from JVM arguments or
+     * SeLionConfig.json. Default value returned is "repository".
+     */
+    private static String initializeBaseDir() {
+        LOGGER.entering();
+        String repoFolderName = System.getProperty(ARTIFACT_BASE_CONFIG_PROPERTY,
+                ConfigParser.parse().getString(ARTIFACT_BASE_CONFIG_PROPERTY));
+        repoFolderName = StringUtils.defaultIfBlank(repoFolderName, "repository");
+        LOGGER.exiting(repoFolderName);
+        return repoFolderName;
     }
 
     private ManagedArtifactRepository() {

@@ -55,7 +55,7 @@ public class TransferContext {
     }
 
     /**
-     * Returns the {@link HttpServletResponse} associated with the serverl call.
+     * Returns the {@link HttpServletResponse} associated with the server call.
      * 
      * @return Instance of {@link HttpServletResponse}
      */

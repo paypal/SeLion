@@ -5,5 +5,6 @@
     "artifactMaxFileSize": 1073741824,
     "artifactExpiryInMilliSec": 86400000,
     "managedArtifact": com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact,
+    "managedArtifactBaseDir": "repository",
     "managedCriteria": com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria
 }
