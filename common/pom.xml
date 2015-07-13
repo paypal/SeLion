@@ -11,7 +11,6 @@
     <packaging>jar</packaging>
     <description>SeLion Common Classes</description>
     <name>SeLion Common</name>
-    <url>${siteUrl}</url>
 
     <properties>
         <suiteXmlPath>src/test/resources/</suiteXmlPath>
@@ -63,14 +62,25 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Apache commons configuration -->
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
         <dependency>

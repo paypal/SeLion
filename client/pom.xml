@@ -64,15 +64,21 @@
     <dependencies>
         <dependency>
             <groupId>com.paypal.selion</groupId>
-            <artifactId>SeLion-Grid</artifactId>
+            <artifactId>SeLion-Common</artifactId>
             <version>${project.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.paypal.selion</groupId>
-            <artifactId>SeLion-Common</artifactId>
+            <artifactId>SeLion-DataProviders</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-Grid</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- Selenium2 server dependency -->
@@ -128,34 +134,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-        </dependency>
-
-        <!-- Apache commons configuration -->
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
         </dependency>
 
         <!-- A utility for parsing user agent strings -->
@@ -168,18 +148,6 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-        </dependency>
-
-        <!-- jaxen -->
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-        </dependency>
-
-        <!-- jxpath -->
-        <dependency>
-            <groupId>commons-jxpath</groupId>
-            <artifactId>commons-jxpath</artifactId>
         </dependency>
     </dependencies>
 

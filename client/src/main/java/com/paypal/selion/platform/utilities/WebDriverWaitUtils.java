@@ -33,7 +33,7 @@ import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * A utility class that provides an assortium of methods that can be used in conjunction with WebDriver.
+ * A utility class that provides a collection of methods that can be used in conjunction with WebDriver.
  *
  */
 public final class WebDriverWaitUtils {
