@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014 eBay Software Foundation                                                                        |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,25 +13,27 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.dataprovider;
+package com.paypal.selion.logger;
 
-import java.util.Map;
+import static org.testng.Assert.assertTrue;
 
-import com.paypal.selion.platform.dataprovider.impl.XmlFileSystemResource;
+import org.testng.annotations.Test;
 
-/**
- * This interface declare the prototype for xml data source which will be used in XML DataProvider Impl.
- *
- */
-public interface XmlDataSource extends DataResource {
+import com.paypal.selion.logger.SeLionLogger.SeLionLoggerSettings;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
-    /**
-     * Gets the map of {@code String} representing XPath and the type represented by the node evaluated by the XPath.
-     *
-     * @return A {@code Map<String, Class<?>>} map. Returns null if the instance was not initialized using
-     *         {@link XmlFileSystemResource#XmlFileSystemResource(String, Map)} or
-     *         {@link XmlFileSystemResource#XmlFileSystemResource(String, String, Map)} constructors.
-     */
-    Map<String, Class<?>> getXpathMap();
+public class SeLionLoggerTest {
+
+    @Test(groups = { "unit" })
+    public void testSeLionLogger() {
+        SimpleLogger logger = SeLionLogger.getLogger();
+        assertTrue(logger != null, "Could not get SeLion logger.");
+    }
+
+    @Test(groups = { "unit" })
+    public void testSeLionLoggerSetting() {
+        SeLionLoggerSettings setting = new SeLionLoggerSettings();
+        assertTrue(setting != null, "Could not get SeLion logger Settings.");
+    }
 
 }

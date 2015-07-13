@@ -29,13 +29,13 @@ import com.paypal.selion.platform.utilities.FileAssistant;
 public class FileAssistantTest {
     @Test(groups = "unit")
     public void testLoadFileWithFileObject() {
-        InputStream istream = FileAssistant.loadFile(new File("src/test/resources/PayPalProfilePage.yaml"));
+        InputStream istream = FileAssistant.loadFile(new File("src/test/resources/List.yaml"));
         assertNotNull(istream, "File Load test via File Object");
     }
 
     @Test(groups = "unit")
     public void testLoadFileWithClassPath() {
-        InputStream istream = FileAssistant.loadFile("PayPalProfilePage.yaml");
+        InputStream istream = FileAssistant.loadFile("List.yaml");
         assertNotNull(istream, "File Load test via File Object");
     }
 
