@@ -25,14 +25,14 @@ public interface DataResource {
     /**
      * Load the input stream of the data file
      *
-     * @return
+     * @return The inputStream
      */
     InputStream getInputStream();
 
     /**
      * Fetch the user defined POJO class
      *
-     * @return
+     * @return The class
      */
     Class<?> getCls();
 
@@ -46,7 +46,7 @@ public interface DataResource {
     /**
      * Fetch the data file extension
      *
-     * @return
+     * @return The type
      */
     String getType();
 }
