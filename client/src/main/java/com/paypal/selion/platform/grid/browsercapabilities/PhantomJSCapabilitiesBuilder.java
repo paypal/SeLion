@@ -16,11 +16,9 @@
 package com.paypal.selion.platform.grid.browsercapabilities;
 
 import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 
@@ -28,7 +26,7 @@ public class PhantomJSCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-        if (isLocalRun()) {
+        if (isLocalRun() && StringUtils.isNotBlank(getBinaryPath())) {
             System.setProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, getBinaryPath());
         }
         capabilities.setBrowserName(DesiredCapabilities.phantomjs().getBrowserName());
@@ -45,13 +43,9 @@ public class PhantomJSCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     /*
      * Returns the location of phantomjs or "" if it can not be determined.
      */
-    @SuppressWarnings("deprecation")
     private String getBinaryPath() {
         String location = System.getProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
                 Config.getConfigProperty(ConfigProperty.SELENIUM_PHANTOMJS_PATH));
-        if (StringUtils.isBlank(location)) {
-            location = CommandLine.find(SeLionConstants.PHANTOMJS_DRIVER.replace(".exe", ""));
-        }
-        return (location != null) ? location : "";
+        return location;
     }
 }

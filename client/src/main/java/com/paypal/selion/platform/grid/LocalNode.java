@@ -99,11 +99,14 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
     private List<String> determineListOfDownloadsToProcess() {
         List<String> list = new ArrayList<>();
 
+        if (!Config.getBoolConfigProperty(ConfigProperty.DOWNLOAD_DEPENDENCIES)) {
+            return list;
+        }
+
         // for IEDriver
         if (SystemUtils.IS_OS_WINDOWS) {
             if (!checkForPresenceOf(ConfigProperty.SELENIUM_IEDRIVER_PATH,
-                    SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY,
-                    SeLionConstants.IE_DRIVER)) {
+                    SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY, SeLionConstants.IE_DRIVER)) {
                 Config.setConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
                         + SeLionConstants.IE_DRIVER);
                 list.add("iedriver");
@@ -113,8 +116,7 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
 
         // for chromedriver
         if (!checkForPresenceOf(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH,
-                SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY,
-                SeLionConstants.CHROME_DRIVER)) {
+                SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY, SeLionConstants.CHROME_DRIVER)) {
             Config.setConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
                     + SeLionConstants.CHROME_DRIVER);
             list.add("chromedriver");
@@ -122,8 +124,7 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
 
         // for phantomjs
         if (!checkForPresenceOf(ConfigProperty.SELENIUM_PHANTOMJS_PATH,
-                SeLionConstants.WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY,
-                SeLionConstants.PHANTOMJS_DRIVER)) {
+                SeLionConstants.WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY, SeLionConstants.PHANTOMJS_DRIVER)) {
             Config.setConfigProperty(ConfigProperty.SELENIUM_PHANTOMJS_PATH, SeLionConstants.SELION_HOME_DIR
                     + SeLionConstants.PHANTOMJS_DRIVER);
             list.add("phantomjs");
@@ -132,12 +133,12 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
         return list;
     }
 
-    /*
-     * Return true when one of the following conditions is met
-     * 
-     * 1. ConfigProperty for driverBinary is specified and not blank or null. 
-     * 2. System Property which Selenium uses to find driverBinary is present. 
-     * 3. driverBinary exists in the current working directory OR the PATH
+    /**
+     * Return true when one of the following conditions is met <br>
+     * <br>
+     * 1. ConfigProperty for driverBinary is specified and not blank or null. <br>
+     * 2. System Property which Selenium uses to find driverBinary is present. <br>
+     * 3. driverBinary exists in the current working directory OR the PATH <br>
      */
     private boolean checkForPresenceOf(ConfigProperty property, String systemProperty, String driverBinary) {
         if (StringUtils.isBlank(Config.getConfigProperty(property)) && System.getProperty(systemProperty) == null) {

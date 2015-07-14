@@ -400,7 +400,7 @@ public final class Config {
          * local runs involving the PhantomJS browser.
          */
         SELENIUM_PHANTOMJS_PATH("phantomjsPath", "", true),
-                
+
         /**
          * The path to the IEDriver executable on the local machine. This parameter is taken into consideration for
          * local runs involving the IE browser.
@@ -590,14 +590,21 @@ public final class Config {
          * Default is set to <b>120000</b>
          */
         EXECUTION_TIMEOUT("executionTimeout", "120000", false),
-        
+
+        /**
+         * Automatically attempt to download various webdriver dependencies (chromedriver, etc) if they are not
+         * available. <br>
+         * Default is set to <b>false</b>
+         */
+        DOWNLOAD_DEPENDENCIES("downloadDependencies", "false", true),
+
         /**
          * Timeout for downloading dependencies, in milliseconds.<br>
          * <br>
          * Used in SeLion to configure the download timeout<br>
          * Default is set to <b>600000</b>
          */
-        DOWNLOAD_TIMEOUT("executionTimeout", "600000", false),
+        DOWNLOAD_TIMEOUT("downloadTimeout", "600000", true),
 
         /**
          * Automatically log pages source code.<br>
@@ -605,6 +612,17 @@ public final class Config {
          * Default is set to <b>true</b>
          */
         LOG_PAGES("logPages", "true", true),
+
+        /**
+         * Maximum duration of a session duration in milliseconds. Session will be forcefully terminated if it takes
+         * longer.<br>
+         * The value of this parameter is used as the value of <b>sessionTimeout</b> for ios-driver and selendroid.<br>
+         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
+         * is set to true.<br>
+         * The unit is milliseconds.<br>
+         * Default is set to <b>1800000</b> milliseconds.
+         */
+        MOBILE_DRIVER_SESSION_TIMEOUT("sessionTimeout", "1800000", false),
 
         /**
          * Selendroid Server port to use.<br>
@@ -623,17 +641,6 @@ public final class Config {
          * Default is set to <b>false</b>
          */
         SELENDROID_SERVER_FORCE_REINSTALL("selendroidServerForceReinstall", "false", true),
-
-        /**
-         * Maximum duration of a session duration in milliseconds. Session will be forcefully terminated if it takes
-         * longer.<br>
-         * The value of this parameter is used as the value of <b>sessionTimeout</b> for ios-driver and selendroid.<br>
-         * This configuration affects LOCAL EXECUTION RUNS only i.e., when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
-         * is set to true.<br>
-         * The unit is milliseconds.<br>
-         * Default is set to <b>1800000</b> milliseconds.
-         */
-        MOBILE_DRIVER_SESSION_TIMEOUT("sessionTimeout", "1800000", false),
 
         /**
          * Timeout that will be used to start Android emulators.<br>
