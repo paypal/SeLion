@@ -14,18 +14,11 @@
     <description>A collection of SeLion TestNG DataProviders for automation with TestNG.</description>
 
     <properties>
-        <suiteXmlFile>src/test/resources/suites/Default-Suite.xml</suiteXmlFile>
+        <dataProviderSuiteXmlFile>src/test/resources/suites/Default-Suite.xml</dataProviderSuiteXmlFile>
     </properties>
 
     <build>
         <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>selionbuildinfo.properties</include>
-                </includes>
-            </resource>
             <resource>
                 <!-- make our test reources available to SeLion client -->
                 <directory>src/test/resources</directory>
@@ -43,7 +36,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                        <suiteXmlFile>${dataProviderSuiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
@@ -67,11 +60,6 @@
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion-Common</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
         </dependency>
 
         <dependency>
