@@ -1,9 +1,8 @@
 language: java
+sudo: false
 jdk:
   - oraclejdk7
   - openjdk7
-install:
-  - sh -e utilities/install-ios-driver.sh
 script:
   - sh -e utilities/run-travis-ci-tests.sh
 after_success:
@@ -22,4 +21,4 @@ notifications:
       - https://webhooks.gitter.im/e/a8fc34e427360ced7ebf
     on_success: change
     on_failure: always
-    on_start: false
+    on_start: never

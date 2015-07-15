@@ -26,9 +26,8 @@ public class PhantomJSCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-
-        if (isLocalRun()) {
-            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, getBinaryPath());
+        if (isLocalRun() && StringUtils.isNotBlank(getBinaryPath())) {
+            System.setProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, getBinaryPath());
         }
         capabilities.setBrowserName(DesiredCapabilities.phantomjs().getBrowserName());
         capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {
@@ -41,8 +40,12 @@ public class PhantomJSCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         return capabilities;
     }
 
+    /*
+     * Returns the location of phantomjs or "" if it can not be determined.
+     */
     private String getBinaryPath() {
-        return Config.getConfigProperty(ConfigProperty.SELENIUM_PHANTOMJS_PATH);
+        String location = System.getProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                Config.getConfigProperty(ConfigProperty.SELENIUM_PHANTOMJS_PATH));
+        return location;
     }
-
 }

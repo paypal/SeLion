@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,141 +15,141 @@
 
 package com.paypal.selion.platform.grid;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.json.JSONObject;
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
+import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.os.CommandLine;
 
+import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.LauncherOptions;
+import com.paypal.selion.grid.ThreadedLauncher;
+import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local node.
- * 
  */
-class LocalNode implements LocalServerComponent {
-    private boolean isRunning = false, isRegistered = false;
-    private final SimpleLogger logger = SeLionLogger.getLogger();
-    private SeleniumServer node;
+final class LocalNode extends AbstractBaseLocalServerComponent {
+    private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
+    private static volatile LocalNode instance;
 
-    @Override
-    public void shutdown() {
-        if (node != null) {
-            try {
-                node.stop();
-                logger.log(Level.INFO, "Local node has been stopped");
-            } catch (Exception e) {
-                String errorMsg = "An error occured while attempting to shut down the local Node. Root cause: ";
-                logger.log(Level.SEVERE, errorMsg, e);
-            }
+    static synchronized final LocalServerComponent getSingleton() {
+        if (instance == null) {
+            return new LocalNode().getLocalServerComponent();
         }
+        return instance;
+    }
 
+    synchronized final LocalNode getLocalServerComponent() {
+        if (instance == null) {
+            instance = new LocalNode();
+
+            instance.setHost(new NetworkUtils().getIpOfLoopBackIp4());
+            instance.setPort(PortProber.findFreePort());
+
+            LauncherOptions launcherOptions = new LauncherOptionsImpl()
+                    .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
+
+            List<String> downloadList = determineListOfDownloadsToProcess();
+
+            instance.setLauncher(new ThreadedLauncher(new String[] { "-role", "node", "-port",
+                    String.valueOf(instance.getPort()), "-proxy", DefaultRemoteProxy.class.getName(), "-host",
+                    instance.getHost(), "-hubHost", instance.getHost() }, launcherOptions, downloadList));
+        }
+        return instance;
     }
 
     @Override
     public void boot(AbstractTestSession testSession) {
-        logger.entering(testSession.getPlatform());
-        if (isRunning) {
-            logger.exiting();
-            return;
-        }
-        if (isRegistered) {
-            logger.exiting();
-            return;
-        }
+        LOGGER.entering(testSession.getPlatform());
         if (!(testSession instanceof WebTestSession)) {
-            logger.exiting();
             return;
         }
-        LocalGridConfigFileParser parser = new LocalGridConfigFileParser();
-        int port = parser.getPort();
-        JSONObject request = parser.getRequest();
 
-        RemoteControlConfiguration c = new RemoteControlConfiguration();
-        c.setPort(port);
+        if (instance == null) {
+            getLocalServerComponent();
+        }
+        super.boot(testSession);
+        LOGGER.exiting();
+    }
 
-        try {
-            node = new SeleniumServer(c);
-            node.boot();
-            isRunning = true;
-            logger.log(Level.INFO, "Local node spawned");
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            throw new GridException("Failed to start a local Grid", e);
+    @Override
+    public void shutdown() {
+        LOGGER.entering();
+        if (instance == null) {
+            LOGGER.exiting();
+            return;
+        }
+        super.shutdown();
+        LOGGER.exiting();
+    }
+
+    /*
+     * Based on platform type and current Config, determine whether dependent binaries are in place. Otherwise, add them
+     * to the list of things to download.
+     */
+    private List<String> determineListOfDownloadsToProcess() {
+        List<String> list = new ArrayList<>();
+
+        if (!Config.getBoolConfigProperty(ConfigProperty.DOWNLOAD_DEPENDENCIES)) {
+            return list;
         }
 
-        if (!isRegistered && isRunning) {
-            String host = "localhost";
-            String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-            String registrationUrl = String.format("http://%s:%s/grid/register", host, hubPort);
-            URL registration;
-            try {
-                registration = new URL(registrationUrl);
-                registerNodeToHub(registration, request.toString());
-                isRegistered = true;
-                logger.log(Level.INFO, "Attached node to local hub " + registrationUrl);
-            } catch (MalformedURLException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-                throw new GridException("Failed to start a local node", e);
+        // for IEDriver
+        if (SystemUtils.IS_OS_WINDOWS) {
+            if (!checkForPresenceOf(ConfigProperty.SELENIUM_IEDRIVER_PATH,
+                    SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY, SeLionConstants.IE_DRIVER)) {
+                Config.setConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
+                        + SeLionConstants.IE_DRIVER);
+                list.add("iedriver");
             }
+
         }
+
+        // for chromedriver
+        if (!checkForPresenceOf(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH,
+                SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY, SeLionConstants.CHROME_DRIVER)) {
+            Config.setConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
+                    + SeLionConstants.CHROME_DRIVER);
+            list.add("chromedriver");
+        }
+
+        // for phantomjs
+        if (!checkForPresenceOf(ConfigProperty.SELENIUM_PHANTOMJS_PATH,
+                SeLionConstants.WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY, SeLionConstants.PHANTOMJS_DRIVER)) {
+            Config.setConfigProperty(ConfigProperty.SELENIUM_PHANTOMJS_PATH, SeLionConstants.SELION_HOME_DIR
+                    + SeLionConstants.PHANTOMJS_DRIVER);
+            list.add("phantomjs");
+        }
+
+        return list;
     }
 
     /**
-     * This method helps with creating a node and associating it with the already spawned Hub instance
-     * 
-     * @param registrationURL
-     *            - The registration URL of the hub
-     * @param json
-     *            - A string that represents the capabilities and configurations in the JSON text file
+     * Return true when one of the following conditions is met <br>
+     * <br>
+     * 1. ConfigProperty for driverBinary is specified and not blank or null. <br>
+     * 2. System Property which Selenium uses to find driverBinary is present. <br>
+     * 3. driverBinary exists in the current working directory OR the PATH <br>
      */
-    private void registerNodeToHub(URL registrationURL, String json) {
-        logger.entering(new Object[] { registrationURL, json });
-        BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST",
-                registrationURL.toExternalForm());
-        String errorMsg = "Error sending the node registration request. ";
-
-        try {
-            r.setEntity(new StringEntity(json));
-        } catch (UnsupportedEncodingException e) {
-            logger.log(Level.SEVERE, errorMsg, e);
-            throw new GridException(errorMsg, e);
+    private boolean checkForPresenceOf(ConfigProperty property, String systemProperty, String driverBinary) {
+        if (StringUtils.isBlank(Config.getConfigProperty(property)) && System.getProperty(systemProperty) == null) {
+            // check the CWD and PATH for the driverBinary
+            @SuppressWarnings("deprecation")
+            String location = CommandLine.find(driverBinary.replace(".exe", ""));
+            if (location != null) {
+                return true;
+            }
+            return false;
         }
-
-        CloseableHttpClient client = HttpClientBuilder.create().build();
-        HttpHost host = new HttpHost(registrationURL.getHost(), registrationURL.getPort());
-
-        HttpResponse response = null;
-        try {
-            response = client.execute(host, r);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, errorMsg, e);
-            throw new GridException(errorMsg, e);
-        } finally {
-            IOUtils.closeQuietly(client);
-        }
-
-        if (response.getStatusLine().getStatusCode() != 200) {
-            errorMsg += "Received status code " + response.getStatusLine().getStatusCode();
-            logger.log(Level.SEVERE, errorMsg);
-            throw new GridException(errorMsg);
-        }
-        logger.exiting();
+        return true;
     }
-
 }

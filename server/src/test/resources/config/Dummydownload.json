@@ -1,6 +1,7 @@
 [
   {
     "name": "selenium",
+    "roles": [ "hub", "node", "standalone" ],
     "any": {
       "url": "seleniumURL",
       "checksum": "seleniumChecksum"
@@ -8,6 +9,7 @@
   },
   {
     "name": "chrome",
+    "roles": [ "node", "standalone" ],
     "windows": {
       "url": "chromeURL",
       "checksum": "chromeCheckSum"

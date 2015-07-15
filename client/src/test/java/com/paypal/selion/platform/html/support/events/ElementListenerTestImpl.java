@@ -16,7 +16,7 @@
 package com.paypal.selion.platform.html.support.events;
 
 import com.paypal.selion.platform.html.AbstractElement;
-import com.paypal.selion.testcomponents.paypal.TestPage;
+import com.paypal.selion.testcomponents.TestPage;
 
 
 public class ElementListenerTestImpl implements ElementEventListener {

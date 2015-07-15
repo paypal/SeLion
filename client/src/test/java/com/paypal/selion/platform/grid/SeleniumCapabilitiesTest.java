@@ -17,14 +17,17 @@ package com.paypal.selion.platform.grid;
 
 import static org.testng.Assert.*;
 
+import org.testng.ITestContext;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
+import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.platform.grid.Grid;
 
 @Test(groups = "SeleniumCapabilitiesTest")
 public class SeleniumCapabilitiesTest {
-    @Test(groups = "functional")
+    @Test(groups = { "functional", "firefox-only" })
     @WebTest(browser = "*firefox")
     public void testDefaultBrowser() {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
@@ -33,19 +36,23 @@ public class SeleniumCapabilitiesTest {
 
     @Test(groups = "functional")
     @WebTest()
-    public void testDefaultBrowser1() {
+    public void testDefaultBrowser1(ITestContext ctx) {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
-        assertTrue(userAgent.toLowerCase().contains("firefox"));
+        String browser = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName())
+                .getConfigProperty(ConfigProperty.BROWSER).replace("*", "");
+        assertTrue(userAgent.toLowerCase().contains(browser));
     }
 
     @Test(groups = "functional")
     @WebTest(browser = "")
-    public void testDefaultBrowser2() {
+    public void testDefaultBrowser2(ITestContext ctx) {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
-        assertTrue(userAgent.toLowerCase().contains("firefox"));
+        String browser = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName())
+                .getConfigProperty(ConfigProperty.BROWSER).replace("*", "");
+        assertTrue(userAgent.toLowerCase().contains(browser));
     }
 
-    @Test(groups = "functional")
+    @Test(groups = { "functional", "ie-only" })
     @WebTest(browser = "*iexplore")
     public void testIexploreBrowser() {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");

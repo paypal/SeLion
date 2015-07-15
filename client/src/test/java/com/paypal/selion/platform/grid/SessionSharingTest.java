@@ -22,9 +22,9 @@ import java.io.IOException;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.reports.runtime.SeLionReporter;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 @WebTest
 @Test(singleThreaded = true)

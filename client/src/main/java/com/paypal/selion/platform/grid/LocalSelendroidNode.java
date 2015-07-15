@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-2015 eBay Software Foundation                                                                   |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,191 +15,179 @@
 
 package com.paypal.selion.platform.grid;
 
-import io.selendroid.grid.SelendroidSessionProxy;
-import io.selendroid.standalone.SelendroidConfiguration;
-import io.selendroid.standalone.SelendroidLauncher;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.commons.configuration.ConversionException;
-import org.openqa.grid.common.exception.GridException;
+import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 
+import com.google.common.annotations.Beta;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.ProcessLauncherOptions;
+import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
+import com.paypal.selion.grid.SelendroidJarSpawner;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local android driver
- * node.
- * 
+ * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local selendroid node.
  */
-class LocalSelendroidNode extends AbstractNode implements LocalServerComponent {
+@Beta
+final class LocalSelendroidNode extends AbstractBaseLocalServerComponent {
+    private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
+    private static volatile LocalSelendroidNode instance;
 
-    protected boolean isRunning = false;
-    private SelendroidLauncher server = null;
-    private SelendroidConfiguration sconfig = new SelendroidConfiguration();
-    private SimpleLogger logger = SeLionLogger.getLogger();
+    static synchronized final LocalServerComponent getSingleton() {
+        if (instance == null) {
+            instance = new LocalSelendroidNode().getLocalServerComponent();
+        }
+        return instance;
+    }
+
+    synchronized final LocalSelendroidNode getLocalServerComponent() {
+        if (instance == null) {
+            instance = new LocalSelendroidNode();
+
+            instance.setHost(new NetworkUtils().getIpOfLoopBackIp4());
+            instance.setPort(PortProber.findFreePort());
+
+            String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
+            String hub = String.format("http://%s:%s/grid/register", instance.getHost(), hubPort);
+
+            String[] folder = new String[] { "", "" };
+            String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
+            if (StringUtils.isNotEmpty(autFolder)) {
+                folder = new String[] { "-folder", autFolder };
+            }
+
+            String forceReinstall = "";
+            if (Config.getBoolConfigProperty(ConfigProperty.SELENDROID_SERVER_FORCE_REINSTALL)) {
+                forceReinstall = ("-forceReinstall");
+            }
+
+            ProcessLauncherOptions processOptions = new ProcessLauncherOptionsImpl().setContinuouslyRestart(false)
+                    .setIncludeJarsInPresentWorkingDir(false).setIncludeParentProcessClassPath(false)
+                    .setIncludeJavaSystemProperties(false).setFileDownloadCheckTimeStampOnInvocation(false)
+                    .setFileDownloadCleanupOnInvocation(false);
+
+            instance.setLauncher(new SelendroidJarSpawner(new String[] {
+                    "-port", String.valueOf(instance.getPort()),
+                    "-host", instance.getHost(),
+                    "-hub", hub,
+                    folder[0], folder[1],
+                    "-selendroidServerPort", Config.getConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT),
+                    "-timeoutEmulatorStart",
+                    Config.getConfigProperty(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT),
+                    "-serverStartTimeout", Config.getConfigProperty(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT),
+                    forceReinstall,
+                    "-sessionTimeout", Config.getConfigProperty(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT) },
+                    processOptions));
+
+        }
+        return instance;
+    }
 
     @Override
     public void boot(AbstractTestSession testSession) {
-        logger.entering(testSession.getPlatform());
+        LOGGER.entering();
 
-        // don't allow non-mobile test case to spawn the selendroid node
+        // don't allow non-mobile test case to spawn the ios-driver node
         if ((testSession.getPlatform() != WebDriverPlatform.ANDROID) && !(testSession instanceof MobileTestSession)) {
             return;
         }
-        // don't allow an appium test case to spawn the selendroid node
+        // don't allow an appium test case to spawn the ios-driver node
         if (((MobileTestSession) testSession).getMobileNodeType() != MobileNodeType.SELENDROID) {
             return;
         }
 
-        if (isRunning) {
-            logger.exiting();
-            return;
-        }
-        String host = "localhost";
-        String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
-        String registrationUrl = String.format("http://%s:%s/grid/register", host, hubPort);
-
         try {
-            int port = new LocalGridConfigFileParser().getPort() + 2;
-            startSelendroidDriverNode(port);
-            waitForNodeToComeUp(port,
-                    "Encountered problems when attempting to register the Selendroid Node to the local Grid");
-            isRunning = true;
-            logger.log(Level.INFO, "Attached SelendroidDriver node to local hub " + registrationUrl);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            throw new GridException("Failed to start a local Selendroid Node", e);
+            validateConfiguredOptions();
+        } catch (IllegalArgumentException e) {
+            throw e;
         }
+
+        if (instance == null) {
+            getLocalServerComponent();
+        }
+        super.boot(testSession);
+        LOGGER.exiting();
     }
 
     @Override
     public void shutdown() {
-        if (server != null) {
-            try {
-                server.stopSelendroid();
-                logger.log(Level.INFO, "Local Selendroid Node has been stopped");
-            } catch (Exception e) {
-                String errorMsg = "An error occured while attempting to shut down the local Selendroid Node. Root cause: ";
-                logger.log(Level.SEVERE, errorMsg, e);
+        LOGGER.entering();
+        if (instance == null) {
+            LOGGER.exiting();
+            return;
+        }
+        super.shutdown();
+        LOGGER.exiting();
+    }
+
+    private void validateConfiguredOptions() {
+        // Make sure the configured internal selendroid server port is not already in use
+        int selendroidServerPort = Config.getIntConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT);
+        String portInUseError = String.format("Port %d is already in use. Please shutdown the service "
+                + "listening on this port or configure a different selendroid server port.", selendroidServerPort);
+        boolean free = false;
+        try {
+            free = PortProber.pollPort(selendroidServerPort);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(portInUseError, e);
+        } finally {
+            if (!free) {
+                throw new IllegalArgumentException(portInUseError);
             }
         }
 
+        try {
+            checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
+            checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);
+            checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
+        } catch (Exception e) { // NO SONAR
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
     }
 
-    private void startSelendroidDriverNode(int port) throws Exception {
-        logger.entering(port);
-        List<String> args = new ArrayList<String>();
-        args.add("-deviceScreenshot");
-        args.add("-logLevel");
-        args.add("VERBOSE");
-        args.add("-hub");
-        args.add("http://127.0.0.1:" + Config.getIntConfigProperty(ConfigProperty.SELENIUM_PORT) + "/grid/register");
-        args.add("-port");
-        args.add(Integer.toString(port));
-        args.add("-selendroidServerPort");
-        args.add(Integer.toString(Config.getIntConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT)));
-
-        // Specify the aut folder so its contents will be monitored and read by Selendroid.
-        String autFolder = Config.getConfigProperty(ConfigProperty.MOBILE_APP_FOLDER);
-        if ((autFolder != null) && (!autFolder.trim().isEmpty())) {
-            args.add("-folder");
-            args.add(autFolder);
-        }
-
-        String timeoutEmulatorStart = checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
-        args.add(" -timeoutEmulatorStart ");
-        args.add(timeoutEmulatorStart);
-        String serverStartTimeout = checkAndValidateParameters(ConfigProperty.SELENDROID_SERVER_START_TIMEOUT);
-        args.add(" -serverStartTimeout ");
-        args.add(serverStartTimeout);
-        String sessionTimeout = checkAndValidateParameters(ConfigProperty.MOBILE_DRIVER_SESSION_TIMEOUT);
-        args.add(" -sessionTimeout ");
-        args.add(sessionTimeout);
-        args.add("-proxy");
-        args.add(SelendroidSessionProxy.class.getCanonicalName());
-        args.add("-host");
-        args.add("127.0.0.1");
-
-        Boolean selendroidForceReinstall = Config
-                .getBoolConfigProperty(ConfigProperty.SELENDROID_SERVER_FORCE_REINSTALL);
-        if (selendroidForceReinstall) {
-            args.add("-forceReinstall");
-        }
-
-        sconfig = SelendroidConfiguration.create(args.toArray(new String[args.size()]));
-        server = new SelendroidLauncher(sconfig);
-
-        // HACK :: put the RootLogger back into the original state
-        // remove all handlers first
-        Handler[] handlers = Logger.getLogger("").getHandlers();
-        Level level = Logger.getLogger("").getLevel();
-
-        for (Handler handler : Logger.getLogger("").getHandlers()) {
-            Logger.getLogger("").removeHandler(handler);
-        }
-        // put the original ones back
-        for (Handler handler : handlers) {
-            Logger.getLogger("").addHandler(handler);
-        }
-        // reset the log level
-        Logger.getLogger("").setLevel(level);
-
-        server.launchSelendroid();
-        logger.exiting();
-    }
-
-    private String checkAndValidateParameters(ConfigProperty configProperty) {
-
-        // Checks the presence of selendroid specific parameters provided by the user and validates them.
-        // IllegalArgumentException is thrown if the parameter is either insufficient or irrelevant. Throws a
-        // NullPointerException if the received configProperty is null.
-        logger.entering(configProperty);
-        String validatedValue = null;
-        switch (configProperty) {
-        case SELENDROID_SERVER_START_TIMEOUT:
-        case SELENDROID_EMULATOR_START_TIMEOUT:
-            try {
-
+    /*
+     * Checks the presence of selendroid specific parameters provided by the user and validates them.
+     * IllegalArgumentException is thrown if the parameter is either insufficient or irrelevant. Throws a
+     * NullPointerException if the received configProperty is null.
+     * 
+     * @param configProperty a SeLion {@link ConfigProperty} to validate
+     */
+    private void checkAndValidateParameters(ConfigProperty configProperty) {
+        LOGGER.entering(configProperty);
+        try {
+            switch (configProperty) {
+            case SELENDROID_SERVER_START_TIMEOUT:
+            case SELENDROID_EMULATOR_START_TIMEOUT: {
                 // Selendroid takes timeoutEmulatorStart/serverStartTimeout in milliseconds.
-                int receivedValue = Config.getIntConfigProperty(configProperty);
-                validatedValue = String.valueOf(receivedValue);
-            } catch (ConversionException exe) {
-                String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
-                        + ", probably not an integer for milliseconds.";
-                throw new IllegalArgumentException(errorMessage, exe);
+                Config.getIntConfigProperty(configProperty);
+                break;
             }
-            break;
-        case MOBILE_DRIVER_SESSION_TIMEOUT:
-            try {
-
+            case MOBILE_DRIVER_SESSION_TIMEOUT: {
                 // Selendroid takes sessionTimeout in seconds.
                 int receivedValue = Config.getIntConfigProperty(configProperty) / 1000;
                 if (receivedValue == 0) {
                     String errorMessage = "Insufficient value received for configuration property "
                             + configProperty.getName() + ", probably value is less than 1000 milliseconds.";
                     throw new IllegalArgumentException(errorMessage);
-                } else {
-                    validatedValue = String.valueOf(receivedValue);
                 }
-            } catch (ConversionException exe) {
-                String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
-                        + ", probably not an integer for milliseconds.";
-                throw new IllegalArgumentException(errorMessage, exe);
+                break;
             }
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "Invalid selendroid configuration received for validation, configuration property = "
-                            + configProperty.getName());
+            default: {
+                throw new IllegalArgumentException(
+                        "Invalid selendroid configuration received for validation, configuration property = "
+                                + configProperty.getName());
+            }
+            }
+        } catch (ConversionException exe) {
+            String errorMessage = "Invalid data received for configuration property " + configProperty.getName()
+                    + ", probably not an integer for milliseconds.";
+            throw new IllegalArgumentException(errorMessage, exe);
         }
-        logger.exiting(validatedValue);
-        return validatedValue;
+
+        LOGGER.exiting();
     }
 }

@@ -31,6 +31,7 @@ import com.paypal.selion.plugins.TestPlatform;
 /**
  * Concrete Yaml reader that is capable of reading Yaml v1 format file.
  */
+//TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 class YamlV1Reader extends AbstractYamlReader {
 
     private static final String ELEMENTS = "Elements";

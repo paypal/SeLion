@@ -15,24 +15,24 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 
 /**
  * This class represents the capabilities that are specific to Chrome browser.
- * 
  */
 class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-
-        if (isLocalRun()) {
-            System.setProperty("webdriver.chrome.driver", getBinaryPath());
+        if (isLocalRun() && StringUtils.isNotBlank(getBinaryPath())) {
+            System.setProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY, getBinaryPath());
         }
         capabilities.setBrowserName(DesiredCapabilities.chrome().getBrowserName());
         String userAgent = getUserAgent();
@@ -49,7 +49,12 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         return capabilities;
     }
 
+    /*
+     * Returns the location of chromedriver or "" if it can not be determined.
+     */
     private String getBinaryPath() {
-        return Config.getConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH);
+        String location = System.getProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY,
+                Config.getConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH));
+        return location;
     }
 }

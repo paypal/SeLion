@@ -26,12 +26,12 @@ import org.openqa.selenium.WebElement;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import com.paypal.selion.TestServerListener;
+import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.Link;
 import com.paypal.selion.platform.html.TestObjectRepository;
-import com.paypal.test.utilities.server.TestServerListener;
-import com.paypal.test.utilities.server.TestServerUtils;
 
 /**
  * This class test the ByOrOperator

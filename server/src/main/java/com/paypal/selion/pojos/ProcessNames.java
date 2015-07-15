@@ -24,8 +24,7 @@ public enum ProcessNames {
     CHROME("chrome.exe", "chrome"), 
     CHROMEDRIVER("chromedriver.exe", "chromedriver"), 
     IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"), 
-    PHANTOMJS("phantomjs.exe", "phantomjs"),
-    JAVA("java.exe", "java");
+    PHANTOMJS("phantomjs.exe", "phantomjs");
 
     private ProcessNames(String windowsImageName, String unixImageName) {
         this.windowsImageName = windowsImageName;

@@ -15,8 +15,8 @@
 
 package ${package}.utilities.server;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.handler.ResourceHandler;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 

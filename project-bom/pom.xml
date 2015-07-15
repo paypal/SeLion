@@ -14,7 +14,106 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Apache commons configuration -->
+
+            <dependency>
+                <groupId>net.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
+                <version>1.0</version>
+            </dependency>
+
+            <!-- Apache commons dependencies -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-exec</artifactId>
+                <version>1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.1.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>1.8</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.9</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.8.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-jxpath</groupId>
+                <artifactId>commons-jxpath</artifactId>
+                <version>1.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.3.6</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-codec</groupId>
+                        <artifactId>commons-codec</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.3.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-io</groupId>
+                        <artifactId>commons-io</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.2</version>
+            </dependency>
+
+            <dependency>
+                <artifactId>guava</artifactId>
+                <groupId>com.google.guava</groupId>
+                <!-- TODO check this version -->
+                <version>18.0</version>
+            </dependency>
+
+            <!-- TestNG -->
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -24,7 +123,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>1.12</version>
+                <version>${snakeyaml.version}</version>
             </dependency>
 
             <dependency>
@@ -32,34 +131,33 @@
                 <artifactId>poi-ooxml</artifactId>
                 <version>3.6</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>3.6</version>
             </dependency>
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.9.2</version>
-            </dependency>
-            <!-- Selenium 2 dependencies -->
+
+            <!-- Selenium dependencies -->
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-server</artifactId>
                 <version>${selenium.version}</version>
             </dependency>
 
-            <!-- HtmlUnitDriver requires latest xml-apis jar -->
             <dependency>
-                <groupId>xml-apis</groupId>
-                <artifactId>xml-apis</artifactId>
-                <version>1.4.01</version>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-api</artifactId>
+                <version>${selenium.version}</version>
             </dependency>
 
-            <!-- WebDriver now by default seems to be attempting to trigger a registration of org.openqa.selenium.phantomjs 
-                .PhantomJSDriver and com.opera.core.systems.OperaDriver. But both these libraries are outside the realms of Selenium/WebDriver. 
-                So adding an explicit dependency on them to ensure that our logs dont show up any INFO level ClassNotFoundException, when 
-                a user tries to run tests locally. -->
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+
+            <!-- Phantomjsdriver -->
             <dependency>
                 <groupId>com.codeborne</groupId>
                 <artifactId>phantomjsdriver</artifactId>
@@ -79,6 +177,8 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <!-- Operadriver -->
             <dependency>
                 <groupId>com.opera</groupId>
                 <artifactId>operadriver</artifactId>
@@ -88,42 +188,34 @@
                         <artifactId>selenium-java</artifactId>
                         <groupId>org.seleniumhq.selenium</groupId>
                     </exclusion>
+                    <exclusion>
+                        <artifactId>guava</artifactId>
+                        <groupId>com.google.guava</groupId>
+                    </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.velocity</groupId>
-                <artifactId>velocity</artifactId>
-                <version>1.7</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-            <!-- Apache commons configuration -->
-            <dependency>
-                <groupId>commons-configuration</groupId>
-                <artifactId>commons-configuration</artifactId>
-                <version>1.8</version>
             </dependency>
 
             <!-- selendroid dependencies -->
             <dependency>
                 <groupId>io.selendroid</groupId>
                 <version>${selendroid.version}</version>
-                <artifactId>selendroid-server</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>io.selendroid</groupId>
-                <version>${selendroid.version}</version>
                 <artifactId>selendroid-client</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-server</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-remote-driver</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-java</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>io.selendroid</groupId>
                 <artifactId>selendroid-grid-plugin</artifactId>
@@ -133,27 +225,25 @@
                         <groupId>org.seleniumhq.selenium</groupId>
                         <artifactId>selenium-server</artifactId>
                     </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>io.selendroid</groupId>
-                <artifactId>selendroid-standalone</artifactId>
-                <version>${selendroid.version}</version>
-                <exclusions>
                     <exclusion>
-                        <artifactId>httpclient</artifactId>
-                        <groupId>org.apache.httpcomponents</groupId>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-remote-driver</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
-                <groupId>com.google.android</groupId>
-                <artifactId>android</artifactId>
-                <version>4.1.1.4</version>
+                <groupId>io.selendroid</groupId>
+                <artifactId>selendroid-common</artifactId>
+                <version>${selendroid.version}</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>httpclient</artifactId>
-                        <groupId>org.apache.httpcomponents</groupId>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-server</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-java</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -161,24 +251,42 @@
             <!-- IOS Driver dependencies. -->
             <dependency>
                 <groupId>org.uiautomation</groupId>
-                <artifactId>ios-server</artifactId>
+                <artifactId>ios-common</artifactId>
                 <version>${iosdriver.version}</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>org.seleniumhq.selenium</groupId>
-                        <artifactId>selenium-remote-driver</artifactId>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-servlet</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.seleniumhq.selenium</groupId>
-                        <artifactId>selenium-support</artifactId>
+                        <artifactId>selenium-remote-driver</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.uiautomation</groupId>
-                <artifactId>standalone-no-selenium</artifactId>
+                <artifactId>ios-client</artifactId>
                 <version>${iosdriver.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-server</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-remote-driver</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-io</artifactId>
+                        <groupId>commons-io</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>jetty-servlet</artifactId>
+                        <groupId>org.eclipse.jetty</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -193,26 +301,93 @@
                 </exclusions>
             </dependency>
 
+            <!-- HtmlUnitDriver requires latest xml-apis jar -->
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.4.01</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>1.7</version>
+            </dependency>
+
+
             <!-- Appium java client dependency -->
             <dependency>
                 <groupId>io.appium</groupId>
                 <artifactId>java-client</artifactId>
                 <version>${appium.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-java</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>httpclient</artifactId>
+                        <groupId>org.apache.httpcomponents</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>gson</artifactId>
+                        <groupId>com.google.code.gson</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>guava</artifactId>
+                        <groupId>com.google.guava</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>junit</artifactId>
+                        <groupId>junit</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
-            
+
             <!-- A utility for parsing user agent strings -->
             <dependency>
                 <groupId>net.sf.uadetector</groupId>
                 <artifactId>uadetector-resources</artifactId>
-                <version>2014.04</version>
+                <version>2014.10</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>jsr305</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>2.0.3</version>
             </dependency>
 
             <!-- add xerces - used by runtime reporter -->
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
-                <version>2.9.1</version>
+                <version>2.11.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>jaxen</groupId>
+                <artifactId>jaxen</artifactId>
+                <version>1.1.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

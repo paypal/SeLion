@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.pojos.SeLionGridConstants;
 
+//TODO files downloaded here may interfere with other tests.. Need to isolate them
 public class FileDownloaderTest {
 
     File downloadedFile = null;
@@ -38,14 +39,14 @@ public class FileDownloaderTest {
         downloadDir.mkdirs();
     }
 
-    @Test(expectedExceptions = { UnsupportedOperationException.class })
+    @Test(expectedExceptions = { UnsupportedOperationException.class }, groups = { "downloads-dependencies" })
     public void testUnsupportedFileType() {
         // gz compression type is not supported.
         String unsupportedFileURL = "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-i686.tar.gz";
         FileDownloader.downloadFile(unsupportedFileURL, "123CEFRGxSdfnsfwefla");
     }
 
-    @Test
+    @Test(groups = { "downloads-dependencies" })
     public void testFileDownload() {
         String testUrl = "https://selenium-release.storage.googleapis.com/2.45/IEDriverServer_Win32_2.45.0.zip";
         String tempChecksum = "dde210e04e5c1b0d6019fd8a1199df18";
@@ -54,7 +55,7 @@ public class FileDownloaderTest {
         assertTrue(downloadedFile.exists());
     }
 
-    @Test
+    @Test(groups = { "downloads-dependencies" })
     public void testInvalidChecksum() {
         String testUrl = "https://chromedriver.storage.googleapis.com/2.14/chromedriver_win32.zip";
         String tempChecksum = "dde210e04e5c1b0d6019fd8a1199df18";
@@ -65,6 +66,5 @@ public class FileDownloaderTest {
     @AfterClass(alwaysRun = true)
     public void cleanUpFile() {
         FileUtils.deleteQuietly(downloadedFile);
-        FileUtils.deleteQuietly(downloadDir);
     }
 }
