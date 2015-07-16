@@ -28,8 +28,38 @@ import org.openqa.selenium.remote.Response;
  * 
  */
 public class EventFiringCommandExecutor implements CommandExecutor {
-    List<EventListener> listeners;
-    CommandExecutor commandExecutor;
+    private List<EventListener> listeners;
+    private CommandExecutor commandExecutor;
+    
+    /**
+     * @return the {@link EventListener}s
+     */
+    protected List<EventListener> getListeners() {
+        return listeners;
+    }
+
+    /**
+     * Set the {@link EventListener}s
+     * @param listeners the {@link EventListener}s to set
+     */
+    protected void setListeners(List<EventListener> listeners) {
+        this.listeners = listeners;
+    }
+
+    /**
+     * @return the {@link CommandExecutor}
+     */
+    protected CommandExecutor getCommandExecutor() {
+        return commandExecutor;
+    }
+
+    /**
+     * Set the {@link CommandExecutor}
+     * @param commandExecutor the {@link CommandExecutor} to set
+     */
+    protected void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
 
     public EventFiringCommandExecutor(CommandExecutor commandExecutor, List<EventListener> listeners) {
         this.listeners = listeners;

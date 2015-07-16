@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -113,7 +113,7 @@ public class WebDriverSessionHandler {
 
         logger.entering();
 
-        if (bStartSession == true) {
+        if (bStartSession) {
             throw new IllegalStateException("WebDriverSessionHandler is already started");
         }
 
@@ -134,7 +134,7 @@ public class WebDriverSessionHandler {
 
         logger.exiting();
 
-        if (bStartSession == false) {
+        if (!bStartSession) {
             throw new IllegalStateException("Please call startSession() before calling endSession()");
         }
         bStartSession = false;

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -23,6 +23,8 @@ import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * A class for loading and representing the {@link WebTest} annotation parameters. Also performs sanity checks.
@@ -33,9 +35,10 @@ public class WebTestSession extends AbstractTestSession {
     private String browser = "";
     private int browserHeight = 0;
     private int browserWidth = 0;
+    private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     WebTestSession() {
-
+        // nothing to do
     }
 
     /**

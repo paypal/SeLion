@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -151,9 +151,5 @@ public class TestPage extends BasicPageImpl {
         public Button getContainerButton() {
             return getContainer().containerButton;
         }
-    }
-
-    public void setPageTitle(String pageTitle) {
-        getPage().pageTitle = pageTitle;
     }
 }

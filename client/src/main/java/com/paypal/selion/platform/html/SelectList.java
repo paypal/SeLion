@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -103,7 +103,7 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *            the select list option locator
      */
     public void select(String optionLocator) {
-        dispatcher.beforeSelect(this, optionLocator);
+        getDispatcher().beforeSelect(this, optionLocator);
         
         if (StringUtils.isBlank(optionLocator)) {
             throw new IllegalArgumentException("Locator cannot be null or empty.");
@@ -135,7 +135,7 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
             throw new NoSuchElementException("Unable to find " + optionLocator);
         }
         
-        dispatcher.afterSelect(this, optionLocator);
+        getDispatcher().afterSelect(this, optionLocator);
     }
 
     /**
@@ -168,14 +168,14 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *            the value to select
      */
     public void selectByValue(String value) {
-        dispatcher.beforeSelect(this, value);
+        getDispatcher().beforeSelect(this, value);
         
         new Select(getElement()).selectByValue(value);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.SELECTED, value);
         }
         
-        dispatcher.afterSelect(this, value);
+        getDispatcher().afterSelect(this, value);
     }
 
     /**
@@ -185,14 +185,14 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *            the label to select
      */
     public void selectByLabel(String label) {
-        dispatcher.beforeSelect(this, label);
+        getDispatcher().beforeSelect(this, label);
         
         new Select(getElement()).selectByVisibleText(label);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.SELECTED, label);
         }
         
-        dispatcher.afterSelect(this, label);
+        getDispatcher().afterSelect(this, label);
     }
 
     /**
@@ -203,14 +203,14 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *            the index to select
      */
     public void selectByIndex(int index) {
-        dispatcher.beforeSelect(this, index);
+        getDispatcher().beforeSelect(this, index);
         
         new Select(getElement()).selectByIndex(index);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.SELECTED, Integer.toString(index));
         }
         
-        dispatcher.afterSelect(this, index);
+        getDispatcher().afterSelect(this, index);
     }
 
     /**
@@ -395,14 +395,14 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *             If the SELECT does not support multiple selections
      */
     public void deselectAll() {
-        dispatcher.beforeDeselect(this);
+        getDispatcher().beforeDeselect(this);
         
         new Select(getElement()).deselectAll();
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, "all");
         }
         
-        dispatcher.afterDeselect(this);
+        getDispatcher().afterDeselect(this);
     }
 
     /**
@@ -412,14 +412,14 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *            the value to deselect
      */
     public void deselectByValue(String value) {
-        dispatcher.beforeDeselect(this, value);
+        getDispatcher().beforeDeselect(this, value);
         
         new Select(getElement()).deselectByValue(value);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, value);
         }
         
-        dispatcher.afterDeselect(this, value);
+        getDispatcher().afterDeselect(this, value);
     }
 
     /**
@@ -430,14 +430,14 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *            the index to deselect
      */
     public void deselectByIndex(int index) {
-        dispatcher.beforeDeselect(this, index);
+        getDispatcher().beforeDeselect(this, index);
         
         new Select(getElement()).deselectByIndex(index);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, Integer.toString(index));
         }
         
-        dispatcher.afterDeselect(this, index);
+        getDispatcher().afterDeselect(this, index);
     }
 
     /**
@@ -447,13 +447,13 @@ public class SelectList extends AbstractElement implements Selectable, Deselecta
      *            the label to deselect
      */
     public void deselectByLabel(String label) {
-        dispatcher.beforeDeselect(this, label);
+        getDispatcher().beforeDeselect(this, label);
         
         new Select(getElement()).deselectByVisibleText(label);
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIActions(UIActions.CLEARED, label);
         }
         
-        dispatcher.afterDeselect(this, label);
+        getDispatcher().afterDeselect(this, label);
     }
 }

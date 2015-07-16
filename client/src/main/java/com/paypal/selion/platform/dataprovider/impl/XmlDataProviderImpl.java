@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
@@ -38,6 +38,7 @@ import org.dom4j.io.SAXReader;
 import com.google.common.base.Preconditions;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.dataprovider.DataProviderException;
+import com.paypal.selion.platform.dataprovider.DataResource;
 import com.paypal.selion.platform.dataprovider.XmlDataProvider;
 import com.paypal.selion.platform.dataprovider.XmlDataSource;
 import com.paypal.selion.platform.dataprovider.filter.DataProviderFilter;
@@ -217,7 +218,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
             JAXBContext context = JAXBContext.newInstance(resource.getCls());
             Unmarshaller unmarshaller = context.createUnmarshaller();
             StreamSource xmlStreamSource = new StreamSource(resource.getInputStream());
-            LinkedHashMap<String, KeyValuePair> keyValueItems = unmarshaller
+            Map<String, KeyValuePair> keyValueItems = unmarshaller
                     .unmarshal(xmlStreamSource, KeyValueMap.class).getValue().getMap();
             objectArray = DataProviderHelper.convertToObjectArray(keyValueItems);
         } catch (JAXBException excp) {
@@ -270,7 +271,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
             JAXBContext context = JAXBContext.newInstance(resource.getCls());
             Unmarshaller unmarshaller = context.createUnmarshaller();
             StreamSource xmlStreamSource = new StreamSource(resource.getInputStream());
-            LinkedHashMap<String, KeyValuePair> keyValueItems = unmarshaller
+            Map<String, KeyValuePair> keyValueItems = unmarshaller
                     .unmarshal(xmlStreamSource, KeyValueMap.class).getValue().getMap();
             objectArray = DataProviderHelper.getDataByKeys(keyValueItems, keys);
         } catch (JAXBException excp) {
@@ -320,7 +321,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
             JAXBContext context = JAXBContext.newInstance(resource.getCls());
             Unmarshaller unmarshaller = context.createUnmarshaller();
             StreamSource xmlStreamSource = new StreamSource(resource.getInputStream());
-            LinkedHashMap<String, KeyValuePair> keyValueItems = unmarshaller
+            Map<String, KeyValuePair> keyValueItems = unmarshaller
                     .unmarshal(xmlStreamSource, KeyValueMap.class).getValue().getMap();
             for (Entry<?, ?> entry : keyValueItems.entrySet()) {
                 dataHashTable.put((String) entry.getKey(), entry.getValue());

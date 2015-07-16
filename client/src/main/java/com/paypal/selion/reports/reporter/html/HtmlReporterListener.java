@@ -114,7 +114,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
     @Override
     public void generateReport(List<XmlSuite> xmlSuite, List<ISuite> suites, String outputDir) {
         logger.entering(new Object[] { xmlSuite, suites, outputDir });
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -135,7 +135,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
         out.close();
         logger.exiting();
     }
-
+    
     private void createDetail(List<Line> lines) {
         logger.entering(lines);
         for (Line line : lines) {
@@ -566,7 +566,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         try {
-            if (ListenerManager.executeCurrentMethod(this) == false) {
+            if (ListenerManager.isCurrentMethodSkipped(this)) {
                 logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }
@@ -587,7 +587,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
         try {
             // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
             // Failing to do so can have un-predictable results.
-            if (ListenerManager.executeCurrentMethod(this) == false) {
+            if (ListenerManager.isCurrentMethodSkipped(this)) {
                 logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }

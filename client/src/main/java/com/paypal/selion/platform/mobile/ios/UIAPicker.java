@@ -1,17 +1,17 @@
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 eBay Software Foundation                                                                                                                         |
-|                                                                                                                                                                                                   |
-|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance                     |
-|  with the License.                                                                                                                                                                       |
-|                                                                                                                                                                                                   |
-|  You may obtain a copy of the License at                                                                                                                                   |
-|                                                                                                                                                                                                   |
-|       http://www.apache.org/licenses/LICENSE-2.0                                                                                                                       |
-|                                                                                                                                                                                                   |
-|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed                     |
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
 |  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
-|  the specific language governing permissions and limitations under the License.                                                                       |
-\*-----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.platform.mobile.ios;
 
@@ -57,13 +57,13 @@ public class UIAPicker extends UIAElement implements UIAutomationPicker {
         logger.entering(new Object[] { index, value });
         if (value != null) {
             WebElement pickerWheel = findWheelAtIndex(index);
-            bridgeDriver.setPickerWheelValue(pickerWheel, value);
+            getBridgeDriver().setPickerWheelValue(pickerWheel, value);
         }
         logger.exiting();
     }
 
     private WebElement findWheelAtIndex(int index) {
-        WebElement pickerView = findElement(locator);
+        WebElement pickerView = findElement(getLocator());
         List<WebElement> pickerCells = pickerView.findElements(By.className(UIAPICKERWHEEL));
         if (!pickerCells.isEmpty() && index < pickerCells.size()) {
             return pickerCells.get(index);

@@ -82,7 +82,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
 
         logger.entering(new Object[] { method, testResult });
         try {
-            if (ListenerManager.executeCurrentMethod(this) == false) {
+            if (ListenerManager.isCurrentMethodSkipped(this)) {
                 logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }
@@ -113,7 +113,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 // BasicTestSession are non selenium tests. So no need to start the Local hub.
                 LocalGridManager.spawnLocalHub(testSession);
             }
-        } catch (Exception e) { //NOSONAR
+        } catch (Exception e) { // NOSONAR
             logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
         }
 
@@ -189,7 +189,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         logger.entering(new Object[] { method, testResult });
         try {
-            if (ListenerManager.executeCurrentMethod(this) == false) {
+            if (ListenerManager.isCurrentMethodSkipped(this)) {
                 logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }
@@ -208,7 +208,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
 
             AbstractTestSession testSession = Grid.getTestSession();
             testSession.closeSession();
-        } catch (Exception e) { //NOSONAR
+        } catch (Exception e) { // NOSONAR
             logger.log(Level.WARNING, "An error occurred while processing afterInvocation: " + e.getMessage(), e);
         }
 
@@ -223,7 +223,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     @Override
     public void onStart(ISuite suite) {
         logger.entering(suite);
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -270,7 +270,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     @Override
     public void onFinish(ISuite suite) {
         logger.entering(suite);
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -286,7 +286,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void onFinish(ITestContext context) {
         // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
         // Failing to do so can have un-predictable results.
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -299,7 +299,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     @Override
     public void onStart(ITestContext context) {
         logger.entering(context);
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -340,7 +340,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
         // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
         // Failing to do so can have un-predictable results.
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -352,7 +352,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void onTestFailure(ITestResult result) {
         // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
         // Failing to do so can have un-predictable results.
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -363,7 +363,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void onTestSkipped(ITestResult result) {
         // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
         // Failing to do so can have un-predictable results.
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -375,7 +375,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void onTestStart(ITestResult result) {
         // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
         // Failing to do so can have un-predictable results.
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
         }
     }
@@ -384,7 +384,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     public void onTestSuccess(ITestResult result) {
         // Below conditional check needs to be invoked in all TestNG Listener interface implementation.
         // Failing to do so can have un-predictable results.
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
         }
     }

@@ -25,7 +25,7 @@ import com.paypal.selion.platform.grid.MobileTestSession;
 
 class IOSDriverCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
-    private String MOBILE_NODE_TYPE = "mobileNodeType";
+    private static final String MOBILE_NODE_TYPE = "mobileNodeType";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {

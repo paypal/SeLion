@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -30,26 +30,26 @@ import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.reports.reporter.services.LogAction;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
-public class SeLionReporter {
-    protected static SimpleLogger logger = SeLionLogger.getLogger();
-    protected volatile static List<LogAction> actionList = new ArrayList<LogAction>();
+public final class SeLionReporter {
+    private static final SimpleLogger logger = SeLionLogger.getLogger();
+    private volatile static List<LogAction> actionList = new ArrayList<LogAction>();
 
-    protected static String output;
-    protected static DataSaver saver = null;
-    protected String baseFileName = UUID.randomUUID().toString();
+    private static String output;
+    private static DataSaver saver = null;
+    private String baseFileName = UUID.randomUUID().toString();
 
     private BaseLog currentLog;
 
-    void setLog(BaseLog log) {
-        this.currentLog = log;
-    }
-
-    protected String getBaseFileName() {
+    private String getBaseFileName() {
         return baseFileName;
     }
 
-    protected BaseLog getLog() {
-        return this.currentLog;
+    private BaseLog getCurrentLog() {
+        return currentLog;
+    }
+
+    private void setCurrentLog(BaseLog currentLog) {
+        this.currentLog = currentLog;
     }
 
     /**
@@ -98,14 +98,14 @@ public class SeLionReporter {
                 PageContents source = new PageContents(Grid.driver().getPageSource(), getBaseFileName());
                 saver.saveSources(source);
                 href = "sources" + File.separator + getBaseFileName() + ".source.txt";
-                getLog().setHref(href);
+                getCurrentLog().setHref(href);
             }
         }
         for (LogAction eachAction : actionList) {
             eachAction.perform();
         }
 
-        return getLog();
+        return getCurrentLog();
     }
 
     protected void generateLog(boolean takeScreenshot, boolean saveSrc) {
@@ -118,7 +118,7 @@ public class SeLionReporter {
 
             if (takeScreenshot && Grid.driver() != null) {
                 // screenshot
-                PageContents screen = new PageContents(Gatherer.takeScreenshot(Grid.driver()), baseFileName);
+                PageContents screen = new PageContents(Gatherer.takeScreenshot(Grid.driver()), getBaseFileName());
                 screenshotPath = saver.saveScreenshot(screen);
                 log.setScreen(screenshotPath);
             }
@@ -169,7 +169,7 @@ public class SeLionReporter {
         BaseLog currentLog = new BaseLog();
         currentLog.setMsg(message);
         currentLog.setLocation(Gatherer.saveGetLocation(Grid.driver()));
-        reporter.setLog(currentLog);
+        reporter.setCurrentLog(currentLog);
         reporter.generateLog(takeScreenshot, saveSrc);
         logger.exiting();
     }

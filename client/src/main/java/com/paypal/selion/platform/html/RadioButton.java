@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -96,34 +96,34 @@ public class RadioButton extends AbstractElement implements Checkable {
      * It invokes SeLion session to handle the check action against the element.
      */
     public void check() {
-        dispatcher.beforeCheck(this);
+        getDispatcher().beforeCheck(this);
         
         if (!isChecked()) {
             this.click();
         }
         
-        dispatcher.afterCheck(this);
+        getDispatcher().afterCheck(this);
     }
 
     /**
      * The RadioButton click function and wait for page to load
      */
     public void click() {
-        dispatcher.beforeClick(this);
+        getDispatcher().beforeClick(this);
         
         getElement().click();
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIAction(UIActions.CLICKED);
         }
         
-        dispatcher.afterClick(this);
+        getDispatcher().afterClick(this);
     }
 
     /**
      * The RadioButton click function and wait for object to load
      */
     public void click(String locator) {
-        dispatcher.beforeClick(this, locator);
+        getDispatcher().beforeClick(this, locator);
         
         getElement().click();
         validatePresenceOfAlert();
@@ -132,7 +132,7 @@ public class RadioButton extends AbstractElement implements Checkable {
         }
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
         
-        dispatcher.afterClick(this, locator);
+        getDispatcher().afterClick(this, locator);
     }
 
     /**

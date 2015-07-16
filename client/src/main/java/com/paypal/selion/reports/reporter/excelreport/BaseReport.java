@@ -40,18 +40,26 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 public abstract class BaseReport<T> {
 
-    private String sReportName;
+    private String reportName;
     private List<String> colTitles;
     private List<T> lstData = new ArrayList<T>();
-    protected int iStartColNum = 1;
+    private int startColNum = 1;
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    public String getsReportName() {
-        return sReportName;
+    protected int getStartColNum() {
+        return startColNum;
     }
 
-    public void setsReportName(String sReportName) {
-        this.sReportName = sReportName;
+    protected void setStartColNum(int startColNum) {
+        this.startColNum = startColNum;
+    }
+
+    public String getReportName() {
+        return reportName;
+    }
+
+    public void setReportName(String reportName) {
+        this.reportName = reportName;
     }
 
     public List<String> getColTitles() {
@@ -88,7 +96,7 @@ public abstract class BaseReport<T> {
     public void generateRep(HSSFWorkbook wb, String sheetName, List<BaseReport<?>> lstReports) {
         logger.entering(new Object[] { wb, sheetName, lstReports });
         int rowNum = 0;
-        int iColStart = iStartColNum;
+        int iColStart = startColNum;
         HSSFSheet sheet;
         if (wb.getSheet(sheetName) == null) {
             sheet = wb.createSheet(sheetName);
@@ -119,7 +127,7 @@ public abstract class BaseReport<T> {
         for (int iTempCol = iColStart; iTempCol <= iColEnd; iTempCol++) {
             newCell = row.createCell(iTempCol);
             newCell.setCellStyle(style);
-            newCell.setCellValue(this.sReportName);
+            newCell.setCellValue(this.reportName);
         }
 
         logger.exiting();
@@ -137,7 +145,6 @@ public abstract class BaseReport<T> {
             sheet.autoSizeColumn(iColStart++);
         }
         logger.exiting();
-
     }
 
     abstract int fillData(HSSFSheet sheet, int rowNum, HSSFCellStyle style);
@@ -148,6 +155,5 @@ public abstract class BaseReport<T> {
                 MILLISECONDS.toMinutes(timeInMilliseconds),
                 MILLISECONDS.toSeconds(timeInMilliseconds)
                         - MINUTES.toSeconds(MILLISECONDS.toMinutes(timeInMilliseconds))));
-
     }
 }

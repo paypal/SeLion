@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -37,36 +37,56 @@ public abstract class AbstractPage implements WebPage {
 
     // Initialization state of WebPage
     /** The page initialized. */
-    protected boolean pageInitialized;
+    private boolean pageInitialized;
     // Object map queue for loading
     /** The map queue. */
-    protected Queue<String[]> mapQueue;
+    private Queue<String[]> mapQueue;
     // used to determine our locale (e.g. US, UK, DE, etc.)
     /** The site. */
-    protected String site;
+    private String site;
     /** The page title. */
-    protected String pageTitle;
+    private String pageTitle;
 
     /** Map to store our GUI object map content. */
-    protected Map<String, String> objectMap;
+    protected Map<String, String> objectMap; // NOSONAR
 
     /** The UNKNOWN_PAGE_TITLE. */
     private static final String UNKNOWN_PAGE_TITLE = "unknown-title";
-    
+
     /** The elements that should be present on the Page **/
-    protected List<String> pageValidators = new ArrayList<String>();
+    private List<String> pageValidators = new ArrayList<String>();
 
     /** Map to store our GUI object map content for all Containers */
-    protected Map<String, Map<String, String>> objectContainerMap = new HashMap<String, Map<String, String>>();
+    private Map<String, Map<String, String>> objectContainerMap = new HashMap<String, Map<String, String>>();
+
+    protected void setPageInitialized(boolean pageInitialized) {
+        this.pageInitialized = pageInitialized;
+    }
+
+    protected String getPageTitle() {
+        return pageTitle;
+    }
+
+    protected void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
+    protected List<String> getPageValidators() {
+        return pageValidators;
+    }
+
+    protected Map<String, Map<String, String>> getObjectContainerMap() {
+        return objectContainerMap;
+    }
 
     protected AbstractPage() {
         pageTitle = UNKNOWN_PAGE_TITLE;
         mapQueue = new LinkedList<String[]>();
-        site =  ConfigProperty.SITE_LOCALE.getDefaultValue();
+        site = ConfigProperty.SITE_LOCALE.getDefaultValue();
         pageInitialized = false;
-        
+
     }
-    
+
     public void initPage(String pageDomain, String pageClassName) {
         // add the page domain and class name to the load queue
         mapQueue.add(new String[] { pageDomain, pageClassName });
@@ -114,30 +134,19 @@ public abstract class AbstractPage implements WebPage {
         }
         pageInitialized = true;
     }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.WebPage#initPage(java.lang.String, java.lang.String, java.lang.String)
-     */
+
     public void initPage(String pageDomain, String pageClassName, String siteLocale) {
         initPage(pageDomain, pageClassName);
         site = siteLocale;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.WebPage#isInitialized()
-     */
     public boolean isInitialized() {
         return pageInitialized;
     }
 
     @Override
     public String getExpectedPageTitle() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 
     @Override

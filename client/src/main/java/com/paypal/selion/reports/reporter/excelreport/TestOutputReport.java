@@ -54,7 +54,7 @@ public class TestOutputReport extends BaseReport<List<String>> {
      */
     public TestOutputReport(String sReportName) {
         this();
-        this.setsReportName(sReportName);
+        this.setReportName(sReportName);
 
     }
 
@@ -80,7 +80,7 @@ public class TestOutputReport extends BaseReport<List<String>> {
                 String outputColumn = (outputLines.length > 1) ? outputLines[0] : "";
                 String outputValue = (outputLines.length > 1) ? outputLines[1].trim() : output.trim();
 
-                int colNum = iStartColNum;
+                int colNum = getStartColNum();
                 row = sheet.createRow(rowNum);
                 col = row.createCell(colNum);
                 col.setCellStyle(Styles.getSubHeading2StyleThinBorder());
@@ -113,8 +113,8 @@ public class TestOutputReport extends BaseReport<List<String>> {
             rowNum += 1;
         }
 
-        sheet.autoSizeColumn(iStartColNum);
-        sheet.autoSizeColumn(iStartColNum + 1);
+        sheet.autoSizeColumn(getStartColNum());
+        sheet.autoSizeColumn(getStartColNum() + 1);
 
         logger.exiting(rowNum);
         return rowNum;

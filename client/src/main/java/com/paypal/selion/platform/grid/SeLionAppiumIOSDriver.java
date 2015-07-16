@@ -52,7 +52,7 @@ public class SeLionAppiumIOSDriver extends IOSDriver implements SeLionIOSBridgeD
 
     private static final String ELEMENT = "element";
 
-    protected JavascriptExecutor javaScriptExecutor;
+    protected JavascriptExecutor javaScriptExecutor; // NOSONAR
 
     public SeLionAppiumIOSDriver(URL url, Capabilities caps) {
         super(url, caps);

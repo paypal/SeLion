@@ -26,9 +26,9 @@ import com.paypal.selion.platform.grid.WebDriverPlatform;
 
 class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
-    private String APPIUM_ANDROID_PLATFORM_TYPE = "ANDROID";
-    private String APPIUM_IOS_PLATFORM_TYPE = "iOS";
-    private String MOBILE_NODE_TYPE = "mobileNodeType";
+    private static final String APPIUM_ANDROID_PLATFORM_TYPE = "ANDROID";
+    private static final String APPIUM_IOS_PLATFORM_TYPE = "iOS";
+    private static final String MOBILE_NODE_TYPE = "mobileNodeType";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {

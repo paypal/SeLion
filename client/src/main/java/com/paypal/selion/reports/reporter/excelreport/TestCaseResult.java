@@ -172,11 +172,11 @@ public class TestCaseResult implements Comparable<TestCaseResult> {
         this.testDescription = testDescription;
     }
 
-    public void setError(ArrayList<String> sError) {
+    public void setError(List<String> sError) {
         this.lstError = sError;
     }
 
-    public void setDefect(ArrayList<String> sDefect) {
+    public void setDefect(List<String> sDefect) {
         this.lstDefectMsg = sDefect;
     }
 

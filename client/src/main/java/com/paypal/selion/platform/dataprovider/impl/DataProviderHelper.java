@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -121,7 +121,7 @@ public final class DataProviderHelper {
      * ArrayList - When
      * the root type of object is an {@link ArrayList} (with <i>n<i> number of items), the item at each
      * <i>index</i> of the list is returned at position [index][0] of Object[<i>n</i>][1].
-     *
+     * 
      * When the value is {@link LinkedHashMap} having child value as type of {@link LinkedHashMap} or {@link ArrayList}, the child value is returned instead.
      * </pre>
      *
@@ -151,7 +151,7 @@ public final class DataProviderHelper {
         Class<?> rootClass = object.getClass();
 
         // Convert a LinkedHashMap (e.g. Yaml Associative Array) to an Object double array.
-        if (rootClass.equals(LinkedHashMap.class)) {
+        if (rootClass.equals(LinkedHashMap.class)) { // NOSONAR
             LinkedHashMap<?, ?> objAsLinkedHashMap = (LinkedHashMap<?, ?>) object;
             Collection<?> allValues = objAsLinkedHashMap.values();
             objArray = new Object[allValues.size()][1];
@@ -163,7 +163,7 @@ public final class DataProviderHelper {
         }
 
         // Converts an ArrayList (e.g. Yaml List) to an Object double array.
-        else if (rootClass.equals(ArrayList.class)) {
+        else if (rootClass.equals(ArrayList.class)) { // NOSONAR
             ArrayList<?> objAsArrayList = (ArrayList<?>) object;
             objArray = new Object[objAsArrayList.size()][1];
 
@@ -177,11 +177,11 @@ public final class DataProviderHelper {
                  * double array instead of the parent.
                  */
                 objArray[i][0] = eachArrayListObject;
-                if (eachArrayListObject.getClass().equals(LinkedHashMap.class)) {
+                if (eachArrayListObject.getClass().equals(LinkedHashMap.class)) { // NOSONAR
                     LinkedHashMap<?, ?> eachArrayListObjectAsHashMap = (LinkedHashMap<?, ?>) eachArrayListObject;
                     for (Object eachEntry : eachArrayListObjectAsHashMap.values()) {
-                        if (eachEntry.getClass().equals(LinkedHashMap.class)
-                                || eachEntry.getClass().equals(ArrayList.class)) {
+                        if (eachEntry.getClass().equals(LinkedHashMap.class) // NOSONAR
+                                || eachEntry.getClass().equals(ArrayList.class)) { // NOSONAR
                             objArray[i][0] = eachEntry;
                         }
                     }
@@ -266,7 +266,7 @@ public final class DataProviderHelper {
         Class<?> rootClass = object.getClass();
 
         // Convert a LinkedHashMap (e.g. Yaml Associative Array) to an array list after applying filter.
-        if (rootClass.equals(LinkedHashMap.class)) {
+        if (rootClass.equals(LinkedHashMap.class)) { // NOSONAR
             LinkedHashMap<?, ?> objAsLinkedHashMap = (LinkedHashMap<?, ?>) object;
             Collection<?> allValues = objAsLinkedHashMap.values();
             for (Object eachValue : allValues) {
@@ -276,7 +276,7 @@ public final class DataProviderHelper {
             }
         }
         // Converts an ArrayList to an array list after applying filter.
-        else if (rootClass.equals(ArrayList.class)) {
+        else if (rootClass.equals(ArrayList.class)) { // NOSONAR
             ArrayList<?> objAsArrayList = (ArrayList<?>) object;
             for (Object eachArrayListObject : objAsArrayList) {
                 /*
@@ -288,11 +288,11 @@ public final class DataProviderHelper {
                 if (dataFilter.filter(eachArrayListObject)) {
                     objs.add(new Object[] { eachArrayListObject });
                 }
-                if (eachArrayListObject.getClass().equals(LinkedHashMap.class)) {
+                if (eachArrayListObject.getClass().equals(LinkedHashMap.class)) { // NOSONAR
                     LinkedHashMap<?, ?> eachArrayListObjectAsHashMap = (LinkedHashMap<?, ?>) eachArrayListObject;
                     for (Object eachEntry : eachArrayListObjectAsHashMap.values()) {
                         if (eachEntry.getClass().equals(LinkedHashMap.class)
-                                || eachEntry.getClass().equals(ArrayList.class)) {
+                                || eachEntry.getClass().equals(ArrayList.class)) { // NOSONAR
                             if (dataFilter.filter(eachEntry)) {
                                 objs.add(new Object[] { eachEntry });
                             }
@@ -375,7 +375,8 @@ public final class DataProviderHelper {
      * @param keys
      *            Non-empty array of string keys.
      * @return Object[][] two dimensional object to be used with TestNG DataProvider.
-     * @throws IllegalArgumentException When the argument to {@code keys} is null, or any keys is not contained by the {@code map}.
+     * @throws IllegalArgumentException
+     *             When the argument to {@code keys} is null, or any keys is not contained by the {@code map}.
      */
     public static Object[][] getDataByKeys(Map<?, ?> map, String[] keys) {
         logger.entering(new Object[] { map, keys });
@@ -443,8 +444,8 @@ public final class DataProviderHelper {
      * </pre>
      *
      *
-     * @param dataproviders - An array of multiple 2D DataProvider arrays of various types that are to be clubbed
-     *                      together.
+     * @param dataproviders
+     *            An array of multiple 2D DataProvider arrays of various types that are to be clubbed together.
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
      */
     public static Object[][] getAllDataMultipleArgs(Object[][]... dataproviders) {
@@ -573,7 +574,7 @@ public final class DataProviderHelper {
      * Use this utility method to print and return a yaml string to help serialize the object passed in as an ArrayList.
      *
      * @param objects
-     *            - One or more objects that are to be serialised.
+     *            One or more objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsList(Object... objects) {
@@ -588,7 +589,7 @@ public final class DataProviderHelper {
      * LinkedHashMap.
      *
      * @param objects
-     *            - One or more objects that are to be serialised.
+     *            One or more objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsDocuments(Object... objects) {
@@ -604,7 +605,7 @@ public final class DataProviderHelper {
      * documents.
      *
      * @param objects
-     *            - The objects that are to be serialised.
+     *            The objects that are to be serialised.
      * @return a yaml string representation of the object(s) passed in
      */
     public static String serializeObjectToYamlStringAsMap(Object... objects) {
@@ -638,9 +639,9 @@ public final class DataProviderHelper {
      *     List&lt;YamlResource&gt; yamlResources = new ArrayList&lt;YamlResource&gt;();
      *     yamlResources.add(new YamlResource(pathName, userDocuments, USER.class));
      *     yamlResources.add(new YamlResource(pathName, user2Documents, USER.class));
-     *
+     * 
      *     data = DataProviderHelper.getAllDataMultipleArgsFromYAML(yamlResources);
-     *
+     * 
      *     return data;
      * }
      * </pre>
@@ -657,7 +658,7 @@ public final class DataProviderHelper {
     public static Object[][] getAllDataMultipleArgsFromYAML(List<DataResource> resources) throws IOException {
         logger.entering(resources);
 
-        if(resources == null) {
+        if (resources == null) {
             throw new DataProviderException("Resource can not be null");
         }
 

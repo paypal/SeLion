@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -58,7 +58,7 @@ public final class ListenerManager {
      *            - A {@link ListenerInfo} object that contains information pertaining to your listener.
      */
     public static void registerListener(ListenerInfo information) {
-        if (!serviceLoaderEnabled) {
+        if (isServiceLoaderDisabled()) {
             // Donot even attempt register any listeners if the user doesnt want them to be managed.
             return;
         }
@@ -79,9 +79,8 @@ public final class ListenerManager {
         String className = listener.getClass().getName();
         logger.entering("Listener Class : " + className);
         // TODO: One of the comments was to get rid of this JVM argument. For now I will defer this till we really feel
-        // the need
-        // for removing this off.
-        if (serviceLoaderEnabled == false) {
+        // the need for removing this off.
+        if (isServiceLoaderDisabled()) {
             logger.info("Listener Management was disabled. None of the managed listeners will be invoked.");
             logger.exiting(false);
             return false;
@@ -105,6 +104,21 @@ public final class ListenerManager {
     }
 
     private ListenerManager() {
+    }
+
+    /**
+     * Check if {@link ITestNGListener} is to be skipped
+     * 
+     * @param listener
+     *            the {@link ITestNGListener}
+     * @return true if method is to be skipped.
+     */
+    public static boolean isCurrentMethodSkipped(ITestNGListener listener) {
+        return (executeCurrentMethod(listener) == false);
+    }
+
+    private static boolean isServiceLoaderDisabled() {
+        return serviceLoaderEnabled == false;
     }
 
 }

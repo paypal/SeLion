@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -95,7 +95,7 @@ public class CheckBox extends AbstractElement implements Checkable, Uncheckable 
      * The CheckBox check function It invokes selenium session to handle the check action against the element.
      */
     public void check() {
-        dispatcher.beforeCheck(this);
+        getDispatcher().beforeCheck(this);
         
         RemoteWebElement e = (RemoteWebElement) getElement();
         while (!e.isSelected()) {
@@ -105,7 +105,7 @@ public class CheckBox extends AbstractElement implements Checkable, Uncheckable 
             logUIAction(UIActions.CHECKED);
         }
         
-        dispatcher.afterCheck(this);
+        getDispatcher().afterCheck(this);
     }
 
     /**
@@ -113,20 +113,20 @@ public class CheckBox extends AbstractElement implements Checkable, Uncheckable 
      * until element is found with given locator.
      */
     public void check(String locator) {
-        dispatcher.beforeCheck(this, locator);
+        getDispatcher().beforeCheck(this, locator);
         
         this.check();
         validatePresenceOfAlert();
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
         
-        dispatcher.afterUncheck(this, locator);
+        getDispatcher().afterUncheck(this, locator);
     }
 
     /**
      * The CheckBox uncheck function It invokes SeLion session to handle the uncheck action against the element.
      */
     public void uncheck() {
-        dispatcher.beforeUncheck(this);
+        getDispatcher().beforeUncheck(this);
         
         RemoteWebElement e = (RemoteWebElement) getElement();
         while (e.isSelected()) {
@@ -136,7 +136,7 @@ public class CheckBox extends AbstractElement implements Checkable, Uncheckable 
             logUIAction(UIActions.UNCHECKED);
         }
         
-        dispatcher.afterUncheck(this);
+        getDispatcher().afterUncheck(this);
     }
 
     /**
@@ -144,40 +144,40 @@ public class CheckBox extends AbstractElement implements Checkable, Uncheckable 
      * until element is found with given locator.
      */
     public void uncheck(String locator) {
-        dispatcher.beforeUncheck(this, locator);
+        getDispatcher().beforeUncheck(this, locator);
         
         this.uncheck();
         validatePresenceOfAlert();
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
         
-        dispatcher.afterUncheck(this, locator);
+        getDispatcher().afterUncheck(this, locator);
     }
 
     /**
      * The CheckBox click function and wait for page to load
      */
     public void click() {
-        dispatcher.beforeClick(this);
+        getDispatcher().beforeClick(this);
         
         getElement().click();
         if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
             logUIAction(UIActions.CLICKED);
         }
         
-        dispatcher.afterClick(this);
+        getDispatcher().afterClick(this);
     }
 
     /**
      * The CheckBox click function and wait for object to load
      */
     public void click(String locator) {
-        dispatcher.beforeClick(this, locator);
+        getDispatcher().beforeClick(this, locator);
         
         click();
         validatePresenceOfAlert();
         WebDriverWaitUtils.waitUntilElementIsPresent(locator);
         
-        dispatcher.afterClick(this, locator);
+        getDispatcher().afterClick(this, locator);
     }
 
     /**

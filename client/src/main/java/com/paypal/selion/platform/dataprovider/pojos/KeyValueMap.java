@@ -34,9 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class KeyValueMap {
 
 
-    private LinkedHashMap<String, KeyValuePair> map;
+    private Map<String, KeyValuePair> map;
 
-    public LinkedHashMap<String, KeyValuePair> getMap() {
+    public Map<String, KeyValuePair> getMap() {
         if (map == null) {
             map = new LinkedHashMap<String, KeyValuePair>();
         }

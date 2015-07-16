@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -90,10 +90,10 @@ public class Form extends AbstractElement implements Submitable {
      * The Form submit function It invokes SeLion session to handle the submit action against the element.
      */
     public void submit() {
-        dispatcher.beforeSubmit(this);
+        getDispatcher().beforeSubmit(this);
         
         getElement().submit();
         
-        dispatcher.afterSubmit(this);
+        getDispatcher().afterSubmit(this);
     }
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -101,7 +101,7 @@ public class TextField extends AbstractElement implements Typeable {
      * It invokes SeLion session to handle the type action against the element.
      */
     public void type(String value) {
-        dispatcher.beforeType(this, value);
+        getDispatcher().beforeType(this, value);
         
         RemoteWebElement element = getElement();
         element.clear();
@@ -110,7 +110,7 @@ public class TextField extends AbstractElement implements Typeable {
             logUIActions(UIActions.ENTERED, value);
         }
         
-        dispatcher.afterType(this, value);
+        getDispatcher().afterType(this, value);
     }
 
     /**
@@ -119,15 +119,15 @@ public class TextField extends AbstractElement implements Typeable {
      * It invokes SeLion session to handle the type action against the element.
      */
     public void type(String value, boolean isKeepExistingText) {
-        if (isKeepExistingText == true) {
-            dispatcher.beforeType(this, value);
+        if (isKeepExistingText) {
+            getDispatcher().beforeType(this, value);
             
             getElement().sendKeys(value);
             if (Config.getBoolConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING)) {
                 logUIActions(UIActions.ENTERED, value);
             }
             
-            dispatcher.afterType(this, value);
+            getDispatcher().afterType(this, value);
         } else {
             type(value);
         }

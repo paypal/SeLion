@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -51,7 +51,7 @@ public final class GuiMapReaderFactory {
      */
     public static GuiMapReader getInstance(String pageDomain, String pageClassName) throws IOException {
         logger.entering(new Object[]{pageDomain, pageClassName});
-        Preconditions.checkArgument(StringUtils.isNotBlank(pageClassName) == true,
+        Preconditions.checkArgument(StringUtils.isNotBlank(pageClassName),
                 "pageClassName can not be null, empty, or whitespace");
 
         String guiDataDir = Config.getConfigProperty(ConfigProperty.GUI_DATA_DIR);

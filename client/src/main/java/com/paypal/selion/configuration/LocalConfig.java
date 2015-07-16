@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -72,7 +72,7 @@ public class LocalConfig {
         this();
         checkArgument(configProperty != null, "Config property cannot be null");
         checkArgument(value != null, "Config property value cannot be null");
-        checkArgument(configProperty.isGlobalScopeOnly() == false,
+        checkArgument(checkNotInGlobalScope(configProperty),
                 String.format("The configuration property (%s) is not supported in local config.", configProperty)); // NOSONAR
 
         localConfig.setProperty(configProperty.getName(), value);
@@ -133,7 +133,7 @@ public class LocalConfig {
      */
     public synchronized void setConfigProperty(Config.ConfigProperty configProperty, String configPropertyValue) {
         checkArgument(configProperty != null, "Config property cannot be null");
-        checkArgument(configProperty.isGlobalScopeOnly() == false,
+        checkArgument(checkNotInGlobalScope(configProperty),
                 String.format("The configuration property (%s) is not supported in local config.", configProperty)); // NOSONAR
         checkArgument(configPropertyValue != null, "Config property value cannot be null");
 
@@ -191,5 +191,9 @@ public class LocalConfig {
         checkArgument(configProperty != null, "Config property cannot be null");
         String value = localConfig.getString(configProperty.getName());
         return (value != null ? true : false);
+    }
+
+    private boolean checkNotInGlobalScope(ConfigProperty configProperty) {
+        return (configProperty.isGlobalScopeOnly() == false);
     }
 }

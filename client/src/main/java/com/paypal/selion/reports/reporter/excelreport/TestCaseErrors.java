@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,6 +16,7 @@
 package com.paypal.selion.reports.reporter.excelreport;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -28,17 +29,15 @@ public final class TestCaseErrors {
     private static final String ELMNOTFOUND_EXCEPTION = "Element not found. Locator issue? Page fully loaded? bug?";
     private static final String XHR_ERROR_EXCEPTION = "Cert Error. Certificate added to profile?";
     private static final String BIND_EXCEPTION = "Bind Exception. Kill all javaw.exe and retry.";
-    private static final String ACC_CREATION_FAILURE = "Acc Creation failure.  Passwordless setup? Stage load?";
 
     private static TestCaseErrors tcErrors = null;
-    private HashMap<String, String> mpErrorsInfo = new HashMap<String, String>();
+    private Map<String, String> mpErrorsInfo = new HashMap<String, String>();
 
     private TestCaseErrors() {
         mpErrorsInfo.put("(?s).*WaitTimedOutException(?s).*", WAIT_EXCEPTION);
         mpErrorsInfo.put("(?s).*SeleniumException: ERROR: Element.*not found(?s).*", ELMNOTFOUND_EXCEPTION);
         mpErrorsInfo.put("(?s).*XHR ERROR: URL(?s).*", XHR_ERROR_EXCEPTION);
         mpErrorsInfo.put("(?s).*java.net.BindException(?s).*Address already in use(?s).*", BIND_EXCEPTION);
-        mpErrorsInfo.put("(?s).*Account creation failed(?s).*", ACC_CREATION_FAILURE);
         mpErrorsInfo.put("(?s).*NoSuchElementException(?s).*", ELMNOTFOUND_EXCEPTION);
     }
 

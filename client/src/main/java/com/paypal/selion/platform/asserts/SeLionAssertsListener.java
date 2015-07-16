@@ -46,17 +46,16 @@ public class SeLionAssertsListener implements IInvokedMethodListener {
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-
         logger.entering(new Object[] { method, testResult });
         try {
-            if (ListenerManager.executeCurrentMethod(this) == false) {
+            if (ListenerManager.isCurrentMethodSkipped(this)) {
                 logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }
             // Initialize soft asserts for this test method instance.
             SeLionSoftAssert softAsserts = new SeLionSoftAssert();
             testResult.setAttribute(SeLionSoftAssert.SOFT_ASSERT_ATTRIBUTE_NAME, softAsserts);
-        } catch (Exception e) { //NOSONAR
+        } catch (Exception e) { // NOSONAR
             logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
         }
     }
@@ -65,7 +64,7 @@ public class SeLionAssertsListener implements IInvokedMethodListener {
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         logger.entering(new Object[] { method, testResult });
         try {
-            if (ListenerManager.executeCurrentMethod(this) == false) {
+            if (ListenerManager.isCurrentMethodSkipped(this)) {
                 logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }
@@ -77,7 +76,7 @@ public class SeLionAssertsListener implements IInvokedMethodListener {
                     sa.assertAll();
                 }
             }
-        } catch (Exception e) { //NOSONAR
+        } catch (Exception e) { // NOSONAR
             logger.log(Level.WARNING, "An error occurred while processing afterInvocation: " + e.getMessage(), e);
         }
     }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -46,10 +46,9 @@ public class SummaryReport extends BaseReport<SummarizedData> {
         setColTitles(colTitles);
     }
 
-    public SummaryReport(String sReportName) {
+    public SummaryReport(String reportName) {
         this();
-        this.setsReportName(sReportName);
-
+        this.setReportName(reportName);
     }
 
     public List<SummarizedData> getLstEntities() {
@@ -64,14 +63,14 @@ public class SummaryReport extends BaseReport<SummarizedData> {
 
         for (SummarizedData ps : this.getLstEntities()) {
             row = sheet.createRow(rowNum);
-            int iColNum = iStartColNum;
+            int iColNum = getStartColNum();
             // Setting styles for each column first
             for (int i = 0; i < this.getColTitles().size(); i++) {
                 row.createCell(iColNum);
                 row.getCell(iColNum++).setCellStyle(style);
 
             }
-            int iSetDataCol = iStartColNum;
+            int iSetDataCol = getStartColNum();
             // Filling in data - (CI)
             row.getCell(iSetDataCol).setCellValue(ps.getsName());
             row.getCell(++iSetDataCol).setCellValue(ps.getiTotal());
@@ -81,7 +80,7 @@ public class SummaryReport extends BaseReport<SummarizedData> {
             row.getCell(++iSetDataCol).setCellValue(formatMilliSecondTime(ps.getlRuntime()));
             rowNum++;
 
-            for (int i = --iColNum; i >= iStartColNum; i--) {
+            for (int i = --iColNum; i >= getStartColNum(); i--) {
                 sheet.autoSizeColumn(i);
             }
 

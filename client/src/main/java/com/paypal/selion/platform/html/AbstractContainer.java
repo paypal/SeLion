@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -235,8 +235,8 @@ public abstract class AbstractContainer extends AbstractElement implements Paren
          */
         List<WebElement> elements = null;
         try {
-            if (parent != null) {
-                elements = parent.locateChildElements(getLocator());
+            if (getParent() != null) {
+                elements = getParent().locateChildElements(getLocator());
             } else {
                 // Its a case where there is a stand alone container and no parent
                 elements = HtmlElementUtils.locateElements(getLocator());
@@ -259,8 +259,8 @@ public abstract class AbstractContainer extends AbstractElement implements Paren
     public int size() {
         int size = 0;
         try {
-            if (parent != null) {
-                size = parent.locateChildElements(getLocator()).size();
+            if (getParent() != null) {
+                size = getParent().locateChildElements(getLocator()).size();
             } else {
                 size = HtmlElementUtils.locateElements(getLocator()).size();
             }
@@ -286,8 +286,8 @@ public abstract class AbstractContainer extends AbstractElement implements Paren
         }
         setIndex(index);
         WebElement locatedElement = null;
-        if (parent != null) {
-            locatedElement = parent.locateChildElement(childLocator);
+        if (getParent() != null) {
+            locatedElement = getParent().locateChildElement(childLocator);
         } else {
             locatedElement = HtmlElementUtils.locateElement(childLocator, this);
         }

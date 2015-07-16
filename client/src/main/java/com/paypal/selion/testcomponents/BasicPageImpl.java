@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -70,20 +70,20 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
     // TODO: So what happens if the sourceMap object is null or is empty ? Do we still assume that the page has been
     // initialized ?
     // Come back to this logic.
-    protected void loadObjectMap(HashMap<String, String> sourceMap) {
+    protected void loadObjectMap(Map<String, String> sourceMap) {
 
         if (sourceMap == null) {
             return;
         }
         if (sourceMap.containsKey("pageTitle")) {
-            pageTitle = sourceMap.get("pageTitle");
+            setPageTitle(sourceMap.get("pageTitle"));
         }
         if (objectMap == null) {
             objectMap = new HashMap<String, String>();
         }
         objectMap.putAll(sourceMap);
 
-        pageInitialized = true;
+        setPageInitialized(true);
     }
 
     /*
@@ -101,7 +101,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
      * @see com.paypal.selion.platform.html.WebPage#getExpectedPageTitle()
      */
     public String getExpectedPageTitle() {
-        return getPage().pageTitle;
+        return getPage().getPageTitle();
     }
 
     /**
@@ -112,11 +112,11 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
      */
     public boolean hasExpectedPageTitle() {
         // If there are no page titles defined we should return false
-        if (getPage().pageTitle == null) {
+        if (getPage().getPageTitle() == null) {
             return false;
         }
 
-        List<String> pageTitles = Arrays.asList(getPage().pageTitle.split("\\|"));
+        List<String> pageTitles = Arrays.asList(getPage().getPageTitle().split("\\|"));
         for (String title : pageTitles) {
             if (RegexUtils.wildCardMatch(getPage().getActualPageTitle(), title)) {
                 return true;
@@ -198,7 +198,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
                         field.set(whichClass, retobj);
 
                         // Calling it recursively to load the elements in the container
-                        initializeHtmlObjects(retobj, objectContainerMap.get(field.getName()));
+                        initializeHtmlObjects(retobj, getObjectContainerMap().get(field.getName()));
                     } else if (AbstractElement.class.isAssignableFrom(field.getType())) {
                         // Checking if the superClass/Parent is also a container. If so its not allowed.
 
@@ -280,13 +280,13 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
         // Call getPage to make sure the page is initialized.
         getPage();
 
-        if (pageValidators.size() == 0) {
+        if (getPageValidators().size() == 0) {
             if (!hasExpectedPageTitle()) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
                         + getExpectedPageTitle() + " didn't match.");
             }
         } else {
-            for (String elementName : pageValidators) {
+            for (String elementName : getPageValidators()) {
                 // We can set the action we want to check for, by putting a dot at the end of the elementName.
                 // Following by isPresent, isVisible or isEnabled, default behaviour is isPresent
                 String action = "";

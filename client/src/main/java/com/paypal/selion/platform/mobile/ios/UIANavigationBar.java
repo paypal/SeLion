@@ -1,17 +1,17 @@
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 eBay Software Foundation                                                                                                                         |
-|                                                                                                                                                                                                   |
-|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance                     |
-|  with the License.                                                                                                                                                                       |
-|                                                                                                                                                                                                   |
-|  You may obtain a copy of the License at                                                                                                                                   |
-|                                                                                                                                                                                                   |
-|       http://www.apache.org/licenses/LICENSE-2.0                                                                                                                       |
-|                                                                                                                                                                                                   |
-|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed                     |
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2015 eBay Software Foundation                                                                        |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
 |  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
-|  the specific language governing permissions and limitations under the License.                                                                       |
-\*-----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.platform.mobile.ios;
 
@@ -47,10 +47,10 @@ public class UIANavigationBar extends UIAElement implements UIAutomationNavigati
     @Override
     public void clickLeftButton(Object... expected) {
         logger.entering();
-        WebElement navigationBarElement = findElement(this.locator);
+        WebElement navigationBarElement = findElement(this.getLocator());
         List<WebElement> buttonElements = navigationBarElement.findElements(By.className(UIABUTTON));
         WebElement leftButton = findLeftButton(buttonElements);
-        bridgeDriver.tap(leftButton);
+        getBridgeDriver().tap(leftButton);
         if (expected != null && expected.length > 0) {
             waitFor(expected);
         }
@@ -60,10 +60,10 @@ public class UIANavigationBar extends UIAElement implements UIAutomationNavigati
     @Override
     public void clickRightButton(Object... expected) {
         logger.entering();
-        WebElement navigationBarElement = findElement(this.locator);
+        WebElement navigationBarElement = findElement(this.getLocator());
         List<WebElement> buttonElements = navigationBarElement.findElements(By.className(UIABUTTON));
         WebElement rightButton = findRightButton(buttonElements);
-        bridgeDriver.tap(rightButton);
+        getBridgeDriver().tap(rightButton);
         if (expected != null && expected.length > 0) {
             waitFor(expected);
         }

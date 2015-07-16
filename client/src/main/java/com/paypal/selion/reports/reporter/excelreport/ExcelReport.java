@@ -75,7 +75,7 @@ public class ExcelReport implements IReporter {
     private List<SummarizedData> lTests = new ArrayList<SummarizedData>();
     private List<SummarizedData> lGroups = new ArrayList<SummarizedData>();
     private List<SummarizedData> lClasses = new ArrayList<SummarizedData>();
-    private ArrayList<TestCaseResult> allTestsResults = new ArrayList<TestCaseResult>();
+    private List<TestCaseResult> allTestsResults = new ArrayList<TestCaseResult>();
 
     private List<List<String>> tcFailedData = new ArrayList<List<String>>();
     private List<List<String>> tcPassedData = new ArrayList<List<String>>();
@@ -402,7 +402,7 @@ public class ExcelReport implements IReporter {
     /**
      * Generates class based summary and the basis for Detailed groupwise summary report
      */
-    private void generateTCBasedData(ArrayList<TestCaseResult> allTestsList) {
+    private void generateTCBasedData(List<TestCaseResult> allTestsList) {
         logger.entering(allTestsList);
         SummarizedData tempClass = null, tempGroupClass = null;
         Map<String, SummarizedData> mpClassData = new HashMap<String, SummarizedData>();

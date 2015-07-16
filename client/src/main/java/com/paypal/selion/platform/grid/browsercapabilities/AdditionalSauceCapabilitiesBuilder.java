@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -38,9 +38,9 @@ import com.paypal.selion.platform.utilities.FileAssistant;
  */
 public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
-    private static String USER_NAME = "username";
-    private static String ACCESS_KEY = "accessKey";
-    private static String PARENT_TUNNEL = "parent-tunnel";
+    private static final String USER_NAME = "username";
+    private static final String ACCESS_KEY = "accessKey";
+    private static final String PARENT_TUNNEL = "parent-tunnel";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {

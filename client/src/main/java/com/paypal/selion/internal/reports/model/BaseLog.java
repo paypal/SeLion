@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -27,20 +27,21 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * {@link SeLionReporter} should leverage this class for the basic functionalities and add up only customizations as and
  * where required.
  * 
- * This is an internal class for use in Selion and clients of SeLion should have no need for referencing this public class.
+ * This is an internal class for use in Selion and clients of SeLion should have no need for referencing this public
+ * class.
  * 
  */
 public class BaseLog {
 
-    protected static SimpleLogger logger = SeLionLogger.getLogger();
+    private static SimpleLogger logger = SeLionLogger.getLogger();
     /** custom message for the log */
-    protected String msg;
+    private String msg;
     /** file location of the screenshot associated with this log message */
-    protected String screen;
-    /** the url of the current page.  This applies only to webtests and mobiletests that are running with safari, etc. */
-    protected String location;
+    private String screen;
+    /** the url of the current page. This applies only to webtests and mobiletests that are running with safari, etc. */
+    private String location;
     /** file location of the page source associated with this log message */
-    protected String href;
+    private String href;
 
     public BaseLog() {
     }
@@ -49,7 +50,8 @@ public class BaseLog {
      * Parses the input string for specific keys=value pairs delimeted by ||. Example would look like ||MSG=My
      * Screenshot 1||SCREEN=screenshots/513ba426-d5a0-4916-bf4b-e783ce943a8a.png
      * 
-     * @param s The string to search for specific keys
+     * @param s
+     *            The string to search for specific keys
      */
     public BaseLog(String s) {
         logger.entering(s);
@@ -68,7 +70,8 @@ public class BaseLog {
     /**
      * Add custom parsing of a String that represents a line in the log.
      * 
-     * @param part String to look for fields
+     * @param part
+     *            String to look for fields
      */
     protected void parse(String part) {
         logger.entering(part);
@@ -112,7 +115,8 @@ public class BaseLog {
     /**
      * Sets the msg.
      *
-     * @param msg the new msg
+     * @param msg
+     *            the new msg
      */
     public void setMsg(String msg) {
         this.msg = msg;
@@ -145,7 +149,8 @@ public class BaseLog {
     /**
      * Sets the file location of the screenshot.
      *
-     * @param screen the file location
+     * @param screen
+     *            the file location
      */
     public void setScreen(String screen) {
         this.screen = screen;
@@ -163,7 +168,8 @@ public class BaseLog {
     /**
      * Sets the url of the current page.
      *
-     * @param location the new location
+     * @param location
+     *            the new location
      */
     public void setLocation(String location) {
         this.location = location;
@@ -184,7 +190,8 @@ public class BaseLog {
     /**
      * Sets the file location of the page source.
      *
-     * @param href the new href
+     * @param href
+     *            the new href
      */
     public void setHref(String href) {
         this.href = href;

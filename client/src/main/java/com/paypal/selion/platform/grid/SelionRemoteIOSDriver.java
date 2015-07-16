@@ -48,7 +48,7 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
-    protected JavascriptExecutor javascriptExecutor;
+    protected JavascriptExecutor javascriptExecutor; // NOSONAR
 
     public SelionRemoteIOSDriver(URL url, IOSCapabilities iOSCapabilities) {
         super(url, iOSCapabilities);

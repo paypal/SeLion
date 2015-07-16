@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014-15 eBay Software Foundation                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -61,13 +61,17 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     private static final String ALERTS_ARE_NOT_SUPPORTED_ERR_MSG = "Alerts are not supported in iPhone/iPad/PhantomJS as of 2.39.0.";
     private String locator;
     private String controlName;
-    protected ParentTraits parent;
+    private ParentTraits parent;
     private Map<String, String> propMap = new HashMap<String, String>();
     protected static final String LOG_DEMARKER = "&#8594;";
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
-    
-    protected final ElementEventListener dispatcher = (ElementEventListener) Proxy.newProxyInstance(
+
+    protected void setParent(ParentTraits parent) {
+        this.parent = parent;
+    }
+
+    private final ElementEventListener dispatcher = (ElementEventListener) Proxy.newProxyInstance(
             ElementEventListener.class.getClassLoader(), new Class[] { ElementEventListener.class },
             new InvocationHandler() {
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -82,6 +86,10 @@ public abstract class AbstractElement implements Clickable, Hoverable {
                     }
                 }
             });
+
+    protected ElementEventListener getDispatcher() {
+        return dispatcher;
+    }
 
     /**
      * Instance method used to call static class method locateElement.
@@ -182,9 +190,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * Constructs an AbstractElement with locator and parent.
      * 
      * @param parent
-     *            - A {@link ParentTraits} object that represents the parent element for this element.
+     *            A {@link ParentTraits} object that represents the parent element for this element.
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      */
     public AbstractElement(ParentTraits parent, String locator) {
         this.parent = parent;
@@ -207,11 +215,11 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * Constructs an AbstractElement with locator, parent, and controlName.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param controlName
-     *            - the control name used for logging
+     *            the control name used for logging
      * @param parent
-     *            - A {@link ParentTraits} object that represents the parent element for this element.
+     *            A {@link ParentTraits} object that represents the parent element for this element.
      */
     public AbstractElement(String locator, String controlName, ParentTraits parent) {
         this.locator = locator;
@@ -460,13 +468,13 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * The click function and wait for expected {@link Object} items to load.
      * 
      * @param expected
-     *            - parameters in the form of an XPath element locator {@link String}, a {@link WebPage}, a
+     *            parameters in the form of an XPath element locator {@link String}, a {@link WebPage}, a
      *            {@link Button}, a {@link TextField}, an {@link Image}, a {@link Form}, a {@link Label}, a
      *            {@link Table}, a {@link SelectList}, a {@link CheckBox}, or a {@link RadioButton}.
      */
     public void click(Object... expected) {
         dispatcher.beforeClick(this, expected);
-        
+
         getElement().click();
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
@@ -503,7 +511,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         } finally {
             // Attempt at taking screenshots even when there are time-outs triggered from the wait* methods.
             processScreenShot();
-            
+
             dispatcher.afterClick(this, expected);
         }
     }
@@ -531,7 +539,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      */
     public Object clickAndExpect(ExpectedCondition<?> expectedCondition) {
         dispatcher.beforeClick(this, expectedCondition);
-        
+
         getElement().click();
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
@@ -543,9 +551,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
         Object variable = wait.until(expectedCondition);
         processScreenShot();
-        
+
         dispatcher.afterClick(this, expectedCondition);
-        
+
         return variable;
     }
 
@@ -555,12 +563,12 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * allowed time {@link ConfigProperty#EXECUTION_TIMEOUT}
      * 
      * @param conditions
-     *            - {@link List}&lt;{@link ExpectedCondition}&lt;?&gt;&gt; of supplied conditions passed.
-     * @return - return first {@link org.openqa.selenium.support.ui.ExpectedCondition} that was matched
+     *            {@link List}&lt;{@link ExpectedCondition}&lt;?&gt;&gt; of supplied conditions passed.
+     * @return first {@link org.openqa.selenium.support.ui.ExpectedCondition} that was matched
      */
     public ExpectedCondition<?> clickAndExpectOneOf(final List<ExpectedCondition<?>> conditions) {
         dispatcher.beforeClick(this, conditions);
-        
+
         getElement().click();
 
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
@@ -605,7 +613,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         } finally {
             // Attempt at taking screenshots even when there are time-outs triggered from the wait* methods.
             processScreenShot();
-            
+
             dispatcher.afterClick(this, conditions);
         }
     }
@@ -614,14 +622,14 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * The click function and wait for one of the expected {@link Object} items to load.
      * 
      * @param expected
-     *            - parameters in the form of an XPath element locator {@link String}, a {@link WebPage}, a
+     *            parameters in the form of an XPath element locator {@link String}, a {@link WebPage}, a
      *            {@link Button}, a {@link TextField}, an {@link Image}, a {@link Form}, a {@link Label}, a
      *            {@link Table}, a {@link SelectList}, a {@link CheckBox}, or a {@link RadioButton}.
-     * @return - return the first object that was matched
+     * @return the first object that was matched
      */
     public Object clickAndExpectOneOf(final Object... expected) {
         dispatcher.beforeClick(this, expected);
-        
+
         getElement().click();
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
@@ -675,18 +683,18 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         } finally {
             // Attempt at taking screenshots even when there are time-outs triggered from the wait* methods.
             processScreenShot();
-            
+
             dispatcher.afterClick(this, expected);
         }
     }
-    
+
     /**
      * Moves the mouse pointer to the middle of the element. And waits for the expected elements to be visible.
      * 
      * @param expected
-     *            - parameters in the form of an element locator {@link String}, a
-     *            {@link Button}, a {@link TextField}, an {@link Image}, a {@link Form}, a {@link Label}, a
-     *            {@link Table}, a {@link SelectList}, a {@link CheckBox}, or a {@link RadioButton}.
+     *            parameters in the form of an element locator {@link String}, a {@link Button}, a {@link TextField},
+     *            an {@link Image}, a {@link Form}, a {@link Label}, a {@link Table}, a {@link SelectList}, a
+     *            {@link CheckBox}, or a {@link RadioButton}.
      */
     public void hover(final Object... expected) {
         dispatcher.beforeHover(this, expected);

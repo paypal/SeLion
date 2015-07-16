@@ -52,7 +52,7 @@ public class DetailsReport extends BaseReport<List<String>> {
 
     public DetailsReport(String sReportName) {
         this();
-        this.setsReportName(sReportName);
+        this.setReportName(sReportName);
     }
 
     public List<List<String>> getLstEntities() {
@@ -69,7 +69,7 @@ public class DetailsReport extends BaseReport<List<String>> {
 
         for (List<String> dataString : this.getLstEntities()) {
             row = sheet.createRow(rowNum);
-            int iColNum = iStartColNum;
+            int iColNum = getStartColNum();
             for (int i = 0; i < this.getColTitles().size(); i++) {
                 row.createCell(iColNum);
                 row.getCell(iColNum).setCellStyle(style);

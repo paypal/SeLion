@@ -226,7 +226,7 @@ class ExcelReader {
                 continue;
             }
             String cellValue = row.getCell(0).toString();
-            if ((key.compareTo(cellValue) == 0) && (cellValue.contains("#") == false)) {
+            if ((key.compareTo(cellValue) == 0) && (!cellValue.contains("#"))) {
                 index = i;
                 break;
             }

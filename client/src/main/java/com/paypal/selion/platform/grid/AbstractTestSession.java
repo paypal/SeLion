@@ -48,25 +48,27 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 public abstract class AbstractTestSession {
     private boolean isStarted = false;
-    protected String methodName = "";
-    protected String className = "";
-    protected DesiredCapabilities additionalCapabilities = new DesiredCapabilities();
-    protected String parameters;
-    protected String[] dependsOnMethods = new String[] {};
-    protected static SimpleLogger logger = SeLionLogger.getLogger();
-    protected String xmlTestName = "";
-    protected List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
+    private String methodName = "";
+    private String className = "";
+    private DesiredCapabilities additionalCapabilities = new DesiredCapabilities();
+    private String parameters;
+    private String[] dependsOnMethods = new String[] {};
+    private static final SimpleLogger logger = SeLionLogger.getLogger();
+    private String xmlTestName = "";
+    private List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
 
     /**
      * @return whether the session is started <code>true</code> or <code>false</code>
      */
-    public boolean isStarted(){
+    public boolean isStarted() {
         return isStarted;
     }
 
     /**
      * Set the session to started.
-     * @param started <code>true</code> or <code>false</code>
+     * 
+     * @param started
+     *            <code>true</code> or <code>false</code>
      */
     protected final void setStarted(boolean started) {
         this.isStarted = started;
@@ -123,12 +125,12 @@ public abstract class AbstractTestSession {
     protected final Map<String, Object> parseIntoCapabilities(String[] capabilities) {
         Map<String, Object> capabilityMap = new HashMap<String, Object>();
         for (String eachCapability : capabilities) {
-            //split into key/value at the ':' character
+            // split into key/value at the ':' character
             String[] keyValuePair = eachCapability.split(":", 2);
             if (keyValuePair.length == 2) {
                 String value = keyValuePair[1];
                 Object desiredCapability = value;
-                //treat true/false values surrounded with ' marks as strings
+                // treat true/false values surrounded with ' marks as strings
                 if (value.startsWith("'") && value.endsWith("'")) {
                     String trimmedValue = StringUtils.mid(value, 1, value.length() - 2);
                     if (trimmedValue.equalsIgnoreCase("true")) {
@@ -184,12 +186,10 @@ public abstract class AbstractTestSession {
         return testName;
     }
 
-
     /**
      * A Method to start a new session.
      */
     public abstract void startSesion();
-
 
     /**
      * A initializer that initializes the sub-class of {@link AbstractTestSession} based on the annotation.
@@ -221,7 +221,7 @@ public abstract class AbstractTestSession {
                 // That way a user can see the how the page looked like when a test failed.
                 if (testResult.getStatus() == ITestResult.FAILURE
                         && (testResult.getThrowable() instanceof WebDriverException ||
-                            testResult.getThrowable() instanceof AssertionError)) {
+                        testResult.getThrowable() instanceof AssertionError)) {
                     warnUserOfTestFailures(testResult);
                 }
                 Grid.driver().quit();

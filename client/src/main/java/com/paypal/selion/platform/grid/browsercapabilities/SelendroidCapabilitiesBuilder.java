@@ -27,9 +27,9 @@ import com.paypal.selion.platform.grid.MobileTestSession;
 
 class SelendroidCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
-    private String MOBILE_NODE_TYPE = "mobileNodeType";
-    private String SELENDROID = "selendroid";
-    private String ANDROID = "android";
+    private static final String MOBILE_NODE_TYPE = "mobileNodeType";
+    private static final String SELENDROID = "selendroid";
+    private static final String ANDROID = "android";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
