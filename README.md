@@ -10,7 +10,7 @@ SeLion builds on top of TestNG and Selenium to provide a set of capabilities tha
 
 - A client module which you can add as a Maven dependency.
   - Annotation based WebDriver session management. 
-  - Access test data from Excel, YAML, or JSON through TestNG's `@DataProvider`.
+  - Access test data from Excel, YAML, JSON, or XML through TestNG's `@DataProvider`.
   - Runtime Reporter for real-time test execution status. 
   - Swap out browser targets at run-time. 
   - Automate native, hybrid, and web applications on iOS and Android devices.
@@ -30,7 +30,6 @@ Feel free to ask questions and/or share ideas.
 - [Raise a GitHub Issue](https://github.com/paypal/SeLion/issues).
 - [Join our Google Group](https://groups.google.com/forum/#!forum/selion).
 - Find us on [Gitter](https://gitter.im/paypal/SeLion)
-- We also have an IRC channel on irc.freenode.net: /join #selion
 - Initiate a pull request, if you have a contribution.
 
 Submitting bugs and feature requests
@@ -51,10 +50,8 @@ Your contribution is welcome and appreciated!
 Areas that need contribution
 -----------------------------
 1. Project Documentation and/or Project Website
-2. Expanding @MobileTest to work with Appium.
-3. Expanding PageYaml and SeLion's Code Generator to work with Selendroid and Appium
-4. Support for additional data formats such as CSV and XML for data driven testing.
-5. Any open item from [GitHub Issues](https://github.com/paypal/SeLion/issues)
+2. Support for additional data formats such as CSV for data driven testing.
+3. Any open item from [GitHub Issues](https://github.com/paypal/SeLion/issues)
 
 Projects we depend on that need contributors 
 ---------------------------------------------
