@@ -67,7 +67,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private int maxSessionsAllowed, totalSessionsCompleted = 0, totalSessionsStarted = 0;
     private boolean shutDownInProgress = false, forceShutDown = false;
     private String machine;
-    private List<String> errorSessions = new ArrayList<String>();
     private File logFile = null;
 
     private int getUniqueSessionCount() {
@@ -174,37 +173,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         }
 
         return true;
-    }
-
-    public void beforeRelease(TestSession session) {
-        // release the resources remotely.
-        if (session.getExternalKey() == null) {
-            throw new IllegalStateException("cannot release the resources, they haven't been reserved properly.");
-        }
-        boolean ok = session.sendDeleteSessionRequest();
-        if (!ok) {
-            StringBuilder error = new StringBuilder();
-            synchronized (this) {
-
-                forceShutDown = true;
-                shutDownInProgress = true;
-                error.append("Session :").append(session.toString()).append(", ");
-
-                String testName = (String) session.getRequestedCapabilities().get("name");
-                error.append("Host :").append(getId()).append(", ");
-                if (testName != null && !testName.trim().isEmpty()) {
-                    error.append("Test case :").append(testName).append(", ");
-
-                }
-                String browserName = (String) session.getRequestedCapabilities().get("browserName");
-                if (browserName != null && !browserName.trim().isEmpty()) {
-                    error.append("Browser :").append(browserName);
-                }
-                errorSessions.add(error.toString());
-            }
-            appendMsgToCustomLog("Error releasing the resources on timeout for session " + session);
-            appendMsgToCustomLog("Debug Information [" + error.toString());
-        }
     }
 
     @Override
