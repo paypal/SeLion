@@ -19,15 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.openqa.grid.common.exception.GridException;
-
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * This class contains methods to start and shutdown local grid.
+ * This class contains methods to start and shutdown local node (for mobile executions).
  */
 final class LocalGridManager {
 
@@ -43,10 +41,7 @@ final class LocalGridManager {
             return;
         }
 
-        toBoot.add(new LocalGrid());
-        toBoot.add(new LocalNode());
-        toBoot.add(new LocalIOSNode());
-        toBoot.add(new LocalSelendroidNode());
+        toBoot.add(new GenericNode());
     }
 
     private static void resetServerList() {
@@ -60,12 +55,9 @@ final class LocalGridManager {
     /**
      * This method is responsible for spawning a local hub for supporting local executions
      * 
-     * @param platform
-     *            - A {@link WebDriverPlatform} that represents the platform [ This is internally used to decide if an
-     *            iOS node or an android node is to be additionally spawned and hooked to the Grid.]
-     * 
+     *
      */
-    public static synchronized void spawnLocalHub(AbstractTestSession testSession) {
+    public static synchronized void spawnLocalNode(AbstractTestSession testSession) {
         logger.entering(testSession.getPlatform());
         if (!isRunLocally()) {
             logger.exiting();
@@ -75,11 +67,9 @@ final class LocalGridManager {
         for (LocalServerComponent eachItem : toBoot) {
             try {
                 eachItem.boot(testSession);
-            } catch (GridException e) {
-                // If either the Grid or the Node or the IOS-Node for that matter failed to start at the first attempt
-                // then there is NO point in trying to keep restarting it for every iteration. So lets log a severe
-                // message
-                // and exit the JVM.
+            } catch (GenericNode.NodeBootFailedException e) {
+                // If the node threw an exception then there is NO point in trying to keep restarting it for every iteration.
+                // So lets log a severe message and exit the JVM.
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 System.exit(1);
             }
@@ -90,7 +80,7 @@ final class LocalGridManager {
     /**
      * This method helps shut down the already spawned hub for local runs
      */
-    final static synchronized void shutDownHub() {
+    final static synchronized void shutDownLocalNode() {
         logger.entering();
         if (!isRunLocally()) {
             logger.exiting();

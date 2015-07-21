@@ -111,7 +111,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             testSession.initializeTestSession(methodInfo);
             if (!(testSession instanceof BasicTestSession)) {
                 // BasicTestSession are non selenium tests. So no need to start the Local hub.
-                LocalGridManager.spawnLocalHub(testSession);
+                LocalGridManager.spawnLocalNode(testSession);
             }
         } catch (Exception e) { //NOSONAR
             logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
@@ -274,7 +274,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
-        LocalGridManager.shutDownHub();
+        LocalGridManager.shutDownLocalNode();
         logger.exiting();
     }
 

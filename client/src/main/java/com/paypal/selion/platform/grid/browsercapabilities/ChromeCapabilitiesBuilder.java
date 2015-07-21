@@ -15,12 +15,12 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.Config.ConfigProperty;
 
 /**
  * This class represents the capabilities that are specific to Chrome browser.
@@ -32,7 +32,13 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
         if (isLocalRun()) {
-            System.setProperty("webdriver.chrome.driver", getBinaryPath());
+            String binaryPath = getBinaryPath();
+            if (StringUtils.isNotBlank(binaryPath)) {
+                //Set the property ONLY if the user provided us a value. Else things will still work because the user
+                //perhaps has already set this in his/her PATH variable.
+                System.setProperty("webdriver.chrome.driver", binaryPath);
+
+            }
         }
         capabilities.setBrowserName(DesiredCapabilities.chrome().getBrowserName());
         String userAgent = getUserAgent();

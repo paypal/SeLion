@@ -454,11 +454,17 @@ public final class Config {
         SELENIUM_WEBDRIVER_EVENT_LISTENER("webDriverEventListener", "", true),
 
         /**
+         * The command that would be used if one were to spawn a local ios-driver node (or) an appium node (or) a
+         * selendroid node. SeLion would end up just invoking the same exact command.
+         */
+        SELENIUM_LOCAL_NODE_SPAWN_COMMAND("localNodeSpawnCommand", "", true),
+
+        /**
          * Flip this parameter to <code>true</code> if you would like a browser to be spawned locally on your machine
          * and run automation tests there. Default is set to <b>false</b> which means your tests are always going to be
          * run against a Remote Grid environment as pointed to by {@link ConfigProperty#SELENIUM_HOST}.
          */
-        SELENIUM_RUN_LOCALLY("runLocally", "false", true),
+        SELENIUM_RUN_LOCALLY("runLocally", "true", true),
 
         /**
          * This parameter represents the folder which would contain the mobile app. This parameter is currently only
