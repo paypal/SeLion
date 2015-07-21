@@ -1,17 +1,17 @@
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 eBay Software Foundation                                                                                                              |
-|                                                                                                                                                           |
-|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance                                           |
-|  with the License.                                                                                                                                        |
-|                                                                                                                                                           |
-|  You may obtain a copy of the License at                                                                                                                  |
-|                                                                                                                                                           |
-|       http://www.apache.org/licenses/LICENSE-2.0                                                                                                          |
-|                                                                                                                                                           |
-|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed                                         |
-|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for                                        |
-|  the specific language governing permissions and limitations under the License.                                                                           |
-\*----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2015 PayPal                                                                                          |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.android.sample;
 
@@ -36,20 +36,20 @@ public class AppiumAndroidCheckBoxSeekBarTest {
     private final String seekBarLocator = "com.paypal.selion.pageobjectsdemoapp:id/seekBar";
     private final String longPressButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/long_press_button";
     private final String textViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/seekBar_textview";
-    //Check box
-    private final String checkBoxAndroidLocator ="com.paypal.selion.pageobjectsdemoapp:id/android_checkbox";
+    // Check box
+    private final String checkBoxAndroidLocator = "com.paypal.selion.pageobjectsdemoapp:id/android_checkbox";
     private final String checkBoxiOSLocator = "com.paypal.selion.pageobjectsdemoapp:id/ios_checkbox";
     private final String valueTextViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/checkbox_textview";
-    
+
     private UiButton menuButton = null;
     private UiObject seekBar = null;
     private UiTextView seekBarTextView = null;
     private UiTextView checkBoxTextView = null;
     private UiObject iosCheckBox = null;
     private UiObject androidCheckBox = null;
-    
+
     @BeforeClass
-    public void initElements(){
+    public void initElements() {
         menuButton = new UiButton(actionButtonLocator);
         seekBar = new UiObject(seekBarLocator);
         seekBarTextView = new UiTextView(textViewLocator);
@@ -57,7 +57,7 @@ public class AppiumAndroidCheckBoxSeekBarTest {
         androidCheckBox = new UiObject(checkBoxAndroidLocator);
         checkBoxTextView = new UiTextView(valueTextViewLocator);
     }
-    
+
     @Test
     @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
     public void testCheckBox() throws InterruptedException {
@@ -85,6 +85,5 @@ public class AppiumAndroidCheckBoxSeekBarTest {
         seekBar.swipeLeft();
         Assert.assertEquals(seekBarTextView.getText(), "Value: 0", "Seek Bar swipe right value does not match");
     }
-
 
 }

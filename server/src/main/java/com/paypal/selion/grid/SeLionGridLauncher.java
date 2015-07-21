@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
 |  Copyright 2011 Selenium committers                                                                                 |
 |  Copyright 2011 Software Freedom Conservancy                                                                        |
-|  Copyright (C) 2014 eBay Software Foundation                                                                        |
+|  Copyright (C) 2014 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |

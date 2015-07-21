@@ -1,17 +1,18 @@
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 eBay Software Foundation                                                                                                                         |
-|                                                                                                                                                                                                   |
-|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance                     |
-|  with the License.                                                                                                                                                                       |
-|                                                                                                                                                                                                   |
-|  You may obtain a copy of the License at                                                                                                                                   |
-|                                                                                                                                                                                                   |
-|       http://www.apache.org/licenses/LICENSE-2.0                                                                                                                       |
-|                                                                                                                                                                                                   |
-|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed                     |
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2015 PayPal                                                                                          |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
 |  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
-|  the specific language governing permissions and limitations under the License.                                                                       |
-\*-----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
+
 package com.paypal.selion.ios.sample;
 
 import org.openqa.selenium.NoSuchElementException;
@@ -32,11 +33,13 @@ public class AppiumIOSButtonTapTest {
     @Test
     @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
     public void testSingleTap() throws InterruptedException {
-        UIANavigationBar navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] {"//UIAApplication[1]/UIAWindow[1]/UIAButton[2]"});
+        UIANavigationBar navigationBar = new UIANavigationBar(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
+        navigationBar.clickRightButton(new Object[] { "//UIAApplication[1]/UIAWindow[1]/UIAButton[2]" });
         UIAButton singleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[2]");
         singleTapButton.tap();
-        UIATextField singleTapResponseTextField = new UIATextField("xpath=//UIAApplication[1]/UIAWindow[1]/UIATextField[2]");
+        UIATextField singleTapResponseTextField = new UIATextField(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIATextField[2]");
         Assert.assertEquals(singleTapResponseTextField.getValue(), "Tap Count: 1", "Single tap count does not match");
     }
 
@@ -45,9 +48,10 @@ public class AppiumIOSButtonTapTest {
     public void testDoubleTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] {new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[1]")});
+        navigationBar.clickRightButton(new Object[] { new UIAButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[1]") });
         UIAButton doubleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[1]");
-        doubleTapButton.doubleTap(new Object[] {"//UIAApplication[1]/UIAWindow[1]/UIATextField[1]"});
+        doubleTapButton.doubleTap(new Object[] { "//UIAApplication[1]/UIAWindow[1]/UIATextField[1]" });
         UIATextField singleTapResponseTextField = new UIATextField(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIATextField[1]");
         Assert.assertEquals(singleTapResponseTextField.getValue(), "Tap Count: 2", "Double tap count does not match");
@@ -56,7 +60,8 @@ public class AppiumIOSButtonTapTest {
     @Test(expectedExceptions = WebDriverException.class)
     @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
     public void testInvalidXpath() throws InterruptedException {
-        UIANavigationBar navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
+        UIANavigationBar navigationBar = new UIANavigationBar(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
         navigationBar.clickRightButton();
         Thread.sleep(500);
         UIAButton singleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[]");
@@ -66,7 +71,8 @@ public class AppiumIOSButtonTapTest {
     @Test(expectedExceptions = NoSuchElementException.class)
     @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
     public void testInvalidLocator() throws InterruptedException {
-        UIANavigationBar navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
+        UIANavigationBar navigationBar = new UIANavigationBar(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
         navigationBar.clickRightButton();
         Thread.sleep(500);
         UIAButton singleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[3]");
