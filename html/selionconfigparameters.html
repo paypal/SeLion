@@ -156,10 +156,9 @@
           <td colspan="1">&nbsp;</td>
           <td colspan="1" class="warning"><span>GLOBAL</span></td>
           <td class="confluenceTd">
-            <p>Use this parameter to provide SeLion with a custom listener which can be plugged into EventFiringWebDriver.
-              If the fully qualified class implements WebDriverEventListener then SeLion will invoke the custom
-              implementation provided by you via your implementation as and when the relevant events happen. If more
-              than one custom listeners are to be provided please separate the fully qualified class names with commas.</p>
+            <p>Use this parameter to provide SeLion with a custom capabilities provider. The value for this parameter
+              would be the fully qualified class name which is a sub-class of DefaultCapabilitiesBuilder.
+              If more than one custom capabilities providers are required, please separate the fully qualified class names with commas.</p>
           </td>
         </tr>
         <tr>
@@ -171,7 +170,7 @@
             <p>Use this parameter to provide SeLion with a custom listener which can be plugged into EventFiringWebDriver.
               If the fully qualified class implements WebDriverEventListener then SeLion will invoke the custom
               implementation provided by you via your implementation as and when the relevant events happen.
-              If more than one custom listeners are to be provided please separate the fully qualified class names with commas.</p>
+              If more than one custom listeners are required, please separate the fully qualified class names with commas.</p>
           </td>
         </tr>
         <tr>
