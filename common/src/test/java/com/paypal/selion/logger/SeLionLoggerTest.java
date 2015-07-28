@@ -19,7 +19,6 @@ import static org.testng.Assert.assertTrue;
 
 import org.testng.annotations.Test;
 
-import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.logger.SeLionLogger.SeLionLoggerSettings;
 import com.paypal.test.utilities.logging.SimpleLogger;
 

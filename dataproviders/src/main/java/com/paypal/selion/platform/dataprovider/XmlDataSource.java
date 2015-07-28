@@ -30,7 +30,7 @@ public interface XmlDataSource extends DataResource {
      *
      * @return A {@code Map<String, Class<?>>} map. Returns null if the instance was not initialized using
      *         {@link XmlFileSystemResource#XmlFileSystemResource(String, Map)} or
-     *         {@link XmlFileSystemResource#XmlFileSystemResource(String, String, Map)} constructors.
+     *         {@link XmlFileSystemResource#XmlFileSystemResource(String, Class)} constructors.
      */
     Map<String, Class<?>> getXpathMap();
 

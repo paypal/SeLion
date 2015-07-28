@@ -62,7 +62,7 @@ public class XmlFileSystemResource extends FileSystemResource implements XmlData
      * 
      * @return A {@code Map<String, Class<?>>} map. Returns null if the instance was not initialized using
      *         {@link XmlFileSystemResource#XmlFileSystemResource(String, Map)} or
-     *         {@link XmlFileSystemResource#XmlFileSystemResource(String, String, Map)} constructors.
+     *         {@link XmlFileSystemResource#XmlFileSystemResource(String, Class)} constructors.
      */
     @Override
     public Map<String, Class<?>> getXpathMap() {

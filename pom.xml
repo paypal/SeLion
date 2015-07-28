@@ -27,6 +27,7 @@
     <modules>
         <module>project-bom</module>
         <module>common</module>
+        <module>dataproviders</module>
         <module>server</module>
         <module>client</module>
         <module>codegen</module>

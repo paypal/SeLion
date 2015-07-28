@@ -75,6 +75,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-dataproviders</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Selenium2 server dependency -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>

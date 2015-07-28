@@ -1,49 +1,42 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.paypal.selion</groupId>
         <artifactId>SeLion-Parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>SeLion-Common</artifactId>
+    <artifactId>SeLion-dataproviders</artifactId>
     <packaging>jar</packaging>
-    <description>SeLion Common Classes</description>
-    <name>SeLion Common</name>
-    <url>${siteUrl}</url>
+    <name>SeLion DataProviders</name>
+    <description>A collection of SeLion TestNG DataProviders for automation with TestNG.</description>
 
     <properties>
-        <suiteXmlPath>src/test/resources/</suiteXmlPath>
-        <commonSuiteXmlFile>Default-Suite.xml</commonSuiteXmlFile>
-        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <dataProviderSuiteXmlFile>src/test/resources/suites/Default-Suite.xml</dataProviderSuiteXmlFile>
     </properties>
 
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
+                <!-- make our test reources available to SeLion client -->
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
                 <includes>
-                    <include>**/selionbuildinfo.properties</include>
+                    <include>**/*.json</include>
+                    <include>**/*.yaml</include>
+                    <include>**/*.xlsx</include>
                 </includes>
             </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>**/selionbuildinfo.properties</exclude>
-                </excludes>
-            </resource>
         </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlPath}${commonSuiteXmlFile}</suiteXmlFile>
+                        <suiteXmlFile>${dataProviderSuiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
@@ -63,10 +56,10 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Apache commons configuration -->
         <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-Common</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -80,13 +73,23 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
         </dependency>
 
         <dependency>
@@ -95,13 +98,24 @@
         </dependency>
 
         <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <artifactId>commons-jxpath</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
