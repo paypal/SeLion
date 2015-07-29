@@ -437,10 +437,9 @@ public final class Config {
         MOBILE_NODE_TYPE("mobileNodeType", "", false),
 
         /**
-         * This configuration parameter represents a custom capability provider which can be passed into SeLion. The
-         * value for this parameter would be the fully qualified class name which is a sub-class of
-         * {@link DefaultCapabilitiesBuilder}. You can plug-in multiple capability providers by feeding them as
-         * "comma separated values".
+         * Use this parameter to provide SeLion with a custom capabilities. The value for this parameter
+         * would be the fully qualified class name which is a sub-class of {@link DefaultCapabilitiesBuilder}.
+         * If more than one custom capabilities are to be provided please separate the fully qualified class names with commas.
          */
         SELENIUM_CUSTOM_CAPABILITIES_PROVIDER("customCapabilities", "", true),
 
