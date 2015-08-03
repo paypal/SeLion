@@ -141,8 +141,10 @@ public class SeLionGridLauncher {
         } catch (GridConfigurationException e) {
             GridDocHelper.printHubHelp(e.getMessage());
             e.printStackTrace();
+            throw e;
         } catch (RuntimeException rex) {
             rex.printStackTrace();
+            throw rex;
         }
     }
 }

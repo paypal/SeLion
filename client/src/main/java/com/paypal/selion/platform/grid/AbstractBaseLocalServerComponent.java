@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.selenium.net.PortProber;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -55,6 +56,8 @@ abstract class AbstractBaseLocalServerComponent implements LocalServerComponent 
             LOGGER.exiting();
             return;
         }
+
+        checkPort(getPort(), String.format("for the %s", this.getClass().getSimpleName()));
 
         setExecutor(Executors.newSingleThreadExecutor());
         Runnable worker = getLauncher();
@@ -91,10 +94,36 @@ abstract class AbstractBaseLocalServerComponent implements LocalServerComponent 
         LOGGER.exiting();
     }
 
+    /**
+     * Check the port availability
+     * 
+     * @param port
+     *            the port to check
+     * @param msg
+     *            the text to append to the end of the error message displayed when the port is not available.
+     * @throws IllegalArgumentException
+     *             when the port is not available.
+     */
+    void checkPort(int port, String msg) {
+        StringBuilder message = new StringBuilder().append(" ").append(msg);
+        String portInUseError = String.format("Port %d is already in use. Please shutdown the service "
+                + "listening on this port or configure a different port%s.", port, message);
+        boolean free = false;
+        try {
+            free = PortProber.pollPort(port);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(portInUseError, e);
+        } finally {
+            if (!free) {
+                throw new IllegalArgumentException(portInUseError);
+            }
+        }
+    }
+
     /*
-     * Waits for the launcher to initialize.. This code exists purely to give the launcher more time to
-     * download dependencies. Otherwise, it is not needed since RunnableLauncher#isRunning() _should_ check for 
-     * isInitialized() at method entry.
+     * Waits for the launcher to initialize. This code exists purely to give the launcher more time to download
+     * dependencies. Otherwise, it is not needed since RunnableLauncher#isRunning() _should_ check for isInitialized()
+     * at method entry.
      */
     private void waitForInitialization(long timeout) {
         LOGGER.entering();

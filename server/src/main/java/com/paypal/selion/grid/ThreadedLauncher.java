@@ -94,8 +94,9 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
         LOGGER.entering();
         try {
             if (!isInitialized() && downloadList != null) {
-                FileDownloader.checkForDownloads(downloadList, getLauncherOptions().isFileDownloadCheckTimeStampOnInvocation(),
-                        getLauncherOptions().isFileDownladCleanupOnInvocation());
+                FileDownloader.checkForDownloads(downloadList, getLauncherOptions()
+                        .isFileDownloadCheckTimeStampOnInvocation(), getLauncherOptions()
+                        .isFileDownladCleanupOnInvocation());
             }
             setInitialized(true);
 
@@ -109,6 +110,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
         } catch (Exception e) { // NOSONAR
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             shutdown();
+            throw new IllegalStateException(e);
         }
     }
 
@@ -117,6 +119,10 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
      */
     public final void shutdown() {
         LOGGER.entering();
+        if (launcher == null) {
+            return;
+        }
+
         if (!isRunning()) {
             return;
         }

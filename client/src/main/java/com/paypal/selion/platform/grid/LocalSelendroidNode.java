@@ -127,18 +127,7 @@ final class LocalSelendroidNode extends AbstractBaseLocalServerComponent {
     private void validateConfiguredOptions() {
         // Make sure the configured internal selendroid server port is not already in use
         int selendroidServerPort = Config.getIntConfigProperty(ConfigProperty.SELENDROID_SERVER_PORT);
-        String portInUseError = String.format("Port %d is already in use. Please shutdown the service "
-                + "listening on this port or configure a different selendroid server port.", selendroidServerPort);
-        boolean free = false;
-        try {
-            free = PortProber.pollPort(selendroidServerPort);
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException(portInUseError, e);
-        } finally {
-            if (!free) {
-                throw new IllegalArgumentException(portInUseError);
-            }
-        }
+        checkPort(selendroidServerPort, "for selendroid server");
 
         try {
             checkAndValidateParameters(ConfigProperty.SELENDROID_EMULATOR_START_TIMEOUT);
