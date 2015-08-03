@@ -26,6 +26,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.WebDriverException;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ISuite;
@@ -47,6 +49,7 @@ import com.paypal.selion.configuration.ListenerManager;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.internal.utils.TestNGUtils;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.reports.reporter.runtimereport.JsonRuntimeReporterHelper;
 import com.paypal.selion.reports.reporter.services.ConfigSummaryData;
 import com.paypal.selion.reports.reporter.services.ReporterConfigMetadata;
 import com.paypal.selion.reports.runtime.SeLionReporter;
@@ -213,13 +216,35 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 return;
             }
 
+            // let's attempt to capture a screenshot in case of failure from Selenium or SeLion PageObject
+            // or when there was an assertion failure.
+            // That way a user can see the how the page looked like when a test failed.
+            if (testResult.getStatus() == ITestResult.FAILURE
+                    && (testResult.getThrowable() instanceof WebDriverException || 
+                            testResult.getThrowable() instanceof AssertionError)) {
+                warnUserOfTestFailures(testResult);
+            }
+
             AbstractTestSession testSession = Grid.getTestSession();
             testSession.closeSession();
+            testResult.setAttribute(JsonRuntimeReporterHelper.IS_COMPLETED, true);
         } catch (Exception e) { // NOSONAR
             logger.log(Level.WARNING, "An error occurred while processing afterInvocation: " + e.getMessage(), e);
         }
 
         logger.exiting();
+    }
+
+    private void warnUserOfTestFailures(ITestResult testResult) {
+        String errMsg = "";
+        if (testResult.getThrowable() != null) {
+            errMsg = testResult.getThrowable().getMessage();
+        }
+        if (StringUtils.isEmpty(errMsg)) {
+            errMsg = "Test Failure screenshot";
+        }
+        SeLionReporter.log(errMsg, true, true);
+        logger.info("Please review the test report for the screenshot at the time of failure.");
     }
 
     /**

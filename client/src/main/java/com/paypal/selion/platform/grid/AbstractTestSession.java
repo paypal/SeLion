@@ -23,10 +23,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.ITestResult;
-import org.testng.Reporter;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
@@ -37,8 +34,6 @@ import com.paypal.selion.internal.grid.SauceLabsHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
-import com.paypal.selion.reports.reporter.runtimereport.JsonRuntimeReporterHelper;
-import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -209,21 +204,12 @@ public abstract class AbstractTestSession {
      */
     public final void closeSession() {
         logger.entering();
-        ITestResult testResult = Reporter.getCurrentTestResult();
 
         if (isStarted() && Grid.driver() != null) {
             new SauceLabsHelper().embedSauceLabsJobUrlToTestReport();
             // If driver.quit() throws some exception then rest of the listeners will not get invoked, To handle this
             // we are gobbling this exception
             try {
-                // let's attempt to capture a screenshot in case of failure from Selenium or SeLion PageObject
-                // or when there was an assertion failure.
-                // That way a user can see the how the page looked like when a test failed.
-                if (testResult.getStatus() == ITestResult.FAILURE
-                        && (testResult.getThrowable() instanceof WebDriverException ||
-                        testResult.getThrowable() instanceof AssertionError)) {
-                    warnUserOfTestFailures(testResult);
-                }
                 Grid.driver().quit();
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "An error occurred while closing the Selenium session: " + e.getMessage(), e);
@@ -233,21 +219,10 @@ public abstract class AbstractTestSession {
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
         this.isStarted = false;
-        testResult.setAttribute(JsonRuntimeReporterHelper.IS_COMPLETED, true);
         logger.exiting();
     }
 
-    private void warnUserOfTestFailures(ITestResult testResult) {
-        String errMsg = "";
-        if (testResult.getThrowable() != null) {
-            errMsg = testResult.getThrowable().getMessage();
-        }
-        if (StringUtils.isEmpty(errMsg)) {
-            errMsg = "Test Failure screenshot";
-        }
-        SeLionReporter.log(errMsg, true, true);
-        logger.info("Please review the test report for the screenshot at the time of failure.");
-    }
+
 
     public final boolean hasDependentMethods() {
         return (this.dependsOnMethods.length > 0);

@@ -112,14 +112,14 @@ public class JsonRuntimeReporterHelper {
 
         return jsonConfigSummary;
     }
-    
+
     /**
      * This method will generate local Configuration summary by fetching the details from ReportDataGenerator
      * 
      * @param suiteName
-     *            - suite name of the test method.
+     *            suite name of the test method.
      * @param testName
-     *            - test name of the test method.
+     *            test name of the test method.
      */
     public void generateLocalConfigSummary(String suiteName, String testName) {
 
@@ -129,8 +129,7 @@ public class JsonRuntimeReporterHelper {
             Map<String, String> testLocalConfigValues = ConfigSummaryData.getLocalConfigSummary(testName);
             JsonObject json = new JsonObject();
             if (testLocalConfigValues == null) {
-                json.addProperty(ReporterDateFormatter.CURRENTDATE,
-                		ReporterDateFormatter.getISO8601String(new Date()));
+                json.addProperty(ReporterDateFormatter.CURRENTDATE, ReporterDateFormatter.getISO8601String(new Date()));
             } else {
                 for (Entry<String, String> temp : testLocalConfigValues.entrySet()) {
                     json.addProperty(temp.getKey(), temp.getValue());
@@ -156,16 +155,16 @@ public class JsonRuntimeReporterHelper {
      * This method is used to insert test method details based on the methods suite, test, groups and class name.
      * 
      * @param suite
-     *            - suite name of the test method.
+     *            suite name of the test method.
      * @param test
-     *            - test name of the test method.
+     *            test name of the test method.
      * @param packages
-     *            - group name of the test method. If the test method doesn't belong to any group then we should pass
+     *            group name of the test method. If the test method doesn't belong to any group then we should pass
      *            null.
      * @param classname
-     *            - class name of the test method.
+     *            class name of the test method.
      * @param result
-     *            - ITestResult instance of the test method.
+     *            ITestResult instance of the test method.
      */
     public synchronized void insertTestMethod(String suite, String test, String packages, String classname,
             ITestResult result) {
@@ -207,16 +206,16 @@ public class JsonRuntimeReporterHelper {
      * This method is used to insert configuration method details based on the suite, test, groups and class name.
      * 
      * @param suite
-     *            - suite name of the configuration method.
+     *            suite name of the configuration method.
      * @param test
-     *            - test name of the configuration method.
+     *            test name of the configuration method.
      * @param packages
-     *            - group name of the configuration method. If the configuration method doesn't belong to any group then
+     *            group name of the configuration method. If the configuration method doesn't belong to any group then
      *            we should pass null.
      * @param classname
-     *            - class name of the configuration method.
+     *            class name of the configuration method.
      * @param result
-     *            - ITestResult instance of the configuration method.
+     *            ITestResult instance of the configuration method.
      */
 
     public synchronized void insertConfigMethod(String suite, String test, String packages, String classname,
@@ -269,9 +268,9 @@ public class JsonRuntimeReporterHelper {
      * Generate the final report.json from the completed test and completed configuration temporary files.
      * 
      * @param outputDirectory
-     *            - output directory
+     *            output directory
      * @param bForceWrite
-     *            - setting true will forcibly generate the report.json
+     *            setting true will forcibly generate the report.json
      */
     public synchronized void writeJSON(String outputDirectory, boolean bForceWrite) {
         logger.entering(new Object[] { outputDirectory, bForceWrite });
@@ -300,7 +299,7 @@ public class JsonRuntimeReporterHelper {
         List<TestMethodInfo> tempCompletedTest = new ArrayList<TestMethodInfo>();
         for (TestMethodInfo temp : completedTest) {
             Object isCompleted = temp.getResult().getAttribute(IS_COMPLETED);
-            if(isCompleted != null && (boolean)isCompleted) {
+            if (isCompleted != null && (boolean) isCompleted) {
                 appendFile(jsonCompletedTest, temp.toJson().concat(",\n"));
             } else {
                 tempCompletedTest.add(temp);
@@ -312,6 +311,7 @@ public class JsonRuntimeReporterHelper {
 
     /**
      * Generate JSON report and HTML report
+     * 
      * @param outputDirectory
      */
     private void generateReports(String outputDirectory) {
@@ -319,12 +319,11 @@ public class JsonRuntimeReporterHelper {
 
         ClassLoader localClassLoader = this.getClass().getClassLoader();
 
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(outputDirectory + File.separator + "index.html"));
-                BufferedWriter jsonWriter = new BufferedWriter(
-                        new FileWriter(outputDirectory + File.separator + "report.json"));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputDirectory + File.separator + "index.html"));
+                BufferedWriter jsonWriter = new BufferedWriter(new FileWriter(outputDirectory + File.separator
+                        + "report.json"));
                 BufferedReader templateReader = new BufferedReader(new InputStreamReader(
-                  localClassLoader.getResourceAsStream("templates/RuntimeReporter/index.html")));) {
+                        localClassLoader.getResourceAsStream("templates/RuntimeReporter/index.html")));) {
 
             JsonObject reporter = buildJSONReport();
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -353,11 +352,11 @@ public class JsonRuntimeReporterHelper {
     private void generateHTMLReport(BufferedWriter writer, BufferedReader templateReader, String jsonReport)
             throws IOException {
 
-        logger.entering(new Object[] { writer, templateReader, jsonReport});
+        logger.entering(new Object[] { writer, templateReader, jsonReport });
 
         String readLine = null;
         while ((readLine = templateReader.readLine()) != null) {
-            if(readLine.trim().equals("${reports}")) {
+            if (readLine.trim().equals("${reports}")) {
                 writer.write(jsonReport);
                 writer.newLine();
             } else {
@@ -367,7 +366,6 @@ public class JsonRuntimeReporterHelper {
         }
         logger.exiting();
     }
-    
 
     /**
      * Construct the JSON report for report generation
@@ -465,7 +463,7 @@ public class JsonRuntimeReporterHelper {
      * Load the json array for the given file
      * 
      * @param jsonFile
-     *            - json file location
+     *            json file location
      * @return JSONArray
      * @throws JSONException
      */
@@ -485,8 +483,8 @@ public class JsonRuntimeReporterHelper {
         StringBuilder completeJSONTxt = new StringBuilder("[");
         completeJSONTxt.append(StringUtils.removeEnd(jsonTxt, ",\n"));
         completeJSONTxt.append("]");
-        JsonArray testObjects = (new JsonParser()).parse(completeJSONTxt.toString()).getAsJsonArray() ;
-        
+        JsonArray testObjects = (new JsonParser()).parse(completeJSONTxt.toString()).getAsJsonArray();
+
         logger.exiting(testObjects);
 
         return testObjects;
