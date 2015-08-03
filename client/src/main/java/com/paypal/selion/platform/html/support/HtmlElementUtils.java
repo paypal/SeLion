@@ -164,7 +164,7 @@ public class HtmlElementUtils {
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By locatorBy = null;
         locator = locator.trim();
-        if (locator.indexOf("|") == -1) {
+        if (locator.indexOf('|') == -1) {
             locatorBy = getFindElementType(locator);
         } else {
             String[] locators = locator.split("\\Q|\\E");

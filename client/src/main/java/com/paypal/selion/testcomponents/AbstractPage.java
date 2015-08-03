@@ -129,7 +129,7 @@ public abstract class AbstractPage implements WebPage {
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Unable to initialize page data for " + pageDomain + "/" + pageClassName
-                        + ". Root cause:" + e, e);
+                        + ". Root cause:" + e, e); // NOSONAR
             }
         }
         pageInitialized = true;

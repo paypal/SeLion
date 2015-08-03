@@ -23,9 +23,9 @@ import java.util.logging.Level;
 
 import org.testng.Reporter;
 
-import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.internal.reports.model.BaseLog;
 import com.paypal.selion.internal.reports.model.PageContents;
+import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.reports.reporter.services.LogAction;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -90,8 +90,8 @@ public final class SeLionReporter {
         /**
          * Changed html file extension to txt
          */
-        if (!(saver instanceof SaverFileSystem)) {
-            throw new RuntimeException("Internal error. SeLionReporter expects an instance of SaverFileSystem.");
+        if (!(saver instanceof SaverFileSystem)) { // NOSONAR
+            throw new RuntimeException("Internal error. SeLionReporter expects an instance of SaverFileSystem."); // NOSONAR
         }
         if (saveSrc) {
             if (Grid.driver() != null) {

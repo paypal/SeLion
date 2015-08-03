@@ -76,7 +76,7 @@ public class CustomKeyFilter implements DataProviderFilter {
             }
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new DataProviderException("Row with key '" + tempKey + "' is not found for given filter key '"
-                    + filterKeyName + "'");
+                    + filterKeyName + "'", e);
         }
         logger.exiting(false);
         return false;

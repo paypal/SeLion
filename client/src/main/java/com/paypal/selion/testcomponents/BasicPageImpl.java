@@ -189,8 +189,8 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
                         }
                         Object[] constructorArgList = new Object[3];
                         constructorArgList[0] = whichClass;
-                        constructorArgList[1] = new String(locatorValue);
-                        constructorArgList[2] = new String(field.getName());
+                        constructorArgList[1] = locatorValue;
+                        constructorArgList[2] = field.getName();
                         Object retobj = constructor.newInstance(constructorArgList);
                         // Associating a parent type here itself! Kind of an hack
                         Container createdContainer = (Container) retobj;
@@ -215,8 +215,8 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
                             continue;
                         }
                         Object[] constructorArgList = new Object[3];
-                        constructorArgList[0] = new String(locatorValue);
-                        constructorArgList[1] = new String(field.getName());
+                        constructorArgList[0] = locatorValue;
+                        constructorArgList[1] = field.getName();
                         constructorArgList[2] = whichClass;
                         Object retobj = constructor.newInstance(constructorArgList);
                         field.set(whichClass, retobj);

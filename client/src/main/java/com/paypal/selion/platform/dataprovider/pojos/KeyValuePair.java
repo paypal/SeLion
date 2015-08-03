@@ -62,7 +62,7 @@ public class KeyValuePair implements Map.Entry<String, String> {
 
     @Override
     public String toString() {
-        return "key=" + key + "&value=" + value.toString();
+        return "key=" + key + "&value=" + value;
     }
 
 }

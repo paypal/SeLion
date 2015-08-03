@@ -36,10 +36,12 @@ public class ReporterDateFormatter {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    // DEVNOTE: Format required to support Internet Explorer browser.
-    private static final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-
     public static final String CURRENTDATE = "currentDate";
+    
+    private static DateFormat getFormatter() {
+        // DEVNOTE: Format required to support Internet Explorer browser.
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    }
 
     /**
      * Return an ISO 8601 combined date and time string for specified date/time in host machine's default time zone.
@@ -65,6 +67,7 @@ public class ReporterDateFormatter {
      *         '2015-01-20T18:21:33.955-08:00'
      */
     public static String getISO8601StringWithSpecificTimeZone(Date date, TimeZone zone) {
+        DateFormat formatter = getFormatter();
         formatter.setTimeZone(zone);
         return formatter.format(date);
     }
@@ -79,6 +82,7 @@ public class ReporterDateFormatter {
     public static String getStringFromISODateString(String dateISOString) {
         Date date;
         String formattedDate;
+        DateFormat formatter = getFormatter();
         try {
             date = formatter.parse(dateISOString);
             formattedDate = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date);

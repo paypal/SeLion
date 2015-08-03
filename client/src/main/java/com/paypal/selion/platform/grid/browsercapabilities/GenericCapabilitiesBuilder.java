@@ -44,7 +44,7 @@ class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             break;
         }
 
-        return capabilitiesBuilder.getCapabilities(capabilities);
+        return capabilitiesBuilder.getCapabilities(capabilities); // NOSONAR
     }
 
 }

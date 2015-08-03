@@ -102,8 +102,7 @@ public class FileSystemResource implements DataResource {
 
     @Override
     public InputStream getInputStream() {
-        InputStream is = new BufferedInputStream(FileAssistant.loadFile(this.fileName));
-        return is;
+        return new BufferedInputStream(FileAssistant.loadFile(this.fileName));
     }
 
     @Override

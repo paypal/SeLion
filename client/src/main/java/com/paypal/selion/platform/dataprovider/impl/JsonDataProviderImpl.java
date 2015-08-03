@@ -264,7 +264,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
                 dataAsHashTable.put((String) value.get("id"), currentData);
 
             }
-        } catch (NullPointerException n) {
+        } catch (NullPointerException n) { // NOSONAR
             throw new DataProviderException(
                     "Error while parsing Json Data as a Hash table. Root cause: Unable to find a key named id. Please refer Javadoc",
                     n);

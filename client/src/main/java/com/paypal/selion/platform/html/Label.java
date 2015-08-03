@@ -93,8 +93,7 @@ public class Label extends AbstractElement {
      */
     public boolean isTextPresent(String pattern) {
         String text = getElement().getText();
-        boolean textpresent = (text != null && (text.contains(pattern) || text.matches(pattern)));
-        return textpresent;
+        return (text != null && (text.contains(pattern) || text.matches(pattern)));
     }
 
 }

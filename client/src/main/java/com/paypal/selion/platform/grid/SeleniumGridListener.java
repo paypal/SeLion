@@ -117,7 +117,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                     logger.log(Level.SEVERE, "You are trying to run a local server but are missing Jars. Do you have "
                             + "SeLion-Grid and Selenium-Server in your CLASSPATH?", e);
                     // No sense in continuing ... SELENIUM_RUN_LOCALLY is a global config property
-                    System.exit(1);
+                    System.exit(1);  // NOSONAR
                 }
             }
         } catch (Exception e) { // NOSONAR

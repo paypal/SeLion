@@ -116,8 +116,6 @@ public class MethodInfo {
     }
 
     private void loadMethodInfo(ITestResult result) {
-        boolean isWebTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(WebTest.class) != null;
-        boolean isDeviceTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(MobileTest.class) != null;
 
         List<LogInfo> tempLogs = new ArrayList<LogInfo>();
         for (String temp : Reporter.getOutput(result)) {

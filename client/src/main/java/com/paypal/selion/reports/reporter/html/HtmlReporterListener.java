@@ -300,10 +300,11 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
                     // Attaching ralogId to each of the page title.
                     if ((logLine.getHref() != null) && (logLine.getHref().length() > 1)) {
                         htmllog = "<a href='../" + logLine.getHref() + "' title='" + logLine.getLocation() + "' >"
-                                + logLine.getMsg() + "</a>";
+                                + (StringUtils.isNotEmpty(htmllog) ? htmllog : "Page Source") + "</a>";
+                        
                     }
                     // Don't output blank message w/o any Href.
-                    if ((logLine.getHref() != null) || (logLine.getMsg() != null) && !logLine.getMsg().isEmpty()) {
+                    if ((logLine.getHref() != null) || logLine.getMsg() != null && !logLine.getMsg().isEmpty()) {
                         contentBuffer.append(htmllog);
                         contentBuffer.append("<br/>");
                     }
@@ -549,7 +550,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
         if (f.exists()) {
             Format formatter = new SimpleDateFormat("MM-dd-yyyy-HH-mm");
             String currentDate = formatter.format(new Date());
-            f.renameTo(new File(outdir + "/html/", "report-" + currentDate + ".html"));
+            f.renameTo(new File(outdir + "/html/", "report-" + currentDate + ".html")); // NOSONAR
         }
         logger.info("generating report " + f.getAbsolutePath());
         try {

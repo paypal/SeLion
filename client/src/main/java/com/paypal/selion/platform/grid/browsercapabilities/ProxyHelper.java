@@ -12,7 +12,7 @@ import com.paypal.selion.configuration.Config.ConfigProperty;
  */
 final class ProxyHelper {
 
-    public static final String WARNING_MSG = "Enabling Proxy server settings on %s is known to change the proxy server settings at the machine Level!\n"
+    public static final String WARNING_MSG = "Enabling Proxy server settings on %s is known to change the proxy server settings at the machine Level!%n"
             + "So if your remote host supports concurrent test runs it can cause un-predictable test results!";
 
     private ProxyHelper() {

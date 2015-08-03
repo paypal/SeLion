@@ -87,9 +87,9 @@ public final class DataProviderHelper {
                 try {
                     indexes.add(Integer.parseInt(index.trim()));
                 } catch (NumberFormatException e) {
-                    String msg = "Index '" + index + "' is invalid. Please "
-                            + "provide either individual numbers or ranges.";
-                    msg += "Range needs to be de-marked by '-'";
+                    String msg = new StringBuilder("Index '").append(index)
+                            .append("' is invalid. Please provide either individual numbers or ranges.")
+                            .append("\n Range needs to be de-marked by '-'").toString();
                     throw new DataProviderException(msg, e);
                 }
             }

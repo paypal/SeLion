@@ -83,7 +83,8 @@ public class JsonRuntimeReporterHelper {
     public JsonRuntimeReporterHelper() {
         try {
             File workingDir = new File(Config.getConfigProperty(ConfigProperty.WORK_DIR));
-            workingDir.mkdirs();
+            boolean isCreated = workingDir.mkdirs();
+            logger.log(Level.FINER, "Working directory created successfully: " + isCreated);
             jsonCompletedTest = File.createTempFile("selion-rrct", null, workingDir);
             jsonCompletedTest.deleteOnExit();
             jsonCompletedConfig = File.createTempFile("selion-rrcf", null, workingDir);

@@ -77,7 +77,7 @@ class ExcelReader {
             // going to be raised.
             // but still lets at-least throw back a runtime exception and get out of the checked exception mode
             // which is basically going to spoof a user's test.
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // NOSONAR
         } catch (RuntimeException e) {
             // This is bad. But unfortunately only FileAssistant will detect if the file was valid or not.
             // and it tells this by throwing a RuntimeException. But downstream our clients are expecting

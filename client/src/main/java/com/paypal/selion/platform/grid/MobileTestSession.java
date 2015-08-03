@@ -49,8 +49,8 @@ public class MobileTestSession extends AbstractTestSession {
     private WebDriverPlatform platform;
     private MobileNodeType mobileNodeType;
 
-    private static String SAUCE_URL = "sauce-storage:";
-    private static String SELION_HUB_STORAGE = "selion-hub-storage";
+    private static final String SAUCE_URL = "sauce-storage:";
+    private static final String SELION_HUB_STORAGE = "selion-hub-storage";
 
     MobileTestSession() {
         super();
@@ -131,7 +131,6 @@ public class MobileTestSession extends AbstractTestSession {
         if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_NODE_TYPE))) {
             mobileNode = getLocalConfigProperty(ConfigProperty.MOBILE_NODE_TYPE);
         }
-
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
             if (StringUtils.isNotBlank(deviceTestAnnotation.appName())) {
@@ -181,6 +180,8 @@ public class MobileTestSession extends AbstractTestSession {
                 mobileNode = deviceTestAnnotation.mobileNodeType();
             }
             this.mobileNodeType = MobileNodeType.getMobileNodeType(mobileNode);
+            
+            initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities(), method);
         }
 
         boolean appPathProvided = StringUtils.isNotBlank(appPath);
@@ -202,7 +203,6 @@ public class MobileTestSession extends AbstractTestSession {
             this.platform = WebDriverPlatform.IOS;
         }
 
-        initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities(), method);
         logger.exiting();
     }
 

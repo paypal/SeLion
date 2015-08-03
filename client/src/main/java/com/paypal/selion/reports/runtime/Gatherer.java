@@ -56,7 +56,7 @@ class Gatherer {
         try {
             byte[] decodeBuffer = null;
 
-            if (driver != null && driver instanceof TakesScreenshot) {
+            if (driver instanceof TakesScreenshot) {
                 TakesScreenshot screenshot = ((TakesScreenshot) driver);
                 String ss = screenshot.getScreenshotAs(OutputType.BASE64);
                 decodeBuffer = Base64.decodeBase64(ss.getBytes());

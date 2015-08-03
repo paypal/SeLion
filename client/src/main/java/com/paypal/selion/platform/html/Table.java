@@ -111,13 +111,14 @@ public class Table extends AbstractElement {
                 return 1;
             }
 
-            if (allRows != null)
+            if (allRows != null) {
                 for (WebElement row : allRows) {
                     if (!row.findElements(By.xpath("td")).isEmpty()) {
                         break;
                     }
                     dataStartIndex++;
                 }
+            }
         }
 
         return dataStartIndex;
