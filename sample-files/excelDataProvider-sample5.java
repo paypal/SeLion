@@ -1,1 +1,0 @@
-myData  = (MyDataSheet) dataProvider.getSingleExcelRow(dataRow, 1);

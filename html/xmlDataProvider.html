@@ -1,0 +1,108 @@
+<div class="selion-content-div">
+  <h1 id="getting-started-with-seLion" class="page-header">XML DataProvider</h1>
+  <p class="lead">
+    XML DataProvider is an implementation of SeLion DataProvider that operates on XML files
+  </p>
+  <p>
+    XML stands for Extensible Markup Language (XML), which is a simple and very flexible text format. To find out more
+    about the XML please refer to <a href="http://www.w3.org/XML/">XML</a>. It is one of the early formats used for
+    data structuring and organizing.
+  </p>
+
+  <h2>Using Key-Value pair</h2>
+  <p>Let us look at a basic example to see how to use the SeLionDataProvider over XML files.</p>
+  <p>First create an XML file similar to the following sample:</p>
+  <pre data-src="../sample-files/xmlDataProviderSimple.xml" class="language-markup"></pre>
+  <p>A typical <samp>DataProvider</samp> method will be as follows:</p>
+  <pre data-src="../sample-files/xmlDataProviderSimple.java"></pre>
+  <p>Lets go through the above code in detail.</p>
+  <ul>
+    <li>
+      The basic notion on operating with an XML file is name-value pairs.
+    </li>
+    <li>
+      We create a <code>SeLionDataProvider</code> using the <code>DataProviderFactory</code>.
+    </li>
+    <li>
+      <samp>DataProviderFactory</samp> requires a type of <code>DataResource</code>. Here we use
+      <code>XmlFileSystemResource</code> using <em>path</em> to the XML file and class of <code>KeyValueMap</code>.
+      Note the use of <samp>KeyValueMap</samp> to hold the data read from XML as key-value pairs.
+    </li>
+    <li>
+      <samp>SeLionDataProvider</samp> so created is cast to <code>XmlDataProvider</code> to access the specific methods.
+    </li>
+  </ul>
+  <p>A typical <samp>Test</samp> method using the <samp>DataProvider</samp> will be as follows:</p>
+  <pre data-src="../sample-files/xmlDataProviderSimpleTest.java"></pre>
+
+  <h2>List of Objects</h2>
+  <p>
+    More often than not, we need to deal with complex objects. We may want to create objects out of the data files
+    and use them in our Test methods. Fortunately, this does not require more than a little effort.
+  </p>
+  <p>First create an XML file similar to the following sample:</p>
+  <pre data-src="../sample-files/xmlDataProviderObject.xml" class="language-markup"></pre>
+  <p>
+    Lets say we want to pass an object of class <code>Address</code> to the <samp>Test</samp> method. For this
+    <code>Address</code> has to be a JavaBean. As an example we have the following for <code>Address</code> class.
+  </p>
+  <pre data-src="../sample-files/xmlDataProviderAddressClass.java"></pre>
+  <p>Note that each variables of the object has corresponding public getters and setters.</p>
+  <p>The code to form a <samp>DataProvider</samp> will look as follows:</p>
+  <pre data-src="../sample-files/xmlDataProviderObject.java"></pre>
+  <p>Note that we pass the class of <code>Address</code> to the call to <code>FileSystemResource</code>.</p>
+  <p>The <samp>Test</samp> method will look as follows:</p>
+  <pre data-src="../sample-files/xmlDataProviderObjectTest.java"></pre>
+
+  <h2>Getting Specific Parts of the Data</h2>
+  <p>
+    Now that we know how to get all the data from the XML files lets look at the ways to get only specific data from
+    the file.
+  </p>
+  
+  <h4>By Keys</h4>
+  <p>
+    Consider the XML file shown in <em>Simple Case</em>. Say you want to extract the data with specific keys. You
+    should be able to do that using the below alteration to the <samp>DataProvider</samp> code.
+  </p>
+  <p>A typical <samp>DataProvider</samp> method will be as follows:</p>
+  <pre data-src="../sample-files/xmlDataProviderIndexes.java"></pre>
+  <p>The above <samp>DataProvider</samp> will retrieve data for the key k2 only.</p>
+  <p>The <samp>Test</samp> method does not change.</p>
+
+  <h4>Filtering individual XML entities</h4>
+  <p>
+    Say you want to filter the individual entities within XML file an pass them to <samp>Test</samp> method. You will 
+    still be able to do that.
+  </p>
+  <p>
+    Consider the below XML for discussion. And say you want to filter the <em>user</em> tags alone and pass them to the
+    <samp>Test</samp> method.
+  </p>
+  <pre data-src="../sample-files/xmlDataProviderEntities.xml" class="language-markup"></pre>
+  <p>The code to form a <samp>DataProvider</samp> will look as follows:</p>
+  <pre data-src="../sample-files/xmlDataProviderEntities.java"></pre>
+  <p>
+    Note that we have pass the <code>Map</code> as a filter to the call to <code>XmlFileSystemResource</code>.
+  </p>
+  <p>
+    The <samp>DataProvider</samp> method refers to the <code>User</code> type - code shown below, for mapping the
+    XML entities to pojos.
+  </p>
+  <pre data-src="../sample-files/xmlDataProviderUserClass.java"></pre>
+  <p>The <samp>Test</samp> method will look as follows:</p>
+  <pre data-src="../sample-files/xmlDataProviderEntitiesTest.java"></pre>
+  <p>Things to note.</p>
+  <ul>
+    <li>
+      The test method has two parameters of type <code>User</code> to hold the values filtered by the dataProvider.
+    </li>
+    <li>
+      The <code>User</code> class is a pojo that can hold the data of the XML tag. This in turns has the 
+      <code>Address</code> type as its member variable represented by <em>address</em> member variable.
+    </li>
+  </ul>
+
+</div>
+
+<script src="../js/prismjs-min.js"></script>

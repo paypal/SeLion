@@ -1,4 +1,4 @@
 @Test(dataProvider = "yamlDataProvider")
-public static void singlemethod(String testdata) {
+public void testMethod(USER user, CITY city) {
   // Testing logic
 }

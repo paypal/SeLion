@@ -1,0 +1,20 @@
+<transactions>
+  <transaction>
+    <user>
+      <accountNumber>78901</accountNumber>
+      <amount>120.0</amount>
+      <address>
+        <street>1234 Elm st</street>
+      </address>
+      <name>Thomas</name>
+    </user>
+    <user>
+      <accountNumber>123456</accountNumber>
+      <amount>117.0</amount>
+      <address>
+        <street>12 Pico st</street>
+      </address>
+      <name>Mason</name>
+    </user>
+  </transaction>
+</transactions>

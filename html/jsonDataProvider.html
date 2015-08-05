@@ -1,0 +1,50 @@
+<div class="selion-content-div">
+  <h1 id="getting-started-with-seLion" class="page-header">JSON DataProvider</h1>
+  <p class="lead">
+    JSON DataProvider is an implementation of SeLion DataProvider that operates on JSON files
+  </p>
+  <p>
+    To find out more about the JSON file format please refer to <a href="http://www.json.org">Getting started with
+    JSON</a>. JSON provides a convenient alternative to XML files. JSON is easy, for humans to read and write, also for
+    machines to parse.
+  </p>
+
+  <h2>Simple Case</h2>
+  <p>Let us look at a basic example to see how to use the SeLionDataProvider over JSON files.</p>
+  <p>First create an JSON file similar to the following sample:</p>
+  <pre data-src="../sample-files/jsonDataProviderSimple.json  " class="language-markup"></pre>
+  <p>A typical <samp>DataProvider</samp> method will be as follows:</p>
+  <pre data-src="../sample-files/jsonDataProviderSimple.java"></pre>
+  <p>
+    We create a <code>SeLionDataProvider</code> using the <code>DataProviderFactory</code> by passing a type of 
+    <code>DataResource</code>. Here we create an <code>InputStreamResource</code> using <em>path</em> to the JSON file,
+    class of <code>USER</code> and the file type as <em>json</em>. We use the <code>DataResource</code> so created
+    for the factory.
+  </p>
+  <p>Note that we need to pass the class of java object, in this case <code>USER</code> to the
+    <code>InputStreamResource</code> to map the JSON entities to java objects. 
+  </p>
+  
+  <p>A typical <samp>Test</samp> method using the <samp>DataProvider</samp> will be as follows:</p>
+  <pre data-src="../sample-files/jsonDataProviderSimpleTest.java"></pre>
+
+  <h2>Getting Specific Parts of the Data</h2>
+  <p>We know how to retrieve entire data from the JSON file, and now let us focus on the ways of retrieving only
+    specific data from the JSON file.</p>
+  <p>
+    We can retrieve specific rows from the JSON file by invoking respective methods on <samp>SeLionDataProvider</samp>.
+  </p>
+  <h4>By Indices</h4>
+  <p>
+    If you want to extract data with specific indices. It is possible by altering the <samp>DataProvider</samp> code.
+  </p>
+  <p>The code to form a <samp>DataProvider</samp> will look as follows:</p>
+  <pre data-src="../sample-files/jsonDataProviderIndexes.java"></pre>
+  <p>The above <samp>DataProvider</samp> will be the retrieve data on index 2.</p>
+  <p>Note that <code>getDataByIndex</code> method also accepts a strings; for example, <em>"2, 4"</em> which will fetch
+    data at the second and the fourth indices respectively.</p>
+  <p>The <samp>Test</samp> method does not change.</p>
+
+</div>
+
+<script src="../js/prismjs-min.js"></script>

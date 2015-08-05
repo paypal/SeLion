@@ -1,8 +1,12 @@
+package mypackage;
+
 public class Myobject{
+
   private String testcaseid;
+
   private String country;
 
-  public OtherDataSheet() {}
+  public Myobject() {}
 
   public String getTestcaseid() {
     return testcaseid;

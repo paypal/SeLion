@@ -1,0 +1,110 @@
+<div class="selion-content-div">
+  <h1 class="page-header">YAML DataProvider</h1>
+  <p class="lead">
+    YAML DataProvider is an implementation of SeLion DataProvider that operates on YAML files
+  </p>
+  <p>
+    YAML provides a convenient alternative to XML files and is more human readable. To find out more about the YAML
+    file format please refer to <a href="http://www.yaml.org/start.html">YAML</a>.
+  </p>
+
+  <h2>Simple Case</h2>
+  <p>Let us start with the a simple case, where we have to run a test case three times with a different String on
+    every individual run. In this case the YAML file will look as follows:</p>
+  <pre data-src="../sample-files/basicYaml.yaml" class="language-markup"></pre>
+  <p>A typical <code>@DataProvider</code> method will be as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderSimple.java"></pre>
+  <p>A typical <code>@Test</code> method using aforementioned DataProvider will be as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderSimpleTest.java"></pre>
+  <p>
+    In this case the Test method will be invoked three times, once with each of the Strings. the variable
+    <code>testdata</code> contains the String.
+  </p>
+
+  <h2>Passing Objects</h2>
+  <p>
+    More often than not, we need to deal with complex objects. We may want to create objects out of the data files
+    and use them in our Test methods; furthermore, this does not require more than a little effort.
+  </p>
+  <p>Lets say we want to pass an object of class MyObject to the Test method. For this <code>MyObject</code> has to be
+    a JavaBean. Lets consider the following as an example of MyObject class:</p>
+  <pre data-src="../sample-files/yamlDataProviderMyObjectClass.java"></pre>
+  <p>Note that each of the variables of the object has public accessor methods (getters and setters).</p>
+  <p>The corresponding YAML file will look like the following:</p>
+  <pre data-src="../sample-files/yamlDataProviderObject.yaml" class="language-markup"></pre>
+  <p>The sample YAML needs further explanation</p>
+  <ul>
+    <li>The line <code>- !!package.OtherDataSheet</code> tells us that the following <em>indented</em> lines describe
+      the values/data of objects of the class <code>package.Myobject</code>.
+    </li>
+    <li>The line <code>testcaseid : testcaseid1</code> tells us that the variable <code>testcaseid</code> has the value
+      <code>testcaseid1</code>.
+    </li>
+    <li>The line <code>country : country1</code> tells us that the variable <code>country</code> has the value
+      <code>country1</code>.
+    </li>
+  </ul>
+  <p>The <samp>DataProvider</samp> does not change. It remains as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderSimple.java"></pre>
+  <p>
+    The <samp>Test</samp> method changes slightly. Instead of expecting a String parameter, it now expects an instance
+    of the class MyObject.
+  </p>
+  <pre data-src="../sample-files/yamlDataProviderObjectTest.java"></pre>
+
+  <h2>Getting Test Data in a HashMap</h2>
+  <p>
+    There is also an alternative to reading values into objects. We still have the provision of reading the YAML data
+    into key-value pairs and feed them into Test methods. This approach may come in handy if we do not want to go
+    through the hassles of creating objects.
+  </p>
+  <p>In this case SeLionDataProvider can be used to return a LinkedhashMap of the values.</p>
+  <p>The YAML file will look as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderMap.yaml"></pre>
+  <p>
+    Here <code>test1</code> and <code>test2</code> are not part of the test data but are keys to identify particular
+    parts of the test data. The other lines represent the key-value pairs for the test data.
+  </p>
+  <p>The <samp>DataProvider</samp> does not change at all</p>
+  <p>The <samp>Test</samp> method changes as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderMapTest.java"></pre>
+
+  <h2>Getting Specific Parts of the Data</h2>
+  <p>
+    Now that we know how to get all the data from the YAML files lets look at the ways to get only specific data from
+    the file.
+  </p>
+  <h4>By Keys</h4>
+  <p>
+    Remember we had told you that <code>test1</code> and <code>test2</code> were keys used to identify particular parts
+    of the test data? This is how we use them.
+    <br>We use the <code>getDataByKeys()</code> method of SeLionDataProvider accomplish this.
+  </p>
+  <p>The <samp>DataProvider</samp> changes as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderKeys.java"></pre>
+  <p>Only the entries whose keys are present in the String array will be returned and used to kick off the Test methods.
+    Here it would be the entry with key 'test1'. This allows us to maintain a single data file and use parts of it to
+    run our test cases.
+  </p>
+  <p>This method can be used return Strings, LinkedHashMaps or user defined objects depending on the YAML file.</p>
+
+  <h4>By Indices</h4>
+  <p>
+    Another way to specify parts of the YAML file is to provide indices of the parts we want to retrieve; for example,
+    we might want entries from number 10 to number 15 to be run or any other range.
+  </p>
+  <p>In this case we use the <code>getDataByIndex()</code> method of the SeLionDataProvider.</p>
+  <p>The DataProvider looks as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderIndex.java"></pre>
+  <p>In this case the data at indices 1,2,3,7,10,11 and 12 will be used to run the test cases.</p>
+
+  <h2>Multiple Sources</h2>
+  <p>YamlDataProvider also allows us to read data from multiple resources and provide them as two separate parameters to
+    the test method.</p>
+  <p>A typical <samp>DataProvider</samp> method will be as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderMultiple.java"></pre>
+  <p>A typical <samp>Test</samp> method using the <samp>DataProvider</samp> will be as follows:</p>
+  <pre data-src="../sample-files/yamlDataProviderMultipleTest.java"></pre>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

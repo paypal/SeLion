@@ -1,85 +1,99 @@
 <div class="selion-content-div">
   <h1 id="getting-started-with-seLion" class="page-header">Excel DataProvider</h1>
-  <p class="lead">The class <code>SimpleExcelDataProvider</code> is a utility class within SeLion that helps in reading test data from Excel spreadsheets so
-    they may be used in data driven tests.</p>
-  <p>Lets look at a basic example to see how to use the SimpleExcelDataProvider</p>
+  <p class="lead">
+    Excel DataProvider is an implementation of SeLion DataProvider that operates on Microsoft Excel files
+  </p>
+  <p>
+    Excel formats data in rows and columns (tabular form). We shall look at a various examples on how to use
+    SeLionDataProvider over Excel files.
+  </p>
+
+  <h2>Simple Case</h2>
   <p>First create an Excel sheet similar to the following sample:</p>
-
   <div class="container">
-    <img src="../images/exceldataprovider-sample1.jpg" alt="View of the Excelsheet">
+    <img src="../images/exceldataprovider-simple.jpg" alt="View of the Excelsheet">
   </div>
-
-  <p>Here the row 1 includes the variable names. The following rows contain the values for those variable names.</p>
-  <p>The first column, containing the keys, is compulsory but does not contain actual test data. It is used to get
-    specific rows from the sheet. The title can be anything we choose</p>
+  <br>
+  <p>The first represents the variable names. The following rows contain the values of those variables.</p>
+  <p>
+    The first column i.e., <em>RowNumber</em>, is compulsory but does not contain actual test data. It merely stores
+    the keys that is used to identify a specific row from the Excel sheet. The title can be anything you choose.
+  </p>
   <p>To read from the Excel sheet you need to define a <code>@DataProvider</code>.</p>
-
   <p>The <code>@DataProvider</code> looks like the following:</p>
+  <pre data-src="../sample-files/excelDataProviderSimple.java"></pre>
+  <p>Lets go through the above code in detail.</p>
+  <ul>
+    <li>
+      We first instantiate a <code>FileSystemResource</code>, which is an implementation of the abstract
+      <code>DataResource</code>, with the path to the Excel file and a class template to hold the read data. Here the
+      template is of the class named <code>SimpleData</code>. The code for this class is given below.
+    </li>
+    <li>
+      We use the <code>DataResource</code> created in a step above as a parameter to the factory
+      <code>DataProviderFactory</code> to create a <code>SeLionDataProvider</code>.
+    </li>
+    <li>
+      The final step is to use the method <code>getAllData</code> of <code>SeLionDataProvider</code>
+      to return the two dimensional object array consumed by the <samp>Test</samp> method.
+    </li>
+  </ul>
+  <p>The <samp>SimpleData</samp> class looks like the following:</p>
+  <pre data-src="../sample-files/excelDataProviderSimpleObject.java"></pre>
+  <p>Note that the variable definitions following the  exact name and order as in the Excel sheet.</p>
+  <p>A typical <samp>Test</samp> method using the <samp>DataProvider</samp> will be as follows:</p>
+  <pre data-src="../sample-files/excelDataProviderSimpleTest.java"></pre>
 
-  <pre data-src="../sample-files/excelDataProvider-sample1.java"></pre>
-
-  <p>Lets go through it.</p>
-  <p>We first instantiate the SimpleExcelDataProvider with the location of the Excel file that we want to use. There is also
-    an alternative constructor available that allows us to specify the directory and filename separately.</p>
-  <p>The next step is to define the class into which we want to read the data from the Excel sheet. In this case we want
-    to read the data into objects of the class <samp>MyDataSheet</samp>. We will show you the class in the next step. An
-    object of this class is passed to the <code>getAllExcelRows()</code> method.</p>
-  <p>The response from the <code>getAllExelRows()</code> method is an <code>Object[][]</code> that is returned by the
-    data provider and consumed by the test method.</p>
-  <p>The <samp>MyDataSheet</samp> class looks the following:</p>
-
-  <pre data-src="../sample-files/excelDataProvider-sample2.java"></pre>
-
-  <p>Keep in mind that the variables need to be defined with the exact same names and in the exact same order as the Excel
-    sheet.</p>
-  <p>The test method looks like the following:</p>
-
-  <pre data-src="../sample-files/excelDataProvider-sample3.java"></pre>
-
-  <p>So now that we can read all the rows, lets look at the methods that allow us to read specific rows</p>
-  <p>Lets start with <code>getSingleExcelRow()</code>. This method takes two parameters, one of which is the key</p>
-  <p>Lets also assume the Excel sheet is slightly different:</p>
-
-  <div class="container">
-    <img src="../images/exceldataprovider-sample1.jpg" alt="View of the Excelsheet">
-  </div>
-
-  <p>Here we have changed the first column to use keys to specify particular rows</p>
-  <p>The <code>@DataProvider</code> method will look as follows:</p>
-
-  <pre data-src="../sample-files/excelDataProvider-sample4.java"></pre>
-
-  <p>In this case we asked for the row with the key 'c' and stored its values in the object myData. We then created the
-    <code>Object[][]</code> that is the return type of the method.</p>
-  <p>The test method does not change at all.</p>
-  <p>We can change a single line and ask for the row by the order in which it appears instead of specifying the key. For
-    example the <code>getSingleExcelRow()</code> could have been invoked as follows:</p>
-
-  <pre data-src="../sample-files/excelDataProvider-sample5.java"></pre>
-
-  <p>This would return the second row in the Excel sheet. This is specified as 1 because it is the first data row.
-    Remeber that the very first row of the Excel sheet contains the variable names and not actual test data and
-    therefore we start counting from below it.</p>
-  <p>SimpleExcelDataProvider provides two <code>getExcelRows()</code> variants that can be used to get multiple rows depending
-    on the conditions we set.</p>
-  <p>The first of these methods allows us to specify the indexes of the Excel rows that we want. It is used as
-    follows:</p>
-
-  <pre data-src="../sample-files/excelDataProvider-sample6.java"></pre>
-
-  <p>Observe that we have specified a range of rows to be used. in this case rows 1 through 3. We could also have
-    specified the specific rows as "1, 2, 3". SimpleExcelDataProvider even lets you specify the rows as a combination of the
-    two methods. Our example Excel sheet is not long enough but we could have specified the rows as follows
-    "1-3,4,6,8,10-12", getting the rows 1,2,3,4,6,8,10,11,12</p>
-  <p>The second method allows us to specify a String array containing the keys that we want to be included.</p>
+  <h2>Getting Specific Parts of the Data</h2>
+  <h4>By Indices</h4>
+  <p>
+    The underlying implementation of a <samp>SeLionDataProvider</samp> while retrieving it from the
+    <samp>DataProviderFactory</samp> using an Excel file is essentially a <samp>ExcelDataProvider</samp>. This mechanism
+    provides us the capability to use the specific methods of ExcelDataProvider.
+  </p>
+  <p>We can retrieve specific rows from the Excel sheet after proper casting for the resultant SeLionDataProvider</p>
+  <p>Lets consider the same Excel sheet as shown above where the first column represent the keys to identify rows.</p>
+  <p>We use the <code>getSingleExcelRow</code> of <code>ExcelDataProvider</code> to access a single row.</p>
+  <p>The <code>@DataProvider</code> looks like the following:</p>
+  <pre data-src="../sample-files/excelDataProviderSpecificIndex.java"></pre>
+  <p>
+    In this case we asked for the row with the key 2 and stored its values in the object <code>SimpleData</code>. We
+    then created the <code>Object[][]</code> that is the return type of the DataProvider method.
+  </p>
+  <p>Note that Strings can also be used as indices and if integer is used as indices it starts from 1 and not 0.</p>
+  <p>The <samp>Test</samp> method remains the same.</p>
+  <p>Another way to specify parts of the Excel sheet to be used is to provide ranges of the parts we want to load.</p>
+  <p>The <code>@DataProvider</code> looks like the following:</p>
+  <pre data-src="../sample-files/excelDataProviderIndexed.java"></pre>
+  <p>The <samp>Test</samp> method remains the same.</p>
+  <p>The second method allows us to specify a int array containing the keys that we want to be included.</p>
   <p>The <code>@DataProvider</code> will change as follows:</p>
+  <pre data-src="../sample-files/excelDataProviderIndexes.java"></pre>
+  <p>The <samp>Test</samp> method remains the same.</p>
+  <p>In this case the <code>ExcelDataprovider</code> will go through all the rows and return only the ones which have 
+    keys in the array of keys that we have provided i.e. rows 1, and 2
+  </p>
 
-  <pre data-src="../sample-files/excelDataProvider-sample7.java"></pre>
-
-  <p>In this case the SimpleExcelDataprovider will go through all the rows and return only the ones which have keys in the
-    array of keys that we have provided i.e. rows 'a', 'c' and 'd'</p>
-
-  <pre data-src="../sample-files/excelDataProvider-sample8.java"></pre>
+  <h2>Using CustomTypes in Excel</h2>
+  <p>
+    Specific columns in the Excel sheet can be mapped to custom types using <code>DefaultCustomType</code>.
+  </p>
+  <p>Consider the Excel sheet given below:</p>
+  <div class="container">
+    <img src="../images/exceldataprovider-custom.jpg" alt="View of the Excelsheet">
+  </div>
+  <p>
+    If you want to map the Country column to a custom <code>Country</code> you would need to map the accessor method 
+    of the parent class to the custom type as shown below.
+  </p>
+  <p>The <code>@DataProvider</code> will change as follows:</p>
+  <pre data-src="../sample-files/excelDataProviderCustom.java"></pre>
+  <p>A typical <samp>Test</samp> method using the <samp>DataProvider</samp> will be as follows:</p>
+  <pre data-src="../sample-files/excelDataProviderCustomTest.java"></pre>
+  <p>Code for <code>CustomData</code> will be as follows:</p>
+  <pre data-src="../sample-files/excelDataProviderCustomObject.java"></pre>
+  <p>Code for <code>Country</code> will be as follows:</p>
+  <pre data-src="../sample-files/excelDataProviderCountryObject.java"></pre>
 </div>
 
 <script src="../js/prismjs-min.js"></script>

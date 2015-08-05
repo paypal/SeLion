@@ -1,0 +1,74 @@
+<div class="selion-content-div">
+  <h1 id="getting-started-with-seLion" class="page-header">DataProvider - Filters</h1>
+  <p>
+    SeLion provides custom filtering by enabling users to write their own filters. There are some out of box
+    implementations that comes with SeLion. All of these implement <code>DataProviderFilter</code>.
+  </p>
+
+  <p>Some of the filters provided by SeLion include</p>
+  <ul>
+    <li>
+      <code>CustomKeyFilter</code> - Filters the data based on the filter key and its corresponding values.
+    </li>
+    <li>
+      <code>SimpleIndexInclusionFilter</code> - Filters data based on the indexes set.
+    </li>
+  </ul>
+
+  <h2>CustomKeyFilter</h2>
+  <p><code>CustomKeyFilter</code> filters the data based on the filter key and its corresponding values provided.
+    <em>filterKeyName</em> is one of the field name that is available in the resource and <em>filterKeyValues</em> are its corresponding
+    values to filter. This filter always collects the data whose respective <em>filterKeyName</em> value exist in the given
+    <em>filterKeyValues</em>.
+  </p>
+  <p>
+    To know the use of <code>CustomKeyFilter</code>, let us take an example of an XML <em>DataProvider</em>.
+  </p>
+  <p>Consider the sample XML file given below:</p>
+  <pre data-src="../sample-files/dataProviderCustomKeyFilter.xml" class="language-markup"></pre>
+  <p>
+    If we require to filter the <em>address</em> tag whose <em>street</em> has the value <samp>1234 Elm st</samp> we
+    can write a <code>@DataProvider</code> method as shown below:
+  </p>
+  <pre data-src="../sample-files/dataProviderCustomKeyFilter.java"></pre>
+  <p>
+    We create a <code>SeLionDataProvider</code> using the <code>DataProviderFactory</code> by passing a type of 
+    <code>DataResource</code>. Here we create an <code>XmlFileSystemResource</code> using <em>path</em> to the XML file
+    and and a class template to hold the read data. Here the template is of the class named <code>Address</code>.
+  </p>
+  <p>Code for <code>Address</code> class may be as follows:</p>
+  <pre data-src="../sample-files/dataProviderCustomKeyFilterAddress.java"></pre>
+  <p>A typical <em>Test</em> method using the <em>DataProvider</em> will be as follows:</p>
+  <pre data-src="../sample-files/dataProviderCustomKeyFilterTest.java"></pre>
+
+  <h2>SimpleIndexInclusionFilter</h2>
+  <code>SimpleIndexInclusionFilter</code> filters data based on the indexes set. Indexes can be in the format of
+    <ul>
+      <li>"1, 2, 3" for individual indexes.</li>
+      <li>"1-4, 6-8, 9-10" for ranges of indexes.</li>
+      <li>"1, 3, 5-7, 10, 12-14" for mixing individual and range of indexes.</li>
+    </ul>
+   <code>SimpleIndexInclusionFilter</code> filter always collects data whose data index is in given filterIndexes. The
+   indexes corresponds to the invocation sequence for the test method run for each supplied data, and so is 1-based.
+  <p>
+    To know the use of <code>SimpleIndexInclusionFilter</code> let take an example of an XML <em>DataProvider</em>.
+  </p>
+  <p>Let consider the sample XML file given above</p>
+  <p>
+    If we require to filter some <em>address</em> tags based on indexes we can write a <code>@DataProvider</code> method
+    as shown below:
+  </p>
+  <pre data-src="../sample-files/dataProviderSimpleIndexInclusionFilter.java"></pre>
+  <p>
+    Pay close attention to the way <code>XmlDataSource</code> is created from an instance of
+    <code>XmlInputStreamResource</code> which takes in the <em>path</em> to the file, the template class
+    <code>Address</code> and the type of the file <em>xml</em>. 
+  </p>
+  <p>
+    The above <em>DataProvider</em> will choose only the <em>address</em> at location 1 since there are
+    no other indexes within the range of available data.
+  </p>
+  <p>The <em>Test</em> method does not change.</p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>

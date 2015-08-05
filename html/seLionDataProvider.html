@@ -1,0 +1,39 @@
+<div class="selion-content-div">
+  <h1 class="page-header">SeLionDataProvider</h1>
+  <p class="lead">
+    SeLionDataProvider is an extension to the concept of DataProvider introduced by TestNG
+  </p>
+
+  <h4>DataProvider in TestNG</h4>
+  <p>TestNG provides us with the <code>@DataProvider</code> annotation to mark a method as supplying data for a
+    test method.
+  </p>
+  <p>
+    It becomes extremely useful if we have one or more test cases, having the same logic, but needs to be run on
+    different data. Any method annotated by a <code>@DataSource</code> may return an <code>Object[][]</code> array
+    or <code>Iterator&lt;Object[]&gt;</code> that can be used by any <code>Test</code> annotated method to operate on
+    the data. The <em>DataProvider</em> support in TestNG is generic and versatile enough to allow us to 
+    plug in any sort of data source or generator.
+  </p>
+  <p>
+    To learn more about the TesNG data providers please refer
+    <a href="http://testng.org/doc/documentation-main.html#parameters-dataproviders">TestNG DataProviders</a>.
+  </p>
+
+  <h4>SeLionDataProvider</h4>
+  <p>SeLion provides <code>SeLionDataProvider</code> that extends the concept of DataProvider to help the users with
+    the plumbing code. There are a variety of implementations of <code>SeLionDataProvider</code> that cater to the
+    most commonly used data source file formats listed below.
+  </p>
+  <ul>
+    <li>YAML data source files.</li>
+    <li>Excel data source files.</li>
+    <li>XML data source files.</li>
+    <li>JSON data source files.</li>    
+  </ul>
+  <p>
+    To get more information on a specific SeLionDataProvider refer to the links on the right panel. 
+  </p>
+  </div>
+
+<script src="../js/prismjs-min.js"></script>
