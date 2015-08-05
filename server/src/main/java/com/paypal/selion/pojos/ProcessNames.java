@@ -19,11 +19,11 @@ package com.paypal.selion.pojos;
  * This enum contains the list of processes that are of interest for the SeLion Grid.
  */
 public enum ProcessNames {
-    INTERNET_EXPLORER("iexplore.exe", "iexplore"), 
-    FIREFOX("firefox.exe", "firefox"), 
-    CHROME("chrome.exe", "chrome"), 
-    CHROMEDRIVER("chromedriver.exe", "chromedriver"), 
-    IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"), 
+    INTERNET_EXPLORER("iexplore.exe", "NOTAPPLICABLE"),
+    FIREFOX("firefox.exe", "firefox"),
+    CHROME("chrome.exe", "chrome"),
+    CHROMEDRIVER("chromedriver.exe", "chromedriver"),
+    IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"),
     PHANTOMJS("phantomjs.exe", "phantomjs");
 
     private ProcessNames(String windowsImageName, String unixImageName) {

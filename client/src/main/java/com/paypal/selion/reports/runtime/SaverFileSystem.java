@@ -131,9 +131,9 @@ public class SaverFileSystem implements DataSaver {
     @Override
     public void init() {
         logger.entering();
-        (new File(outputFolder, "sources")).mkdir(); // NOSONAR
-        (new File(outputFolder, "html")).mkdir();
-        (new File(outputFolder, "screenshots")).mkdir();
+        (new File(outputFolder, "sources")).mkdirs();
+        (new File(outputFolder, "html")).mkdirs();
+        (new File(outputFolder, "screenshots")).mkdirs();
         logger.exiting();
     }
 }
