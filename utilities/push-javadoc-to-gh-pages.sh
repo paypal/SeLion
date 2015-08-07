@@ -38,11 +38,13 @@ fi
 rm -rf html/java-docs/server-apis/*
 rm -rf html/java-docs/client-apis/*
 rm -rf html/java-docs/codegen-apis/*
+rm -rf html/java-docs/dataproviders-apis/*
 
 #copy the javadoc files to respective folders from develop branch into gh-pages branch
 cp -R client/target/site/apidocs/* html/java-docs/client-apis/
 cp -R codegen/target/site/apidocs/* html/java-docs/codegen-apis/
 cp -R server/target/site/apidocs/* html/java-docs/server-apis/
+cp -R dataproviders/target/site/apidocs/* html/java-docs/dataproviders-apis/
 
 #remove the temporary file used to output the git diff, if it is present
 rm -rf target/changesDiff.txt
