@@ -58,7 +58,22 @@ public final class WebDriverWaitUtils {
     private static void waitForCondition(ExpectedCondition<?> condition, long timeoutInSeconds){
         new WebDriverWait(Grid.driver(), timeoutInSeconds).until(condition);
     }
-    
+
+    /**
+     * Waits until element is cickable.
+     *
+     * @param elementLocator
+     *            identifier of element to be cickable
+     */
+    public static void waitUntilElementIsClickable(final String elementLocator) {
+        logger.entering(elementLocator);
+        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
+        By by = HtmlElementUtils.resolveByType(elementLocator);
+        ExpectedCondition<WebElement> condition = ExpectedConditions.elementToBeClickable(by);
+        waitForCondition(condition);
+        logger.exiting();
+    }
+
     /**
      * Waits until element is either invisible or not present on the DOM.
      *
