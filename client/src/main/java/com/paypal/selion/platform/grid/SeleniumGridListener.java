@@ -154,8 +154,23 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 return false;
             }
         }
-        return true;
 
+        // If there is an existing session and the test method has a DP then dont create a session
+        Test t = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
+
+        // For a data driven test method with the first data the session must be created
+        // Hence return true if currentInvocationCount is 1 otherwise utilize the same session
+        // by returning false
+        int currentInvocationCount = method.getTestMethod().getCurrentInvocationCount();
+        if (!t.dataProvider().isEmpty()) {
+            if (currentInvocationCount == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean isHighPriority(IInvokedMethod method) {
@@ -166,8 +181,21 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 return false;
             }
         }
+        // For a test method with a data provider
+        Test t = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
+        if (!(t.dataProvider().isEmpty())) {
+            int currentInvocationCount = method.getTestMethod().getCurrentInvocationCount();
+            int parameterInvocationCount = method.getTestMethod().getParameterInvocationCount();
+            // If the data set from the data provider is exhausted
+            // It means its the last method with the data provider- this is the exit condition
+            if (currentInvocationCount == parameterInvocationCount) {
+                return true;
+            }
+            // Otherwise,keep holding on to the session
+            return false;
+        }
+        
         return true;
-
     }
 
     private boolean isPriorityUnique(IInvokedMethod method) {
