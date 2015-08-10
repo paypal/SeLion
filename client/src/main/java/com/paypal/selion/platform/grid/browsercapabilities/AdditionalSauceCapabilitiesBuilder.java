@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,7 +15,6 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -30,7 +29,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.platform.grid.BrowserFlavors;
 import com.paypal.selion.platform.utilities.FileAssistant;
 
 /**
@@ -88,12 +86,6 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
 
     private DesiredCapabilities appendSeleniumVersion(DesiredCapabilities caps) {
         logger.entering(caps);
-        // for ipad and iphone saucelabs works with only selected versions of selenium-server
-        // so leaving the version selection to saucelabs
-        if (isIphoneOrIpad()) {
-            logger.exiting(caps);
-            return caps;
-        }
         String seleniumVersion = new BuildInfo().getReleaseLabel();
         caps.setCapability("selenium-version", seleniumVersion);
         logger.exiting(caps);
@@ -120,14 +112,6 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         boolean runLocally = isLocalRun();
         boolean isSauceRC = Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_SAUCELAB_GRID);
         boolean returnValue = (!isSauceRC || runLocally);
-        logger.exiting(returnValue);
-        return returnValue;
-    }
-
-    private boolean isIphoneOrIpad() {
-        logger.entering();
-        BrowserFlavors browser = BrowserFlavors.getBrowser(getLocalConfigProperty(ConfigProperty.BROWSER));
-        boolean returnValue = Arrays.asList(BrowserFlavors.getIOSDeviceFlavors()).contains(browser);
         logger.exiting(returnValue);
         return returnValue;
     }
