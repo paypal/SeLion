@@ -14,7 +14,7 @@ SeLion builds on top of TestNG and Selenium to provide a set of capabilities tha
   - Swap out browser targets at run-time. 
   - Automate native, hybrid, and web applications on iOS and Android devices.
   - and more 
-- A set of TestNG compatible data providers which allows you to access test data from 
+- A set of TestNG compatible data providers which allow you to access test data from 
   Excel, YAML, JSON, and XML.
 - A maven archetype for creating new SeLion based projects. 
 - A customized Selenium Grid2 component. 

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,29 +18,14 @@ package com.paypal.selion.platform.grid;
 import java.util.Arrays;
 import java.util.List;
 
-import com.paypal.selion.annotations.MobileTest;
-
 /**
  * An enum class that represents the browser flavors supported by SeLion
  */
 public enum BrowserFlavors {
-    GENERIC("*generic", true),
     FIREFOX("*firefox", false),
     INTERNET_EXPLORER("*iexplore", false),
     HTMLUNIT("*htmlunit", false),
     CHROME("*chrome", false),
-    /**
-     * @deprecated SeLion is moving away from IPhoneDriver and now starting to use IOS-Driver. In order to be able to
-     *             run tests on an iPad simulator (or) device using the Safari browser, please use
-     *             {@link MobileTest#device()} equal to "iphone" and {@link MobileTest#appName()} equal to "Safari"
-     */
-    IPHONE("*iphone", true),
-    /**
-     * @deprecated SeLion is moving away from IPhoneDriver and now starting to use IOS-Driver. In order to be able to
-     *             run tests on an iPad simulator (or) device using the Safari browser, please use
-     *             {@link MobileTest#device()} equal to "ipad" and {@link MobileTest#appName()} equal to "Safari"
-     */
-    IPAD("*ipad", true),
     SAFARI("*safari", false),
     OPERA("*opera", false),
     PHANTOMJS("*phantomjs", false);
@@ -112,29 +97,19 @@ public enum BrowserFlavors {
     }
 
     /**
-     * @return - {@link BrowserFlavors#IPAD} and {@link BrowserFlavors#IPHONE} as a {@link BrowserFlavors} array. This
-     *         method can be invoked to query the set of browser flavors in SeLion that are aimed at referring to the
-     *         IOS Mobile platform.
-     * @deprecated IPhoneDriver is deprecated in Selenium. Use IOSDriver via {@link MobileTest} instead.
-     */
-    public static BrowserFlavors[] getIOSDeviceFlavors() {
-        return new BrowserFlavors[] { IPAD, IPHONE };
-    }
-
-    /**
      * @return - An array of {@link BrowserFlavors} which represents the set of browser flavors on which alerts are
      *         <b>NOT</b> supported.
      */
     public static BrowserFlavors[] getBrowsersWithoutAlertSupport() {
-        return new BrowserFlavors[] { IPAD, IPHONE, PHANTOMJS };
+        return new BrowserFlavors[] { PHANTOMJS };
     }
     
     /**
-     * @param flavor - A {@link BrowserFlavors} object that represents a browser.
+     * @param flavor - A object that represents a browser.
      * @return <code>true</code> if the given browser is a headless browser.
      */
-    public static boolean isHeadLessBrowser(BrowserFlavors flavor) {
-        List<BrowserFlavors> headless = Arrays.asList(new BrowserFlavors[] {PHANTOMJS, HTMLUNIT});
-        return headless.contains(flavor);
+    public static boolean isHeadLessBrowser(String flavor) {
+        List<String> headless = Arrays.asList(new String[] {PHANTOMJS.browser, HTMLUNIT.browser});
+        return headless.contains(flavor.toLowerCase());
     }
 }
