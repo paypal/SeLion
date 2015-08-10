@@ -27,6 +27,7 @@ import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.grid.browsercapabilities.MobileDriverFactory;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -109,7 +110,7 @@ public class MobileTestSession extends AbstractTestSession {
     @Override
     public void startSesion() {
         logger.entering();
-        Grid.getThreadLocalWebDriver().set(DriverFactory.createInstance(BrowserFlavors.GENERIC));
+        Grid.getThreadLocalWebDriver().set(MobileDriverFactory.createInstance());
         setStarted(true);
         logger.exiting();
     }

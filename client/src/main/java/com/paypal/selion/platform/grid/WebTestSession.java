@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,6 +24,7 @@ import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.grid.browsercapabilities.WebDriverFactory;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -140,7 +141,7 @@ public class WebTestSession extends AbstractTestSession {
     private void createSession() {
         logger.entering();
         BrowserFlavors flavor = BrowserFlavors.getBrowser(getBrowser());
-        RemoteWebDriver driver = DriverFactory.createInstance(flavor);
+        RemoteWebDriver driver = WebDriverFactory.createInstance(flavor);
 
         if (!runLocally()) {
             String hostName = Config.getConfigProperty(ConfigProperty.SELENIUM_HOST);
