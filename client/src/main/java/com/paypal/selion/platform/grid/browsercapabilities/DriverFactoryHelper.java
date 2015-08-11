@@ -13,12 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.grid;
-
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
-import io.selendroid.client.SelendroidCommandExecutor;
-import io.selendroid.client.SelendroidDriver;
+package com.paypal.selion.platform.grid.browsercapabilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,152 +32,34 @@ import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.uiautomation.ios.IOSCapabilities;
-import org.uiautomation.ios.client.uiamodels.impl.RemoteIOSDriver;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.browsercapabilities.DesiredCapabilitiesFactory;
+import com.paypal.selion.platform.grid.BrowserFlavors;
+import com.paypal.selion.platform.grid.EventListener;
+import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.grid.WebDriverPlatform;
+import com.paypal.selion.platform.grid.WebTestSession;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * This factory class is responsible for providing the framework with a {@link RemoteWebDriver} instance based on the
- * browser type.
- * 
+ * This utility class is internally used by SeLion framework for driver factory operations.
+ *
  */
-public final class DriverFactory {
+final class DriverFactoryHelper {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
-
-    public static RemoteWebDriver createInstance() {
-        return createInstance(BrowserFlavors.getBrowser(Grid.getWebTestSession().getBrowser()));
+    
+    private DriverFactoryHelper() {
     }
 
-    /**
-     * @param browser
-     *            - enum that represents the browser flavor for which capabilities are being requested.
-     * @return A {@link RemoteWebDriver} instance based on the browser type
-     */
-    public static RemoteWebDriver createInstance(BrowserFlavors browser) {
-        DesiredCapabilities capability = DesiredCapabilitiesFactory.getCapabilities(browser);
-
-        logger.log(Level.FINE, "Spawning a browser with the following capabilities : " + showCapabilities(capability));
-        RemoteWebDriver driver = null;
-        switch (browser) {
-        case FIREFOX:
-        case CHROME:
-        case INTERNET_EXPLORER:
-        case HTMLUNIT:
-        case IPHONE:
-        case IPAD:
-        case OPERA:
-        case PHANTOMJS:
-        case SAFARI:
-            driver = createDriverInstance(getURL(), capability);
-            break;
-        case GENERIC:
-            MobileTestSession mobileSession = Grid.getMobileTestSession();
-            MobileNodeType mobileNodeType = mobileSession.getMobileNodeType();
-            if (mobileNodeType == MobileNodeType.APPIUM) {
-                if (mobileSession.getPlatform() == WebDriverPlatform.ANDROID) {
-                    driver = createAppiumAndroidInstance(getURL(), capability);
-                }
-                if (mobileSession.getPlatform() == WebDriverPlatform.IOS) {
-                    driver = createAppiumIOSInstance(getURL(), capability);
-                }
-            } else if (mobileNodeType == MobileNodeType.IOS_DRIVER) {
-                driver = createIOSDriverInstance(getURL(), capability);
-            } else if (mobileNodeType == MobileNodeType.SELENDROID) {
-                driver = createSelendroidInstance(getURL(), capability);
-            }
-            break;
-        default:
-            break;
-        }
-        printDebugInfoForUser(driver);
-        return driver;
-    }
-
-    private static AndroidDriver createAppiumAndroidInstance(URL url, DesiredCapabilities capability) {
-        try {
-            List<EventListener> listeners = getSeLionEventListeners();
-
-            if (listeners.size() > 0) {
-                return new SeLionAppiumAndroidDriver(new EventFiringCommandExecutor(new HttpCommandExecutor(url),
-                        listeners), capability, url);
-            } else {
-                return new SeLionAppiumAndroidDriver(url, capability);
-            }
-        } catch (Exception e) {
-            throw new WebDriverException(e);
-        }
-    }
-
-    private static IOSDriver createAppiumIOSInstance(URL url, DesiredCapabilities capability) {
-        try {
-            List<EventListener> listeners = getSeLionEventListeners();
-
-            if (listeners.size() > 0) {
-                return new SeLionAppiumIOSDriver(
-                        new EventFiringCommandExecutor(new HttpCommandExecutor(url), listeners), capability, url);
-            } else {
-                return new SeLionAppiumIOSDriver(url, capability);
-            }
-        } catch (Exception e) {
-            throw new WebDriverException(e);
-        }
-    }
-
-    private static SelendroidDriver createSelendroidInstance(URL url, DesiredCapabilities capability) {
-        try {
-            List<EventListener> listeners = getSeLionEventListeners();
-
-            if (listeners.size() > 0) {
-                return new SeLionSelendroidDriver(new EventFiringCommandExecutor(new SelendroidCommandExecutor(url),
-                        listeners), capability);
-            } else {
-                return new SeLionSelendroidDriver(url, capability);
-            }
-        } catch (Exception e) {
-            throw new WebDriverException(e);
-        }
-    }
-
-    private static RemoteIOSDriver createIOSDriverInstance(URL url, DesiredCapabilities capability) {
-        List<EventListener> listeners = getSeLionEventListeners();
-        if (listeners.size() > 0) {
-            return new SelionRemoteIOSDriver(new EventFiringCommandExecutor(new HttpCommandExecutor(url), listeners),
-                    (IOSCapabilities) capability);
-        }
-        return new SelionRemoteIOSDriver(url, (IOSCapabilities) capability);
-
-    }
-
-    private static RemoteWebDriver createDriverInstance(URL url, DesiredCapabilities capability) {
-
-        List<EventListener> listeners = getSeLionEventListeners();
-        RemoteWebDriver driver = null;
-        if (listeners.size() > 0) {
-            driver = new RemoteWebDriver(new EventFiringCommandExecutor(new HttpCommandExecutor(url), listeners),
-                    capability);
-        } else {
-            driver = new RemoteWebDriver(url, capability);
-        }
-        setWindowSize(driver);
-        registerElementEventListeners();
-        return driver;
-
-    }
-
-    private static String showCapabilities(DesiredCapabilities dc) {
+    static String showCapabilities(DesiredCapabilities dc) {
         logger.entering(dc);
         StringBuilder capabilitiesAsString = new StringBuilder();
         Map<String, ?> capabilityMap = dc.asMap();
@@ -208,7 +85,7 @@ public final class DriverFactory {
         return capabilitiesAsString.toString();
     }
 
-    private static List<EventListener> getSeLionEventListeners() {
+    static List<EventListener> getSeLionEventListeners() {
         String listeners = Config.getConfigProperty(ConfigProperty.SELENIUM_WEBDRIVER_EVENT_LISTENER).trim();
 
         List<EventListener> eventListeners = new ArrayList<EventListener>();
@@ -232,7 +109,7 @@ public final class DriverFactory {
         return eventListeners;
     }
 
-    private static void registerElementEventListeners() {
+    static void registerElementEventListeners() {
         String listeners = Config.getConfigProperty(ConfigProperty.ELEMENT_EVENT_LISTENER).trim();
 
         if (StringUtils.isBlank(listeners)) {
@@ -253,7 +130,7 @@ public final class DriverFactory {
         }
     }
 
-    private static URL getURL() {
+    static URL getURL() {
 
         URL url = null;
         String hostToRun = Config.getConfigProperty(ConfigProperty.SELENIUM_HOST);
@@ -278,7 +155,7 @@ public final class DriverFactory {
         return url;
     }
 
-    private static void setWindowSize(WebDriver driver) {
+    static void setWindowSize(WebDriver driver) {
         WebTestSession config = Grid.getWebTestSession();
         if (config == null) {
             return;
@@ -293,18 +170,18 @@ public final class DriverFactory {
         }
     }
 
-    private static void printDebugInfoForUser(RemoteWebDriver driver) {
+    static void printDebugInfoForUser(RemoteWebDriver driver) {
         Properties props = new Properties();
         props.put("Selenium Version", new BuildInfo().getReleaseLabel());
         props.put("Client OS", System.getProperty("os.name") + " " + System.getProperty("os.version"));
 
-        String currentBrowser = BrowserFlavors.GENERIC.getBrowser();
+        String currentBrowser = "UNKNOWN browser";
 
         if (WebDriverPlatform.WEB.equals(Grid.getTestSession().getPlatform())) {
             currentBrowser = Grid.getWebTestSession().getBrowser();
         }
 
-        if (BrowserFlavors.isHeadLessBrowser(BrowserFlavors.getBrowser(currentBrowser))) {
+        if (BrowserFlavors.isHeadLessBrowser(currentBrowser)) {
             props.put("Browser", StringUtils.capitalize(currentBrowser.substring(1)));
         } else if (WebDriverPlatform.IOS.equals(Grid.getTestSession().getPlatform())
                 || (WebDriverPlatform.ANDROID.equals(Grid.getTestSession().getPlatform()))) {

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2015 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -20,7 +20,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.MobileTestSession;
 
-class GenericCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
+class MobileCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
