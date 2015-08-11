@@ -53,6 +53,10 @@ public class WebTestSession extends AbstractTestSession {
 
         this.initTestSession(method);
         WebTest webTestAnnotation = method.getAnnotation(WebTest.class);
+        // check class has webtest annotation (i.e. using shared sessions)
+        if (webTestAnnotation == null) {
+            webTestAnnotation = method.getActualMethod().getDeclaringClass().getAnnotation(WebTest.class);
+        }
         // Setting the browser value
         this.browser = getLocalConfigProperty(ConfigProperty.BROWSER);
         if (webTestAnnotation != null) {

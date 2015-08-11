@@ -26,7 +26,7 @@ import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.reports.runtime.SeLionReporter;
 
-@WebTest
+@WebTest(browser = "chrome")
 @Test(singleThreaded = true)
 public class SessionSharingTest {
 
@@ -45,7 +45,12 @@ public class SessionSharingTest {
         // should already be on test Page
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
         assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
-                "shuold be on Sample Unit Test Page already with this session");
+                "should be on Sample Unit Test Page already with this session");
+    }
+
+    @Test(groups = { "functional" }, priority = 3, dependsOnMethods = "testSessionSharing_part2")
+    public void testSessionSharing_part3() throws Exception {
+        assertTrue(Grid.driver().getCapabilities().getBrowserName().contains("chrome"), "Should be using chrome browser.");
     }
 
 }
