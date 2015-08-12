@@ -187,11 +187,11 @@ public class MobileTestSession extends AbstractTestSession {
         boolean appPathProvided = StringUtils.isNotBlank(appPath);
 
         checkArgument(!(mobileNodeType != MobileNodeType.APPIUM && appPathProvided),
-                "appPath can be specified for appium alone, Please specify appName instead of appPath");
+                "appPath can be specified for appium only, Please specify appName instead of appPath");
 
         checkArgument(
                 StringUtils.isNotBlank(appName) ^ StringUtils.isNotBlank(appPath),
-                "Either you have provided both appPath and appName or you have not specifed both. Please specify either "
+                "Either you have provided both appPath and appName or you have specified nothing. Please specify either "
                 + "appPath or appName");
 
         checkArgument(isDeviceDefined(),

@@ -46,7 +46,7 @@ public class AppiumAndroidNativeAppTest {
 
     }
 
-    @Test(expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Either you have provided both appPath and appName or you have not specifed both. Please specify either appPath or appName")
+    @Test(expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Either you have provided both appPath and appName or you have specified nothing. Please specify either appPath or appName")
     @MobileTest(appPath = "src/test/resources/apps/selendroid-test-app-0.15.0.apk", appName = "io.selendroid.testapp:0.14.0", device = "android:5.0.1", deviceType = "Android Emulator")
     public void testWithNativeAppBothAppNameAndAppPathProvided() {
 
@@ -59,7 +59,7 @@ public class AppiumAndroidNativeAppTest {
 
     }
 
-    @Test(expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Either you have provided both appPath and appName or you have not specifed both. Please specify either appPath or appName")
+    @Test(expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Either you have provided both appPath and appName or you have specified nothing. Please specify either appPath or appName")
     @MobileTest(appPath = "", device = "android:5.0.1", deviceType = "Android Emulator")
     public void testWithNativeAppBothAppNameAndAppPathNotProvided() {
 
