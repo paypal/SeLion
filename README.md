@@ -10,11 +10,12 @@ SeLion builds on top of TestNG and Selenium to provide a set of capabilities tha
 
 - A client module which you can add as a Maven dependency.
   - Annotation based WebDriver session management. 
-  - Access test data from Excel, YAML, JSON, or XML through TestNG's `@DataProvider`.
   - Runtime Reporter for real-time test execution status. 
   - Swap out browser targets at run-time. 
   - Automate native, hybrid, and web applications on iOS and Android devices.
   - and more 
+- A set of TestNG compatible data providers which allows you to access test data from 
+  Excel, YAML, JSON, and XML.
 - A maven archetype for creating new SeLion based projects. 
 - A customized Selenium Grid2 component. 
 - A Code generator Maven plugin for generating Java "page objects" out of YAML.
@@ -49,9 +50,10 @@ Your contribution is welcome and appreciated!
 
 Areas that need contribution
 -----------------------------
-1. Project Documentation and/or Project Website
-2. Support for additional data formats such as CSV for data driven testing.
-3. Any open item from [GitHub Issues](https://github.com/paypal/SeLion/issues)
+1. Project Documentation and/or Project Website.
+2. Project Tests and/or Testing.
+3. Any open item from [GitHub Issues](https://github.com/paypal/SeLion/issues).
+4. Support for additional data formats such as CSV for data driven testing.
 
 Projects we depend on that need contributors 
 ---------------------------------------------
@@ -65,4 +67,6 @@ Current version
 
 License
 -----------
-[Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
+Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Documentation and Site - [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/deed.en_US)
