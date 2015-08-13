@@ -65,9 +65,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private static final int MAX_SESSION_ALLOWED = 50;
 
     private int maxSessionsAllowed, totalSessionsCompleted = 0, totalSessionsStarted = 0;
-    private boolean shutDownInProgress = false, forceShutDown = false;
+    private boolean forceShutDown = false;
     private String machine;
     private File logFile = null;
+    private NodeRecycleThread nodeRecycleThread = new NodeRecycleThread();
 
     private int getUniqueSessionCount() {
         try {
@@ -166,10 +167,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
         synchronized (this) {
             forceShutDown = true;
-            shutDownInProgress = true;
-            if (getTotalUsed() <= 1) {
-                shutdownNode();
-            }
+            startNodeRecycleThread();
         }
 
         return true;
@@ -180,7 +178,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         TestSession session = null;
         synchronized (this) {
             if (totalSessionsStarted >= maxSessionsAllowed || forceShutDown) {
-                shutDownInProgress = true;
                 // TODO: Remove me once Node stability has been ascertained
                 // This is being included here intentionally since this is the
                 // only way to debug issues
@@ -196,11 +193,18 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
                 // count ONLY if the session was a valid one
                 totalSessionsStarted++;
                 if (totalSessionsStarted >= maxSessionsAllowed) {
-                    shutDownInProgress = true;
+                    startNodeRecycleThread();
                 }
                 appendMsgToCustomLog("Beginning session #" + totalSessionsStarted);
             }
             return session;
+        }
+    }
+
+    private void startNodeRecycleThread() {
+        if (!nodeRecycleThread.isAlive()) {
+            appendMsgToCustomLog("Spawning NodeRecycleThread to recycle the node " + getId());
+            nodeRecycleThread.start();
         }
     }
 
@@ -212,17 +216,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
                 appendMsgToCustomLog("Completed session #" + totalSessionsCompleted);
             }
             appendMsgToCustomLog("Total Number of slots used : " + getTotalUsed() + " on node :" + getId());
-            if (shutDownInProgress) {
-                appendMsgToCustomLog("Proceeding with shutdown of node " + getId());
-                if (getTotalUsed() <= 1) {
-                    shutdownNode();
-                    if (forceShutDown) {
-                        appendMsgToCustomLog("Alert..Alert !! Grid is forcibly shutting down the node " + getId());
-                    }
-                }
-            } else {
-                appendMsgToCustomLog(totalSessionsCompleted + " session(s) completed.");
-            }
         }
     }
 
@@ -249,4 +242,23 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         }
     }
 
+    /**
+     * Thread will recycle the node when all active sessions are completed
+     */
+    class NodeRecycleThread extends Thread {
+
+        @Override
+        public void run() {
+            appendMsgToCustomLog("Started NodeRecycleThread to restart the node once all the sessions are completed.");
+            while (getTotalUsed() > 0) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                }
+            }
+            appendMsgToCustomLog("All sessions are completed and restarting the node.");
+            shutdownNode();
+        }
+    }
 }
