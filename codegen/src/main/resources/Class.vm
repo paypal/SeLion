@@ -12,9 +12,9 @@ public class $class extends $baseclass {
 #foreach ($member in $members)
 #if (!$member.parent.contains("Container"))
 #if ($member.memberType == "Container")
-    private $member.firstToUpperCase($member.memberName)            $member.memberName;
+    private $member.firstToUpperCase($member.memberName) $member.memberName;
 #else
-    private $member.memberType            $member.memberName;
+    private $member.memberType $member.memberName;
 #end
 #end
 #end
@@ -25,9 +25,8 @@ public class $class extends $baseclass {
      *    
      * The naming conventions followed in SeLion for html elements are as follows,
      *
-     * <alias>{corresponding class name of the html element in SeLion}
-     *   where - <alias> will be the object name with its first letter in lowercase.
-     * 
+     * <alias>{corresponding class name of the html element in SeLion} where - <alias> will be the object name with its 
+     * first letter in lowercase.
      * 
      * <alias>Button                For Button html element.
      * <alias>CheckBox              For Check Box html element.
@@ -58,53 +57,62 @@ public class $class extends $baseclass {
     
     /**
      * Creates a new $class object
+     *
      * @param siteLocale
-     *         The Country locale for the site you are accessing
+     *            The Country locale for the site you are accessing
      */
     public $class(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
     }
 
     public $class getPage() {
-        if (!isInitialized()) {
-            loadObjectMap();
-            initializeHtmlObjects(this, this.objectMap);
-            //Initialize non SeLion html members here
-        }
         return this;
     }
 
 #foreach ($member in $members)
 #if (!$member.parent.endsWith("Container"))
-    /**
-     * For $member.memberType : $member.memberName 
-     */
+##initializing a variable to be used across all the custom methods for each AbstractElement
+#set ( $getterDetail = "get$member.firstToUpperCase($member.memberName)()" )
+
 #if (${member.memberType} == "Container")
 
     /**
      * Used to get the ${member.firstToUpperCase($member.memberName)}.
+     *
      * @return ${member.memberName}
      */
     public ${member.firstToUpperCase($member.memberName)} get${member.firstToUpperCase(${member.memberName})}() {
-        return getPage().${member.memberName};
+        ${member.firstToUpperCase($member.memberName)} element = this.$member.memberName;
+        if(element == null) {
+            this.$member.memberName = new ${member.firstToUpperCase($member.memberName)}(getObjectMap().get("$member.memberName"), 
+                    "$member.memberName", this,this.getObjectContainerMap().get("$member.memberName"));
+        }
+        return this.$member.memberName;
     }
 
     /**
      * Used to get ${member.firstToUpperCase($member.memberName)} at specified index.
+     *
      * @return ${member.memberName} at index
      */
     public ${member.firstToUpperCase($member.memberName)} get${member.firstToUpperCase($member.memberName)}(int index) {
-        getPage().${member.memberName}.setIndex(index);
+        ${getterDetail}.setIndex(index);
         return ${member.memberName};
     }
 #else
 
     /**
      * Used to get $member.memberName in the page $class
+     *
      * @return $member.memberName
      */
     public $member.memberType get$member.firstToUpperCase($member.memberName)() {
-        return getPage().$member.memberName;
+        $member.memberType element = this.$member.memberName;
+        if(element == null) {
+            this.$member.memberName = new ${member.memberType}(getObjectMap().get("$member.memberName"), "$member.memberName",
+                    this);
+        }
+        return this.$member.memberName;
     }
 #end
 
@@ -113,15 +121,16 @@ public class $class extends $baseclass {
      * Used to set the value of $member.memberName in the page $class.
      */
     public void set${member.firstToUpperCase($member.memberName)}Value(String ${member.returnArg($member.memberName)}) {
-        getPage().${member.memberName}.type(${member.returnArg($member.memberName)});
+        ${getterDetail}.type(${member.returnArg($member.memberName)});
     }
     
     /**
      * Used to get the value of $member.memberName in the page $class.
+     *
      * @return text in $member.memberName
      */
     public String get${member.firstToUpperCase($member.memberName)}Value() {
-        return getPage().${member.memberName}.getText();
+        return ${getterDetail}.getText();
     }
 
 #elseif ($member.memberType == "CheckBox")
@@ -129,21 +138,21 @@ public class $class extends $baseclass {
      * Used to check the control $member.memberName in the page $class
      */
     public void check${member.firstToUpperCase($member.memberName)}() {
-        getPage().${member.memberName}.check();
+       ${getterDetail}.check();
     }
 
     /**
      * Used to uncheck the control $member.memberName in the page $class
      */
     public void uncheck${member.firstToUpperCase($member.memberName)}() {
-        getPage().${member.memberName}.uncheck();
+        ${getterDetail}.uncheck();
     }
 
     /**
      * Used to click the control $member.memberName in the page $class
      */
     public void click${member.firstToUpperCase($member.memberName)}() {
-        getPage().${member.memberName}.click();
+        ${getterDetail}.click();
     }
 
 #elseif ($member.memberType == "Label")
@@ -151,7 +160,7 @@ public class $class extends $baseclass {
      * Used to check for the specific text available in the control $member.memberName
      */
     public boolean isTextPresentFor${member.firstToUpperCase($member.memberName)}(String pattern) {
-        return getPage().${member.memberName}.isTextPresent(pattern);
+        return ${getterDetail}.isTextPresent(pattern);
     }
 
 #elseif ($member.memberType == "Link")
@@ -159,14 +168,14 @@ public class $class extends $baseclass {
      * Used to check the control $member.memberName in the page $class and wait for the object to load.
      */
     public void click${member.firstToUpperCase($member.memberName)}(Object... expected) {
-        getPage().${member.memberName}.click(expected);
+        ${getterDetail}.click(expected);
     }
 
     /**
      * Used to click $member.memberName in the page $class
      */
     public void click${member.firstToUpperCase($member.memberName)}() {
-        getPage().${member.memberName}.click();
+        ${getterDetail}.click();
     }
 
 #elseif ($member.memberType == "RadioButton")
@@ -174,37 +183,38 @@ public class $class extends $baseclass {
      * Used to check the control $member.memberName in the page $class
      */
     public void check${member.firstToUpperCase($member.memberName)}() {
-        getPage().${member.memberName}.check();
+        ${getterDetail}.check();
     }
 
     /**
      * Used to click the control $member.memberName in the page $class
      */
     public void click${member.firstToUpperCase($member.memberName)}() {
-        getPage().${member.memberName}.click();
+        ${getterDetail}.click();
     }
 
 #elseif ($member.memberType == "Button")
     /**
-     * Used to click $member.memberName in the page $class  and check that resulting page contains expected item.
+     * Used to click $member.memberName in the page $class and check that resulting page contains expected item.
      */
     public void click${member.firstToUpperCase($member.memberName)}(Object... expected) {
-        getPage().${member.memberName}.click(expected);
+        ${getterDetail}.click(expected);
     }
 
     /**
      * Used to click $member.memberName in the page $class
      */
     public void click${member.firstToUpperCase($member.memberName)}() {
-        getPage().${member.memberName}.click();
+        ${getterDetail}.click();
     }
 
     /**
      * Used to get the value of $member.memberName in the page $class.
+     *
      * @return text in $member.memberName
      */
     public String get${member.firstToUpperCase($member.memberName)}Value() {
-        return getPage().${member.memberName}.getText();
+        return ${getterDetail}.getText();
     }
 
 #elseif ($member.memberType == "SelectList")
@@ -212,21 +222,21 @@ public class $class extends $baseclass {
      * Used to select element in the control $member.memberName based on the value.
      */
     public void select${member.firstToUpperCase($member.memberName)}ByValue(String value) {
-        getPage().${member.memberName}.selectByValue(value);
+        ${getterDetail}.selectByValue(value);
     }
 
     /**
      * Used to select element in the control $member.memberName based on the label.
      */
     public void select${member.firstToUpperCase($member.memberName)}ByLabel(String label) {
-        getPage().${member.memberName}.selectByLabel(label);
+        ${getterDetail}.selectByLabel(label);
     }
 
     /**
      * Used to select element in the control $member.memberName based on the index
      */
     public void select${member.firstToUpperCase($member.memberName)}ByIndex(int index) {
-        getPage().${member.memberName}.selectByIndex(index);
+        ${getterDetail}.selectByIndex(index);
     }
 #end
 #end
@@ -243,7 +253,7 @@ public class $class extends $baseclass {
     
 #foreach ($member in $members)
 #if ($member.parent == $containerName)
-        private $member.memberType            $member.memberName;
+        private $member.memberType $member.memberName;
 #end
 #end
 
@@ -276,11 +286,31 @@ public class $class extends $baseclass {
         public $containerClass(String locator, String controlName) {
             super(locator, controlName);
         }
+        
+        /**
+         * Use this constructor to override default controlName and assign a parent
+         * 
+         * @param locator
+         *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+         * @param controlName
+         *            - the control name used for logging.
+         * @param parent
+         *            - A {@link ParentTraits} object that represents the parent element for this element.
+         * 
+         */
+        public $containerClass(String locator, String controlName,ParentTraits parent) {
+            super(locator, controlName, parent);
+        }
+        
+        public $containerClass(String locator, String controlName, ParentTraits parent, 
+                 java.util.Map<String,String> containerElements) {
+            super(locator, controlName, parent, containerElements);
+        }
 
         private $containerClass getContainer() {
             if (!isInitialized()) {
-                loadObjectMap();
-                initializeHtmlObjects(this, ${class}.this.objectMap);
+                getObjectMap();
+                ##initializeHtmlObjects(this, ${class}.this.objectMap);
             }
             return this;
         }
@@ -288,14 +318,19 @@ public class $class extends $baseclass {
 #if ($member.parent == $containerName)
 
         /**
-         * 
          * For $containerClass $member.memberType : $member.memberName 
          *
          * Used to get $member.memberName in $containerName
+         *
          * @return $member.memberName
          */
         public $member.memberType get${member.firstToUpperCase($member.memberName)}() {
-            return getContainer().${member.memberName};
+            $member.memberType containerElement = getContainer().$member.memberName;
+            if(containerElement == null) {
+                getContainer().$member.memberName = new ${member.memberType}(this.containerElements.get("$member.memberName"), 
+                    "$member.memberName", this);
+            }
+            return getContainer().$member.memberName;
         }
 #end
 #end

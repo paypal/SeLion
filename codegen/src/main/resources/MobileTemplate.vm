@@ -10,7 +10,7 @@ import $data;
 public class $class extends $baseclass {
 
 #foreach ($member in $members)
-    private $member.memberType            $member.memberName;
+    private $member.memberType $member.memberName;
 #end
 
     private static String CLASS_NAME = "$class";
@@ -26,18 +26,15 @@ public class $class extends $baseclass {
     
     /**
      * Creates a new $class object
+     
      * @param siteLocale
-     *         The Country locale for the site you are accessing
+     *        The Country locale for the site you are accessing
      */
     public $class(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
     }
 
     public $class getPage() {
-        if (!isInitialized()) {
-            loadObjectMap();
-            initializeMobileElements(this, this.objectMap);
-        }
         return this;
     }
 
@@ -45,16 +42,16 @@ public class $class extends $baseclass {
 
     /**
      * Used to get $member.memberName in the page $class
+     *
      * @return $member.memberName
      */
     public $member.memberType get$member.firstToUpperCase($member.memberName)() {
-       return getPage().${member.memberName};
+        $member.memberType element = this.$member.memberName;
+        if(element == null) {
+            this.$member.memberName = new ${member.memberType}(getObjectMap().get("$member.memberName"));
+        }
+        return this.$member.memberName;
     }
 
 #end
 }
-
-
-
-
-

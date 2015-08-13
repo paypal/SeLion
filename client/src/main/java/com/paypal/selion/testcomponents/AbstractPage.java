@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -48,7 +48,7 @@ public abstract class AbstractPage implements WebPage {
     private String pageTitle;
 
     /** Map to store our GUI object map content. */
-    protected Map<String, String> objectMap; // NOSONAR
+    private Map<String, String> objectMap;
 
     /** The UNKNOWN_PAGE_TITLE. */
     private static final String UNKNOWN_PAGE_TITLE = "unknown-title";
@@ -101,7 +101,9 @@ public abstract class AbstractPage implements WebPage {
     /**
      * Load object map.
      */
-    protected void loadObjectMap() {
+    protected Map<String, String> getObjectMap() {
+        if (isInitialized())
+            return objectMap;
         while (mapQueue.size() > 0) {
             String[] map = mapQueue.poll();
             String pageDomain = map[0];
@@ -133,8 +135,43 @@ public abstract class AbstractPage implements WebPage {
             }
         }
         pageInitialized = true;
+        return objectMap;
     }
 
+    /**
+     * Load object map. This method takes a HashMap<String, String> and uses it to populate the objectMap This is
+     * intended to allow for the use of programmatically generated locators in addition to the yaml file format IDs and
+     * Locators
+     * 
+     * @param sourceMap
+     *            the source map
+     */
+    protected void loadObjectMap(HashMap<String, String> sourceMap) {
+
+        if (sourceMap == null) {
+            return;
+        }
+        
+        if(sourceMap.isEmpty()){
+            return;
+        }
+        
+        if (sourceMap.containsKey("pageTitle")) {
+            pageTitle = sourceMap.get("pageTitle");
+        }
+        if (objectMap == null) {
+            objectMap = new HashMap<String, String>();
+        }
+        objectMap.putAll(sourceMap);
+
+        pageInitialized = true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.paypal.selion.platform.html.WebPage#initPage(java.lang.String, java.lang.String, java.lang.String)
+     */
     public void initPage(String pageDomain, String pageClassName, String siteLocale) {
         initPage(pageDomain, pageClassName);
         site = siteLocale;

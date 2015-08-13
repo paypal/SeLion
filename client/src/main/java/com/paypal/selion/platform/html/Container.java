@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -14,6 +14,8 @@
 \*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.platform.html;
+
+import java.util.Map;
 
 /**
  * This class is a web element Container wrapper.
@@ -42,7 +44,7 @@ public class Container extends AbstractContainer {
      * </pre>
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * 
      */
     public Container(String locator) {
@@ -54,9 +56,9 @@ public class Container extends AbstractContainer {
      * element locator.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param controlName
-     *            - the control name used for logging.
+     *            the control name used for logging.
      * 
      */
     public Container(String locator, String controlName) {
@@ -67,11 +69,11 @@ public class Container extends AbstractContainer {
      * Use this constructor to override default controlName and assign a parent
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param controlName
-     *            - the control name used for logging.
+     *            the control name used for logging.
      * @param parent
-     *            - A {@link ParentTraits} object that represents the parent element for this element.
+     *            A {@link ParentTraits} object that represents the parent element for this element.
      * 
      */
     public Container(String locator, String controlName, ParentTraits parent) {
@@ -79,10 +81,26 @@ public class Container extends AbstractContainer {
     }
 
     /**
+     * Constructs a {@link Container} with locator, controlName, parent and containerElements
+     * 
+     * @param locator
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     * @param controlName
+     *            the control name used for logging.
+     * @param parent
+     *            A {@link ParentTraits} object that represents the parent element for this element.
+     * @param containerElements
+     *            A {@link Map} containing the locators for elements inside this container.
+     */
+    public Container(String locator, String controlName, ParentTraits parent, Map<String, String> containerElements) {
+        super(locator, controlName, parent, containerElements);
+    }
+
+    /**
      * Set a parent of type {@link ParentTraits} to this {@link Container}
      * 
      * @param parent
-     *            - A {@link ParentTraits} object that represents the parent element for this element.
+     *            A {@link ParentTraits} object that represents the parent element for this element.
      */
     public void setParentForContainer(ParentTraits parent) {
         setParent(parent);

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,6 +16,7 @@
 package com.paypal.selion.platform.html;
 
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -171,12 +172,13 @@ import com.paypal.selion.testcomponents.BasicPageImpl;
 public abstract class AbstractContainer extends AbstractElement implements ParentTraits {
 
     private int index = 0;
+    protected Map<String, String> containerElements = null;
 
     /**
      * Constructs a Container with locator.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * 
      */
     public AbstractContainer(String locator) {
@@ -187,9 +189,9 @@ public abstract class AbstractContainer extends AbstractElement implements Paren
      * Constructs a Container with locator and controlName.
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param controlName
-     *            - the control name used for logging.
+     *            The control name used for logging.
      */
     public AbstractContainer(String locator, String controlName) {
         this(locator, controlName, null);
@@ -199,21 +201,38 @@ public abstract class AbstractContainer extends AbstractElement implements Paren
      * Constructs a {@link Container} with locator, controlName and a parent
      * 
      * @param locator
-     *            - A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param controlName
-     *            - the control name used for logging.
+     *            The control name used for logging.
      * @param parent
-     *            - A {@link ParentTraits} object that represents the parent element for this element.
+     *            A {@link ParentTraits} object that represents the parent element for this element.
      */
     public AbstractContainer(String locator, String controlName, ParentTraits parent) {
         super(locator, controlName, parent);
+    }
+    
+    /**
+     * Constructs a {@link Container} with locator, controlName, parent and containerElements
+     * 
+     * @param locator
+     *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
+     * @param controlName
+     *            The control name used for logging.
+     * @param parent
+     *            A {@link ParentTraits} object that represents the parent element for this element.
+     * @param containerElements
+     *            A {@link Map} containing the locators for elements inside this container.
+     */
+    public AbstractContainer(String locator, String controlName, ParentTraits parent,Map<String,String> containerElements){
+        super(locator,controlName,parent);
+        this.containerElements = containerElements; 
     }
 
     /**
      * Sets the index at which the element will be returned when {@link #getElement()} is called.
      * 
      * @param index
-     *            index at which the element will be returned when getElement() is called
+     *            The index at which the element will be returned when getElement() is called.
      */
     public void setIndex(int index) {
         this.index = index;
@@ -223,7 +242,7 @@ public abstract class AbstractContainer extends AbstractElement implements Paren
      * Used to call {@link HtmlElementUtils#locateElements(String) locateElements} and returns the element at current
      * index (which was set via {@link #setIndex(int)})
      * 
-     * @return the web element found by locator at current index
+     * @return The web element found by locator at current index
      */
     @Override
     public RemoteWebElement getElement() {

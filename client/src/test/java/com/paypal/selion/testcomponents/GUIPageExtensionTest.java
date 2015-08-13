@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -39,25 +39,29 @@ public class GUIPageExtensionTest {
         private Link personalLink;
         private Button testButton;
 
-        public Button getTestButton() {
-            return getPage().testButton;
-        }
-
         public SampleTestPage() {
             super.initPage("paypal", "SampleTestPage");
+        }
+        
+        public Button getTestButton() {
+            Button element = this.testButton;
+            if (element == null) {
+                this.testButton = new Button(this.getObjectMap().get("testButton"), "testButton", this);
+            }
+            return this.testButton;
         }
 
         @Override
         public SampleTestPage getPage() {
-            if (!isInitialized()) {
-                loadObjectMap();
-                initializeHtmlObjects(this, this.objectMap);
-            }
             return this;
         }
 
         public Link getPersonalLink() {
-            return getPage().personalLink;
+            Link element = this.personalLink;
+            if (element == null) {
+                this.personalLink = new Link(this.getObjectMap().get("personalLink"), "personalLink", this);
+            }
+            return this.personalLink;
         }
     }
 
@@ -71,17 +75,16 @@ public class GUIPageExtensionTest {
 
         @Override
         public SampleTestPageExtn getPage() {
-            if (!isInitialized()) {
-                loadObjectMap();
-                initializeHtmlObjects(this, this.objectMap);
-
-            }
             return this;
         }
 
         @Override
         public Link getPersonalLink() {
-            return getPage().personalLink;
+            Link element = this.personalLink;
+            if (element == null) {
+                this.personalLink = new Link(this.getObjectMap().get("personalLink"), "personalLink", this);
+            }
+            return this.personalLink;
         }
     }
 }

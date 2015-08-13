@@ -31,7 +31,7 @@ public class Link extends AbstractElement {
      * <b>Usage:</b>
      * 
      * <pre>
-     * private Link lnkSYI = new Link(&quot;//a[contains(@href,'?eBayCommand')]&quot;);
+     * private Link lnkSYI = new Link(&quot;//a[contains(@href,'?Command')]&quot;);
      * </pre>
      * 
      * @param locator

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,49 +15,46 @@
 
 package com.paypal.selion.testcomponents;
 
-import com.paypal.selion.platform.html.Button;
-import com.paypal.selion.platform.html.Container;
-import com.paypal.selion.platform.html.Link;
+import java.util.Map;
 import com.paypal.selion.testcomponents.BasicPageImpl;
+import com.paypal.selion.platform.html.Button;
+import com.paypal.selion.platform.html.Link;
+import com.paypal.selion.platform.html.Container;
+import com.paypal.selion.platform.html.ParentTraits;
 
-/*TODO: This Page is generated from code generator and placed here. 
- * This test page must be maintained to validate initializing HTML objects 
- * using BasicPageImpl.
- * 
- * A Temporary arrangement till code generator is part of OSS.
- */
 public class TestInitializeElementsPage extends BasicPageImpl {
 
     private HeaderContainer headerContainer;
     private Button preLoginButton;
 
-   /**
-    * SeLion PageObject Standard
-    *
-    * The naming conventions followed in SeLion for Html Elements are like,
-    *
-    * <alias>corresponding Class Name of the Html Element in SeLion
-    * where - <alias> will be the object name with its first letter in lowercase.
-    *
-    *
-    * <alias>Button                For Button html element.
-    * <alias>CheckBox              For Check Box html element.
-    * <alias>DatePicker            For Date Picker html element.
-    * <alias>Form                  For Form html element.
-    * <alias>Image                 For Image html element.
-    * <alias>Label                 For Label html element.
-    * <alias>Link                  For Link html element.
-    * <alias>RadioButton           For Radio Button html element.
-    * <alias>List                  For Select List html element.
-    * <alias>Table                 For Table html element.
-    * <alias>TextField             For Text Field html element.
-    * <alias>Container             For Container html element.
-    *
-    */
-    
+     /*
+     * SeLion GUI Html Object Standard
+     * 
+     * The naming conventions followed in SeLion for html elements are as follows,
+     *
+     * <alias>{corresponding class name of the html element in SeLion}
+     *   where - <alias> will be the object name with its first letter in lowercase.
+     * 
+     * 
+     * <alias>Button                For Button html element.
+     * <alias>CheckBox              For Check Box html element.
+     * <alias>DatePicker            For Date Picker html element.
+     * <alias>Form                  For Form html element.
+     * <alias>Image                 For Image html element.
+     * <alias>Label                 For Label html element.
+     * <alias>Link                  For Link html element.
+     * <alias>RadioButton           For Radio Button html element.
+     * <alias>List                  For Select List html element.
+     * <alias>Table                 For Table html element.
+     * <alias>TextField             For Text Field html element.
+     * <alias>Container             For Container html element.
+     * 
+     */
+     
 
     private static String CLASS_NAME = "TestInitializeElementsPage";
     private static String PAGE_DOMAIN = "paypal";
+
 
     /**
      * Creates a new TestInitializeElementsPage object
@@ -65,30 +62,19 @@ public class TestInitializeElementsPage extends BasicPageImpl {
     public TestInitializeElementsPage() {
         super.initPage(PAGE_DOMAIN, CLASS_NAME);
     }
-
+    
     /**
      * Creates a new TestInitializeElementsPage object
-     * 
      * @param siteLocale
-     *            - The Country locale for the site you are accessing
+     *         The Country locale for the site you are accessing
      */
     public TestInitializeElementsPage(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
     }
 
     public TestInitializeElementsPage getPage() {
-        if (!isInitialized()) {
-            loadObjectMap();
-            initializeHtmlObjects(this, this.objectMap);
-            // Initialize non SeLion Html members here
-        }
         return this;
     }
-
-    /**
-     * 
-     * For Container : headerContainer
-     */
 
     /**
      * Used to get the HeaderContainer.
@@ -96,23 +82,22 @@ public class TestInitializeElementsPage extends BasicPageImpl {
      * @return headerContainer
      */
     public HeaderContainer getHeaderContainer() {
-        return getPage().headerContainer;
+        HeaderContainer element = this.headerContainer;
+        if (element == null) {
+            this.headerContainer = new HeaderContainer(this.getObjectMap().get("headerContainer"),
+                    "headerContainer", this, this.getObjectContainerMap().get("headerContainer"));
+        }
+        return this.headerContainer;
     }
 
     /**
      * Used to get HeaderContainer at specified index.
-     * 
      * @return headerContainer at index
      */
     public HeaderContainer getHeaderContainer(int index) {
-        getPage().headerContainer.setIndex(index);
+        getHeaderContainer().setIndex(index);
         return headerContainer;
     }
-
-    /**
-     * 
-     * For Button : preLoginButton
-     */
 
     /**
      * Used to get preLoginButton in the page TestInitializeElementsPage
@@ -120,38 +105,38 @@ public class TestInitializeElementsPage extends BasicPageImpl {
      * @return preLoginButton
      */
     public Button getPreLoginButton() {
-        return getPage().preLoginButton;
+        Button element = this.preLoginButton;
+        if (element == null) {
+            this.preLoginButton = new Button(this.getObjectMap().get("preLoginButton"), "preLoginButton", this);
+        }
+        return this.preLoginButton;
     }
 
     /**
      * Used to click preLoginButton in the page TestInitializeElementsPage and check that resulting page contains
      * expected item.
-     * 
      */
     public void clickPreLoginButton(Object... expected) {
-        getPage().preLoginButton.click(expected);
+        getPreLoginButton().click(expected);
     }
 
     /**
      * Used to click preLoginButton in the page TestInitializeElementsPage
-     * 
      */
     public void clickPreLoginButton() {
-        getPage().preLoginButton.click();
+        getPreLoginButton().click();
     }
 
     /**
      * Used to get the value of preLoginButton in the page TestInitializeElementsPage.
-     * 
      * @return text in preLoginButton
      */
-
     public String getPreLoginButtonValue() {
-        return getPage().preLoginButton.getText();
+        return getPreLoginButton().getText();
     }
 
     public class HeaderContainer extends Container {
-
+    
         private Link someLink;
 
         /**
@@ -161,8 +146,7 @@ public class TestInitializeElementsPage extends BasicPageImpl {
          * 
          * <pre>
          * private TestInitializeElementsPage pageInstance = new TestInitializeElementsPage();
-         * private TestInitializeElementsPage.HeaderContainer headerContainer = pageInstance.new HeaderContainer(
-         *         &quot;//span[@id='containerLocator']&quot;);
+         * private TestInitializeElementsPage.HeaderContainer headerContainer = pageInstance.new HeaderContainer(&quot;//span[@id='containerLocator']&quot;);
          * </pre>
          * 
          * @param locator
@@ -184,26 +168,48 @@ public class TestInitializeElementsPage extends BasicPageImpl {
         public HeaderContainer(String locator, String controlName) {
             super(locator, controlName);
         }
+        
+        /**
+         * Use this constructor to override default controlName and assign a parent
+         * 
+         * @param locator
+         *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
+         * @param controlName
+         *            the control name used for logging.
+         * @param parent
+         *            A {@link ParentTraits} object that represents the parent element for this element.
+         * 
+         */
+        public HeaderContainer(String locator, String controlName, ParentTraits parent) {
+            super(locator, controlName, parent);
+        }
+
+        public HeaderContainer(String locator, String controlName, ParentTraits parent,
+                Map<String, String> containerElements) {
+            super(locator, controlName, parent, containerElements);
+        }
 
         private HeaderContainer getContainer() {
             if (!isInitialized()) {
-                loadObjectMap();
-                initializeHtmlObjects(this, TestInitializeElementsPage.this.objectMap);
+                getObjectMap();
             }
             return this;
         }
 
         /**
          * 
-         * For HeaderContainer Link : someLink
-         * 
          * Used to get someLink in headerContainer
          * 
          * @return someLink
          */
         public Link getSomeLink() {
+            Link containerElement = getContainer().someLink;
+            if (containerElement == null) {
+                getContainer().someLink = new Link(this.containerElements.get("someLink"), "someLink", this);
+            }
             return getContainer().someLink;
         }
 
     }
 }
+

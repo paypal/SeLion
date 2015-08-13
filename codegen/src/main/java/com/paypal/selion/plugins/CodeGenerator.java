@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,6 +15,7 @@
 
 package com.paypal.selion.plugins;
 
+import java.awt.Container;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -80,8 +81,12 @@ public class CodeGenerator {
             Set<String> set = new HashSet<String>();
             for (GUIObjectDetails htmlObjectDetails : htmlObjectDetailsList) {
                 set.add(htmlObjectDetails.getMemberPackage() + "." + htmlObjectDetails.getMemberType());
+                if (htmlObjectDetails.getMemberType().equals(Container.class.getSimpleName())) {
+                    // Adding ParentTraits to the list to avoid using hardcoded import statements in .vm file
+                    set.add("com.paypal.selion.platform.html.ParentTraits");
+                }
             }
-
+            
             Velocity.init();
 
             Velocity.setProperty("resource.loader", "class");

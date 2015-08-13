@@ -35,7 +35,7 @@ public class Image extends AbstractElement {
      * <b>Usage:</b>
      * 
      * <pre>
-     * private Image imgeBayIcon = new Image(&quot;//Image[@id='eBayIcon']&quot;);
+     * private Image imgIcon = new Image(&quot;//Image[@id='Icon']&quot;);
      * </pre>
      * 
      * @param locator

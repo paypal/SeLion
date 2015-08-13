@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -111,16 +111,14 @@ public class BasicPageImplTest {
         SeLionAsserts.assertEquals(page.isCurrentPageInBrowser(), true, "Page is opened in the browser");
         SeLionAsserts.assertEquals(pageNotOpened.isCurrentPageInBrowser(), false, "Page is not opened in the browser");
         // Validate the page by pageTitle, which is the fallback if there are no pageValidators provided.
-        SeLionAsserts
-                .assertEquals(pageTitleValidation.isCurrentPageInBrowser(), true, "Page is opened in the browser");
+        SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), true, "Page is opened in the browser");
 
         pageTitleValidation.setPageTitle("Incorrect page title");
         SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), false,
                 "Page is not opened in the browser");
 
         pageTitleValidation.setPageTitle("* JavaScript");
-        SeLionAsserts
-                .assertEquals(pageTitleValidation.isCurrentPageInBrowser(), true, "Page is opened in the browser");
+        SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), true, "Page is opened in the browser");
 
         pageTitleValidation.setPageTitle("* title");
         SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), false,
@@ -137,9 +135,8 @@ public class BasicPageImplTest {
         SeLionAsserts.assertTrue(
                 testInitPage.getPreLoginButton().getParent().getClass().getSuperclass().equals(BasicPageImpl.class),
                 "Verify if a page is assigned for element outside container");
-        SeLionAsserts.assertTrue(testInitPage.getHeaderContainer().getSomeLink().getParent().getClass()
-                .getSuperclass().equals(Container.class),
-                "Verify if a Container is assigned for element inside container");
+        SeLionAsserts.assertTrue(testInitPage.getHeaderContainer().getSomeLink().getParent().getClass().getSuperclass()
+                .equals(Container.class), "Verify if a Container is assigned for element inside container");
     }
 
     private String getScript() throws IOException {

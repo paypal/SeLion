@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -187,10 +187,6 @@ public class AbstractElementTest {
 
         @Override
         public SampleSuccessPage getPage() {
-            if (!isInitialized()) {
-                loadObjectMap();
-                initializeHtmlObjects(this, this.objectMap);
-            }
             return this;
         }
     }
@@ -198,12 +194,14 @@ public class AbstractElementTest {
     private class SampleSuccessInMemoryPage extends BasicPageImpl {
         private HashMap<String, String> oMap = new HashMap<String, String>();
 
-        @Override
+        SampleSuccessInMemoryPage() {
+            getPage();
+        }
+
         public SampleSuccessInMemoryPage getPage() {
             if (!isInitialized()) {
                 initObjectMap();
                 loadObjectMap(oMap);
-                initializeHtmlObjects(this, this.objectMap);
             }
             return this;
         }
