@@ -195,19 +195,20 @@ function displaySource(src, title) {
   });
 
   function refreshResults() {
-    //Calulate the test case summary
+    //Load the test case results
     var passed = 0, failed = 0, skipped = 0, running = 0;
-    $.each(treeFilter,function(ignore, item) {
-      if (item.status === 'Passed') {
-        passed = passed + 1;
-      } else if (item.status === 'Failed') {
-        failed = failed + 1;
-      } else if (item.status === 'Skipped') {
-        skipped = skipped + 1;
-      } else {
-        running = running + 1;
-      }
-    });
+    if (reports.reportSummary.testMethodsSummary.passed) {
+      passed = reports.reportSummary.testMethodsSummary.passed;
+    }
+    if (reports.reportSummary.testMethodsSummary.failed) {
+      failed = reports.reportSummary.testMethodsSummary.failed;
+    }
+    if (reports.reportSummary.testMethodsSummary.skipped) {
+      skipped = reports.reportSummary.testMethodsSummary.skipped;
+    }
+    if (reports.reportSummary.testMethodsSummary.running) {
+      running = reports.reportSummary.testMethodsSummary.running;
+    }
 
     total = passed + failed + skipped + running;
     generateSummary('passed', passed, total);
