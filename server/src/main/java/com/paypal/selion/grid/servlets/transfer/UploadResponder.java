@@ -24,7 +24,7 @@ import com.paypal.selion.logging.SeLionGridLogger;
  * @param <T>
  *            Type that is a sub type of {@link ManagedArtifact}
  */
-public interface UploadResponder<T extends ManagedArtifact> {
+public interface UploadResponder<T extends ManagedArtifact<Criteria>> {
 
     /**
      * Responds into {@link HttpServletResponse}.
@@ -50,9 +50,9 @@ public interface UploadResponder<T extends ManagedArtifact> {
 
         private String acceptHeader;
 
-        private Class<? extends UploadResponder<ManagedArtifact>> uploadResponder;
+        private Class<? extends UploadResponder<ManagedArtifact<Criteria>>> uploadResponder;
 
-        private AcceptHeaderEnum(String acceptHeader, Class<? extends UploadResponder<ManagedArtifact>> uploadResponder) {
+        private AcceptHeaderEnum(String acceptHeader, Class<? extends UploadResponder<ManagedArtifact<Criteria>>> uploadResponder) {
             this.acceptHeader = acceptHeader;
             this.uploadResponder = uploadResponder;
         }
@@ -63,7 +63,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
             return acceptHeader;
         }
 
-        public Class<? extends UploadResponder<ManagedArtifact>> getUploadResponder() {
+        public Class<? extends UploadResponder<ManagedArtifact<Criteria>>> getUploadResponder() {
             return uploadResponder;
         }
 
@@ -95,7 +95,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
      * <code>AbstractUploadResponder</code> is abstract super class for concrete implementations that work on types of
      * {@link ManagedArtifact}.
      */
-    public abstract class AbstractUploadResponder implements UploadResponder<ManagedArtifact> {
+    public abstract class AbstractUploadResponder implements UploadResponder<ManagedArtifact<Criteria>> {
 
         protected final TransferContext transferContext;
 
@@ -103,9 +103,9 @@ public interface UploadResponder<T extends ManagedArtifact> {
 
         protected final EnumMap<RequestHeaders, String> headersMap;
 
-        protected final List<ManagedArtifact> managedArtifactList;
+        protected final List<ManagedArtifact<Criteria>> managedArtifactList;
 
-        protected ManagedArtifact managedArtifactUnderProcess;
+        protected ManagedArtifact<Criteria> managedArtifactUnderProcess;
 
         public AbstractUploadResponder(TransferContext transferContext) {
             super();
@@ -206,7 +206,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
             try {
                 out = transferContext.getHttpServletResponse().getWriter();
                 jsonResponse.add("files", files);
-                for (ManagedArtifact managedArtifact : managedArtifactList) {
+                for (ManagedArtifact<Criteria> managedArtifact : managedArtifactList) {
                     managedArtifactUnderProcess = managedArtifact;
                     processArtifact();
                 }
@@ -252,7 +252,7 @@ public interface UploadResponder<T extends ManagedArtifact> {
             transferContext.getHttpServletResponse().setContentType(CONTENT_TYPE_VALUE);
             try {
                 out = transferContext.getHttpServletResponse().getWriter();
-                for (ManagedArtifact managedArtifact : managedArtifactList) {
+                for (ManagedArtifact<Criteria> managedArtifact : managedArtifactList) {
                     managedArtifactUnderProcess = managedArtifact;
                     processArtifact();
                 }

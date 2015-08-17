@@ -22,7 +22,7 @@ import com.paypal.selion.logging.SeLionGridLogger;
  */
 public class DownloadRequestProcessor {
 
-    protected ServerRepository<? extends ManagedArtifact, ? super Criteria> serverRepository;
+    protected ServerRepository<ManagedArtifact<Criteria>> serverRepository;
     private SeLionGridLogger logger = SeLionGridLogger.getLogger(DownloadRequestProcessor.class);
 
     public DownloadRequestProcessor() {
@@ -30,16 +30,30 @@ public class DownloadRequestProcessor {
         serverRepository = ManagedArtifactRepository.getInstance();
     }
 
-    public boolean isArtifactPresent(Criteria requestedCriteria) {
+    /**
+     * Verifies whether the artifact requested in the HTTP call is present.
+     * 
+     * @param pathInfo
+     *            the path inferred from the GET HTTP URL.
+     * @return A boolean indicating the presence of the artifact.
+     */
+    public boolean isArtifactPresent(String pathInfo) {
         logger.entering();
-        boolean isPresentInRepository = serverRepository.isArtifactPresent(requestedCriteria);
+        boolean isPresentInRepository = serverRepository.isArtifactPresent(pathInfo);
         logger.exiting(isPresentInRepository);
         return isPresentInRepository;
     }
 
-    public ManagedArtifact getArtifact(Criteria requestedCriteria) {
-        logger.entering(requestedCriteria);
-        ManagedArtifact managedArtifact = serverRepository.getArtifact(requestedCriteria);
+    /**
+     * Returns the managed artifact requested in the HTTP call.
+     * 
+     * @param pathInfo
+     *            the path inferred from the GET HTTP URL.
+     * @return the artifact.
+     */
+    public ManagedArtifact<Criteria> getArtifact(String pathInfo) {
+        logger.entering();
+        ManagedArtifact<Criteria> managedArtifact = serverRepository.getArtifact(pathInfo);
         logger.exiting(managedArtifact);
         return managedArtifact;
     }

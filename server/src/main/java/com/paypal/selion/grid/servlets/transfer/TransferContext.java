@@ -35,7 +35,7 @@ public class TransferContext {
 
     private EnumMap<RequestHeaders, String> headersMap;
 
-    private UploadRequestProcessor<ManagedArtifact> uploadRequestProcessor;
+    private UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor;
 
     private DownloadRequestProcessor downloadRequestProcessor;
 
@@ -68,7 +68,7 @@ public class TransferContext {
      * 
      * @return Instance of {@link UploadRequestProcessor}.
      */
-    public UploadRequestProcessor<ManagedArtifact> getUploadRequestProcessor() {
+    public UploadRequestProcessor<ManagedArtifact<Criteria>> getUploadRequestProcessor() {
         return uploadRequestProcessor;
     }
 
@@ -78,7 +78,7 @@ public class TransferContext {
      * @param uploadRequestProcessor
      *            Instance of {@link UploadRequestProcessor}s
      */
-    public void setUploadRequestProcessor(UploadRequestProcessor<ManagedArtifact> uploadRequestProcessor) {
+    public void setUploadRequestProcessor(UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor) {
         this.uploadRequestProcessor = uploadRequestProcessor;
     }
 

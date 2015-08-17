@@ -39,7 +39,7 @@ import com.paypal.selion.utils.ConfigParser;
  * will run a cleaner thread that runs every hour to clean the artifacts inside the repository folder. All artifacts
  * that have {@link ManagedArtifact#isExpired()} returning true are considered for removal during the cleaning cycle.
  */
-public class ManagedArtifactRepository implements ServerRepository<ManagedArtifact, Criteria> {
+public class ManagedArtifactRepository implements ServerRepository<ManagedArtifact<Criteria>> {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ManagedArtifactRepository.class);
 
@@ -105,13 +105,13 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     }
 
     @Override
-    public ManagedArtifact saveContents(UploadedArtifact uploadedArtifact) {
+    public ManagedArtifact<Criteria> saveContents(UploadedArtifact uploadedArtifact) {
         synchronized (getMutex(uploadedArtifact)) {
             LOGGER.entering(uploadedArtifact);
             File file = createFileUsing(uploadedArtifact);
             try {
                 FileUtils.writeByteArrayToFile(file, uploadedArtifact.getArtifactContents());
-                ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
+                ManagedArtifact<Criteria> managedArtifact = getManagedArtifact(file.getAbsolutePath());
                 LOGGER.exiting(managedArtifact);
                 return managedArtifact;
             } catch (IOException e) {
@@ -121,7 +121,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     }
 
     @Override
-    public boolean isArtifactPresent(Criteria requestedCriteria) {
+    public boolean isArtifactPresent(String pathInfo) {
 
         /*
          * This method returns true if the artifact is present and not expired at the very instant the method is called.
@@ -132,14 +132,14 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
         boolean artifactPresent = false;
         try {
             repositorySynchronizationLock.lock();
-            LOGGER.entering(requestedCriteria);
-            ManagedArtifact managedArtifact = getMatch(requestedCriteria);
+            LOGGER.entering();
+            ManagedArtifact<Criteria> managedArtifact = getMatchedArtifact(pathInfo);
             artifactPresent = !managedArtifact.isExpired();
             LOGGER.exiting(artifactPresent);
-        } catch (ArtifactDownloadException exe) {
+        } catch (ArtifactDownloadException e) {
 
             // Log and return false
-            LOGGER.log(Level.WARNING, "No matching artifact", exe);
+            LOGGER.log(Level.WARNING, "No matching artifact", e);
         } finally {
             repositorySynchronizationLock.unlock();
         }
@@ -147,7 +147,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     }
 
     @Override
-    public ManagedArtifact getArtifact(Criteria requestedCriteria) {
+    public ManagedArtifact<Criteria> getArtifact(String pathInfo) {
 
         /*
          * This method does not guarantee the presence of an artifact after isArtifactPresent() is called on an
@@ -155,8 +155,8 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
          */
         try {
             repositorySynchronizationLock.lock();
-            LOGGER.entering(requestedCriteria);
-            ManagedArtifact managedArtifact = getMatch(requestedCriteria);
+            LOGGER.entering();
+            ManagedArtifact<Criteria> managedArtifact = getMatchedArtifact(pathInfo);
             if (managedArtifact.isExpired()) {
                 throw new ArtifactDownloadException("The requested artifact: " + managedArtifact.getArtifactName()
                         + " has expired");
@@ -177,17 +177,16 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
         return stringBuffer.toString().intern();
     }
 
-    private ManagedArtifact getMatch(final Criteria criteria) {
+    private ManagedArtifact<Criteria> getMatchedArtifact(String pathInfo) {
         List<File> files = (List<File>) FileUtils.listFiles(repoFolder, TrueFileFilter.INSTANCE,
                 TrueFileFilter.INSTANCE);
         for (File file : files) {
-            ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
-            if (managedArtifact.matches(criteria)) {
+            ManagedArtifact<Criteria> managedArtifact = getManagedArtifact(file.getAbsolutePath());
+            if (managedArtifact.matchesCriteria(pathInfo)) {
                 return managedArtifact;
             }
         }
-        throw new ArtifactDownloadException("No artifact found for criteria, name: " + criteria.getArtifactName()
-                + ", userId: " + criteria.getUserId() + ", applicationFolder: " + criteria.getApplicationFolder());
+        throw new ArtifactDownloadException("No artifact found for requested path: " + pathInfo);
     }
 
     private File createFileUsing(UploadedArtifact uploadedArtifact) {
@@ -221,14 +220,14 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
     }
 
     @SuppressWarnings("unchecked")
-    private ManagedArtifact getManagedArtifact(String pathName) {
-        ManagedArtifact managedArtifact = null;
+    private ManagedArtifact<Criteria> getManagedArtifact(String pathName) {
+        ManagedArtifact<Criteria> managedArtifact = null;
         try {
             String managedArtifactClassName = ConfigParser.parse().getString(ARTIFACT_CONFIG_PROPERTY);
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "ManagedArtifact class name configured in grid: " + managedArtifactClassName);
             }
-            Class<? extends ManagedArtifact> managedArtifactClass = (Class<? extends ManagedArtifact>) this.getClass()
+            Class<? extends ManagedArtifact<Criteria>> managedArtifactClass = (Class<? extends ManagedArtifact<Criteria>>) this.getClass()
                     .getClassLoader().loadClass(managedArtifactClassName);
             managedArtifact = managedArtifactClass.getConstructor(new Class[] { String.class }).newInstance(
                     new Object[] { pathName });
@@ -261,7 +260,7 @@ public class ManagedArtifactRepository implements ServerRepository<ManagedArtifa
             List<File> files = (List<File>) FileUtils.listFiles(repoFolder, TrueFileFilter.INSTANCE,
                     TrueFileFilter.INSTANCE);
             for (File file : files) {
-                ManagedArtifact managedArtifact = getManagedArtifact(file.getAbsolutePath());
+                ManagedArtifact<Criteria> managedArtifact = getManagedArtifact(file.getAbsolutePath());
                 if (managedArtifact.isExpired() && !file.delete()) {
                     LOGGER.log(Level.WARNING, "File: " + file.getName() + " not deleted from repository");
                 }

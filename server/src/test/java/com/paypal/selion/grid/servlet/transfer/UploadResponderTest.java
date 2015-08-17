@@ -38,6 +38,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.grid.servlets.transfer.ArtifactUploadException;
+import com.paypal.selion.grid.servlets.transfer.Criteria;
 import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.TransferContext;
 import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor;
@@ -62,10 +63,10 @@ public class UploadResponderTest extends PowerMockTestCase {
     @Test
     @SuppressWarnings({ "unchecked" })
     public void testJsonResponder() throws IOException {
-        UploadRequestProcessor<ManagedArtifact> requestProcessor = mock(UploadRequestProcessor.class);
+        UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
+        ManagedArtifact<Criteria> managedArtifact = mock(ManagedArtifact.class);
 
         String expected = "{\"files\":[{\"fileName\":\"DummyArtifact.any\",\"url\":\"http://localhost:4444/path/TransferServlet/userOne/DummyArtifact.any\"}]}";
         EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
@@ -75,7 +76,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-        List<ManagedArtifact> managedArtifactList = new ArrayList<>();
+        List<ManagedArtifact<Criteria>> managedArtifactList = new ArrayList<>();
         managedArtifactList.add(managedArtifact);
         TransferContext transferContext = mock(TransferContext.class);
 
@@ -101,10 +102,10 @@ public class UploadResponderTest extends PowerMockTestCase {
     @Test
     @SuppressWarnings({ "unchecked" })
     public void testTextPlainResponder() throws IOException {
-        UploadRequestProcessor<ManagedArtifact> requestProcessor = mock(UploadRequestProcessor.class);
+        UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
+        ManagedArtifact<Criteria> managedArtifact = mock(ManagedArtifact.class);
 
         String expected = "fileName=DummyArtifact.any,url=http://localhost:4444/path/TransferServlet/userOne/DummyArtifact.any;";
         EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
@@ -114,7 +115,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-        List<ManagedArtifact> managedArtifactList = new ArrayList<>();
+        List<ManagedArtifact<Criteria>> managedArtifactList = new ArrayList<>();
         managedArtifactList.add(managedArtifact);
         TransferContext transferContext = mock(TransferContext.class);
 
@@ -140,7 +141,7 @@ public class UploadResponderTest extends PowerMockTestCase {
     @Test(expectedExceptions = ArtifactUploadException.class)
     @SuppressWarnings({ "unchecked" })
     public void testResponderIfListIsEmpty() throws IOException {
-        UploadRequestProcessor<ManagedArtifact> requestProcessor = mock(UploadRequestProcessor.class);
+        UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
 
@@ -150,7 +151,7 @@ public class UploadResponderTest extends PowerMockTestCase {
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-        List<ManagedArtifact> managedArtifactList = new ArrayList<>();
+        List<ManagedArtifact<Criteria>> managedArtifactList = new ArrayList<>();
         TransferContext transferContext = mock(TransferContext.class);
 
         when(transferContext.getHttpServletRequest()).thenReturn(httpServletRequest);

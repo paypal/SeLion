@@ -26,7 +26,7 @@ package com.paypal.selion.grid.servlets.transfer;
  * @param <U>
  *            Extension of {@link Criteria} type for matching artifacts.
  */
-public interface ServerRepository<T extends ManagedArtifact, U extends Criteria> {
+public interface ServerRepository<T extends ManagedArtifact<Criteria>> {
 
     /**
      * Saves the {@link UploadedArtifact} and returns a repository managed artifact.
@@ -38,21 +38,21 @@ public interface ServerRepository<T extends ManagedArtifact, U extends Criteria>
     T saveContents(UploadedArtifact uploadedArtifact);
 
     /**
-     * Returns true if there is a matching artifact for the requested criteria.
+     * Returns true if there is a matching artifact for the requested artifact.
      * 
-     * @param requestedCriteria
-     *            Requested criteria
+     * @param pathInfo
+     *            Path to artifact received in the HTTP request.
      * @return True if if there is a matching artifact, or false otherwise.
      */
-    boolean isArtifactPresent(U requestedCriteria);
+    boolean isArtifactPresent(String pathInfo);
 
     /**
-     * Returns the artifact if there is a matching artifact for the requested criteria.
+     * Returns the artifact if there is a matching artifact for the requested artifact.
      * 
-     * @param requestedCriteria
-     *            Requested criteria
+     * @param pathInfo
+     *            Path to artifact received in the HTTP request.
      * @return Returns the artifact if there is a matching artifact, or throws an {@link ArtifactDownloadException}.
      */
-    T getArtifact(U requestedCriteria);
+    T getArtifact(String pathInfo);
 
 }

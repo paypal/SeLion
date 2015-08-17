@@ -56,7 +56,8 @@ public class DownloadResponderTest extends PowerMockTestCase {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         DownloadRequestProcessor downloadProcessor = mock(DownloadRequestProcessor.class);
-        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
+        @SuppressWarnings("unchecked")
+        ManagedArtifact<Criteria> managedArtifact = (ManagedArtifact<Criteria>) mock(ManagedArtifact.class);
 
         byte[] bytes = new byte[] { 1, 2, 3, 4 };
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(4);
@@ -64,7 +65,7 @@ public class DownloadResponderTest extends PowerMockTestCase {
         transferContext.setDownloadRequestProcessor(downloadProcessor);
 
         when(httpServletRequest.getPathInfo()).thenReturn("/userOne/DummyArtifact.any");
-        when(downloadProcessor.getArtifact(Mockito.any(Criteria.class))).thenReturn(managedArtifact);
+        when(downloadProcessor.getArtifact(Mockito.anyString())).thenReturn(managedArtifact);
         when(managedArtifact.getArtifactContents()).thenReturn(bytes);
         when(httpServletResponse.getOutputStream()).thenReturn(new ServletOutputStream() {
             @Override
@@ -95,7 +96,7 @@ public class DownloadResponderTest extends PowerMockTestCase {
         transferContext.setDownloadRequestProcessor(downloadProcessor);
 
         when(httpServletRequest.getPathInfo()).thenReturn("/userOne/DummyArtifact.any");
-        when(downloadProcessor.getArtifact(Mockito.any(Criteria.class))).thenThrow(new ArtifactDownloadException(""));
+        when(downloadProcessor.getArtifact(Mockito.anyString())).thenThrow(new ArtifactDownloadException(""));
 
         DownloadResponder downloadResponder = spy(new DownloadResponder(transferContext));
         downloadResponder.respond();

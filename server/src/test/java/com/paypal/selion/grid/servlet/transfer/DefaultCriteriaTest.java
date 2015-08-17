@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.grid.servlets.transfer.ArtifactDownloadException;
 import com.paypal.selion.grid.servlets.transfer.Criteria;
-import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact.DefaultCriteria;
+import com.paypal.selion.grid.servlets.transfer.DefaultCriteria;
 import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.RequestHeaders;
 
 public class DefaultCriteriaTest {

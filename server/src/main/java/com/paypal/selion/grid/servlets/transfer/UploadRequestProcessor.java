@@ -33,7 +33,7 @@ import com.paypal.selion.grid.servlets.transfer.UploadedArtifact.UploadedArtifac
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.ConfigParser;
 
-public interface UploadRequestProcessor<T extends ManagedArtifact> {
+public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
 
     /**
      * Content Type for multipart form-data request.
@@ -53,7 +53,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
     /**
      * @return a {@link List} of {@link ManagedArtifact} which represent items on the {@link ManagedArtifactRepository}
      */
-    List<ManagedArtifact> getUploadedData();
+    List<T> getUploadedData();
 
     /**
      * Enum for storing the valid HTTP headers/parameters for transferring to SeLion grid.
@@ -100,7 +100,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
      * types of {@link ManagedArtifact}. The class initializes a {@link ServerRepository} of {@link ManagedArtifact} to
      * use during processing.
      */
-    abstract class AbstractUploadRequestProcessor implements UploadRequestProcessor<ManagedArtifact> {
+    abstract class AbstractUploadRequestProcessor implements UploadRequestProcessor<ManagedArtifact<Criteria>> {
 
         /**
          * Maximum size permitted for a single upload artifact.
@@ -111,9 +111,9 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
 
         protected HttpServletRequest httpServletRequest = null;
 
-        protected ServerRepository<? extends ManagedArtifact, ? extends Criteria> repository = null;
+        protected ServerRepository<?> repository = null;
 
-        protected List<ManagedArtifact> managedArtifactList = null;
+        protected List<ManagedArtifact<Criteria>> managedArtifactList = null;
 
         protected AbstractUploadRequestProcessor(TransferContext transferContext) {
             super();
@@ -124,7 +124,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
             managedArtifactList = new ArrayList<>();
         }
 
-        public List<ManagedArtifact> getUploadedData() {
+        public List<ManagedArtifact<Criteria>> getUploadedData() {
             SeLionGridLogger.getLogger(AbstractUploadRequestProcessor.class).entering();
             if (managedArtifactList.isEmpty()) {
                 populateManagedArtifactList();
@@ -183,7 +183,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
             populateHeadersMap();
             byte[] contents = parseFileContents();
             UploadedArtifact uploadedArtifact = createUploadedArtifactUsing(transferContext.getHeadersMap(), contents);
-            ManagedArtifact managedArtifact = repository.saveContents(uploadedArtifact);
+            ManagedArtifact<Criteria> managedArtifact = repository.saveContents(uploadedArtifact);
             managedArtifactList.add(managedArtifact);
         }
 
@@ -274,7 +274,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact> {
                 if (!fileItem.isFormField()) {
                     UploadedArtifact uploadedArtifact = createUploadedArtifactUsing(transferContext.getHeadersMap(),
                             fileItem.get());
-                    ManagedArtifact managedArtifact = repository.saveContents(uploadedArtifact);
+                    ManagedArtifact<Criteria> managedArtifact = repository.saveContents(uploadedArtifact);
                     managedArtifactList.add(managedArtifact);
                 }
             }

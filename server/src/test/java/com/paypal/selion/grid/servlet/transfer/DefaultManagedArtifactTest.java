@@ -15,11 +15,9 @@
 
 package com.paypal.selion.grid.servlet.transfer;
 
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
-
-import java.util.EnumMap;
 
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
@@ -28,11 +26,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.grid.servlets.transfer.Criteria;
+import com.paypal.selion.grid.servlets.transfer.DefaultCriteria;
 import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact;
-import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact.DefaultCriteria;
 import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
-import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.RequestHeaders;
 import com.paypal.selion.utils.ConfigParser;
 
 @PrepareForTest({ ConfigParser.class })
@@ -40,11 +36,10 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
 
     private String artifactFileOnePath;
 
-
     @BeforeClass
     public void setUpBeforeClass() {
-        artifactFileOnePath = DefaultManagedArtifactTest.class.getResource(
-                "/artifacts/userOne/DummyArtifact.any").getFile();
+        artifactFileOnePath = DefaultManagedArtifactTest.class.getResource("/artifacts/userOne/DummyArtifact.any")
+                .getFile();
     }
 
     @BeforeMethod
@@ -55,10 +50,10 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
         when(configParser.getLong("artifactExpiryInMilliSec")).thenReturn(86400000L);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     // Enable this test case for testing time difference
     public void testIsExpired() {
-        ManagedArtifact managedArtifact = new DefaultManagedArtifact(
+        ManagedArtifact<DefaultCriteria> managedArtifact = new DefaultManagedArtifact(
                 "src/test/resources/artifacts/userOne/userFolder/DummyArtifact.any");
         Assert.assertEquals(managedArtifact.isExpired(), true, "Artifact is not expired after a day");
     }
@@ -96,38 +91,28 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     @Test
     public void testMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        EnumMap<RequestHeaders, String> firstMap = new EnumMap<>(RequestHeaders.class);
-        firstMap.put(RequestHeaders.FILENAME, "DummyArtifact.any");
-        firstMap.put(RequestHeaders.USERID, "userOne");
-        Criteria criteria = new DefaultCriteria(firstMap);
-        Assert.assertEquals(managedArtifact.matches(criteria), true, "Artifact does not match the expected criteria");
+        Assert.assertEquals(managedArtifact.matchesCriteria("/artifacts/userOne/DummyArtifact.any"), true,
+                "Artifact does not match the expected criteria");
     }
 
     @Test
     public void testUnEqualFileNameMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        EnumMap<RequestHeaders, String> firstMap = new EnumMap<>(RequestHeaders.class);
-        firstMap.put(RequestHeaders.FILENAME, "DummyArtifact4.zip");
-        firstMap.put(RequestHeaders.USERID, "userOne");
-        Criteria criteria = new DefaultCriteria(firstMap);
-        Assert.assertEquals(managedArtifact.matches(criteria), false, "Artifact matches for different file name");
+        Assert.assertEquals(managedArtifact.matchesCriteria("/artifacts/userOne/DummyArtifact4.zip"), false,
+                "Artifact matches for different file name");
     }
 
     @Test
     public void testUnEqualUserIdMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        EnumMap<RequestHeaders, String> firstMap = new EnumMap<>(RequestHeaders.class);
-        firstMap.put(RequestHeaders.FILENAME, "DummyArtifact.any");
-        firstMap.put(RequestHeaders.USERID, "userTwo");
-        Criteria criteria = new DefaultCriteria(firstMap);
-        Assert.assertEquals(managedArtifact.matches(criteria), false, "Artifact matches for different userId");
+        Assert.assertEquals(managedArtifact.matchesCriteria("/artifacts/userTwo/DummyArtifact.any"), false,
+                "Artifact matches for different userId");
     }
 
     @Test
     public void testFileName() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        Assert.assertEquals(managedArtifact.getArtifactName(), "DummyArtifact.any",
-                "Artifact file name does not match");
+        Assert.assertEquals(managedArtifact.getArtifactName(), "DummyArtifact.any", "Artifact file name does not match");
     }
 
     @Test

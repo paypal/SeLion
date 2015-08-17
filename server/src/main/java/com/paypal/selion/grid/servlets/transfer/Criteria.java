@@ -34,14 +34,6 @@ public interface Criteria {
     String getArtifactName();
 
     /**
-     * Returns the user Id this artifact is tied to. This is essentially the folder by the name of the user that houses
-     * the artifact.
-     * 
-     * @return User Id of the criteria.
-     */
-    String getUserId();
-
-    /**
      * Returns the optional application folder that can be used to store artifacts under the user Id folder.
      * 
      * @return Application folder name

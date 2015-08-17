@@ -20,7 +20,7 @@ package com.paypal.selion.grid.servlets.transfer;
  * call.
  * 
  */
-public interface ManagedArtifact {
+public interface ManagedArtifact<U extends Criteria> {
 
     /**
      * Returns the artifact name.
@@ -57,7 +57,7 @@ public interface ManagedArtifact {
      *            Instance of {@link Criteria} to match.
      * @return true if there is a match, false otherwise.
      */
-    <U extends Criteria> boolean matches(U criteria);
+    boolean matchesCriteria(String pathInfo);
 
     /**
      * Returns true if this {@link ManagedArtifact} has expired.
@@ -72,5 +72,12 @@ public interface ManagedArtifact {
      * @return MIME content type
      */
     String getHttpContentType();
+
+    /**
+     * Returns the criteria associated with current artifact.
+     * 
+     * @return Instance of current {@link Criteria}.
+     */
+    U getCriteria();
 
 }

@@ -31,7 +31,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.grid.servlets.transfer.ArtifactDownloadException;
-import com.paypal.selion.grid.servlets.transfer.Criteria;
 import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.ManagedArtifactRepository;
 import com.paypal.selion.utils.ConfigParser;
@@ -56,62 +55,56 @@ public class ManagedArtifactRepositoryTest extends PowerMockTestCase {
 
     @Test()
     public void testIsArtifactPresentFailure() throws Exception {
-        ManagedArtifactRepository managedArtifactRespository = spy(ManagedArtifactRepository.getInstance());
-        Criteria criteria = mock(Criteria.class);
-        doThrow(new ArtifactDownloadException("")).when(managedArtifactRespository, "getMatch", criteria);
-        Assert.assertFalse(managedArtifactRespository.isArtifactPresent(criteria),
+        ManagedArtifactRepository managedArtifactRepository = spy(ManagedArtifactRepository.getInstance());
+        doThrow(new ArtifactDownloadException("")).when(managedArtifactRepository, "getMatchedArtifact", Mockito.anyString());
+        Assert.assertFalse(managedArtifactRepository.isArtifactPresent("/artifacts/userOne/DummyArtifact.any"),
                 "Failed getMatch method within server repository resulted in isArtifactPresent() method returning true");
     }
 
     @Test()
-    public void testIsArtifactPresentFailureTwo() throws Exception {
-        ManagedArtifactRepository managedArtifactRespository = spy(ManagedArtifactRepository.getInstance());
-        Criteria criteria = mock(Criteria.class);
+    public void testIsArtifactPresentFailureForExpiredArtifact() throws Exception {
+        ManagedArtifactRepository managedArtifactRepository = spy(ManagedArtifactRepository.getInstance());
+        @SuppressWarnings("rawtypes")
         ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
         when(managedArtifact.isExpired()).thenReturn(true);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getMatch", criteria);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getManagedArtifact", Mockito.any(String.class));
-        Assert.assertEquals(managedArtifactRespository.isArtifactPresent(criteria), false,
+        doReturn(managedArtifact).when(managedArtifactRepository, "getMatchedArtifact", Mockito.anyString());
+        Assert.assertEquals(managedArtifactRepository.isArtifactPresent("/artifacts/userOne/DummyArtifact.any"), false,
                 "Expired Artifact is still fetched by repository");
     }
 
     @Test()
     public void testIsArtifactPresentSuccess() throws Exception {
-        ManagedArtifactRepository managedArtifactRespository = spy(ManagedArtifactRepository.getInstance());
-        Criteria criteria = mock(Criteria.class);
+        ManagedArtifactRepository managedArtifactRepository = spy(ManagedArtifactRepository.getInstance());
+        @SuppressWarnings("rawtypes")
         ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getMatch", criteria);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getManagedArtifact", Mockito.any(String.class));
-        managedArtifactRespository.isArtifactPresent(criteria);
+        doReturn(managedArtifact).when(managedArtifactRepository, "getMatchedArtifact", Mockito.anyString());
+        managedArtifactRepository.isArtifactPresent("/artifacts/userOne/DummyArtifact.any");
     }
 
     @Test(expectedExceptions = ArtifactDownloadException.class)
     public void testGetArtifactPresentFailure() throws Exception {
-        ManagedArtifactRepository managedArtifactRespository = spy(ManagedArtifactRepository.getInstance());
-        Criteria criteria = mock(Criteria.class);
-        doThrow(new ArtifactDownloadException("")).when(managedArtifactRespository, "getMatch", criteria);
-        managedArtifactRespository.getArtifact(criteria);
+        ManagedArtifactRepository managedArtifactRepository = spy(ManagedArtifactRepository.getInstance());
+        doThrow(new ArtifactDownloadException("")).when(managedArtifactRepository, "getMatchedArtifact", Mockito.anyString());
+        managedArtifactRepository.getArtifact("/artifacts/userOne/DummyArtifact.any");
     }
 
     @Test(expectedExceptions = ArtifactDownloadException.class)
     public void testGetArtifactPresentFailureTwo() throws Exception {
-        ManagedArtifactRepository managedArtifactRespository = spy(ManagedArtifactRepository.getInstance());
-        Criteria criteria = mock(Criteria.class);
+        ManagedArtifactRepository managedArtifactRepository = spy(ManagedArtifactRepository.getInstance());
+        @SuppressWarnings("rawtypes")
         ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
         when(managedArtifact.isExpired()).thenReturn(true);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getMatch", criteria);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getManagedArtifact", Mockito.any(String.class));
-        managedArtifactRespository.getArtifact(criteria);
+        doReturn(managedArtifact).when(managedArtifactRepository, "getMatchedArtifact", Mockito.anyString());
+        managedArtifactRepository.getArtifact("/artifacts/userOne/DummyArtifact.any");
     }
 
     @Test()
     public void testGetArtifactSuccess() throws Exception {
-        ManagedArtifactRepository managedArtifactRespository = spy(ManagedArtifactRepository.getInstance());
-        Criteria criteria = mock(Criteria.class);
+        ManagedArtifactRepository managedArtifactRepository = spy(ManagedArtifactRepository.getInstance());
+        @SuppressWarnings("rawtypes")
         ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getMatch", criteria);
-        doReturn(managedArtifact).when(managedArtifactRespository, "getManagedArtifact", Mockito.any(String.class));
-        Assert.assertNotNull(managedArtifactRespository.getArtifact(criteria),
+        doReturn(managedArtifact).when(managedArtifactRepository, "getMatchedArtifact", Mockito.anyString());
+        Assert.assertNotNull(managedArtifactRepository.getArtifact("/artifacts/userOne/DummyArtifact.any"),
                 "Matched/Valid proper artifact is returned as null");
     }
 

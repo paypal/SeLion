@@ -23,8 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.commons.io.IOUtils;
@@ -40,7 +38,7 @@ import com.paypal.selion.utils.ConfigParser;
  * artifact is set to 'application/zip'. Expiry of the artifact is based on TTL (Time To Live) specified in milli
  * seconds. The configuration is read from Grid configuration system.
  */
-public class DefaultManagedArtifact implements ManagedArtifact {
+public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(DefaultManagedArtifact.class);
 
@@ -61,6 +59,10 @@ public class DefaultManagedArtifact implements ManagedArtifact {
     private byte[] contents = null;
 
     private final long timeToLiveInMillis;
+
+    private String requestPathInfo;
+
+    private DefaultCriteria requestedCriteria = null;
 
     public DefaultManagedArtifact(String pathName) {
         this.filePath = pathName;
@@ -101,9 +103,16 @@ public class DefaultManagedArtifact implements ManagedArtifact {
     }
 
     @Override
-    public <T extends Criteria> boolean matches(T criteria) {
-        LOGGER.entering(criteria);
-        if (!criteria.getArtifactName().equals(getArtifactName())) {
+    public DefaultCriteria getCriteria() {
+        return formCriteria();
+    }
+
+    @Override
+    public boolean matchesCriteria(String pathInfo) {
+        LOGGER.entering();
+        this.requestPathInfo = pathInfo; 
+        DefaultCriteria criteria = getCriteria();
+        if (!criteria.getArtifactName().equals(this.getArtifactName())) {
             LOGGER.exiting(false);
             return false;
         }
@@ -123,7 +132,7 @@ public class DefaultManagedArtifact implements ManagedArtifact {
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.log(
                         Level.INFO,
-                        "Artifact: " + getArtifactName() + " expired, time(now): "
+                        "Artifact: " + this.getArtifactName() + " expired, time(now): "
                                 + FileTime.fromMillis(System.currentTimeMillis()) + ", created: "
                                 + FileTime.fromMillis(artifactFile.lastModified()));
             }
@@ -185,109 +194,64 @@ public class DefaultManagedArtifact implements ManagedArtifact {
         }
     }
 
-    private <T extends Criteria> boolean isApplicationFolderRequested(T criteria) {
+    private boolean isApplicationFolderRequested(DefaultCriteria criteria) {
         return !StringUtils.isBlank(criteria.getApplicationFolder());
     }
 
-    private <T extends Criteria> boolean applicationFolderAndUserIdMatches(T criteria) {
+    private boolean applicationFolderAndUserIdMatches(DefaultCriteria criteria) {
         return criteria.getApplicationFolder().equals(getFolderName())
                 && criteria.getUserId().equals(getParentFolderName());
     }
 
-    private <T extends Criteria> boolean userIdMatches(T criteria) {
+    private boolean userIdMatches(DefaultCriteria criteria) {
         return criteria.getUserId().equals(getFolderName());
     }
 
-    /**
-     * {@link Criteria} to match a {@link DefaultManagedArtifact} uniquely. Criteria uses artifact name, user id and
-     * application folder to uniquely identify a {@link DefaultManagedArtifact}. Parameters artifactName, userId and
-     * applicationFolder match artifact name, folder name and parent folder name of some {@link DefaultManagedArtifact}
-     * respectively.
-     */
-    public static class DefaultCriteria implements Criteria {
-
-        protected String artifactName;
-
-        protected String userId;
-
-        protected String applicationFolder;
-
-        public DefaultCriteria(EnumMap<RequestHeaders, String> parametersMap) {
-            validateParametersMap(parametersMap);
-            this.artifactName = parametersMap.get(RequestHeaders.FILENAME);
-            this.userId = parametersMap.get(RequestHeaders.USERID);
-            this.applicationFolder = parametersMap.get(RequestHeaders.APPLICATIONFOLDER);
+    private DefaultCriteria formCriteria() {
+        if (requestedCriteria == null) {
+            EnumMap<RequestHeaders, String> parametersMap = getParametersMap();
+            requestedCriteria = new DefaultCriteria(parametersMap);
         }
+        return requestedCriteria;
+    }
 
-        private void validateParametersMap(EnumMap<RequestHeaders, String> parametersMap) {
-            if (!parametersMap.containsKey(RequestHeaders.FILENAME)
-                    || !parametersMap.containsKey(RequestHeaders.USERID)) {
-                throw new ArtifactDownloadException("Request missing essential parametes: "
-                        + RequestHeaders.FILENAME.getParameterName() + ", " + RequestHeaders.USERID.getParameterName());
+    private EnumMap<RequestHeaders, String> getParametersMap() {
+        EnumMap<RequestHeaders, String> parametersMap = populateMapFromPathInfo();
+        if (!(parametersMap.containsKey(RequestHeaders.FILENAME) && parametersMap.containsKey(RequestHeaders.USERID))) {
+            throw new ArtifactDownloadException("Request missing essential parameters: "
+                    + RequestHeaders.FILENAME.getParameterName() + ", " + RequestHeaders.USERID.getParameterName());
+        }
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Parameters map received in request: " + parametersMap);
+        }
+        return parametersMap;
+    }
+
+    private EnumMap<RequestHeaders, String> populateMapFromPathInfo() {
+        EnumMap<RequestHeaders, String> parametersMap = new EnumMap<>(RequestHeaders.class);
+        String[] pathItems = getPathItems();
+        if (pathItems.length >= 2 && pathItems.length <= 3) {
+            if (pathItems.length == 3) {
+                parametersMap.put(RequestHeaders.USERID, pathItems[0].trim());
+                parametersMap.put(RequestHeaders.APPLICATIONFOLDER, pathItems[1].trim());
+                parametersMap.put(RequestHeaders.FILENAME, pathItems[2].trim());
             }
-        }
-
-        public String getArtifactName() {
-            return artifactName;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public String getApplicationFolder() {
-            return applicationFolder;
-        }
-
-        public Map<String, String> asMap() {
-            LOGGER.entering();
-            Map<String, String> contentMap = new HashMap<>();
-            contentMap.put(RequestHeaders.FILENAME.getParameterName(), getArtifactName());
-            contentMap.put(RequestHeaders.USERID.getParameterName(), getUserId());
-            if (!StringUtils.isBlank(getApplicationFolder())) {
-                contentMap.put(RequestHeaders.APPLICATIONFOLDER.getParameterName(), getApplicationFolder());
+            if (pathItems.length == 2) {
+                parametersMap.put(RequestHeaders.USERID, pathItems[0].trim());
+                parametersMap.put(RequestHeaders.FILENAME, pathItems[1].trim());
             }
-            LOGGER.exiting(contentMap);
-            return contentMap;
+        } else {
+            throw new ArtifactDownloadException("Invalid path: " + this.requestPathInfo);
         }
+        return parametersMap;
+    }
 
-        @Override
-        public boolean equals(Object other) {
-            if (this == other) {
-                return true;
-            }
-            if (!(other instanceof DefaultCriteria)) {
-                return false;
-            }
-            DefaultCriteria otherCriteria = DefaultCriteria.class.cast(other);
-            if (!getArtifactName().equals(otherCriteria.getArtifactName())) {
-                return false;
-            }
-            if (!getUserId().equals(otherCriteria.getUserId())) {
-                return false;
-            }
-            boolean equals = getApplicationFolder() == null ? otherCriteria.getApplicationFolder() == null
-                    : getApplicationFolder().equals(otherCriteria.getApplicationFolder());
-            if (equals == false) {
-                return false;
-            }
-            return true;
+    private String[] getPathItems() {
+        if (StringUtils.isBlank(requestPathInfo) || requestPathInfo.length() < 4) {
+            throw new ArtifactDownloadException("Artifact path is null or empty");
         }
-
-        @Override
-        public int hashCode() {
-            int result = 17;
-            result = 31 * result + this.getArtifactName().hashCode();
-            result = 31 * result + this.getUserId().hashCode();
-            result = 31 * result + (this.getApplicationFolder() != null ? this.getApplicationFolder().hashCode() : 0);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "[ artifactName: " + getArtifactName() + ", userId: " + getUserId() + ", applicationFolder: "
-                    + getApplicationFolder() != null ? getApplicationFolder() : "" + " ]";
-        }
+        String pathInfo = this.requestPathInfo.substring(requestPathInfo.indexOf('/') + 1);
+        return pathInfo.split("/");
     }
 
 }

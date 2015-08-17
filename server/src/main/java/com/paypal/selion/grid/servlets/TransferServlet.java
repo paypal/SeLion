@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.paypal.selion.grid.servlets.transfer.ArtifactDownloadException;
 import com.paypal.selion.grid.servlets.transfer.ArtifactUploadException;
+import com.paypal.selion.grid.servlets.transfer.Criteria;
 import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.DownloadRequestProcessor;
 import com.paypal.selion.grid.servlets.transfer.DownloadResponder;
@@ -57,9 +58,9 @@ public class TransferServlet extends HttpServlet {
         LOGGER.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
         try {
             TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);
-            UploadRequestProcessor<ManagedArtifact> requestProcessor = getUploadRequestProcessor(transferContext);
+            UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = getUploadRequestProcessor(transferContext);
             transferContext.setUploadRequestProcessor(requestProcessor);
-            UploadResponder<ManagedArtifact> uploadResponder = getUploadResponder(transferContext);
+            UploadResponder<ManagedArtifact<Criteria>> uploadResponder = getUploadResponder(transferContext);
             uploadResponder.respond();
         } catch (ArtifactUploadException exe) {
 
@@ -109,14 +110,14 @@ public class TransferServlet extends HttpServlet {
      *            Instance of {@link HttpServletRequest}
      * @return Instance of {@link AbstractUploadRequestProcessor}.
      */
-    private UploadRequestProcessor<ManagedArtifact> getUploadRequestProcessor(TransferContext transferContext) {
+    private UploadRequestProcessor<ManagedArtifact<Criteria>> getUploadRequestProcessor(TransferContext transferContext) {
         LOGGER.entering(transferContext);
         String contentType = transferContext.getHttpServletRequest().getContentType() != null ? transferContext
                 .getHttpServletRequest().getContentType().toLowerCase() : "unknown";
         if (contentType.contains(AbstractUploadRequestProcessor.MULTIPART_CONTENT_TYPE)) {
 
             // Return a Multipart request processor
-            UploadRequestProcessor<ManagedArtifact> uploadRequestProcessor = new MultipartUploadRequestProcessor(
+            UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor = new MultipartUploadRequestProcessor(
                     transferContext);
             LOGGER.exiting(uploadRequestProcessor);
             return uploadRequestProcessor;
@@ -124,7 +125,7 @@ public class TransferServlet extends HttpServlet {
         if (contentType.contains(AbstractUploadRequestProcessor.APPLICATION_URLENCODED_CONTENT_TYPE)) {
 
             // Return normal Urlencoded request processor
-            UploadRequestProcessor<ManagedArtifact> uploadRequestProcessor = new ApplicationUploadRequestProcessor(
+            UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor = new ApplicationUploadRequestProcessor(
                     transferContext);
             LOGGER.exiting(uploadRequestProcessor);
             return uploadRequestProcessor;
@@ -143,10 +144,10 @@ public class TransferServlet extends HttpServlet {
      *            Instance of {@link TransferContext}
      * @return Instance of {@link AbstractUploadResponder}.
      */
-    private UploadResponder<ManagedArtifact> getUploadResponder(TransferContext transferContext) {
+    private UploadResponder<ManagedArtifact<Criteria>> getUploadResponder(TransferContext transferContext) {
         LOGGER.entering(transferContext);
-        UploadResponder<ManagedArtifact> uploadResponder = null;
-        Class<? extends UploadResponder<ManagedArtifact>> uploadResponderClass = getResponderClass(transferContext
+        UploadResponder<ManagedArtifact<Criteria>> uploadResponder = null;
+        Class<? extends UploadResponder<ManagedArtifact<Criteria>>> uploadResponderClass = getResponderClass(transferContext
                 .getHttpServletRequest().getHeader("accept"));
         try {
             uploadResponder = uploadResponderClass.getConstructor(new Class[] { TransferContext.class }).newInstance(
@@ -163,8 +164,8 @@ public class TransferServlet extends HttpServlet {
         }
     }
 
-    private Class<? extends UploadResponder<ManagedArtifact>> getResponderClass(String headerString) {
-        Class<? extends UploadResponder<ManagedArtifact>> responderClass = null;
+    private Class<? extends UploadResponder<ManagedArtifact<Criteria>>> getResponderClass(String headerString) {
+        Class<? extends UploadResponder<ManagedArtifact<Criteria>>> responderClass = null;
         String[] headers = headerString.split(";");
         List<String> headerPrecedenceList = Arrays.asList(headers);
         Collections.reverse(headerPrecedenceList);
