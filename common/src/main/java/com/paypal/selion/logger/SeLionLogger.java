@@ -23,6 +23,7 @@ import java.util.logging.SimpleFormatter;
 import com.paypal.selion.SeLionBuildInfo;
 import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
 import com.paypal.selion.configuration.LoggerConfig;
+import com.paypal.selion.configuration.LoggerConfig.LoggerProperties;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import com.paypal.test.utilities.logging.SimpleLoggerEvents;
 import com.paypal.test.utilities.logging.SimpleLoggerSettings;
@@ -57,6 +58,8 @@ public final class SeLionLogger {
                     .getConfigProperty(LoggerConfig.LoggerProperties.LOG_LEVEL_USER)));
             this.setSimpleLoggerEventsImpl(new SeLionLoggerEventsImpl());
             this.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
+            this.setMaxFileSize(Integer.parseInt(LoggerConfig.getConfigProperty(LoggerProperties.LOGS_MAX_SIZE)));
+            this.setMaxFileCount(Integer.parseInt(LoggerConfig.getConfigProperty(LoggerProperties.LOGS_MAX_FILE_COUNT)));
             String log2Console = LoggerConfig.getConfigProperty(LoggerConfig.LoggerProperties.LOG_TO_CONSOLE);
             if (log2Console.equalsIgnoreCase("dev")) {
                 this.setLog2Console(ConsoleLevel.DEV);

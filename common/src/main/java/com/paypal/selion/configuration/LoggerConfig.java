@@ -60,7 +60,18 @@ public final class LoggerConfig {
         /**
          * The logs directory of SeLion
          */
-        LOGS_DIR("logsDir", "selionFiles/selionLogs");
+        LOGS_DIR("logsDir", "selionFiles/selionLogs"),
+
+        /**
+         * The maximum size in MB for the log file. Default is 0 denoting unlimited
+         */
+        LOGS_MAX_SIZE("logsMaxSize", "0"),
+
+        /**
+         * The maximum limit to the number of files to create for storing logs once the current log file reaches
+         * {@link LOGS_MAX_SIZE}
+         */
+        LOGS_MAX_FILE_COUNT("logsMaxFileCount", "1");
 
         private final String propertyName;
         private final String defaultValue;
