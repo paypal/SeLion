@@ -15,20 +15,30 @@
 
 package com.paypal.selion.platform.grid;
 
-import static com.paypal.selion.platform.asserts.SeLionAsserts.assertTrue;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DriverCommand;
 
-import org.testng.annotations.Test;
+import com.paypal.selion.platform.grid.EventListener;
 
-import com.paypal.selion.annotations.WebTest;
+public class EventFiringListener implements EventListener {
+    static StringBuilder messages = new StringBuilder();
 
-public class EventFiringTest {
-
-    @WebTest
-    @Test
-    public void testCommandExecutorInstance() {
-        assertTrue(Grid.driver().getCommandExecutor() instanceof EventFiringCommandExecutor);
-        String msgs = EventFiringListener.getMessage();
-        assertTrue(msgs.contains("beforeEvent"));
-        assertTrue(msgs.contains("afterEvent"));
+    @Override
+    public void beforeEvent(Command command) {
+        if (command.getName().equalsIgnoreCase(DriverCommand.NEW_SESSION)) {
+            messages.append("beforeEvent");
+        }
     }
+
+    @Override
+    public void afterEvent(Command command) {
+        if (command.getName().equalsIgnoreCase(DriverCommand.NEW_SESSION)) {
+            messages.append("afterEvent");
+        }
+    }
+
+    public static String getMessage() {
+        return messages.toString();
+    }
+
 }
