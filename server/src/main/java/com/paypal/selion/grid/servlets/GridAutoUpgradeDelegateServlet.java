@@ -173,10 +173,8 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
 
         String template = IOUtils.toString(
                 this.getClass().getResourceAsStream(SeLionGridConstants.GRID_AUTO_UPGRADE_PAGE_RESOURCE), "UTF-8");
-        // Regular expression to validate the URL format like <letters>://<letters separated by slash>
-        // And also it will allow the URL with query string
-        writer.write(String.format(template, "^[A-Za-z]+://[A-Za-z0-9-_]+\\\\.[A-Za-z0-9-_%&\\?\\/.=]+$",
-                GridAutoUpgradeDelegateServlet.class.getSimpleName(), downloadJSON));
 
+        // Format the template with servlet name and download json values
+        writer.write(String.format(template, GridAutoUpgradeDelegateServlet.class.getSimpleName(), downloadJSON));
     }
 }
