@@ -217,6 +217,7 @@ function displaySource(src, title) {
     generateSummary('running', running, total);
 
     //Pagination for Test case table
+    index = 1, configIndex = 1;
     sortedRecords = treeFilter;
     filterSearch = sortedRecords;
     total = filterSearch.length;
