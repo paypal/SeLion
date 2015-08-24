@@ -17,9 +17,12 @@ package com.paypal.selion.reports.reporter.services;
 
 import static org.testng.Assert.assertEquals;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.reports.reporter.services.ReporterDateFormatter;
@@ -41,9 +44,14 @@ public class ReporterDateFormatterTest {
     }
 
     @Test(groups = "unit")
-    public void testGetStringFromISODateString() {
+    public void testGetStringFromISODateString() throws ParseException {
 
         String expectedString = "Jan 20, 2015 6:21 PM";
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy h:mm a");
+        sdf.setTimeZone(TimeZone.getTimeZone("PST"));
+        Date date = sdf.parse(expectedString);
+        // convert expected string from PST to local TZ.
+        expectedString = DateFormatUtils.format(date, "MMM dd, yyyy h:mm a", TimeZone.getDefault());
 
         String dateString = "2015-01-21T02:21:33.955Z";
         String resultDateString = ReporterDateFormatter.getStringFromISODateString(dateString);
