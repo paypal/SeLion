@@ -76,10 +76,9 @@ h1 a
 	overflow:hidden;
 }
 
-
 img
 {
-	behavior:url(css/iepngfix.htc);
+	behavior:url(../../../form/iepngfix.htc);
 	border:none;
 }
 
@@ -200,7 +199,7 @@ form li div.right .medium
 form li div label
 {
 	clear:both;
-	color:#444;
+	color:#444444;
 	display:block;
 	font-size:9px;
 	line-height:9px;
@@ -211,7 +210,7 @@ form li div label
 form li span label
 {
 	clear:both;
-	color:#444;
+	color:#444444;
 	display:block;
 	font-size:9px;
 	line-height:9px;
@@ -328,7 +327,7 @@ span.symbol
 
 input.text
 {
-	background:#fff url(../../../images/shadow.gif) repeat-x top;
+	background:#ffffff url(../../../form/shadow.gif) repeat-x top;
 	border-bottom:1px solid #ddd;
 	border-left:1px solid #c3c3c3;
 	border-right:1px solid #c3c3c3;
@@ -349,7 +348,7 @@ input.file
 
 textarea.textarea
 {
-	background:#fff url(../../../images/shadow.gif) repeat-x top;
+	background:#ffffff url(../../../form/shadow.gif) repeat-x top;
 	border-bottom:1px solid #ddd;
 	border-left:1px solid #c3c3c3;
 	border-right:1px solid #c3c3c3;
@@ -367,7 +366,7 @@ select.select
 	font-size:100%;
 	margin:1px 0;
 	padding:1px 0 0;
-	background:#fff url(../../../images/shadow.gif) repeat-x top;
+	background:#ffffff url(../../../form/shadow.gif) repeat-x top;
 	border-bottom:1px solid #ddd;
 	border-left:1px solid #c3c3c3;
 	border-right:1px solid #c3c3c3;
@@ -605,6 +604,7 @@ form li:hover .guidelines
 }
 
 /*** Password ****/
+
 ul.password{
     margin-top:60px;
     margin-bottom: 60px;
