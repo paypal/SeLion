@@ -137,10 +137,13 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                     System.exit(1); // NOSONAR
                 }
             }
+        } catch (RuntimeException e) { // NOSONAR
+            Grid.getThreadLocalException().set(e);
         } catch (Exception e) { // NOSONAR
-            logger.log(Level.WARNING, "An error occurred while processing beforeInvocation: " + e.getMessage(), e);
+            //Must wrap the Exception to RuntimeException, So that users no need to
+            //add try catch block in their test case when invoke Grid.driver()
+            Grid.getThreadLocalException().set(new RuntimeException(e.getMessage(), e));
         }
-
         logger.exiting();
     }
 
