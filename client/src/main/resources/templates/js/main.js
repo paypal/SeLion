@@ -223,6 +223,22 @@ function displaySource(src, title) {
     total = filterSearch.length;
     noOfPage = Math.ceil(total/pageSize);
 
+    //Registering the util method with view helpers during refresh
+    $.views.helpers({
+        setStatusAndTimeAsToolTip: function (status, startTime, endTime) {
+            "use strict";
+            var eStart = "Unavailable";
+            if (status !== "Skipped") {
+                eStart = helpers.formatDateValue(startTime, "currentDate");
+            }
+            var eEnd = "Unavailable";
+            if (status === "Passed" || status === "Failed") {
+                eEnd = helpers.formatDateValue(endTime, "currentDate");
+            }
+            return "Status: " + status + "\n" + "Started on: " + eStart + "\n" + "Ended at: " + eEnd;
+        }
+    });
+
     renderPageCombo("#", ".pageSizeCombo");
     renderSearch("#", "#testCaseSearch", sortedRecords);
     $('#' + 'testcase-pagination ul .page-number').remove();
@@ -562,7 +578,19 @@ function displaySource(src, title) {
   }
 
   function afterRender(data, buttonAdditonalClassName) {
-    $("a[data-toggle='tooltip']").tooltip();
+    // The following code snippet helps displaying the tool tip in older version of IE viz 7,8,9
+    $(document).on('mouseenter', '[data-toggle=tooltip]', function () {
+      "use strict";
+      $(this).tooltip({
+        container: 'body',
+        trigger: 'manual'
+      }).tooltip('show');
+    });
+
+    $(document).on('mouseleave', '[data-toggle=tooltip]', function () {
+      "use strict";
+      $(this).tooltip('hide');
+    });
 
     $('.btn-config' + buttonAdditonalClassName).click(function() {
       var test = $(this).attr('data-index');

@@ -309,8 +309,8 @@
             </thead>
             <tbody>
                 {{for results}}
-                <tr data-toggle="tooltip" title="{{:status}}">
-                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}" data-toggle="tooltip" title="{{:status}}">{{:#index+~startIndex}}</span></td>
+                <tr data-toggle="tooltip" title='{{:~setStatusAndTimeAsToolTip(status, startTime, endTime)}}'>
+                    <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}" data-toggle="tooltip" >{{:#index+~startIndex}}</span></td>
                     <td>{{:suite}}</td>
                     <td>{{:test}}</td>
                     <td>{{:packageInfo}}</td>
@@ -347,7 +347,7 @@
             </thead>
             <tbody>
                 {{for results}}
-                <tr>
+                <tr data-toggle="tooltip" title='{{:~setStatusAndTimeAsToolTip(status, startTime, endTime)}}'>
                     <td><span class="label label-{{if status == "Passed" }}success{{else status == "Failed"}}danger{{else status == "Skipped"}}warning{{else}}info{{/if}}">{{:#index+~startIndex}}</span></td>
                     <td>{{:suite}}</td>
                     <td>{{:test}}</td>
@@ -378,7 +378,7 @@
                                     <img src="../{{:logs[(logs.length - 1)].image}}" onclick='displayImage("../{{:logs[(logs.length - 1)].image}}", "");'>
                             </span>
                             {{/if}}
-                            <ul class="list-group">
+                            <ul data-toggle="tooltip" title='{{:~setStatusAndTimeAsToolTip(status, startTime, endTime)}}' class="list-group">
                                 <li class="list-group-item">
                                     Suite: {{:suite}}
                                 </li>

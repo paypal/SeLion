@@ -5522,13 +5522,14 @@ button.close {
   padding: 0 5px;
 }
 .tooltip-inner {
-  max-width: 200px;
+  max-width: none;
   padding: 3px 8px;
   color: #ffffff;
   text-align: center;
   text-decoration: none;
   background-color: rgba(0, 0, 0, 0.9);
   border-radius: 4px;
+  white-space: pre;
 }
 .tooltip-arrow {
   position: absolute;

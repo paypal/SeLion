@@ -180,11 +180,10 @@ public class JsonRuntimeReporterHelper {
         for (TestMethodInfo temp : runningTest) {
             if (temp.getResult().getMethod().equals(result.getMethod())) {
                 runningTest.remove(temp);
-                completedTest.add(test1);
                 break;
             }
         }
-
+        completedTest.add(test1);
         logger.exiting();
     }
 
