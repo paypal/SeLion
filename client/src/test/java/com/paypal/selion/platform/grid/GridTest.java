@@ -48,6 +48,11 @@ public class GridTest {
         assertNotNull(Grid.driver(), "verify that the driver instance returned is not null");
     }
 
+    @Test(expectedExceptions = { IllegalStateException.class })
+    public void testGridDriverWithOutWebTest() {
+        Grid.driver().get("http://www.paypal.com");
+    }
+
     @WebTest
     @Test(groups = "functional")
     public void testGetTestSession() {
