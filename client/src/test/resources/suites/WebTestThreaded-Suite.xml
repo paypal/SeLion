@@ -1,6 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite thread-count="7" verbose="1" name="WebTestThreaded Suite" skipfailedinvocationcounts="false" junit="false"
-    parallel="false" data-provider-thread-count="50" annotations="JDK">
+    parallel="classes" data-provider-thread-count="50" annotations="JDK">
+
+    <listeners>
+        <listener class-name="com.paypal.selion.reports.runtime.DebugListener" />
+    </listeners>
+
     <!-- SELENIUM CONFIGURATION -->
     <parameter name="browser" value="*chrome" />
 
@@ -11,7 +16,10 @@
             </run>
         </groups>
         <classes>
-            <class name="com.paypal.selion.platform.grid.SessionSharingTest"></class>
+            <class name="com.paypal.selion.platform.grid.SessionSharingTest" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingTestWithConfigurationMethods" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingTestWithDataProvider" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingTestWithDataProviderMixedIn" />
         </classes>
     </test>
 

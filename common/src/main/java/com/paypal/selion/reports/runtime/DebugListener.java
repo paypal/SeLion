@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,6 +15,9 @@
 
 package com.paypal.selion.reports.runtime;
 
+import org.testng.IConfigurationListener;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -24,45 +27,75 @@ import org.testng.annotations.Test;
 /**
  * A simple {@link ITestListener} which logs {@link Test} events to {@link Reporter#log(String)}
  */
-public class DebugListener implements ITestListener {
+public class DebugListener implements ITestListener, ISuiteListener, IConfigurationListener {
 
     @Override
     public void onFinish(ITestContext arg0) {
-        return;
+        System.out.println("<test> " + arg0.getName() + " finished");
     }
 
     @Override
     public void onStart(ITestContext arg0) {
+        System.out.println("about to start <test> " + arg0.getName());
     }
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult arg0) {
-        return;
+        Reporter.log(arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName() + " on thread "
+                + Thread.currentThread().getId() + " failed but within success percentage", true);
     }
 
     @Override
     public void onTestFailure(ITestResult arg0) {
-
-        Reporter.log(arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName() + " failed", true);
+        Reporter.log(arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName() + " on thread "
+                + Thread.currentThread().getId() + " failed", true);
         arg0.getThrowable().printStackTrace();
-
     }
 
     @Override
     public void onTestSkipped(ITestResult arg0) {
-        return;
+        Reporter.log(arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName() + " on thread "
+                + Thread.currentThread().getId() + " skipped", true);
     }
 
     @Override
     public void onTestStart(ITestResult arg0) {
-        Reporter.log("about to start test " + arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName(),
-                true);
-
+        Reporter.log("about to start test " + arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName()
+                + " on thread " + Thread.currentThread().getId(), true);
     }
 
     @Override
     public void onTestSuccess(ITestResult arg0) {
-        Reporter.log(arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName() + " passed", true);
+        Reporter.log(arg0.getTestClass().getName() + "." + arg0.getMethod().getMethodName() + " on thread "
+                + Thread.currentThread().getId() + " passed", true);
     }
 
+    @Override
+    public void onStart(ISuite suite) {
+        System.out.println("about to start <suite> " + suite.getName());
+    }
+
+    @Override
+    public void onFinish(ISuite suite) {
+        System.out.println("<suite> " + suite.getName() + " finished");
+    }
+
+    @Override
+    public void onConfigurationSuccess(ITestResult itr) {
+        System.out.println(itr.getTestClass().getName() + "." + itr.getMethod().getMethodName() + " on thread "
+                        + Thread.currentThread().getId() + " passed");
+    }
+
+    @Override
+    public void onConfigurationFailure(ITestResult itr) {
+        System.out.println(itr.getTestClass().getName() + "." + itr.getMethod().getMethodName() + " on thread "
+                        + Thread.currentThread().getId() + " failed");
+        itr.getThrowable().printStackTrace();
+    }
+
+    @Override
+    public void onConfigurationSkip(ITestResult itr) {
+        System.out.println(itr.getTestClass().getName() + "." + itr.getMethod().getMethodName() + " on thread "
+                        + Thread.currentThread().getId() + " skipped");
+    }
 }

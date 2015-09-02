@@ -26,7 +26,7 @@ import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 
 @WebTest
-@Test(singleThreaded = true)
+@Test(singleThreaded = true, groups = "functional")
 public class SessionSharingTestWithDataProviderMixedIn {
 
     private static int flag = 0;
@@ -37,9 +37,10 @@ public class SessionSharingTestWithDataProviderMixedIn {
         return Grid.driver().getSessionId();
     }
 
-    @BeforeClass(groups = "functional")
-    public void initURL() {
+    @BeforeClass
+    public void beforeClass() {
         sitesToOpen = new String[] { TestServerUtils.getContainerURL(), TestServerUtils.getTestEditableURL() };
+        Assert.assertNotNull(Grid.getTestSession());
     }
 
     @DataProvider(name = "testData")
@@ -47,14 +48,14 @@ public class SessionSharingTestWithDataProviderMixedIn {
         return new Object[][] { { "ElementList Unit Test Page" }, { "Sample Unit Test Page" } };
     }
 
-    @Test(priority = 0, groups = "functional")
+    @Test(priority = 0)
     public void testSessionSharingWithDPStart() {
         Grid.driver().get(TestServerUtils.getDatePickerURL());
         Assert.assertTrue(Grid.driver().getTitle().contains("jQuery Datepicker"));
         sessionId = getSessionId();
     }
 
-    @Test(priority = 1, dataProvider = "testData", groups = "functional")
+    @Test(priority = 1, dataProvider = "testData")
     public void testSessionSharingWithDp(String title) {
         Assert.assertEquals(getSessionId().toString(), sessionId.toString());
         Grid.driver().get(sitesToOpen[flag]);
@@ -62,7 +63,7 @@ public class SessionSharingTestWithDataProviderMixedIn {
         flag++;
     }
 
-    @Test(priority = 3, groups = "functional")
+    @Test(priority = 2)
     public void testSessionSharingWithDPFinal() {
         Assert.assertEquals(getSessionId().toString(), sessionId.toString());
         Grid.driver().get(TestServerUtils.getDatePickerURL());
@@ -70,7 +71,7 @@ public class SessionSharingTestWithDataProviderMixedIn {
     }
 
     @AfterClass
-    public void tearDown() {
+    public void afterClass() {
         flag = 0;
     }
 }

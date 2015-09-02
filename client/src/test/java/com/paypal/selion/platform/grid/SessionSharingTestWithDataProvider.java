@@ -25,15 +25,16 @@ import com.paypal.selion.TestServerUtils;
 import com.paypal.selion.annotations.WebTest;
 
 @WebTest
-@Test(singleThreaded = true)
+@Test(singleThreaded = true, groups = "functional")
 public class SessionSharingTestWithDataProvider {
 
     private static int flag = 0;
     private String[] sitesToOpen = null;
 
-    @BeforeClass(groups = "functional")
-    public void initURL() {
+    @BeforeClass
+    public void beforeClass() {
         sitesToOpen = new String[] { TestServerUtils.getContainerURL(), TestServerUtils.getTestEditableURL() };
+        Assert.assertNotNull(Grid.getTestSession());
     }
 
     @DataProvider(name = "testData")
@@ -41,7 +42,7 @@ public class SessionSharingTestWithDataProvider {
         return new Object[][] { { "ElementList Unit Test Page" }, { "Sample Unit Test Page" } };
     }
 
-    @Test(priority = 0, dataProvider = "testData", groups = "functional")
+    @Test(priority = 0, dataProvider = "testData")
     public void testSessionSharingWithDpAlone(String title) {
         Grid.driver().get(sitesToOpen[flag]);
         Assert.assertTrue(Grid.driver().getTitle().contains(title));
@@ -49,7 +50,7 @@ public class SessionSharingTestWithDataProvider {
     }
 
     @AfterClass
-    public void tearDown() {
+    public void afterClass() {
         flag = 0;
     }
 }

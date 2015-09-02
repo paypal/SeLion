@@ -90,22 +90,36 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 return;
             }
 
-            if (!method.isTestMethod()) {
+            // For non-session sharing, we only allow our annotation(s) on @Test methods.
+            // When this condition is true, we allow the session be created.
+            if (!method.isTestMethod() && !isSeLionAnnotatedTestClass(method)) {
                 return;
             }
 
-            Class<?> cls = method.getTestMethod().getInstance().getClass();
-            boolean isWebTestClass = cls.getAnnotation(WebTest.class) != null;
-            boolean isMobileTestClass = cls.getAnnotation(MobileTest.class) != null;
-
-            if ((isWebTestClass || isMobileTestClass)) {
-                if (isLowPriority(method)) {
-                    // For session sharing tests, Need to create new session only for Test (Web or Mobile) with lowest
-                    // priority (first test) in the class.
-                    testSessionSharingRules(method);
-                } else {
+            // For session sharing, we only allow our annotation on the class.
+            // In this case the session can only be created in the @Test with the highest priority (first test, smallest
+            // number) or in a @BeforeClass
+            if (isSeLionAnnotatedTestClass(method)) {
+                if (!isValidBeforeCondition(method)) {
                     return;
                 }
+
+                // For session sharing, we need to ensure @Test methods are priority based.
+                if (method.isTestMethod()) {
+                    if (isLowPriority(method)) {
+                        // For session sharing tests, Need to create new session only for Test (Web or Mobile) with
+                        // highest
+                        // priority (first test, smallest number) in the class.
+                        testSessionSharingRules(method);
+                    } else {
+                        return;
+                    }
+                }
+            }
+
+            // Abort if there is already an instance of AbstractTestSession at this point.
+            if (Grid.getTestSession() != null) {
+                return;
             }
 
             AbstractTestSession testSession = TestSessionFactory.newInstance(method);
@@ -120,7 +134,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                     logger.log(Level.SEVERE, "You are trying to run a local server but are missing Jars. Do you have "
                             + "SeLion-Grid and Selenium-Server in your CLASSPATH?", e);
                     // No sense in continuing ... SELENIUM_RUN_LOCALLY is a global config property
-                    System.exit(1);  // NOSONAR
+                    System.exit(1); // NOSONAR
                 }
             }
         } catch (Exception e) { // NOSONAR
@@ -128,6 +142,23 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         }
 
         logger.exiting();
+    }
+
+    private boolean isSeLionAnnotatedTestClass(IInvokedMethod method) {
+        Class<?> cls = method.getTestMethod().getInstance().getClass();
+        final boolean isWebTestClass = cls.getAnnotation(WebTest.class) != null;
+        final boolean isMobileTestClass = cls.getAnnotation(MobileTest.class) != null;
+        return isMobileTestClass || isWebTestClass;
+    }
+
+    private boolean isValidBeforeCondition(IInvokedMethod method) {
+        if (method.isTestMethod()) {
+            return true;
+        }
+        if (method.getTestMethod().isBeforeClassConfiguration()) {
+            return true;
+        }
+        return false;
     }
 
     private void testSessionSharingRules(IInvokedMethod method) {
@@ -155,7 +186,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             }
         }
 
-        // If there is an existing session and the test method has a DP then dont create a session
+        // If there is an existing session and the test method has a DP then don't create a session
         Test t = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
 
         // For a data driven test method with the first data the session must be created
@@ -194,7 +225,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             // Otherwise,keep holding on to the session
             return false;
         }
-        
+
         return true;
     }
 
@@ -231,25 +262,42 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
                 return;
             }
-            if (!method.isTestMethod()) {
+
+            // Abort at this point, if there is no AbstractTestSession instance.
+            if (Grid.getTestSession() == null) {
                 return;
             }
-            Class<?> cls = method.getTestMethod().getInstance().getClass();
-            boolean isWebTestClass = cls.getAnnotation(WebTest.class) != null;
-            boolean isMobileTestClass = cls.getAnnotation(MobileTest.class) != null;
 
-            if ((isWebTestClass || isMobileTestClass) && !isHighPriority(method)) {
-                // For session sharing tests, Need to close session only for Test (Web or Mobile) with highest priority
-                // (last test) in the class.
+            // For non-session sharing, we only allow our annotation(s) on @Test methods.
+            // When this condition is true, we allow the session to be closed.
+            if (!method.isTestMethod() && !isSeLionAnnotatedTestClass(method)) {
                 return;
+            }
+
+            // For session sharing, we only allow our annotation on the class.
+            // In this case the session can only be closed in the @Test with the lowest priority (last test, biggest
+            // number) or in an @AfterClass
+            if (isSeLionAnnotatedTestClass(method)) {
+                if (!isValidAfterCondition(method)) {
+                    return;
+                }
+                if (method.isTestMethod() && hasValidAfterCondition(method)) {
+                    return;
+                }
+                if (method.isTestMethod() && !isHighPriority(method)) {
+                    // For session sharing tests, Need to close session only for Test (Web or Mobile) with highest
+                    // priority
+                    // (last test) in the class.
+                    return;
+                }
             }
 
             // let's attempt to capture a screenshot in case of failure from Selenium or SeLion PageObject
             // or when there was an assertion failure.
             // That way a user can see the how the page looked like when a test failed.
             if (testResult.getStatus() == ITestResult.FAILURE
-                    && (testResult.getThrowable() instanceof WebDriverException || 
-                            testResult.getThrowable() instanceof AssertionError)) {
+                    && (testResult.getThrowable() instanceof WebDriverException ||
+                    testResult.getThrowable() instanceof AssertionError)) {
                 warnUserOfTestFailures(testResult);
             }
 
@@ -261,6 +309,20 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         }
 
         logger.exiting();
+    }
+
+    private boolean isValidAfterCondition(IInvokedMethod method) {
+        if (method.isTestMethod()) {
+            return true;
+        }
+        if (method.getTestMethod().isAfterClassConfiguration()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasValidAfterCondition(IInvokedMethod method) {
+        return method.getTestMethod().getTestClass().getAfterClassMethods().length > 0;
     }
 
     private void warnUserOfTestFailures(ITestResult testResult) {

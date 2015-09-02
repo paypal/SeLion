@@ -356,6 +356,9 @@
                     <td>{{:methodName}}</td>
                     <td>{{:type}}</td>
                     <td>
+                    {{if logs != null}}
+                        <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-xs btn-screenshot-config" data-toggle="tooltip" data-placement="top" title="Reporter Output"><span class="glyphicon glyphicon-picture"></span></button>
+                    {{/if}}
                     {{if status == "Failed" }}
                         <button type="button" data-index="{{:#parent.index}}" class="btn btn-default btn-xs btn-stacktrace-config" data-toggle="tooltip" data-placement="top" title="Stacktrace"><span class="glyphicon glyphicon-warning-sign"></span></button>
                     {{/if}}

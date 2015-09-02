@@ -601,7 +601,7 @@ function displaySource(src, title) {
     $('.btn-screenshot' + buttonAdditonalClassName).click(function() {
       var testcase = data[parseInt($(this).attr('data-index'))];
       var params = ' ';
-      if (testcase.parameters !== null) {
+      if (testcase.parameters) {
         params = testcase.parameters;
       }
       $('.modal-screenshot .modal-header .modal-title').text(
@@ -613,7 +613,7 @@ function displaySource(src, title) {
     $('.btn-stacktrace' + buttonAdditonalClassName).click(function() {
       var testcase = data[parseInt($(this).attr('data-index'))];
       var params = ' ';
-      if (testcase.parameters !== null) {
+      if (testcase.parameters) {
         params = testcase.parameters;
       }
       $('.modal-stacktrace .modal-header .modal-title').text(
