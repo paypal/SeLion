@@ -12,8 +12,8 @@
     <li><code>baseClass</code> - The value for this key represents the fully qualified name of a class that will
       serve as the base class to inherit attributes and/or capabilities from. If your page is new and is not
       customizing an existing page, then you should specify the value 
-      <code>com.paypal.selion.testcomponents.IOSPage</code> which by default is the class within SeLion that 
-      provides all the basic operations that are required for any given iOS page, including instantiation logic.
+      <code>com.paypal.selion.testcomponents.BasicPageImpl</code> which by default is the class within SeLion that 
+      provides all the basic operations that are required for any given iOS page.
     </li>
     <li><code>platform</code> - The value for this key represents the platform the YAML is intended for.
      By default, if nothing is specified it is taken as "web". For platforms like iOS it must be specified as "ios".
@@ -52,7 +52,7 @@
   <p>Some important things to reiterate from this example:</p>
   <ul>
    <li><code>baseClass</code> value for the IOS Native app automation must be 
-        <code>com.paypal.selion.testcomponents.IOSPage</code> or a class which extends it.
+        <code>com.paypal.selion.testcomponents.BasicPageImpl</code> or a class which extends it.
    </li>
    <li><code>platform</code> value must be specified as <strong>ios</strong>. This value is mandatory. 
        Otherwise, <a href="#pageyaml">web</a> is assumed.
