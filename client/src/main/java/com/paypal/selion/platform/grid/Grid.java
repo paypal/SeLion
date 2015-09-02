@@ -87,7 +87,7 @@ public final class Grid {
         }
         RemoteWebDriver rwd = threadLocalWebDriver.get();
         if (rwd == null) {
-            throw new IllegalStateException("Driver not initialized. Is @WebTest annotation missing on method?");
+            throw new IllegalStateException("Driver not initialized. Is @WebTest/@MobileTest missing on class/method?");
         }
         return rwd;
     }

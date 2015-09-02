@@ -72,7 +72,7 @@ public abstract class AbstractProcessHandler {
                     tProcess = new ProcessInfo(eachProcessData[1], eachProcessData[2]);
                     break;
                 }
-                if (matches(tProcess.getProcessName().toLowerCase())) {
+                if (matches(tProcess.getProcessName())) {
                     processToBeKilled.add(tProcess);
                 }
 

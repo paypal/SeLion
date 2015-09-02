@@ -38,7 +38,7 @@ public class ProcessInfo {
 
     public ProcessInfo(String processName, String processId) {
         this.processId = processId.replaceAll("\"", "");
-        this.processName = processName.replaceAll("\"", "");
+        this.processName = processName.replaceAll("\"", "").toLowerCase();
     }
 
 }
