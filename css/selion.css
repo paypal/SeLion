@@ -57,6 +57,7 @@ a:hover {
     height: 50%;
     min-width: 300px;
   }
+
   .logo-background {
     background-image: url('../images/selion-background.png');
     background-repeat: no-repeat;
@@ -91,6 +92,7 @@ a:hover {
     padding-top: 50px;
     margin: 0px 0px 80px 0px !important;
     font-size: smaller;
+    padding-bottom: 100px;
   }
 
   .selion-content-div {
