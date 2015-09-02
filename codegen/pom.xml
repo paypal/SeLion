@@ -12,6 +12,21 @@
     <packaging>maven-plugin</packaging>
     <name>SeLion Code Generator Maven Mojo</name>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>..</directory>
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
+                <targetPath>META-INF/</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
