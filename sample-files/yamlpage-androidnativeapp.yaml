@@ -1,4 +1,4 @@
-baseClass: "com.paypal.selion.testcomponents.AndroidPage"
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
 platform: "android"
 defaultLocale: "US"
 elements:
