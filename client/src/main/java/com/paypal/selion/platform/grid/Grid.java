@@ -85,11 +85,7 @@ public final class Grid {
         if (! testSession.isStarted()) {
             testSession.startSesion();
         }
-        RemoteWebDriver rwd = threadLocalWebDriver.get();
-        if (rwd == null) {
-            throw new IllegalStateException("Driver not initialized. Is @WebTest/@MobileTest missing on class/method?");
-        }
-        return rwd;
+        return threadLocalWebDriver.get();
     }
 
     /**
