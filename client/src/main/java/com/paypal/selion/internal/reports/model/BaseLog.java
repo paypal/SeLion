@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,8 +15,13 @@
 
 package com.paypal.selion.internal.reports.model;
 
+import java.lang.reflect.Modifier;
+
 import org.testng.Reporter;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.reports.runtime.SeLionReporter;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -47,51 +52,49 @@ public class BaseLog {
     }
 
     /**
-     * Parses the input string for specific keys=value pairs delimeted by ||. Example would look like ||MSG=My
-     * Screenshot 1||SCREEN=screenshots/513ba426-d5a0-4916-bf4b-e783ce943a8a.png
+     * Parses the JSON string and load it to BaseLog instance. Example would look like
+     * {
+     *   "msg": "Google Page with SeLion",
+     *   "screen": "screenshots/bd0bac20-9ad0-41b2-bc82-f2a856054129.png",
+     *   "location": "https://www.google.com/?gws_rd\u003dssl",
+     *   "href": "sources\\bd0bac20-9ad0-41b2-bc82-f2a856054129.source.txt"
+     * }
      * 
-     * @param s
-     *            The string to search for specific keys
+     * @param json
+     *            The JSON string
      */
-    public BaseLog(String s) {
-        logger.entering(s);
+    public BaseLog(String json) {
+        logger.entering(json);
 
-        if (s == null) {
+        if (json == null) {
             logger.exiting();
             return;
         }
-        String[] parts = s.split("\\|\\|");
-        for (int i = 0; i < parts.length; i++) {
-            parse(parts[i]);
-        }
+        parse(json);
         logger.exiting();
     }
 
     /**
-     * Add custom parsing of a String that represents a line in the log.
+     * Parsing the JSON string using Gson library.
      * 
-     * @param part
-     *            String to look for fields
+     * @param json
+     *            JSON String
      */
-    protected void parse(String part) {
-        logger.entering(part);
-        if (part.startsWith("MSG=")) {
-            msg = part.replace("MSG=", "");
-        } else if (part.startsWith("SCREEN=")) {
-            screen = part.replace("SCREEN=", "");
-            if ("".equals(screen)) {
-                screen = null;
-            }
-        } else if (part.startsWith("LOCATION=")) {
-            location = part.replace("LOCATION=", "");
-        } else if (part.startsWith("HREF=")) {
-            href = part.replace("HREF=", "");
-            if ("".equals(href)) {
-                href = null;
-            }
-        } else {
-            msg = part;
+    protected void parse(String json) {
+        logger.entering(json);
+
+        try {
+            Gson gson = new Gson();
+            BaseLog baseLog = gson.fromJson(json, this.getClass());
+            this.msg = baseLog.msg;
+            this.screen = baseLog.screen;
+            this.location = baseLog.location;
+            this.href = baseLog.href;
+        } catch (JsonSyntaxException e) {
+            // If not JSON string then treat this as an message
+            this.msg = json;
         }
+
         logger.exiting();
     }
 
@@ -198,23 +201,8 @@ public class BaseLog {
     }
 
     public String toString() {
-        StringBuffer buff = new StringBuffer();
-        buff.append("||MSG=");
-        if (msg != null) {
-            buff.append(msg);
-        }
-        buff.append("||SCREEN=");
-        if (screen != null && !screen.trim().isEmpty()) {
-            buff.append(screen);
-        }
-        buff.append("||LOCATION=");
-        if (location != null) {
-            buff.append(location);
-        }
-        buff.append("||HREF=");
-        if (href != null) {
-            buff.append(href);
-        }
-        return buff.toString();
+        Gson gson = new GsonBuilder().setPrettyPrinting()
+                .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT).create();
+        return gson.toJson(this);
     }
 }
