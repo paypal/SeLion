@@ -69,7 +69,7 @@ public final class LoggerConfig {
 
         /**
          * The maximum limit to the number of files to create for storing logs once the current log file reaches
-         * {@link LOGS_MAX_SIZE}
+         * {@link #LOGS_MAX_SIZE}
          */
         LOGS_MAX_FILE_COUNT("logsMaxFileCount", "1");
 

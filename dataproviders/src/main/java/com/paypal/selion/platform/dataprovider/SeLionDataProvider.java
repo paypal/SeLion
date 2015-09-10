@@ -51,9 +51,9 @@ public interface SeLionDataProvider {
      * data file.
      * 
      * @param indexes
-     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     *            The indexes for which data is to be fetched as a conforming string pattern.
      * 
-     * @return Object[][] object to be used with TestNG DataProvider.
+     * @return Object[][] to be used with TestNG DataProvider.
      */
     Object[][] getDataByIndex(String indexes) throws IOException;
 
@@ -63,9 +63,9 @@ public interface SeLionDataProvider {
      * data file.
      *
      * @param indexes
-     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     *            The indexes for which data is to be fetched as a conforming string pattern.
      *
-     * @return Object[][] object to be used with TestNG DataProvider.
+     * @return Object[][] to be used with TestNG DataProvider.
      */
     Object[][] getDataByIndex(int[] indexes) throws IOException;
 
@@ -74,7 +74,7 @@ public interface SeLionDataProvider {
      * collection filtered by keys.
      * 
      * @param keys
-     *            - The string keys to filter the data.
+     *            The string keys to filter the data.
      * @return A two dimensional object array.
      */
     Object[][] getDataByKeys(String[] keys);
@@ -82,7 +82,7 @@ public interface SeLionDataProvider {
     /**
      * A utility method to give output data as HashTable.
      * 
-     * @return - The data as a {@link Hashtable}
+     * @return The data as a {@link Hashtable}
      */
     Hashtable<String, Object> getDataAsHashtable();
 

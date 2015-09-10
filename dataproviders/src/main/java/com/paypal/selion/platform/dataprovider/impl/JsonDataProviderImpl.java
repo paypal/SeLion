@@ -101,8 +101,6 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
      * {@code public void readJsonArray(TestData testData)}
      * </pre>
      *
-     *
-     * @return A {@link Object[][]} containing the data parsed from {@link FileSystemResource resource}
      */
     @Override
     public Object[][] getAllData() {
@@ -129,9 +127,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
      * Gets JSON data from a resource for the specified indexes.
      *
      * @param indexes
-     *            - The set of indexes to be fetched from the JSON file.
-     * @return A {@link Object[][]} containing the data as 2D array as per the specified indexes, parsed from
-     *         {@link FileSystemResource resource}
+     *            The set of indexes to be fetched from the JSON file.
      */
     @Override
     public Object[][] getDataByIndex(String indexes) {
@@ -147,9 +143,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
      * Gets JSON data from a resource for the specified indexes.
      *
      * @param indexes
-     *            - The set of indexes to be fetched from the JSON file.
-     * @return A {@link Object[][]} containing the data as 2D array as per the specified indexes, parsed from
-     *         {@link FileSystemResource resource}
+     *            The set of indexes to be fetched from the JSON file.
      */
     @Override
     public Object[][] getDataByIndex(int[] indexes) {
@@ -186,8 +180,6 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
      *
      * @param dataFilter
      *            an implementation class of {@link DataProviderFilter}
-     * @return A {@link Iterator<Object>} over a collection of Object Array as per the specified filter, parsed from
-     *         {@link FileSystemResource}
      */
     @Override
     public Iterator<Object[]> getDataByFilter(DataProviderFilter dataFilter) {
@@ -209,7 +201,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
     }
 
     /**
-     * A utility method to give out json data as HashTable. Please note this method works on the rule that the json
+     * A utility method to give out JSON data as HashTable. Please note this method works on the rule that the json
      * object that needs to be parsed MUST contain a key named "id".
      *
      * <pre>
@@ -233,7 +225,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
      * Here the key to the data in the hashtable will be "test1"
      * </pre>
      *
-     * @return - The json data as a {@link Hashtable}
+     * @return The JSON data as a {@link Hashtable}
      */
     @Override
     public Hashtable<String, Object> getDataAsHashtable() {

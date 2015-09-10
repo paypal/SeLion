@@ -210,7 +210,7 @@ public interface SeLionAndroidBridgeDriver {
      * @param webElement
      *            Instance of {@link WebElement}.
      */
-    void swipeRight(WebElement element);
+    void swipeRight(WebElement webElement);
 
     /**
      * Performs the swipe up action on the {@link WebElement}. The swipe gesture can be performed over any surface. The
@@ -228,6 +228,6 @@ public interface SeLionAndroidBridgeDriver {
      * @param webElement
      *            Instance of {@link WebElement}.
      */
-    void swipeDown(WebElement element);
+    void swipeDown(WebElement webElement);
 
 }

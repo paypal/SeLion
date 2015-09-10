@@ -37,6 +37,9 @@ import com.paypal.selion.utils.FileBackedStringBuffer;
 /**
  * This is simple {@link RegistryBasedServlet} servlet which basically display the list of nodes connected to the grid.
  * This servlet would have to be injected into the Grid.
+ * <br><br>
+ * In addition this servlet will provide a link to view logs on the node. The node must use {@link LogServlet} or
+ * handle a HTTP request to <b>/extra/LogServlet</b> for this to work.
  * 
  */
 public class ListAllNodes extends RegistryBasedServlet {

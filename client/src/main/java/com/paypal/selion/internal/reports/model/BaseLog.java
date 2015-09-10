@@ -28,13 +28,12 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * This class serves as the base for all logging with respect to UI operations being done either on the browser or on a
- * native app in a simulator/device. Any functionality that intends to provide a reporting capability similar to
+ * mobile simulator/device. Any functionality that intends to provide a reporting capability similar to
  * {@link SeLionReporter} should leverage this class for the basic functionalities and add up only customizations as and
  * where required.
  * 
  * This is an internal class for use in Selion and clients of SeLion should have no need for referencing this public
  * class.
- * 
  */
 public class BaseLog {
 

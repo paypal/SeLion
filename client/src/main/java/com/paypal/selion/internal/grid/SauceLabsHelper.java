@@ -106,10 +106,6 @@ public class SauceLabsHelper {
 
     private String getSessionId() {
         logger.entering();
-        if (Grid.driver() == null) {
-            logger.exiting(null);
-            return null;
-        }
         String sessionId = Grid.driver().getSessionId().toString();
         logger.exiting(sessionId);
         return sessionId;
@@ -118,10 +114,6 @@ public class SauceLabsHelper {
     private String getJobUrl() {
         logger.entering();
         String sessionid = getSessionId();
-        if (sessionid == null) {
-            logger.exiting();
-            return null;
-        }
         String encodedToken = encodeAuthToken(sessionid);
         if (encodedToken == null) {
             logger.exiting();

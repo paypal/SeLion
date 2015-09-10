@@ -49,7 +49,10 @@ import com.paypal.selion.utils.ServletHelper;
  * <li>The checksum associated with the each of the artifacts so that it can be cross checked to ascertain validity of
  * the same.
  * </ul>
- * 
+ * <br>
+ * Requires the hub to also have {@link LoginServlet} available. Furthermore, only nodes which use
+ * {@link SeLionRemoteProxy} AND {@link NodeAutoUpgradeServlet} or implement support for the HTTP request
+ * <b>/extra/NodeAutoUpgradeServlet</b> are compatible.
  */
 public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
 
@@ -114,20 +117,38 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
             if (idList == null) {
                 // there were no nodes that failed to auto upgrade
                 for (RemoteProxy eachProxy : this.getRegistry().getAllProxies()) {
-                    SeLionRemoteProxy proxy = (SeLionRemoteProxy) eachProxy;
-                    if (!proxy.release(downloadJSON)) {
-                        pendingProxy.add(proxy.getId());
+                    // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
+                    // NodeAutoUpgradeServlet available. Without truth in this assumption, the call to
+                    // proxy.release() will do nothing.
+                    if (eachProxy == null) {
+                        continue;
+                    }
+                    if (eachProxy instanceof SeLionRemoteProxy) {
+                        if (!((SeLionRemoteProxy) eachProxy).release(downloadJSON)) {
+                            pendingProxy.add(eachProxy.getId());
+                        }
+                    } else {
+                        LOGGER.warning("Node " + eachProxy.getId() + " can not be auto upgraded.");
                     }
                 }
             } else {
                 // hmm.. there were one or more nodes that didn't go through
-                // with the upgrade (maybe coz they
-                // were processing some tests).
+                // with the upgrade (maybe because they were processing some tests).
                 for (String eachId : idList.split(",")) {
+                    // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
+                    // NodeAutoUpgradeServlet available. Without truth in this assumption, the call to
+                    // proxy.release() will do nothing.
                     if (!eachId.trim().isEmpty()) {
-                        SeLionRemoteProxy proxy = (SeLionRemoteProxy) getRegistry().getProxyById(eachId.trim());
-                        if ((proxy != null) && (!proxy.release(downloadJSON))) {
-                            pendingProxy.add(proxy.getId());
+                        RemoteProxy proxy = getRegistry().getProxyById(eachId.trim());
+                        if (proxy == null) {
+                            continue;
+                        }
+                        if (proxy instanceof SeLionRemoteProxy) {
+                            if (!((SeLionRemoteProxy) proxy).release(downloadJSON)) {
+                                pendingProxy.add(proxy.getId());
+                            }
+                        } else {
+                            LOGGER.warning("Node " + proxy.getId() + " can not be auto upgraded.");
                         }
                     }
                 }

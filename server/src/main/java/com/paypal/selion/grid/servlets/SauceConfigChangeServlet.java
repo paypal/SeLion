@@ -44,10 +44,10 @@ import com.paypal.selion.utils.ServletHelper;
  * This {@link RegistryBasedServlet} based servlet update the Sauce Configuration json file based on the input provided
  * via POST operation and re-load the SauceConfigReader proerties. For GET request it will return the
  * updateSauceConfigPage.html content. URL of the Servlet :
- * <code>http://localhost:4444/grid/admin/SauceConfigChangeServlet</code>. Here <code>localhost</code> can be replaced
- * with the IP/name of the machine running the Hub and <code>4444</code> can be replaced with the port number on which
- * the Hub is listening to.
- * 
+ * <code>http://{hub-host}:{hub-port}/grid/admin/SauceConfigChangeServlet</code>.
+ * <br>
+ * <br>
+ * This requires the hub to also have {@link LoginServlet} available. 
  */
 public class SauceConfigChangeServlet extends RegistryBasedServlet {
 

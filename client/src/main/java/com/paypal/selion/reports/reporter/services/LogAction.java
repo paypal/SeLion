@@ -15,6 +15,8 @@
 
 package com.paypal.selion.reports.reporter.services;
 
+import com.paypal.selion.reports.runtime.SeLionReporter;
+
 /**
  * This interface facilitates custom actions to be taken place whenever a person invokes
  * {@link SeLionReporter#log(String, boolean, boolean)} method. An instance of this interface needs to be hooked into

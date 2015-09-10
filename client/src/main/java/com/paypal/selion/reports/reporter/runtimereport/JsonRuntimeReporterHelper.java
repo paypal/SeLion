@@ -369,7 +369,7 @@ public class JsonRuntimeReporterHelper {
     /**
      * Construct the JSON report for report generation
      * 
-     * @return
+     * @return A {@link JsonObject} which represents the report.
      */
     private JsonObject buildJSONReport() {
         logger.entering();

@@ -211,7 +211,7 @@ public abstract class AbstractTestSession {
             // we are gobbling this exception
             try {
                 Grid.driver().quit();
-            } catch (Exception e) {
+            } catch (Exception e) { //NOSONAR
                 logger.log(Level.SEVERE, "An error occurred while closing the Selenium session: " + e.getMessage(), e);
             }
         }

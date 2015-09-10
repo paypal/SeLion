@@ -67,7 +67,7 @@ public class RuntimeReporterListener implements ISuiteListener, ITestListener, I
             return;
         }
 
-        logger.entering(new Object[] { result });
+        logger.entering(result);
 
         if (result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(DoNotReport.class) != null) {
             return;
@@ -101,7 +101,7 @@ public class RuntimeReporterListener implements ISuiteListener, ITestListener, I
             return;
         }
 
-        logger.entering(new Object[] { result });
+        logger.entering(result);
 
         if (result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(DoNotReport.class) != null) {
             return;
@@ -126,7 +126,7 @@ public class RuntimeReporterListener implements ISuiteListener, ITestListener, I
 
     @Override
     public void onStart(ISuite suite) {
-        logger.entering(new Object[] { suite });
+        logger.entering(suite);
 
         if (!ListenerManager.executeCurrentMethod(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
@@ -146,7 +146,7 @@ public class RuntimeReporterListener implements ISuiteListener, ITestListener, I
 
     @Override
     public void onFinish(ISuite suite) {
-        logger.entering(new Object[] { suite });
+        logger.entering(suite);
 
         if (!ListenerManager.executeCurrentMethod(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
@@ -203,6 +203,11 @@ public class RuntimeReporterListener implements ISuiteListener, ITestListener, I
 
     @Override
     public void onStart(ITestContext context) {
+        if (!ListenerManager.executeCurrentMethod(this)) {
+            logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
+            return;
+        }
+        logger.entering(context);
         jsonHelper.generateLocalConfigSummary(context.getSuite().getName(), context.getCurrentXmlTest().getName());
     }
 

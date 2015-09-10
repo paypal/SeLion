@@ -78,11 +78,14 @@ public final class Grid {
     }
 
     /**
-     * @return A {@link RemoteWebDriver} object which can be used in the case of {@link MobileTest} and {@link WebTest}s
+     * @return A non-null {@link RemoteWebDriver} object which can be used with {@link MobileTest} and/or
+     *         {@link WebTest} annotated tests. Throws an {@link IllegalStateException} when there is no
+     *         {@link RemoteWebDriver} session active such as when called outside of a {@link MobileTest} or
+     *         {@link WebTest} flow.
      */
     public static RemoteWebDriver driver() {
         AbstractTestSession testSession = getTestSession();
-        if (! testSession.isStarted()) {
+        if (!testSession.isStarted()) {
             testSession.startSesion();
         }
         RemoteWebDriver rwd = threadLocalWebDriver.get();

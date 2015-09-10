@@ -28,17 +28,24 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
+import com.paypal.selion.logging.SeLionGridLogger;
+import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.proxy.SeLionRemoteProxy;
 import com.paypal.selion.utils.ServletHelper;
 
 /**
  * This {@link RegistryBasedServlet} based servlet is responsible for sending restart requests to all the registered
- * nodes.
- * 
+ * nodes.<br>
+ * <br>
+ * This requires the hub to also have {@link LoginServlet} available. Furthermore, only nodes which use
+ * {@link SeLionRemoteProxy} AND {@link NodeForceRestartServlet} or implement support for the HTTP request
+ * <b>/extra/NodeForceRestartServlet</b> are compatible.
  */
 public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridForceRestartDelegateServlet.class);
 
     public GridForceRestartDelegateServlet() {
         this(null);
@@ -75,10 +82,19 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
                         "Please select atleast 1 node in order to perform restarts.");
                 return;
             }
-            for (String temp : nodes) {
-                SeLionRemoteProxy proxy = (SeLionRemoteProxy) this.getRegistry().getProxyById(temp);
-                if (proxy != null) {
-                    proxy.shutdownNode();
+            for (String node : nodes) {
+                RemoteProxy proxy = this.getRegistry().getProxyById(node);
+                if (proxy == null) {
+                    continue;
+                }
+
+                // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
+                // NodeForceRestartServlet available. Without truth in this assumption, the call to
+                // proxy.shutdownNode() will do nothing.
+                if (proxy instanceof SeLionRemoteProxy) {
+                    ((SeLionRemoteProxy) proxy).shutdownNode();
+                } else {
+                    LOGGER.warning("Node " + node + " does not support force restart.");
                 }
             }
             ServletHelper.displayMessageOnRedirect(writer, "Restart process initiated on all nodes.");
@@ -100,17 +116,29 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             Iterator<RemoteProxy> iterator = proxies.iterator();
             boolean nodesPresent = false;
             while (iterator.hasNext()) {
-                SeLionRemoteProxy proxy = (SeLionRemoteProxy) iterator.next();
-                writer.write("<input name='nodes' class='element checkbox' type='checkbox' value='" + proxy.getId()
-                        + "' />");
-                writer.write("<label class='choice'>" + proxy.getId() + "</label>");
-                nodesPresent = true;
+                RemoteProxy proxy = iterator.next();
+                if (proxy == null) {
+                    continue;
+                }
+
+                // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
+                // NodeForceRestartServlet available. Without truth in this assumption, the call to
+                // proxy.shutdownNode() will do nothing.
+                if (proxy instanceof SeLionRemoteProxy) {
+                    writer.write("<input name='nodes' class='element checkbox' type='checkbox' value='" + proxy.getId()
+                            + "' />");
+                    writer.write("<label class='choice'>" + proxy.getId() + "</label>");
+                    nodesPresent = true;
+                } else {
+                    LOGGER.warning("Node " + proxy.getId() + " does not support force restart.");
+                }
             }
 
             writer.write("</span></li>");
             String defaultMsg = "<label class='choice'>No Nodes are available to Restart</label>";
             if (nodesPresent) {
-                defaultMsg = "<li class='buttons'><input type='hidden' name='form_id' value='restart_nodes' /> <input id='saveForm' class='button_text' type='submit' name='submit' value='Submit' /></li>";
+                defaultMsg = "<li class='buttons'><input type='hidden' name='form_id' value='restart_nodes' />" +
+                        "<input id='saveForm' class='button_text' type='submit' name='submit' value='Submit' /></li>";
             }
             writer.write(defaultMsg);
             writer.write("</ul>");

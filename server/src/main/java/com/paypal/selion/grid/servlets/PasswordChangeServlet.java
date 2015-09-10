@@ -30,6 +30,9 @@ import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.AuthenticationHelper;
 import com.paypal.selion.utils.ServletHelper;
 
+/**
+ * This servlet provides the ability to change the password for servlets which require/use {@link LoginServlet}
+ */
 public class PasswordChangeServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

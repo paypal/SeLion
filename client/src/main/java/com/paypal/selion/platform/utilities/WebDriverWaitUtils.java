@@ -26,7 +26,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Preconditions;
-import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
@@ -39,8 +38,6 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public final class WebDriverWaitUtils {
     
     private final static SimpleLogger logger = SeLionLogger.getLogger();
-    private static final String INVALID_STATE_ERR_MSG = "Please use this API only from within a @"
-            + WebTest.class.getSimpleName() + " annotated test method.";
 
     private WebDriverWaitUtils(){
         //Utility class. So hide the constructor to defeat instantiation
@@ -67,7 +64,6 @@ public final class WebDriverWaitUtils {
      */
     public static void waitUntilElementIsClickable(final String elementLocator) {
         logger.entering(elementLocator);
-        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
         By by = HtmlElementUtils.resolveByType(elementLocator);
         ExpectedCondition<WebElement> condition = ExpectedConditions.elementToBeClickable(by);
         waitForCondition(condition);
@@ -82,7 +78,6 @@ public final class WebDriverWaitUtils {
      */
     public static void waitUntilElementIsInvisible(final String elementLocator) {
         logger.entering(elementLocator);
-        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
         By by = HtmlElementUtils.resolveByType(elementLocator);
         ExpectedCondition<Boolean> condition = ExpectedConditions.invisibilityOfElementLocated(by);
         waitForCondition(condition);
@@ -98,7 +93,6 @@ public final class WebDriverWaitUtils {
      */
     public static void waitUntilElementIsPresent(final String elementLocator) {
         logger.entering(elementLocator);
-        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
         By by = HtmlElementUtils.resolveByType(elementLocator);
         ExpectedCondition<WebElement> condition = ExpectedConditions.presenceOfElementLocated(by);
         waitForCondition(condition);
@@ -114,7 +108,6 @@ public final class WebDriverWaitUtils {
      */
     public static void waitUntilElementIsVisible(final String elementLocator) {
         logger.entering(elementLocator);
-        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
         By by = HtmlElementUtils.resolveByType(elementLocator);
         ExpectedCondition<WebElement> condition = ExpectedConditions.visibilityOfElementLocated(by);
         waitForCondition(condition);
@@ -129,7 +122,6 @@ public final class WebDriverWaitUtils {
      */
     public static void waitUntilPageTitleContains(final String pageTitle) {
         logger.entering(pageTitle);
-        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
         Preconditions.checkArgument(StringUtils.isNotEmpty(pageTitle), "Expected Page title cannot be null (or) empty.");
         ExpectedCondition<Boolean> condition = ExpectedConditions.titleContains(pageTitle);
         waitForCondition(condition);
@@ -144,7 +136,6 @@ public final class WebDriverWaitUtils {
      */
     public static void waitUntilTextPresent(final String searchString) {
         logger.entering(searchString);
-        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
         Preconditions.checkArgument(StringUtils.isNotEmpty(searchString), "Search string cannot be null (or) empty.");
         ExpectedCondition<Boolean> conditionToCheck = new ExpectedCondition<Boolean>() {
             @Override
@@ -167,7 +158,6 @@ public final class WebDriverWaitUtils {
     public static void waitUntilAllElementsArePresent(final String... locators) {
         logger.entering(new Object[] { Arrays.toString(locators) });
         Preconditions.checkArgument(locators != null, "Please provide a valid set of locators.");
-        Preconditions.checkState(Grid.driver() != null, INVALID_STATE_ERR_MSG);
         for (String eachLocator : locators){
             waitUntilElementIsPresent(eachLocator);
         }

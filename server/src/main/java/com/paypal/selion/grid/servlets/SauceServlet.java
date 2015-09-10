@@ -38,10 +38,10 @@ import com.paypal.selion.utils.ServletHelper;
 /**
  * This {@link RegistryBasedServlet} based servlet automatically takes care of spinning off a virtual node when it gets
  * initialized. It also gives the end user an opportunity to re-spawn the same virtual node again explicitly by doing a
- * GET/POST against the URL : <code>http://localhost:4444/grid/admin/SauceServlet</code>. Here <code>localhost</code>
- * can be replaced with the IP/name of the machine running the Hub and <code>4444</code> can be replaced with the port
- * number on which the Hub is listening to.
- * 
+ * GET/POST against the URL : <code>http://{hub-host}:{hub-port}/grid/admin/SauceServlet</code>.
+ * <br>
+ * <br>
+ * This requires the hub to also have {@link LoginServlet} available. 
  */
 public class SauceServlet extends RegistryBasedServlet {
 

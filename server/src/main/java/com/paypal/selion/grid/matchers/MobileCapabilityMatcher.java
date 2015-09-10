@@ -98,7 +98,7 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
      * 
      * @param nodeCapability
      * @param requestedCapability
-     * @return
+     * @return <code>true/false</code>
      */
     private boolean verifyAppiumCapabilities(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
         for (String capabilityName : toConsider) {

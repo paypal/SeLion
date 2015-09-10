@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -22,7 +22,10 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.testng.Reporter;
+import org.testng.annotations.Test;
 
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.internal.reports.model.BaseLog;
 import com.paypal.selion.internal.reports.model.PageContents;
 import com.paypal.selion.logger.SeLionLogger;
@@ -30,6 +33,10 @@ import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.reports.reporter.services.LogAction;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
+/**
+ * A TestNG compatible message logger. Use this class to log messages to the report output and associate them with a
+ * {@link Test}, {@link WebTest} and/or {@link MobileTest}
+ */
 public final class SeLionReporter {
     private static final SimpleLogger logger = SeLionLogger.getLogger();
     private volatile static List<LogAction> actionList = new ArrayList<LogAction>();
@@ -77,15 +84,13 @@ public final class SeLionReporter {
     }
 
     /**
-     * Creates the log
+     * Creates an instance of {@link BaseLog}. Calls any {@link LogAction}s which are hooked in.
      * 
-     * @param takeScreenshot
-     *            <b>true/false</b> take or not and save screenshot
      * @param saveSrc
-     *            <b>true/false</b> save or not page source
-     * @return - An {@link BaseLog} subclass that represents the actual log that was generated.
+     *            Save the current page source <code>true/false</code>. Requires an active {@link Grid} session.
+     * @return A {@link BaseLog} subclass that represents the actual log that was generated.
      */
-    protected BaseLog createLog(boolean takeScreenshot, boolean saveSrc) {
+    protected BaseLog createLog(boolean saveSrc) {
         String href = null;
         /**
          * Changed html file extension to txt
@@ -94,12 +99,10 @@ public final class SeLionReporter {
             throw new RuntimeException("Internal error. SeLionReporter expects an instance of SaverFileSystem."); // NOSONAR
         }
         if (saveSrc) {
-            if (Grid.driver() != null) {
-                PageContents source = new PageContents(Grid.driver().getPageSource(), getBaseFileName());
-                saver.saveSources(source);
-                href = "sources" + File.separator + getBaseFileName() + ".source.txt";
-                getCurrentLog().setHref(href);
-            }
+            PageContents source = new PageContents(Grid.driver().getPageSource(), getBaseFileName());
+            saver.saveSources(source);
+            href = "sources" + File.separator + getBaseFileName() + ".source.txt";
+            getCurrentLog().setHref(href);
         }
         for (LogAction eachAction : actionList) {
             eachAction.perform();
@@ -108,15 +111,23 @@ public final class SeLionReporter {
         return getCurrentLog();
     }
 
+    /**
+     * Generate a log message and send it to the TestNG {@link Reporter}
+     * 
+     * @param takeScreenshot
+     *            Take a screenshot <code>true/false</code>. Requires an active {@link Grid} session.
+     * @param saveSrc
+     *            Save the current page source <code>true/false</code>. Requires an active {@link Grid} session.
+     */
     protected void generateLog(boolean takeScreenshot, boolean saveSrc) {
         logger.entering(new Object[] { takeScreenshot, saveSrc });
         try {
-            BaseLog log = createLog(takeScreenshot, saveSrc);
+            BaseLog log = createLog(saveSrc);
 
             String screenshotPath = null;
             log.setScreen(null);
 
-            if (takeScreenshot && Grid.driver() != null) {
+            if (takeScreenshot) {
                 // screenshot
                 PageContents screen = new PageContents(Gatherer.takeScreenshot(Grid.driver()), getBaseFileName());
                 screenshotPath = saver.saveScreenshot(screen);
@@ -132,7 +143,7 @@ public final class SeLionReporter {
 
     /**
      * @param action
-     *            - A {@link LogAction} object that represents the custom log action to be invoked when
+     *            A {@link LogAction} object that represents the custom log action to be invoked when
      *            {@link SeLionReporter#log(String, boolean, boolean)} gets called.
      * 
      */
@@ -141,14 +152,14 @@ public final class SeLionReporter {
             actionList.add(action);
         }
     }
-    
+
     /**
      * Generates log entry with message provided
      * 
      * @param message
      *            Entry description
      * @param takeScreenshot
-     *            <b>true/false</b> take a screenshot
+     *            Take a screenshot <code>true/false</code>. Requires an active {@link Grid} session.
      */
     public static void log(String message, boolean takeScreenshot) {
         log(message, takeScreenshot, false);
@@ -160,9 +171,9 @@ public final class SeLionReporter {
      * @param message
      *            Entry description
      * @param takeScreenshot
-     *            <b>true/false</b> take a screenshot
+     *            Take a screenshot <code>true/false</code>. Requires an active {@link Grid} session.
      * @param saveSrc
-     *            <b>true/false</b> save the current page source
+     *            Save the current page source <code>true/false</code>. Requires an active {@link Grid} session.
      */
     public static void log(String message, boolean takeScreenshot, boolean saveSrc) {
         SeLionReporter reporter = new SeLionReporter();
