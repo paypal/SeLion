@@ -13,10 +13,9 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.grid.servlet.transfer;
+package com.paypal.selion.grid.servlets.transfer;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -34,30 +33,15 @@ import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.grid.servlets.transfer.ArtifactDownloadException;
-import com.paypal.selion.grid.servlets.transfer.Criteria;
-import com.paypal.selion.grid.servlets.transfer.DownloadRequestProcessor;
-import com.paypal.selion.grid.servlets.transfer.DownloadResponder;
-import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
-import com.paypal.selion.grid.servlets.transfer.TransferContext;
-import com.paypal.selion.utils.ConfigParser;
-
-@PrepareForTest({ DownloadResponder.class, ConfigParser.class })
+@PrepareForTest({ DownloadResponder.class })
 public class DownloadResponderTest extends PowerMockTestCase {
 
     @Test
     public void testSuccessWritingToServletResponse() throws Exception {
-        ConfigParser configParser = mock(ConfigParser.class);
-        mockStatic(ConfigParser.class);
-        when(ConfigParser.parse()).thenReturn(configParser);
-        when(configParser.getString("managedCriteria")).thenReturn(
-                "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria");
-
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         DownloadRequestProcessor downloadProcessor = mock(DownloadRequestProcessor.class);
-        @SuppressWarnings("unchecked")
-        ManagedArtifact<Criteria> managedArtifact = (ManagedArtifact<Criteria>) mock(ManagedArtifact.class);
+        ManagedArtifact managedArtifact = (ManagedArtifact) mock(ManagedArtifact.class);
 
         byte[] bytes = new byte[] { 1, 2, 3, 4 };
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(4);
@@ -83,11 +67,6 @@ public class DownloadResponderTest extends PowerMockTestCase {
 
     @Test(expectedExceptions = ArtifactDownloadException.class)
     public void testFailedToGetArtifact() throws Exception {
-        ConfigParser configParser = mock(ConfigParser.class);
-        mockStatic(ConfigParser.class);
-        when(ConfigParser.parse()).thenReturn(configParser);
-        when(configParser.getString("managedCriteria")).thenReturn("xxxx");
-
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         DownloadRequestProcessor downloadProcessor = mock(DownloadRequestProcessor.class);

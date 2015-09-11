@@ -17,8 +17,9 @@ package com.paypal.selion.grid.servlets.transfer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,78 +30,41 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.paypal.selion.grid.servlets.transfer.ManagedArtifact.RequestParameters;
 import com.paypal.selion.grid.servlets.transfer.UploadedArtifact.UploadedArtifactBuilder;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.ConfigParser;
 
-public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
+public interface UploadRequestProcessor {
 
     /**
      * Content Type for multipart form-data request.
      */
-    public static final String MULTIPART_CONTENT_TYPE = "multipart/form-data";
+    String MULTIPART_CONTENT_TYPE = "multipart/form-data";
 
     /**
      * Content Type for application form-url-encoded request.
      */
-    public static final String APPLICATION_URLENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    String APPLICATION_URLENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
     /**
      * Max file size configuration property retrieved from SeLionConfig file.
      */
-    public static final String MAX_FILE_CONFIG_PROPERTY = "artifactMaxFileSize";
+    String MAX_FILE_CONFIG_PROPERTY = "artifactMaxFileSize";
 
     /**
      * @return a {@link List} of {@link ManagedArtifact} which represent items on the {@link ManagedArtifactRepository}
      */
-    List<T> getUploadedData();
-
-    /**
-     * Enum for storing the valid HTTP headers/parameters for transferring to SeLion grid.
-     */
-    enum RequestHeaders {
-
-        /**
-         * File name HTTP header, header name is fileName
-         */
-        FILENAME("fileName"),
-
-        /**
-         * User id HTTP header, header name is userId
-         */
-        USERID("userId"),
-
-        /**
-         * Application folder in HTTP header, header name is applicationFolder
-         */
-        APPLICATIONFOLDER("applicationFolder");
-
-        private String parameterName;
-
-        private RequestHeaders(String parameterName) {
-            this.parameterName = parameterName;
-        }
-
-        public String getParameterName() {
-            return parameterName;
-        }
-
-        public static RequestHeaders getRequestHeader(String parameterName) {
-            for (RequestHeaders requestHeader : RequestHeaders.values()) {
-                if (requestHeader.getParameterName().equals(parameterName)) {
-                    return requestHeader;
-                }
-            }
-            throw new ArtifactDownloadException("Unknown parameter name [" + parameterName + "]");
-        }
-    }
+    List<ManagedArtifact> getUploadedData();
 
     /**
      * <code>AbstractUploadRequestProcessor</code> is abstract super class for concrete implementations that work on
      * types of {@link ManagedArtifact}. The class initializes a {@link ServerRepository} of {@link ManagedArtifact} to
      * use during processing.
      */
-    abstract class AbstractUploadRequestProcessor implements UploadRequestProcessor<ManagedArtifact<Criteria>> {
+    abstract class AbstractUploadRequestProcessor implements UploadRequestProcessor {
+
+        private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AbstractUploadRequestProcessor.class);
 
         /**
          * Maximum size permitted for a single upload artifact.
@@ -111,9 +75,13 @@ public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
 
         protected HttpServletRequest httpServletRequest = null;
 
-        protected ServerRepository<?> repository = null;
+        protected ServerRepository repository = null;
 
-        protected List<ManagedArtifact<Criteria>> managedArtifactList = null;
+        protected List<ManagedArtifact> managedArtifactList = null;
+
+        protected RequestParameters managedArtifactRequestParameters = null;
+
+        private ManagedArtifact instance = null;
 
         protected AbstractUploadRequestProcessor(TransferContext transferContext) {
             super();
@@ -121,27 +89,57 @@ public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
             this.transferContext = transferContext;
             this.httpServletRequest = transferContext.getHttpServletRequest();
             repository = ManagedArtifactRepository.getInstance();
+            managedArtifactRequestParameters = getManagedArtifactInstance().getRequestParameters();
             managedArtifactList = new ArrayList<>();
         }
 
-        public List<ManagedArtifact<Criteria>> getUploadedData() {
+        public List<ManagedArtifact> getUploadedData() {
+            LOGGER.entering();
             SeLionGridLogger.getLogger(AbstractUploadRequestProcessor.class).entering();
             if (managedArtifactList.isEmpty()) {
                 populateManagedArtifactList();
             }
             SeLionGridLogger.getLogger(AbstractUploadRequestProcessor.class).exiting(managedArtifactList);
+            LOGGER.exiting(managedArtifactList);
             return managedArtifactList;
         }
 
-        protected UploadedArtifact createUploadedArtifactUsing(EnumMap<RequestHeaders, String> headerMap,
-                byte[] contents) {
-            UploadedArtifactBuilder uploadedArtifactBuilder = new UploadedArtifactBuilder(
-                    headerMap.get(RequestHeaders.FILENAME), contents).withUserId(headerMap.get(RequestHeaders.USERID));
-            if (headerMap.containsKey(RequestHeaders.APPLICATIONFOLDER)) {
-                uploadedArtifactBuilder.withApplicationFolderName(headerMap.get(RequestHeaders.APPLICATIONFOLDER));
+        protected ManagedArtifact getManagedArtifactInstance() {
+            if ((instance == null) && (repository != null)) {
+                try {
+                    instance = repository.getConfiguredManagedArtifactClass().newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new ArtifactUploadException(e.getCause().getMessage(), e);
+                }
             }
-            UploadedArtifact uploadedArtifact = uploadedArtifactBuilder.build();
-            return uploadedArtifact;
+            return instance;
+        }
+
+        protected UploadedArtifact createUploadedArtifactUsing(Map<String, String> headerMap,
+                byte[] contents) {
+            UploadedArtifactBuilder uploadedArtifactBuilder = new UploadedArtifactBuilder(contents);
+
+            Map<String, Boolean> artifactParams = managedArtifactRequestParameters.getParameters();
+            Map<String, String> meta = new HashMap<>();
+            for (String inboundHeader : headerMap.keySet()) {
+                if (artifactParams.containsKey(inboundHeader)) {
+                    meta.put(inboundHeader, headerMap.get(inboundHeader));
+                }
+            }
+            uploadedArtifactBuilder.withMetaInfo(meta);
+            return uploadedArtifactBuilder.build();
+        }
+
+        protected Map<String, String> getRequestHeadersMap() {
+            Map<String, String> headersMap = new HashMap<>();
+            Map<String, Boolean> artifactParams = managedArtifactRequestParameters.getParameters();
+            for (String header : artifactParams.keySet()) {
+                String value = httpServletRequest.getHeader(header);
+                if (!StringUtils.isBlank(value)) {
+                    headersMap.put(header, value);
+                }
+            }
+            return headersMap;
         }
 
         protected abstract void populateManagedArtifactList();
@@ -153,62 +151,62 @@ public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
      * {@link ManagedArtifact}s. The implementation is native using streams for parsing
      * 'application/x-www-form-urlencoded' type requests. Artifact upload are saved into repository and returned as a
      * {@link List} after processing. Since the file name may not be deduced from such requests the clients MUST pass
-     * the HTTP header 'filename'. The HTTP header 'userID' is also treated as mandatory and the client MUST pass it.
-     * HTTP header 'applicationFolder' is optional parameter
+     * the HTTP header 'fileName'. HTTP header 'folderName' is optional parameter. Additional HTTP headers may apply and
+     * are defined by the {@link ManagedArtifact} implementation.
      * 
      * Sample curl command for uploading a form-urlencoded file
      * 
      * <pre>
      * {@code
-     * curl -v -H 'filename:<fileName>' -H 'userId:<userId>' --data-binary @/path/tofile http://[hostname]:[port]/[upload-context-path] 
-     * curl -v -H 'filename:<fileName>' -H 'userId:<userId>' -H 'applicationFolder:<applicationFolder>' --data-binary @/path/tofile http://[hostname]:[port]/[upload-context-path]
+     * curl -v -H 'filename:<fileName>' --data-binary @/path/tofile http://[hostname]:[port]/[upload-context-path] 
+     * curl -v -H 'filename:<fileName>' -H 'folderName:<folderName>' --data-binary @/path/tofile http://[hostname]:[port]/[upload-context-path]
      * }
      * </pre>
      */
-    public final class ApplicationUploadRequestProcessor extends AbstractUploadRequestProcessor {
+    final class ApplicationUploadRequestProcessor extends AbstractUploadRequestProcessor {
+
+        private static final SeLionGridLogger LOGGER = SeLionGridLogger
+                .getLogger(ApplicationUploadRequestProcessor.class);
 
         public ApplicationUploadRequestProcessor(TransferContext transferContext) {
             super(transferContext);
         }
 
         public void populateManagedArtifactList() {
+            LOGGER.entering();
             try {
                 saveUploadedData();
             } catch (IOException e) {
                 throw new ArtifactUploadException("IOException in parsing file contents", e.getCause());
             }
+            LOGGER.exiting();
         }
 
         private void saveUploadedData() throws IOException {
             populateHeadersMap();
             byte[] contents = parseFileContents();
+
             UploadedArtifact uploadedArtifact = createUploadedArtifactUsing(transferContext.getHeadersMap(), contents);
-            ManagedArtifact<Criteria> managedArtifact = repository.saveContents(uploadedArtifact);
+            ManagedArtifact managedArtifact = repository.saveContents(uploadedArtifact);
             managedArtifactList.add(managedArtifact);
         }
 
         private void populateHeadersMap() {
-            EnumMap<RequestHeaders, String> headersMap = new EnumMap<>(RequestHeaders.class);
             checkRequiredParameters();
-            headersMap.put(RequestHeaders.FILENAME,
-                    httpServletRequest.getHeader(RequestHeaders.FILENAME.getParameterName()));
-            headersMap.put(RequestHeaders.USERID,
-                    httpServletRequest.getHeader(RequestHeaders.USERID.getParameterName()));
-            if (!StringUtils.isBlank(httpServletRequest.getHeader(RequestHeaders.APPLICATIONFOLDER.getParameterName()))) {
-                headersMap.put(RequestHeaders.APPLICATIONFOLDER,
-                        httpServletRequest.getHeader(RequestHeaders.APPLICATIONFOLDER.getParameterName()));
-            }
-            transferContext.setHeadersMap(headersMap);
+            transferContext.setHeadersMap(getRequestHeadersMap());
         }
 
         private void checkRequiredParameters() {
-            if (StringUtils.isBlank(httpServletRequest.getHeader(RequestHeaders.FILENAME.getParameterName()))) {
-                throw new ArtifactUploadException("Required header [" + RequestHeaders.FILENAME.getParameterName()
-                        + "] is missing");
+            if (StringUtils.isBlank(httpServletRequest.getHeader(ManagedArtifact.ARTIFACT_FILE_NAME))) {
+                throw new ArtifactUploadException("Required header [" + ManagedArtifact.ARTIFACT_FILE_NAME
+                        + "] is missing or has no value");
             }
-            if (StringUtils.isBlank(httpServletRequest.getHeader(RequestHeaders.USERID.getParameterName()))) {
-                throw new ArtifactUploadException("Required header [" + RequestHeaders.USERID.getParameterName()
-                        + "] is missing");
+
+            for (String param : managedArtifactRequestParameters.getParameters().keySet()) {
+                boolean isRequired = managedArtifactRequestParameters.isRequired(param);
+                if (isRequired && StringUtils.isBlank(httpServletRequest.getHeader(param))) {
+                    throw new ArtifactUploadException("Required header [" + param + "] is missing or has no value");
+                }
             }
         }
 
@@ -217,8 +215,7 @@ public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
             if (fileSize <= 0) {
                 throw new ArtifactUploadException("File is empty");
             }
-            byte[] bytes = IOUtils.toByteArray(httpServletRequest.getInputStream());
-            return bytes;
+            return IOUtils.toByteArray(httpServletRequest.getInputStream());
         }
 
     }
@@ -227,21 +224,22 @@ public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
      * <code>MultipartUploadRequestProcessor</code> is an implementation of {@link AbstractUploadRequestProcessor} for
      * {@link DefaultManagedArtifact}. The implementation relies on 'commons-fileupload' library for parsing
      * 'multipart/form-data' type requests. Multiple artifact uploads are saved into repository and returned as a
-     * {@link List} after processing. The clients are expected to pass 'userId' as a mandatory parameter and
-     * 'folderName' is an optional parameter. The clients may choose to pass the as either HTTP headers or request
-     * parameters: if using CURL then -F option (name=value) pair or -H (HTTP headers). The implementation limits to
-     * only one file upload. Sample curl command for uploading a multipart file
+     * {@link List} after processing. The clients pass 'folderName' is an optional parameter. The clients may choose to
+     * pass them as either HTTP headers or request parameters: if using CURL then -F option (name=value) pair or -H
+     * (HTTP headers). Additional HTTP headers or request parameters may apply and are defined by the
+     * {@link ManagedArtifact} implementation. The implementation limits to only one file upload. Sample curl command
+     * for uploading a multipart file
      * 
      * <pre>
      * {@code
-     * curl -v curl -v -H 'userId:<userId>' -H 'applicationFolder:<applicationFolder>' -F file=@/path/tofile http://[hostname]:[port]/[upload-context-path]
-     * curl -v curl -v -F userId=<userId> -F applicationFolder=<applicationFolder> -F file=@/path/tofile http://[hostname]:[port]/[upload-context-path]
+     * curl -v -H 'folderName:<folderName>' -F file=@/path/tofile http://[hostname]:[port]/[upload-context-path]
      * }
      * </pre>
      */
-    public final class MultipartUploadRequestProcessor extends AbstractUploadRequestProcessor {
+    final class MultipartUploadRequestProcessor extends AbstractUploadRequestProcessor {
 
-        private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(MultipartUploadRequestProcessor.class);
+        private static final SeLionGridLogger LOGGER = SeLionGridLogger
+                .getLogger(MultipartUploadRequestProcessor.class);
 
         private ServletFileUpload servletFileUpload = null;
 
@@ -253,32 +251,33 @@ public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
         }
 
         public void populateManagedArtifactList() {
+            LOGGER.entering();
             try {
                 saveUploadedData();
             } catch (FileUploadException e) {
                 throw new ArtifactUploadException(e.getMessage());
             }
+            LOGGER.exiting();
         }
 
         private void saveUploadedData() throws FileUploadException {
-            LOGGER.entering(this.getClass().getName(), "saveUploadedData");
+            LOGGER.entering();
             int count = parseRequestAsFileItems();
             if (count > 1) {
                 throw new ArtifactUploadException("Only one file supported for upload using multipart");
             }
 
-            // Get parameters from headers and override it with request
-            // parameters.
+            // Get parameters from headers and override it with request parameters.
             populateHeadersMap();
             for (FileItem fileItem : fileItems) {
                 if (!fileItem.isFormField()) {
                     UploadedArtifact uploadedArtifact = createUploadedArtifactUsing(transferContext.getHeadersMap(),
                             fileItem.get());
-                    ManagedArtifact<Criteria> managedArtifact = repository.saveContents(uploadedArtifact);
+                    ManagedArtifact managedArtifact = repository.saveContents(uploadedArtifact);
                     managedArtifactList.add(managedArtifact);
                 }
             }
-            LOGGER.exiting(this.getClass().getName(), "saveUploadedData");
+            LOGGER.exiting();
         }
 
         private int parseRequestAsFileItems() throws FileUploadException {
@@ -295,40 +294,37 @@ public interface UploadRequestProcessor<T extends ManagedArtifact<Criteria>> {
         }
 
         private void populateHeadersMap() {
-            EnumMap<RequestHeaders, String> headersMap = getMapFromHeaders();
+            Map<String, String> headersMap = getRequestHeadersMap();
+            Map<String, Boolean> artifactParams = managedArtifactRequestParameters.getParameters();
             for (FileItem fileItem : fileItems) {
                 if (fileItem.isFormField()) {
-                    headersMap.put(RequestHeaders.getRequestHeader(fileItem.getFieldName().trim()), fileItem
-                            .getString().trim());
+                    String parameter = fileItem.getFieldName().trim();
+                    if (artifactParams.containsKey(parameter)) {
+                        headersMap.put(parameter, fileItem.getString().trim());
+                    }
                 } else {
-
-                    // Assuming the only other parameter is the fileName
-                    headersMap.put(RequestHeaders.FILENAME, isNotBlank(fileItem.getName().trim()));
+                    // TODO fix assumption that the only other parameter is the fileName
+                    headersMap.put(ManagedArtifact.ARTIFACT_FILE_NAME, isNotBlank(fileItem.getName().trim()));
                 }
             }
             checkForRequiredParameters(headersMap);
             transferContext.setHeadersMap(headersMap);
         }
 
-        private void checkForRequiredParameters(EnumMap<RequestHeaders, String> headersMap) {
-            if (!headersMap.containsKey(RequestHeaders.FILENAME) || !headersMap.containsKey(RequestHeaders.USERID)) {
-                throw new ArtifactUploadException("Required paremeter/header ["
-                        + RequestHeaders.FILENAME.getParameterName() + ", " + RequestHeaders.USERID.getParameterName()
-                        + "] is missing");
+        // TODO See if this can be merged with ApplicationUploadRequestProcessor#checkRequiredParameters
+        private void checkForRequiredParameters(Map<String, String> headersMap) {
+            if (!headersMap.containsKey(ManagedArtifact.ARTIFACT_FILE_NAME)) {
+                throw new ArtifactUploadException("Required input ["
+                        + ManagedArtifact.ARTIFACT_FILE_NAME + "] is missing or has no value");
             }
-        }
 
-        private EnumMap<RequestHeaders, String> getMapFromHeaders() {
-            EnumMap<RequestHeaders, String> headersMap = new EnumMap<>(RequestHeaders.class);
-            if (!StringUtils.isBlank(httpServletRequest.getHeader(RequestHeaders.USERID.getParameterName()))) {
-                headersMap.put(RequestHeaders.USERID,
-                        httpServletRequest.getHeader(RequestHeaders.USERID.getParameterName()));
+            for (String param : managedArtifactRequestParameters.getParameters().keySet()) {
+                boolean isRequired = managedArtifactRequestParameters.isRequired(param);
+                if (isRequired && StringUtils.isBlank(headersMap.get(param))) {
+                    throw new ArtifactUploadException("Required input [" + param
+                            + "] is missing or has no value");
+                }
             }
-            if (!StringUtils.isBlank(httpServletRequest.getHeader(RequestHeaders.APPLICATIONFOLDER.getParameterName()))) {
-                headersMap.put(RequestHeaders.APPLICATIONFOLDER,
-                        httpServletRequest.getHeader(RequestHeaders.APPLICATIONFOLDER.getParameterName()));
-            }
-            return headersMap;
         }
 
         private String isNotBlank(String fileName) {

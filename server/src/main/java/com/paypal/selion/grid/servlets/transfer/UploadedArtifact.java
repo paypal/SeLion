@@ -15,26 +15,24 @@
 
 package com.paypal.selion.grid.servlets.transfer;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * <code>UploadedArtifact</code> is data structure to hold uploaded information through HTTP POST method call. The class
- * stores the uploaded artifact name, the user id which essentially is the folder name under which the artifact is
- * stored. The application folder name is the name of an optional folder name under the user id folder for storing the
+ * stores the uploaded artifact name. The application folder name is the name of an optional folder for storing the
  * artifact. Stores the contents as a byte array.
  */
 public class UploadedArtifact {
 
-    private String artifactPartName;
-
-    private String userId;
-
-    private String applicationFolderName;
+    private Map<String, String> artifactMetaInfo;
 
     private byte[] artifactContents;
 
-    private UploadedArtifact(String artifactPartName, byte[] artifactContents) {
+    private UploadedArtifact(byte[] artifactContents) {
         super();
-        this.artifactPartName = artifactPartName;
         this.artifactContents = artifactContents;
+        this.artifactMetaInfo = new TreeMap<>();
     }
 
     /**
@@ -42,8 +40,8 @@ public class UploadedArtifact {
      * 
      * @return the artifactPartName
      */
-    public String getArtifactPartName() {
-        return artifactPartName;
+    public String getArtifactName() {
+        return artifactMetaInfo.get(ManagedArtifact.ARTIFACT_FILE_NAME);
     }
 
     /**
@@ -56,28 +54,26 @@ public class UploadedArtifact {
     }
 
     /**
-     * Returns the User id which is essentially the name of a folder containing the artifact.
+     * Returns all of the meta info for the artifact
      * 
-     * @return the userId
+     * @return the artifact meta info as a {@link Map}
      */
-    public String getUserId() {
-        return userId;
+    public Map<String, String> getMetaInfo() {
+        return artifactMetaInfo;
     }
 
     /**
-     * Returns the optional application folder name used for storing the artifact. Its a sub folder under the user id
-     * folder.
+     * Returns the optional application folder name used for storing the artifact.
      * 
-     * @return the applicationFolderName
+     * @return the artifactFolderName
      */
-    public String getApplicationFolderName() {
-        return applicationFolderName;
+    public String getArtifactFolderName() {
+        return artifactMetaInfo.get(ManagedArtifact.ARTIFACT_FOLDER_NAME);
     }
 
     public String toString() {
-        return "[ Artifact Part Name: " + getArtifactPartName() + ", User Id: " + getUserId()
-                + ((getApplicationFolderName() != null) ? (", Application Folder: " + getApplicationFolderName()) : "")
-                + " ]";
+        return "[ Artifact Name: " + getArtifactName() +
+                ", Artifact Folder: " + getArtifactFolderName() + " ]";
     }
 
     /**
@@ -90,36 +86,76 @@ public class UploadedArtifact {
         /**
          * Create a {@link UploadedArtifact} with basic artifact name and artifact contents.
          * 
-         * @param artifactPartName
+         * @param artifactName
          *            Artifact name
          * @param artifactContents
          *            Artifact contents
          */
-        public UploadedArtifactBuilder(String artifactPartName, byte[] artifactContents) {
-            uploadedArtifact = new UploadedArtifact(artifactPartName, artifactContents);
+        public UploadedArtifactBuilder(String artifactName, byte[] artifactContents) {
+            this(artifactContents);
+            this.withArtifactName(artifactName);
+        }
+
+        
+        /**
+         * Create a {@link UploadedArtifact} with basic artifact name and artifact contents.
+         * 
+         * @param artifactName
+         *            Artifact name
+         * @param folderName
+         *            Artifact folder
+         * @param artifactContents
+         *            Artifact contents
+         */
+        public UploadedArtifactBuilder(String artifactName, String folderName, byte[] artifactContents) {
+            this(artifactContents);
+            this.withArtifactName(artifactName);
+            this.withFolderName(folderName);
         }
 
         /**
-         * Build with user id.
+         * Create a {@link UploadedArtifact} with basic artifact name and artifact contents.
          * 
-         * @param userId
-         *            User id.
+         * @param artifactContents
+         *            Artifact contents
+         */
+        public UploadedArtifactBuilder(byte[] artifactContents) {
+            uploadedArtifact = new UploadedArtifact(artifactContents);
+        }
+
+        /**
+         * Build with an artifact name
+         * 
+         * @param artifactName
+         *            an artifact name
          * @return Instance of {@link UploadedArtifactBuilder}
          */
-        public UploadedArtifactBuilder withUserId(String userId) {
-            uploadedArtifact.userId = userId;
+        public UploadedArtifactBuilder withArtifactName(String artifactName) {
+            uploadedArtifact.artifactMetaInfo.put(ManagedArtifact.ARTIFACT_FILE_NAME, artifactName);
             return this;
         }
 
         /**
-         * Build with application folder name
+         * Build with a folder name
          * 
-         * @param applicationFolderName
-         *            Application folder name
+         * @param folderName
+         *            a folder name
          * @return Instance of {@link UploadedArtifactBuilder}
          */
-        public UploadedArtifactBuilder withApplicationFolderName(String applicationFolderName) {
-            uploadedArtifact.applicationFolderName = applicationFolderName;
+        public UploadedArtifactBuilder withFolderName(String folderName) {
+            uploadedArtifact.artifactMetaInfo.put(ManagedArtifact.ARTIFACT_FOLDER_NAME, folderName);
+            return this;
+        }
+
+        /**
+         * Build with custom meta information
+         * 
+         * @param meta
+         *            custom meta information in the form of a {@link Map}
+         * @return Instance of {@link UploadedArtifactBuilder}
+         */
+        public UploadedArtifactBuilder withMetaInfo(Map<String, String> meta) {
+            uploadedArtifact.artifactMetaInfo.putAll(meta);
             return this;
         }
 

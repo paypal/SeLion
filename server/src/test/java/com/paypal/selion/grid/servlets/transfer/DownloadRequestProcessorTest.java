@@ -15,36 +15,39 @@
 
 package com.paypal.selion.grid.servlets.transfer;
 
-import java.util.Map;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
-/**
- * <code>Criteria</code> matches some {@link ManagedArtifact} primarily based on name and containing folder named as the
- * user id. Application folder can be optionally introduced between the user Id and the artifact to add a additional
- * layer of segregation. The implementation may populate the members from HTTP request headers or parameters when used
- * in a web context. Refer to {@link UploadRequestProcessor.RequestHeaders} for additional details.
- * 
- */
-public interface Criteria {
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.testng.PowerMockTestCase;
+import org.powermock.reflect.Whitebox;
+import org.testng.annotations.Test;
 
-    /**
-     * Returns the artifact name.
-     * 
-     * @return Artifact name.
-     */
-    String getArtifactName();
+@PrepareForTest({ DownloadRequestProcessor.class, ServerRepository.class })
+public class DownloadRequestProcessorTest extends PowerMockTestCase {
 
-    /**
-     * Returns the optional application folder that can be used to store artifacts under the user Id folder.
-     * 
-     * @return Application folder name
-     */
-    String getApplicationFolder();
+    @Test(expectedExceptions = ArtifactDownloadException.class)
+    public void testFailedGetArtifact() {
+        ServerRepository serverRepository = mock(ServerRepository.class);
+        when(serverRepository.getArtifact(Mockito.anyString())).thenThrow(new ArtifactDownloadException(""));
 
-    /**
-     * Returns the contents as a name value pairs that this {@link Criteria} is concerned for matching
-     * 
-     * @return Instance of {@link Map} containing the name and value
-     */
-    Map<String, String> asMap();
+        DownloadRequestProcessor downloadRequestProcessor = new DownloadRequestProcessor();
+        Whitebox.setInternalState(downloadRequestProcessor, "serverRepository", serverRepository);
+
+        downloadRequestProcessor.getArtifact("/userOne/DummyArtifact.any");
+    }
+
+    @Test()
+    public void testGetArtifact() {
+        ServerRepository serverRepository = mock(ServerRepository.class);
+        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
+        when(serverRepository.getArtifact(Mockito.anyString())).thenReturn(managedArtifact);
+
+        DownloadRequestProcessor downloadRequestProcessor = new DownloadRequestProcessor();
+        Whitebox.setInternalState(downloadRequestProcessor, "serverRepository", serverRepository);
+
+        downloadRequestProcessor.getArtifact("/userOne/DummyArtifact.any");
+    }
 
 }

@@ -401,9 +401,8 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     }
 
     // TODO: This method would need re-factoring in the future.
-    // The moment alerts processing is supported in iPhone, we need to disable
-    // the edit
-    // checks that are put in this method.
+    // The moment alerts processing is supported in iPhone, we need to disable the edit checks that are put in this
+    // method.
     private void processAlerts(String browser) {
         logger.entering(browser);
         if (doesNotHandleAlerts(browser)) {

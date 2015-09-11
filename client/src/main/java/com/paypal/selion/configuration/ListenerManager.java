@@ -78,8 +78,6 @@ public final class ListenerManager {
     public static boolean executeCurrentMethod(ITestNGListener listener) {
         String className = listener.getClass().getName();
         logger.entering("Listener Class : " + className);
-        // TODO: One of the comments was to get rid of this JVM argument. For now I will defer this till we really feel
-        // the need for removing this off.
         if (isServiceLoaderDisabled()) {
             logger.info("Listener Management was disabled. None of the managed listeners will be invoked.");
             logger.exiting(false);

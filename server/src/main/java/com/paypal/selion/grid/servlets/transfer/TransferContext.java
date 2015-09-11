@@ -15,12 +15,10 @@
 
 package com.paypal.selion.grid.servlets.transfer;
 
-import java.util.EnumMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.RequestHeaders;
 
 /**
  * <code>TransferContext</code> acts as a data structure for holding upload and download information required for the
@@ -33,9 +31,9 @@ public class TransferContext {
 
     private HttpServletResponse httpServletResponse;
 
-    private EnumMap<RequestHeaders, String> headersMap;
+    private Map<String, String> headersMap;
 
-    private UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor;
+    private UploadRequestProcessor uploadRequestProcessor;
 
     private DownloadRequestProcessor downloadRequestProcessor;
 
@@ -68,7 +66,7 @@ public class TransferContext {
      * 
      * @return Instance of {@link UploadRequestProcessor}.
      */
-    public UploadRequestProcessor<ManagedArtifact<Criteria>> getUploadRequestProcessor() {
+    public UploadRequestProcessor getUploadRequestProcessor() {
         return uploadRequestProcessor;
     }
 
@@ -78,12 +76,12 @@ public class TransferContext {
      * @param uploadRequestProcessor
      *            Instance of {@link UploadRequestProcessor}s
      */
-    public void setUploadRequestProcessor(UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor) {
+    public void setUploadRequestProcessor(UploadRequestProcessor uploadRequestProcessor) {
         this.uploadRequestProcessor = uploadRequestProcessor;
     }
 
     /**
-     * Returns the {@link DownloadRequestProcessor} instance associated this downloads HTTP request method call.
+     * Returns the {@link DownloadRequestProcessor} instance associated for this download HTTP request method call.
      * 
      * @return Instance of {@link DownloadRequestProcessor}
      */
@@ -106,7 +104,7 @@ public class TransferContext {
      * 
      * @return the headersMap
      */
-    public EnumMap<RequestHeaders, String> getHeadersMap() {
+    public Map<String, String> getHeadersMap() {
         return headersMap;
     }
 
@@ -116,7 +114,7 @@ public class TransferContext {
      * @param headersMap
      *            the headersMap to set
      */
-    public void setHeadersMap(EnumMap<RequestHeaders, String> headersMap) {
+    public void setHeadersMap(Map<String, String> headersMap) {
         this.headersMap = headersMap;
     }
 

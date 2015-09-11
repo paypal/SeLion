@@ -15,44 +15,44 @@
 
 package com.paypal.selion.grid.servlets.transfer;
 
+import java.io.File;
 
 /**
  * <code>ServerRepository</code> represents a repository for storing any artifacts of type {@link ManagedArtifact}
  * received by HTTP POST upload request. The artifacts are saved and returned as a type extending
  * {@link ManagedArtifact} which the implementations are free to implement.
- * 
- * @param <T>
- *            Saved artifact type that is an extension of {@link ManagedArtifact}
- * @param <U>
- *            Extension of {@link Criteria} type for matching artifacts.
  */
-public interface ServerRepository<T extends ManagedArtifact<Criteria>> {
+public interface ServerRepository {
 
     /**
      * Saves the {@link UploadedArtifact} and returns a repository managed artifact.
      * 
      * @param uploadedArtifact
      *            {@link UploadedArtifact} received by from the upload request.
-     * @return Type of the stored artifact.
+     * @return the stored artifact.
      */
-    T saveContents(UploadedArtifact uploadedArtifact);
-
-    /**
-     * Returns true if there is a matching artifact for the requested artifact.
-     * 
-     * @param pathInfo
-     *            Path to artifact received in the HTTP request.
-     * @return True if if there is a matching artifact, or false otherwise.
-     */
-    boolean isArtifactPresent(String pathInfo);
+    ManagedArtifact saveContents(UploadedArtifact uploadedArtifact);
 
     /**
      * Returns the artifact if there is a matching artifact for the requested artifact.
      * 
      * @param pathInfo
      *            Path to artifact received in the HTTP request.
-     * @return Returns the artifact if there is a matching artifact, or throws an {@link ArtifactDownloadException}.
+     * @return Returns the artifact if there is a matching artifact or throws an {@link ArtifactDownloadException}.
      */
-    T getArtifact(String pathInfo);
+    ManagedArtifact getArtifact(String pathInfo);
 
+    /**
+     * Returns the configured {@link ManagedArtifact} class
+     * 
+     * @return the {@link ManagedArtifact} class that the {@link ServerRepository} is managing
+     */
+    Class<? extends ManagedArtifact> getConfiguredManagedArtifactClass();
+
+    /**
+     * Returns the repository folder
+     * 
+     * @return the artifact repository folder as a {@link File}
+     */
+    File getRepositoryFolder();
 }

@@ -22,26 +22,12 @@ import com.paypal.selion.logging.SeLionGridLogger;
  */
 public class DownloadRequestProcessor {
 
-    protected ServerRepository<ManagedArtifact<Criteria>> serverRepository;
-    private SeLionGridLogger logger = SeLionGridLogger.getLogger(DownloadRequestProcessor.class);
+    protected ServerRepository serverRepository;
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(DownloadRequestProcessor.class);
 
     public DownloadRequestProcessor() {
         super();
         serverRepository = ManagedArtifactRepository.getInstance();
-    }
-
-    /**
-     * Verifies whether the artifact requested in the HTTP call is present.
-     * 
-     * @param pathInfo
-     *            the path inferred from the GET HTTP URL.
-     * @return A boolean indicating the presence of the artifact.
-     */
-    public boolean isArtifactPresent(String pathInfo) {
-        logger.entering();
-        boolean isPresentInRepository = serverRepository.isArtifactPresent(pathInfo);
-        logger.exiting(isPresentInRepository);
-        return isPresentInRepository;
     }
 
     /**
@@ -51,10 +37,10 @@ public class DownloadRequestProcessor {
      *            the path inferred from the GET HTTP URL.
      * @return the artifact.
      */
-    public ManagedArtifact<Criteria> getArtifact(String pathInfo) {
-        logger.entering();
-        ManagedArtifact<Criteria> managedArtifact = serverRepository.getArtifact(pathInfo);
-        logger.exiting(managedArtifact);
+    public ManagedArtifact getArtifact(String pathInfo) {
+        LOGGER.entering();
+        ManagedArtifact managedArtifact = serverRepository.getArtifact(pathInfo);
+        LOGGER.exiting(managedArtifact);
         return managedArtifact;
     }
 

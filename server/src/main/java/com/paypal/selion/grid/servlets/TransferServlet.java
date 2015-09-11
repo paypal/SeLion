@@ -27,11 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.paypal.selion.grid.servlets.transfer.ArtifactDownloadException;
 import com.paypal.selion.grid.servlets.transfer.ArtifactUploadException;
-import com.paypal.selion.grid.servlets.transfer.Criteria;
 import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.DownloadRequestProcessor;
 import com.paypal.selion.grid.servlets.transfer.DownloadResponder;
-import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
 import com.paypal.selion.grid.servlets.transfer.TransferContext;
 import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor;
 import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.AbstractUploadRequestProcessor;
@@ -58,9 +56,9 @@ public class TransferServlet extends HttpServlet {
         LOGGER.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
         try {
             TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);
-            UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = getUploadRequestProcessor(transferContext);
+            UploadRequestProcessor requestProcessor = getUploadRequestProcessor(transferContext);
             transferContext.setUploadRequestProcessor(requestProcessor);
-            UploadResponder<ManagedArtifact<Criteria>> uploadResponder = getUploadResponder(transferContext);
+            UploadResponder uploadResponder = getUploadResponder(transferContext);
             uploadResponder.respond();
         } catch (ArtifactUploadException exe) {
 
@@ -106,18 +104,18 @@ public class TransferServlet extends HttpServlet {
     /**
      * Returns a {@link AbstractUploadRequestProcessor} for {@link DefaultManagedArtifact}
      * 
-     * @param httpServletRequest
-     *            Instance of {@link HttpServletRequest}
-     * @return Instance of {@link AbstractUploadRequestProcessor}.
+     * @param transferContext
+     *            Instance of {@link TransferContext}
+     * @return Instance of {@link UploadRequestProcessor}.
      */
-    private UploadRequestProcessor<ManagedArtifact<Criteria>> getUploadRequestProcessor(TransferContext transferContext) {
+    private UploadRequestProcessor getUploadRequestProcessor(TransferContext transferContext) {
         LOGGER.entering(transferContext);
         String contentType = transferContext.getHttpServletRequest().getContentType() != null ? transferContext
                 .getHttpServletRequest().getContentType().toLowerCase() : "unknown";
         if (contentType.contains(AbstractUploadRequestProcessor.MULTIPART_CONTENT_TYPE)) {
 
             // Return a Multipart request processor
-            UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor = new MultipartUploadRequestProcessor(
+            UploadRequestProcessor uploadRequestProcessor = new MultipartUploadRequestProcessor(
                     transferContext);
             LOGGER.exiting(uploadRequestProcessor);
             return uploadRequestProcessor;
@@ -125,7 +123,7 @@ public class TransferServlet extends HttpServlet {
         if (contentType.contains(AbstractUploadRequestProcessor.APPLICATION_URLENCODED_CONTENT_TYPE)) {
 
             // Return normal Urlencoded request processor
-            UploadRequestProcessor<ManagedArtifact<Criteria>> uploadRequestProcessor = new ApplicationUploadRequestProcessor(
+            UploadRequestProcessor uploadRequestProcessor = new ApplicationUploadRequestProcessor(
                     transferContext);
             LOGGER.exiting(uploadRequestProcessor);
             return uploadRequestProcessor;
@@ -144,18 +142,17 @@ public class TransferServlet extends HttpServlet {
      *            Instance of {@link TransferContext}
      * @return Instance of {@link AbstractUploadResponder}.
      */
-    private UploadResponder<ManagedArtifact<Criteria>> getUploadResponder(TransferContext transferContext) {
+    private UploadResponder getUploadResponder(TransferContext transferContext) {
         LOGGER.entering(transferContext);
-        UploadResponder<ManagedArtifact<Criteria>> uploadResponder = null;
-        Class<? extends UploadResponder<ManagedArtifact<Criteria>>> uploadResponderClass = getResponderClass(transferContext
+        UploadResponder uploadResponder;
+        Class<? extends UploadResponder> uploadResponderClass = getResponderClass(transferContext
                 .getHttpServletRequest().getHeader("accept"));
         try {
-            uploadResponder = uploadResponderClass.getConstructor(new Class[] { TransferContext.class }).newInstance(
+            uploadResponder = (UploadResponder) uploadResponderClass.getConstructor(new Class[] { TransferContext.class }).newInstance(
                     new Object[] { transferContext });
             LOGGER.exiting(uploadResponder);
             return uploadResponder;
         } catch (Exception e) {
-
             // We cannot do any meaningful operation to handle this; catching exception and returning
             // default responder
             uploadResponder = new JsonUploadResponder(transferContext);
@@ -164,24 +161,18 @@ public class TransferServlet extends HttpServlet {
         }
     }
 
-    private Class<? extends UploadResponder<ManagedArtifact<Criteria>>> getResponderClass(String headerString) {
-        Class<? extends UploadResponder<ManagedArtifact<Criteria>>> responderClass = null;
+    private Class<? extends UploadResponder> getResponderClass(String headerString) {
         String[] headers = headerString.split(";");
         List<String> headerPrecedenceList = Arrays.asList(headers);
         Collections.reverse(headerPrecedenceList);
         for (String header : headerPrecedenceList) {
             try {
                 AcceptHeaderEnum acceptHeaderEnum = AcceptHeaderEnum.getAcceptHeaderEnum(header);
-                responderClass = acceptHeaderEnum.getUploadResponder();
-                return responderClass;
+                return acceptHeaderEnum.getUploadResponder();
             } catch (ArtifactUploadException exe) {
-
                 // Exception is thrown if there is no implementation; just ignore and iterate until success
             }
         }
-
-        // Return default UploadResponder
-        responderClass = JsonUploadResponder.class;
         return JsonUploadResponder.class;
     }
 

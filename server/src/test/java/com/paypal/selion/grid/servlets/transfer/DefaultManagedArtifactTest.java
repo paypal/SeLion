@@ -13,47 +13,47 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.grid.servlet.transfer;
+package com.paypal.selion.grid.servlets.transfer;
 
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.grid.servlets.transfer.DefaultCriteria;
-import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact;
-import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
-import com.paypal.selion.utils.ConfigParser;
+import com.paypal.selion.SeLionConstants;
+import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact.DefaultRequestParameters;
 
-@PrepareForTest({ ConfigParser.class })
+import java.io.File;
+import java.io.IOException;
+
 public class DefaultManagedArtifactTest extends PowerMockTestCase {
 
     private String artifactFileOnePath;
 
-    @BeforeClass
-    public void setUpBeforeClass() {
-        artifactFileOnePath = DefaultManagedArtifactTest.class.getResource("/artifacts/userOne/DummyArtifact.any")
-                .getFile();
+    @BeforeSuite(alwaysRun = true)
+    public void setUpBeforeSuite() {
+        System.setProperty("selionHome",
+                new File(DefaultManagedArtifactTest.class.getResource("/").getPath()).getAbsoluteFile().getParent()
+                        + "/.selion");
+        new File(SeLionConstants.SELION_HOME_DIR).mkdirs();
     }
 
-    @BeforeMethod
-    public void setUpBeforeEveryMethod() throws Exception {
-        ConfigParser configParser = mock(ConfigParser.class);
-        mockStatic(ConfigParser.class);
-        when(ConfigParser.parse()).thenReturn(configParser);
-        when(configParser.getLong("artifactExpiryInMilliSec")).thenReturn(86400000L);
+    @BeforeClass
+    public void setUpBeforeClass() throws IOException {
+        File f = new File(DefaultManagedArtifactTest.class.getResource("/artifacts")
+                .getFile());
+        FileUtils.copyDirectory(f, new File(System.getProperty("selionHome") + "/repository"));
+        artifactFileOnePath = new File(System.getProperty("selionHome") + "/repository/userOne/DummyArtifact.any")
+                .getAbsolutePath();
     }
 
     @Test(enabled = false)
     // Enable this test case for testing time difference
     public void testIsExpired() {
-        ManagedArtifact<DefaultCriteria> managedArtifact = new DefaultManagedArtifact(
+        ManagedArtifact managedArtifact = new DefaultManagedArtifact(
                 "src/test/resources/artifacts/userOne/userFolder/DummyArtifact.any");
         Assert.assertEquals(managedArtifact.isExpired(), true, "Artifact is not expired after a day");
     }
@@ -91,21 +91,21 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
     @Test
     public void testMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        Assert.assertEquals(managedArtifact.matchesCriteria("/artifacts/userOne/DummyArtifact.any"), true,
+        Assert.assertEquals(managedArtifact.matchesPathInfo("/userOne/DummyArtifact.any"), true,
                 "Artifact does not match the expected criteria");
     }
 
     @Test
     public void testUnEqualFileNameMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        Assert.assertEquals(managedArtifact.matchesCriteria("/artifacts/userOne/DummyArtifact4.zip"), false,
+        Assert.assertEquals(managedArtifact.matchesPathInfo("/userOne/DummyArtifact4.zip"), false,
                 "Artifact matches for different file name");
     }
 
     @Test
     public void testUnEqualUserIdMatches() {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
-        Assert.assertEquals(managedArtifact.matchesCriteria("/artifacts/userTwo/DummyArtifact.any"), false,
+        Assert.assertEquals(managedArtifact.matchesPathInfo("/userTwo/DummyArtifact.any"), false,
                 "Artifact matches for different userId");
     }
 
@@ -120,6 +120,38 @@ public class DefaultManagedArtifactTest extends PowerMockTestCase {
         DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
         Assert.assertEquals(managedArtifact.getHttpContentType(), "application/zip",
                 "Artifact file name does not match");
+    }
+
+    @Test
+    public void testPathInfo() {
+        DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
+        String actual = managedArtifact.getAbsolutePath();
+        String expected = FilenameUtils.separatorsToSystem(SeLionConstants.SELION_HOME_DIR
+                + "repository/userOne/DummyArtifact.any");
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testUID() {
+        DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
+        Assert.assertEquals(managedArtifact.getUIDFolderName(), "userOne");
+    }
+
+    @Test
+    public void testSubfolder() {
+        DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
+        Assert.assertEquals(managedArtifact.getSubFolderName(), "");
+    }
+
+    @Test
+    public void testRequestParameters() {
+        DefaultManagedArtifact managedArtifact = new DefaultManagedArtifact(artifactFileOnePath);
+        Assert.assertTrue(managedArtifact.getRequestParameters() instanceof DefaultRequestParameters);
+        Assert.assertTrue(managedArtifact.getRequestParameters().getParameters().containsKey("uid"));
+        Assert.assertTrue(managedArtifact.getRequestParameters().getParameters()
+                .containsKey(ManagedArtifact.ARTIFACT_FILE_NAME));
+        Assert.assertTrue(managedArtifact.getRequestParameters().getParameters()
+                .containsKey(ManagedArtifact.ARTIFACT_FOLDER_NAME));
     }
 
 }

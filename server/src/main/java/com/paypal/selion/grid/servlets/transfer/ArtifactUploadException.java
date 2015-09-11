@@ -16,7 +16,7 @@
 package com.paypal.selion.grid.servlets.transfer;
 
 /**
- * <code>ArtifactUploadException</code> extends RuntimeException and is used for all artifact upload related exeptions
+ * <code>ArtifactUploadException</code> extends RuntimeException and is used for all artifact upload related exceptions
  * from the server.
  */
 public class ArtifactUploadException extends RuntimeException {

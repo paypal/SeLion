@@ -24,8 +24,7 @@ public class TestServerListener implements ISuiteListener {
     public void onStart(ISuite suite) {
         try {
             TestServerUtils.startServer();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) { // NOSONAR
             e.printStackTrace();
         }
     }
@@ -34,8 +33,7 @@ public class TestServerListener implements ISuiteListener {
     public void onFinish(ISuite suite) {
         try {
             TestServerUtils.stopServer();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) { // NOSONAR
             e.printStackTrace();
         }
 

@@ -95,6 +95,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     public SeLionRemoteProxy(RegistrationRequest request, Registry registry) throws IOException {
         super(request, registry);
+        // TODO Consider using a real logger for the logging needs on 'info'
         StringBuffer info = new StringBuffer();
         maxSessionsAllowed = getUniqueSessionCount();
         machine = getRemoteHost().getHost();
@@ -178,11 +179,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         TestSession session = null;
         synchronized (this) {
             if (totalSessionsStarted >= maxSessionsAllowed || forceShutDown) {
-                // TODO: Remove me once Node stability has been ascertained
-                // This is being included here intentionally since this is the
-                // only way to debug issues
-                // This will be removed once stability has been fully
-                // ascertained.
                 appendMsgToCustomLog("Was Max Sessions reached : " + (totalSessionsStarted >= maxSessionsAllowed)
                         + " on node " + getId());
                 appendMsgToCustomLog("Was this a forcible shutdown ? " + (forceShutDown) + " on node " + getId());

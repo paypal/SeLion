@@ -22,23 +22,26 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
-import java.util.EnumMap;
+import java.util.Map;
 import java.util.logging.Level;
 
+import com.google.common.collect.ImmutableMap;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.RequestHeaders;
+import com.google.common.base.Preconditions;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.ConfigParser;
+import org.apache.commons.lang.SystemUtils;
 
 /**
  * <code>DefaultManagedArtifact</code> represents an artifact that is successfully saved to SeLion grid by an HTTP POST
  * method call. This artifact mostly represents binary file types rather than text files. The MIME type for this
- * artifact is set to 'application/zip'. Expiry of the artifact is based on TTL (Time To Live) specified in milli
- * seconds. The configuration is read from Grid configuration system.
+ * artifact is set to 'application/zip'. Expiration of the artifact is based on TTL (Time To Live) specified in
+ * milliseconds The configuration is read from Grid configuration system.
  */
-public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> {
+public class DefaultManagedArtifact implements ManagedArtifact {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(DefaultManagedArtifact.class);
 
@@ -46,31 +49,91 @@ public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> 
 
     private static final String HTTP_CONTENT_TYPE = "application/zip";
 
-    private String filePath = null;
+    private static final String REPO_ABSOLUTE_PATH =
+            ManagedArtifactRepository.getInstance().getRepositoryFolder().getAbsolutePath();
 
     private File artifactFile = null;
 
     private String artifactName = null;
 
-    private String folderName = null;
+    private String subFolderName = null;
 
-    private String parentFolderName = null;
+    private String uidFolderName = null;
 
     private byte[] contents = null;
 
-    private final long timeToLiveInMillis;
+    private static final long timeToLiveInMillis = ConfigParser.parse().getLong(EXPIRY_CONFIG_PROPERTY);
 
-    private String requestPathInfo;
+    static final RequestParameters managedArtifactRequestParameters = new DefaultRequestParameters();
 
-    private DefaultCriteria requestedCriteria = null;
+    static final class DefaultRequestParameters implements RequestParameters {
+        static final String UID = "uid";
+        static final Map<String, Boolean> params = ImmutableMap.of(
+            ARTIFACT_FILE_NAME, true,
+            ARTIFACT_FOLDER_NAME, false,
+            UID, true
+        );
 
-    public DefaultManagedArtifact(String pathName) {
-        this.filePath = pathName;
-        artifactFile = new File(this.filePath);
-        timeToLiveInMillis = ConfigParser.parse().getLong(EXPIRY_CONFIG_PROPERTY);
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "Time To Live configured in Grid: " + timeToLiveInMillis + " milli seconds.");
+        public Map<String, Boolean> getParameters() {
+            return params;
         }
+
+        public boolean isRequired(String parameter) {
+            if (getParameters().containsKey(parameter)) {
+                return getParameters().get(parameter);
+            }
+            return false;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends RequestParameters> T getRequestParameters() {
+        return (T) managedArtifactRequestParameters;
+    }
+
+    public DefaultManagedArtifact() {
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Managed Artifact TTL configured in Grid to " + timeToLiveInMillis
+                    + " milliseconds.");
+        }
+    }
+
+    // package visible, this constructor is for test purposes only
+    DefaultManagedArtifact(String pathName) {
+        this();
+        initFromPath(pathName);
+    }
+
+    public void initFromPath(String absolutePath) {
+        // do not allow paths that are empty or try to break out of the repository folder
+        Preconditions.checkArgument(StringUtils.isNotBlank(absolutePath), "Path can not be blank or null.");
+        Preconditions.checkArgument(!StringUtils.contains(absolutePath, ".."), "Path can not contain '..'.");
+
+        String filePath = FilenameUtils.normalize(absolutePath);
+        Preconditions.checkArgument(StringUtils.contains(filePath, REPO_ABSOLUTE_PATH),
+                "Path specified (" + filePath + ") is outside the server repository.");
+        artifactFile = new File(filePath);
+    }
+
+    public void initFromUploadedArtifact(UploadedArtifact uploaded) {
+        // do not allow uploads to specify a tree of subFolders
+        Preconditions.checkArgument(!StringUtils.contains(uploaded.getArtifactFolderName(), "/"));
+        Preconditions.checkArgument(!StringUtils.contains(uploaded.getArtifactFolderName(), "\\"));
+        // do not allow a windows-like ':' either
+        Preconditions.checkArgument(!StringUtils.contains(uploaded.getArtifactFolderName(), ":"));
+
+        this.artifactName = uploaded.getArtifactName();
+        this.uidFolderName = uploaded.getMetaInfo().get(DefaultRequestParameters.UID);
+        this.subFolderName = uploaded.getArtifactFolderName();
+
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(REPO_ABSOLUTE_PATH).append(SystemUtils.FILE_SEPARATOR);
+        buffer.append(this.uidFolderName).append(SystemUtils.FILE_SEPARATOR);
+        if (!StringUtils.isBlank(this.subFolderName)) {
+            buffer.append(this.subFolderName).append(SystemUtils.FILE_SEPARATOR);
+        }
+        buffer.append(this.artifactName);
+        initFromPath(FilenameUtils.normalize(buffer.toString()));
     }
 
     public String getArtifactName() {
@@ -80,21 +143,36 @@ public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> 
         return artifactName;
     }
 
-    public String getFolderName() {
-        if (folderName == null) {
-            folderName = artifactFile.getParentFile().getName();
+    /**
+     * Returns the optional sub folder for the artifact
+     *
+     * @return the folder name or <code>""</code> if not specified
+     */
+    String getSubFolderName() {
+        if (subFolderName == null) {
+            String relPath = getAbsolutePath().replace(REPO_ABSOLUTE_PATH, "");
+            relPath = relPath.substring(relPath.indexOf(SystemUtils.FILE_SEPARATOR) + 1);
+            String[] parts = relPath.split("[\\\\/]");
+            subFolderName = ((parts.length < 3) || (StringUtils.isBlank(parts[1]))) ? "" : parts[1];
         }
-        return folderName;
+        return subFolderName;
     }
 
-    public String getParentFolderName() {
-        if (parentFolderName == null) {
-            parentFolderName = artifactFile.getParentFile().getParentFile().getName();
+    /**
+     * Returns the parent folder for the artifact. This folder must be a uid for {@link DefaultManagedArtifact}s
+     * 
+     * @return the folder name or <code>""</code> if not specified
+     */
+    String getUIDFolderName() {
+        if (uidFolderName == null) {
+            String relPath = getAbsolutePath().replace(REPO_ABSOLUTE_PATH, "");
+            relPath = relPath.substring(relPath.indexOf(SystemUtils.FILE_SEPARATOR) + 1);
+            String[] parts = relPath.split("[\\\\/]");
+            uidFolderName = StringUtils.isEmpty(parts[0]) ? "" : parts[0];
         }
-        return parentFolderName;
+        return uidFolderName;
     }
 
-    @Override
     public byte[] getArtifactContents() {
         if (contents == null) {
             readContents();
@@ -102,45 +180,26 @@ public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> 
         return contents;
     }
 
-    @Override
-    public DefaultCriteria getCriteria() {
-        return formCriteria();
-    }
-
-    @Override
-    public boolean matchesCriteria(String pathInfo) {
-        LOGGER.entering();
-        this.requestPathInfo = pathInfo; 
-        DefaultCriteria criteria = getCriteria();
-        if (!criteria.getArtifactName().equals(this.getArtifactName())) {
-            LOGGER.exiting(false);
-            return false;
-        }
-        if (isApplicationFolderRequested(criteria) && applicationFolderAndUserIdMatches(criteria)) {
-            LOGGER.exiting(true);
-            return true;
-        }
-        boolean matches = !isApplicationFolderRequested(criteria) && userIdMatches(criteria);
+    public boolean matchesPathInfo(String pathInfo) {
+        LOGGER.entering(pathInfo);
+        DefaultManagedArtifact request = new DefaultManagedArtifact(REPO_ABSOLUTE_PATH + pathInfo);
+        boolean matches = this.equals(request);
         LOGGER.exiting(matches);
         return matches;
     }
 
-    @Override
     public boolean isExpired() {
         boolean expired = (System.currentTimeMillis() - artifactFile.lastModified()) > timeToLiveInMillis;
         if (expired) {
             if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.log(
-                        Level.INFO,
-                        "Artifact: " + this.getArtifactName() + " expired, time(now): "
-                                + FileTime.fromMillis(System.currentTimeMillis()) + ", created: "
-                                + FileTime.fromMillis(artifactFile.lastModified()));
+                LOGGER.log(Level.INFO, "Artifact: " + this.getArtifactName() + " expired, time(now): "
+                        + FileTime.fromMillis(System.currentTimeMillis()) + ", created: "
+                        + FileTime.fromMillis(artifactFile.lastModified()));
             }
         }
         return expired;
     }
 
-    @Override
     public String getHttpContentType() {
         return HTTP_CONTENT_TYPE;
     }
@@ -157,10 +216,10 @@ public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> 
         if (!getArtifactName().equals(otherManagedArtifact.getArtifactName())) {
             return false;
         }
-        if (!getFolderName().equals(otherManagedArtifact.getFolderName())) {
+        if (!getSubFolderName().equals(otherManagedArtifact.getSubFolderName())) {
             return false;
         }
-        if (!getParentFolderName().equals(otherManagedArtifact.getParentFolderName())) {
+        if (!getUIDFolderName().equals(otherManagedArtifact.getUIDFolderName())) {
             return false;
         }
         return true;
@@ -170,15 +229,15 @@ public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> 
     public int hashCode() {
         int result = 17;
         result = 31 * result + getArtifactName().hashCode();
-        result = 31 * result + getFolderName().hashCode();
-        result = 31 * result + getParentFolderName().hashCode();
+        result = 31 * result + getSubFolderName().hashCode();
+        result = 31 * result + getUIDFolderName().hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        return "[ Artifact Name: " + getArtifactName() + ", Folder: " + getFolderName() + ", ParentFolder: "
-                + getParentFolderName() + "]";
+        return "[ Artifact Name: " + getArtifactName() + ", UID: "
+                + getUIDFolderName() + ", Subfolder: " + getSubFolderName() + "]";
     }
 
     private void readContents() {
@@ -194,64 +253,8 @@ public class DefaultManagedArtifact implements ManagedArtifact<DefaultCriteria> 
         }
     }
 
-    private boolean isApplicationFolderRequested(DefaultCriteria criteria) {
-        return !StringUtils.isBlank(criteria.getApplicationFolder());
-    }
-
-    private boolean applicationFolderAndUserIdMatches(DefaultCriteria criteria) {
-        return criteria.getApplicationFolder().equals(getFolderName())
-                && criteria.getUserId().equals(getParentFolderName());
-    }
-
-    private boolean userIdMatches(DefaultCriteria criteria) {
-        return criteria.getUserId().equals(getFolderName());
-    }
-
-    private DefaultCriteria formCriteria() {
-        if (requestedCriteria == null) {
-            EnumMap<RequestHeaders, String> parametersMap = getParametersMap();
-            requestedCriteria = new DefaultCriteria(parametersMap);
-        }
-        return requestedCriteria;
-    }
-
-    private EnumMap<RequestHeaders, String> getParametersMap() {
-        EnumMap<RequestHeaders, String> parametersMap = populateMapFromPathInfo();
-        if (!(parametersMap.containsKey(RequestHeaders.FILENAME) && parametersMap.containsKey(RequestHeaders.USERID))) {
-            throw new ArtifactDownloadException("Request missing essential parameters: "
-                    + RequestHeaders.FILENAME.getParameterName() + ", " + RequestHeaders.USERID.getParameterName());
-        }
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "Parameters map received in request: " + parametersMap);
-        }
-        return parametersMap;
-    }
-
-    private EnumMap<RequestHeaders, String> populateMapFromPathInfo() {
-        EnumMap<RequestHeaders, String> parametersMap = new EnumMap<>(RequestHeaders.class);
-        String[] pathItems = getPathItems();
-        if (pathItems.length >= 2 && pathItems.length <= 3) {
-            if (pathItems.length == 3) {
-                parametersMap.put(RequestHeaders.USERID, pathItems[0].trim());
-                parametersMap.put(RequestHeaders.APPLICATIONFOLDER, pathItems[1].trim());
-                parametersMap.put(RequestHeaders.FILENAME, pathItems[2].trim());
-            }
-            if (pathItems.length == 2) {
-                parametersMap.put(RequestHeaders.USERID, pathItems[0].trim());
-                parametersMap.put(RequestHeaders.FILENAME, pathItems[1].trim());
-            }
-        } else {
-            throw new ArtifactDownloadException("Invalid path: " + this.requestPathInfo);
-        }
-        return parametersMap;
-    }
-
-    private String[] getPathItems() {
-        if (StringUtils.isBlank(requestPathInfo) || requestPathInfo.length() < 4) {
-            throw new ArtifactDownloadException("Artifact path is null or empty");
-        }
-        String pathInfo = this.requestPathInfo.substring(requestPathInfo.indexOf('/') + 1);
-        return pathInfo.split("/");
+    public String getAbsolutePath() {
+        return (artifactFile == null) ? "" : artifactFile.getAbsolutePath();
     }
 
 }

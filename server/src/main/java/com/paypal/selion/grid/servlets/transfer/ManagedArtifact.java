@@ -15,12 +15,53 @@
 
 package com.paypal.selion.grid.servlets.transfer;
 
+import java.util.Map;
+
 /**
  * <code>ManagedArtifact</code> represents a basic artifact successfully saved to SeLion grid by an HTTP POST method
- * call.
- * 
+ * call. All implementations MUST provide a default, no-argument constructor for the {@link ManagedArtifact}
+ * implementation.
  */
-public interface ManagedArtifact<U extends Criteria> {
+public interface ManagedArtifact {
+    String ARTIFACT_FILE_NAME = "fileName";
+    String ARTIFACT_FOLDER_NAME = "folderName";
+
+    interface RequestParameters {
+        /**
+         * Returns the input parameters that this artifact uses. Implementations <b>must</b> include
+         * {@link ManagedArtifact#ARTIFACT_FILE_NAME}
+         * 
+         * @return the input parameters as a {@link Map} of {@link String}, {@link Boolean} where the string is the
+         *         parameter name, and the boolean states if it is a required parameter.
+         */
+        Map<String, Boolean> getParameters();
+
+        /**
+         * Is the input parameter required
+         * 
+         * @param parameter
+         *            the input parameter in question
+         * @return <code>true</code> or </code>false</code>
+         */
+        boolean isRequired(String parameter);
+    }
+
+    /**
+     * Initialize the artifact by it's file path.
+     * 
+     * @param absolutePath
+     *            absolute path to the artifact. Must be in the {@link ServerRepository} path. For example:
+     *            <code>/{serverRepository}/{artifactFolder}/{artifactName}</code>
+     */
+    void initFromPath(String absolutePath);
+
+    /**
+     * Initialize the artifact by an in-bound uploaded artifact
+     * 
+     * @param uploaded
+     *            instance of {@link UploadedArtifact} which will contain the meta-info for the uploaded artifact
+     */
+    void initFromUploadedArtifact(UploadedArtifact uploaded);
 
     /**
      * Returns the artifact name.
@@ -30,37 +71,34 @@ public interface ManagedArtifact<U extends Criteria> {
     String getArtifactName();
 
     /**
-     * Returns the name of the folder this artifact is housed.
-     * 
-     * @return Folder name of this artifact
-     */
-    String getFolderName();
-
-    /**
-     * Returns the name of the parent folder (folder of the folder) for this artifact.
-     * 
-     * @return Folder name of the parent folder.
-     */
-    String getParentFolderName();
-
-    /**
-     * Returns the contents of the artifact as a byte array.
+     * Returns the contents of the artifact as a byte array. Called by the {@link DownloadResponder}
      * 
      * @return Contents as a byte array.
      */
     byte[] getArtifactContents();
 
     /**
-     * Matches the artifact based on some {@link Criteria}
+     * Matches the artifact based on some path info. Called by the {@link ServerRepository} to find artifacts by a
+     * relative, publicly exposed (via the download URL), path
      * 
-     * @param criteria
-     *            Instance of {@link Criteria} to match.
+     * @param pathInfo
+     *            {@link String} path information to match against. For example:
+     *            <code>/{artifactFolder}/{artifactName}</code>
      * @return true if there is a match, false otherwise.
      */
-    boolean matchesCriteria(String pathInfo);
+    boolean matchesPathInfo(String pathInfo);
 
     /**
-     * Returns true if this {@link ManagedArtifact} has expired.
+     * Return the path of the artifact file
+     * 
+     * @return the absolute path to the artifact file. Must include the {@link ServerRepository} path. For example:
+     *         <code>/{serverRepository}/{artifactFolder}/{artifactName}</code>
+     */
+    String getAbsolutePath();
+
+    /**
+     * Returns true if this {@link ManagedArtifact} has expired. Called by the {@link ServerRepository} to clean up
+     * artifacts.
      * 
      * @return true if expired, false otherwise
      */
@@ -74,10 +112,10 @@ public interface ManagedArtifact<U extends Criteria> {
     String getHttpContentType();
 
     /**
-     * Returns the criteria associated with current artifact.
+     * Returns the headers associated with this {@link ManagedArtifact}
      * 
-     * @return Instance of current {@link Criteria}.
+     * @return Instance of {@link RequestParameters}
      */
-    U getCriteria();
+    <T extends RequestParameters> T getRequestParameters();
 
 }

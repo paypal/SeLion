@@ -13,19 +13,19 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.grid.servlet.transfer;
+package com.paypal.selion.grid.servlets.transfer;
 
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,54 +34,37 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.grid.servlets.transfer.ArtifactUploadException;
-import com.paypal.selion.grid.servlets.transfer.Criteria;
-import com.paypal.selion.grid.servlets.transfer.ManagedArtifact;
-import com.paypal.selion.grid.servlets.transfer.TransferContext;
-import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor;
-import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.RequestHeaders;
+import com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact.DefaultRequestParameters;
 import com.paypal.selion.grid.servlets.transfer.UploadResponder.JsonUploadResponder;
 import com.paypal.selion.grid.servlets.transfer.UploadResponder.TextPlainUploadResponder;
-import com.paypal.selion.utils.ConfigParser;
 
 @PrepareForTest({ UploadRequestProcessor.class, HttpServletRequest.class, HttpServletResponse.class,
-        ManagedArtifact.class, ConfigParser.class })
+        ManagedArtifact.class })
 public class UploadResponderTest extends PowerMockTestCase {
 
-    @BeforeMethod
-    public void setUpBeforeEveryMethod() throws Exception {
-        ConfigParser configParser = mock(ConfigParser.class);
-        mockStatic(ConfigParser.class);
-        when(ConfigParser.parse()).thenReturn(configParser);
-        when(configParser.getString("managedCriteria")).thenReturn(
-                "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact$DefaultCriteria");
-    }
-
     @Test
-    @SuppressWarnings({ "unchecked" })
     public void testJsonResponder() throws IOException {
-        UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = mock(UploadRequestProcessor.class);
+        UploadRequestProcessor requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-        ManagedArtifact<Criteria> managedArtifact = mock(ManagedArtifact.class);
+        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
 
         String expected = "{\"files\":[{\"fileName\":\"DummyArtifact.any\",\"url\":\"http://localhost:4444/path/TransferServlet/userOne/DummyArtifact.any\"}]}";
-        EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
-        map.put(RequestHeaders.FILENAME, "DummyArtifact.any");
-        map.put(RequestHeaders.USERID, "userOne");
+        Map<String, String> map = new HashMap<>();
+        map.put(ManagedArtifact.ARTIFACT_FILE_NAME, "DummyArtifact.any");
+        map.put(DefaultRequestParameters.UID, "userOne");
 
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-        List<ManagedArtifact<Criteria>> managedArtifactList = new ArrayList<>();
+        List<ManagedArtifact> managedArtifactList = new ArrayList<>();
         managedArtifactList.add(managedArtifact);
         TransferContext transferContext = mock(TransferContext.class);
 
-        when(managedArtifact.getFolderName()).thenReturn("userOne");
         when(managedArtifact.getArtifactName()).thenReturn("DummyArtifact.any");
+        when(managedArtifact.getAbsolutePath()).thenReturn("/userOne/DummyArtifact.any");
         when(transferContext.getHttpServletRequest()).thenReturn(httpServletRequest);
         when(transferContext.getHttpServletResponse()).thenReturn(httpServletResponse);
         when(transferContext.getUploadRequestProcessor()).thenReturn(requestProcessor);
@@ -100,27 +83,26 @@ public class UploadResponderTest extends PowerMockTestCase {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked" })
     public void testTextPlainResponder() throws IOException {
-        UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = mock(UploadRequestProcessor.class);
+        UploadRequestProcessor requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
-        ManagedArtifact<Criteria> managedArtifact = mock(ManagedArtifact.class);
+        ManagedArtifact managedArtifact = mock(ManagedArtifact.class);
 
-        String expected = "fileName=DummyArtifact.any,url=http://localhost:4444/path/TransferServlet/userOne/DummyArtifact.any;";
-        EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
-        map.put(RequestHeaders.FILENAME, "DummyArtifact.any");
-        map.put(RequestHeaders.USERID, "userOne");
+        String expected = "fileName=DummyArtifact.any,url=http://localhost:4444/path/TransferServlet/userOne/DummyArtifact.any";
+        Map<String, String> map = new HashMap<>();
+        map.put(ManagedArtifact.ARTIFACT_FILE_NAME, "DummyArtifact.any");
+        map.put(DefaultRequestParameters.UID, "userOne");
 
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-        List<ManagedArtifact<Criteria>> managedArtifactList = new ArrayList<>();
+        List<ManagedArtifact> managedArtifactList = new ArrayList<>();
         managedArtifactList.add(managedArtifact);
         TransferContext transferContext = mock(TransferContext.class);
 
-        when(managedArtifact.getFolderName()).thenReturn("userOne");
         when(managedArtifact.getArtifactName()).thenReturn("DummyArtifact.any");
+        when(managedArtifact.getAbsolutePath()).thenReturn("/userOne/DummyArtifact.any");
         when(transferContext.getHttpServletRequest()).thenReturn(httpServletRequest);
         when(transferContext.getHttpServletResponse()).thenReturn(httpServletResponse);
         when(transferContext.getUploadRequestProcessor()).thenReturn(requestProcessor);
@@ -139,19 +121,19 @@ public class UploadResponderTest extends PowerMockTestCase {
     }
 
     @Test(expectedExceptions = ArtifactUploadException.class)
-    @SuppressWarnings({ "unchecked" })
     public void testResponderIfListIsEmpty() throws IOException {
-        UploadRequestProcessor<ManagedArtifact<Criteria>> requestProcessor = mock(UploadRequestProcessor.class);
+        UploadRequestProcessor requestProcessor = mock(UploadRequestProcessor.class);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
 
-        EnumMap<RequestHeaders, String> map = new EnumMap<>(RequestHeaders.class);
-        map.put(RequestHeaders.FILENAME, "DummyArtifact.any");
-        map.put(RequestHeaders.USERID, "userOne");
+        Map<String, String> map = new HashMap<>();
+
+        map.put(ManagedArtifact.ARTIFACT_FILE_NAME, "DummyArtifact.any");
+        map.put(DefaultRequestParameters.UID, "userOne");
         StringBuffer stringBuffer = new StringBuffer("http://localhost:4444/path/TransferServlet");
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-        List<ManagedArtifact<Criteria>> managedArtifactList = new ArrayList<>();
+        List<ManagedArtifact> managedArtifactList = new ArrayList<>();
         TransferContext transferContext = mock(TransferContext.class);
 
         when(transferContext.getHttpServletRequest()).thenReturn(httpServletRequest);

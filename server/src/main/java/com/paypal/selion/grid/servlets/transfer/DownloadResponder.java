@@ -30,8 +30,8 @@ import com.paypal.selion.logging.SeLionGridLogger;
  * 
  * <pre>
  * {@code
- * URL = http://<domain-name>:<port>/servletPath/<userId>/<artifactName>
- * URL = http://<domain-name>:<port>/servletPath/<userId>/<applicationFolder>/<artifactName>
+ * URL = http://<server>:<port>/servletPath/<artifactName>
+ * URL = http://<server>:<port>/servletPath/<applicationFolder>/<artifactName>
  * }
  * </pre>
  */
@@ -47,7 +47,7 @@ public class DownloadResponder {
 
     private String pathInfo;
 
-    private ManagedArtifact<Criteria> managedArtifact;
+    private ManagedArtifact managedArtifact;
 
     private byte[] contents;
 
