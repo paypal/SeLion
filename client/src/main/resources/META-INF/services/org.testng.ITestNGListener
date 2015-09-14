@@ -1,6 +1,6 @@
-com.paypal.selion.reports.reporter.runtimereport.RuntimeReporterListener
-com.paypal.selion.platform.grid.SeleniumGridListener
-com.paypal.selion.platform.asserts.SeLionAssertsListener
-com.paypal.selion.reports.reporter.html.HtmlReporterListener
-com.paypal.selion.platform.grid.SessionSharingMethodInterceptor
-com.paypal.selion.reports.reporter.excelreport.ExcelReport
+com.paypal.selion.internal.reports.runtimereport.RuntimeReporterListener
+com.paypal.selion.internal.platform.grid.SeleniumGridListener
+com.paypal.selion.internal.platform.asserts.SeLionAssertsListener
+com.paypal.selion.internal.reports.html.HtmlReporterListener
+com.paypal.selion.internal.platform.grid.SessionSharingMethodInterceptor
+com.paypal.selion.internal.reports.excelreport.ExcelReport

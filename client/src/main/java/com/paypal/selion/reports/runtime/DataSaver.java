@@ -20,7 +20,7 @@ import com.paypal.selion.internal.reports.model.PageContents;
 /**
  * Simple interface for data persistence of web page parts.
  */
-public interface DataSaver {
+interface DataSaver {
 
     /**
      * Initialize the saver.
@@ -42,7 +42,7 @@ public interface DataSaver {
      * 
      * @param s
      *            the {@link PageContents} object
-     * @return a {@link String} which represent a means for retrieved the source code, such as a file path or url.
+     * @return a {@link String} which represent a means for retrieving the source code, such as a file path or url.
      */
     String saveSources(PageContents s);
 

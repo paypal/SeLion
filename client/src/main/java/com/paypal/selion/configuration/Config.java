@@ -30,9 +30,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
 import org.testng.ITestContext;
 
+import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.configuration.LocalConfig;
+import com.paypal.selion.internal.platform.grid.MobileNodeType;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventListener;
-import com.paypal.selion.platform.grid.MobileNodeType;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
 
@@ -561,7 +563,7 @@ public final class Config {
 
         /**
          * platform is specified by user.<br>
-         * Default is set to <b>XP</b> Supporting values are: ANDROID, ANY, LINUX, MAC, UNIX, VISTA, WINDOWS, XP.
+         * Default is set to <b>ANY</b> Supporting values are: ANDROID, ANY, LINUX, MAC, UNIX, VISTA, WINDOWS, XP.
          */
         BROWSER_CAPABILITY_PLATFORM("platform", "ANY", false),
 

@@ -22,7 +22,7 @@ import org.testng.asserts.IAssert;
 /**
  * SeLion Hard Assert class which provides the capability to log all the asserts and their status.
  */
-class SeLionHardAssert extends Assertion {
+public final class SeLionHardAssert extends Assertion {
 
     @Override
     public void onAssertSuccess(IAssert<?> assertCommand) {

@@ -26,15 +26,18 @@ import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
 
+import com.paypal.selion.internal.platform.asserts.SeLionAssertsListener;
+
 /**
  * SeLion Soft Asserts which provides the capability to log the asserts and their status. But the test continue to run
  * till the end of the test method.
  */
-class SeLionSoftAssert extends Assertion {
+public final class SeLionSoftAssert extends Assertion {
 
-    static final String SOFT_ASSERT_ATTRIBUTE_NAME = SeLionSoftAssert.class.getCanonicalName();
+    public static final String SOFT_ASSERT_ATTRIBUTE_NAME = SeLionSoftAssert.class.getCanonicalName();
+    
     private Map<AssertionError, IAssert<?>> allErrors = Maps.newLinkedHashMap();
-
+    
     @Override
     protected void doAssert(IAssert<?> assertCommand) {
         onBeforeAssert(assertCommand);

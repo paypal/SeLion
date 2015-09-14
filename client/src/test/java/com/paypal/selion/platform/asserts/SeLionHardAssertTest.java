@@ -17,8 +17,6 @@ package com.paypal.selion.platform.asserts;
 
 import org.testng.annotations.Test;
 
-import com.paypal.selion.platform.asserts.SeLionHardAssert;
-
 public class SeLionHardAssertTest {
 
     SeLionHardAssert hardAssert = new SeLionHardAssert();

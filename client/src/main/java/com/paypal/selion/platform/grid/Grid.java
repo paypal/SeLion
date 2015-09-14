@@ -37,6 +37,9 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.internal.platform.grid.AbstractTestSession;
+import com.paypal.selion.internal.platform.grid.MobileTestSession;
+import com.paypal.selion.internal.platform.grid.WebTestSession;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -58,15 +61,15 @@ public final class Grid {
         // Utility class. So hide the constructor
     }
 
-    static ThreadLocal<RemoteWebDriver> getThreadLocalWebDriver() {
+    public static ThreadLocal<RemoteWebDriver> getThreadLocalWebDriver() {
         return threadLocalWebDriver;
     }
 
-    static ThreadLocal<AbstractTestSession> getThreadLocalTestSession() {
+    public static ThreadLocal<AbstractTestSession> getThreadLocalTestSession() {
         return threadTestSession;
     }
 
-    static ThreadLocal<Exception> getThreadLocalException() {
+    public static ThreadLocal<Exception> getThreadLocalException() {
         return threadLocalException;
     }
 
@@ -191,7 +194,7 @@ public final class Grid {
      * @return An array of string wherein the first element represents the remote node's name and the second element
      *         represents its port.
      */
-    static RemoteNodeInformation getRemoteNodeInfo(String hostName, int port, SessionId session) {
+    public static RemoteNodeInformation getRemoteNodeInfo(String hostName, int port, SessionId session) {
         logger.entering(new Object[] { hostName, port, session });
         RemoteNodeInformation node = null;
         String errorMsg = "Failed to acquire remote webdriver node and port info. Root cause: ";

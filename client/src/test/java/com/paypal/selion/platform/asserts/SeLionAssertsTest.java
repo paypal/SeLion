@@ -19,7 +19,6 @@ import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.platform.asserts.SeLionAsserts;
-import com.paypal.selion.platform.asserts.SeLionSoftAssert;
 
 /**
  * Unit Tests for SeLionAssert.

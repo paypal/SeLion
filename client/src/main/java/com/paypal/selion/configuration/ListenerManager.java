@@ -24,9 +24,11 @@ import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
- * TestNG 6.1 provides a capability wherein you can hook in Listeners via ServiceLoading. In order for you to leverage
- * this capability, and also be able to dynamically enable/disable it from within your project , you would need to first
- * register the listener with {@link ListenerManager}. <br>
+ * <code>ListenerManager</code> provides facilities to register and use Listeners.
+ * 
+ * TestNG 6.1 and above provides a capability wherein you can hook in Listeners via ServiceLoading. To leverage this
+ * capability, and also be able to dynamically enable/disable it from within a project , we need to first register the
+ * listener with {@link ListenerManager}. <br>
  * <ul>
  * <li>Use {@link ListenerManager#registerListener(ListenerInfo)} to register your listener and then use
  * <li>{@link ListenerManager#executeCurrentMethod(ITestNGListener)} - to find if a current method within your listener

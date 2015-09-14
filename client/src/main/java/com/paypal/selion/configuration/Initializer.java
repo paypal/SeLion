@@ -18,9 +18,9 @@ package com.paypal.selion.configuration;
 import org.testng.ITestContext;
 
 /**
- * This interface represents the capabilities that any initializer must possess so as to let SeLion automatically
- * invoke it (even if the implementation resides downstream). This is used within SeLion to drive configuration
- * initializations via the concrete implementations of {@link AbstractConfigInitializer}.
+ * <code>Initializer</code> represents the capabilities that any initializer must possess so as to let SeLion
+ * automatically invoke it (even if the implementation resides downstream). This is used within SeLion to drive
+ * configuration initializations via the concrete implementations of {@link AbstractConfigInitializer}.
  * 
  */
 public interface Initializer {

@@ -16,8 +16,7 @@
 package com.paypal.selion.configuration;
 
 /**
- * Commonly referred SeLion configurations.
- * 
+ * Commonly referred to as SeLion configurations.
  */
 public enum ExtendedConfig {
     /**
@@ -32,7 +31,8 @@ public enum ExtendedConfig {
      * result.setAttribute(ExtendedConfig.CAPABILITIES.getConfig(), dc);
      * </pre>
      */
-    CAPABILITIES("capabilities"), 
+    CAPABILITIES("capabilities"),
+
     TEST_NAME("name");
 
     private String configName;

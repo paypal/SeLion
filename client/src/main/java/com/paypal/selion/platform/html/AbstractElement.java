@@ -39,10 +39,10 @@ import org.testng.Reporter;
 
 import com.google.common.base.Function;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.internal.platform.grid.BrowserFlavors;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.BrowserFlavors;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.html.support.ParentNotFoundException;

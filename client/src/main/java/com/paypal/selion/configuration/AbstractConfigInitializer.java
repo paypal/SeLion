@@ -21,7 +21,7 @@ import org.testng.ITestContext;
 
 /**
  * An abstract implementation that guarantees configurations to be initialized via {@link ServiceLoader}. Any downstream
- * consumer of SeLion would need to following the below mentioned steps to leverage this capability.
+ * consumer of SeLion would need to follow the below mentioned steps to leverage this capability.
  * <ul>
  * <li>Create a customized configuration initializer by extending {@link AbstractConfigInitializer}
  * <li>Incorporate the logic of initializing the configuration based on the current {@link ITestContext} by implementing

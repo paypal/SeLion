@@ -23,9 +23,9 @@ import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.LocalConfig;
+import com.paypal.selion.internal.platform.grid.MobileTestSession;
+import com.paypal.selion.internal.platform.grid.WebTestSession;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.platform.grid.MobileTestSession;
-import com.paypal.selion.platform.grid.WebTestSession;
 
 import static com.paypal.selion.platform.asserts.SeLionAsserts.assertEquals;
 import static com.paypal.selion.platform.asserts.SeLionAsserts.assertNotNull;

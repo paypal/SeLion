@@ -17,8 +17,6 @@ package com.paypal.selion.platform.asserts;
 
 import org.testng.annotations.Test;
 
-import com.paypal.selion.platform.asserts.SeLionSoftAssert;
-
 public class SeLionSoftAssertTest {
 
     @Test(groups = { "unit" })

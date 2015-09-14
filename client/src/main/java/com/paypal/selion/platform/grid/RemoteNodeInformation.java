@@ -20,7 +20,7 @@ package com.paypal.selion.platform.grid;
  * test is executing.
  * 
  */
-class RemoteNodeInformation {
+public class RemoteNodeInformation {
     private String hostName;
     private int portNumber;
 

@@ -21,10 +21,8 @@ import static org.testng.Assert.assertTrue;
 import org.testng.ITestContext;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.configuration.ConfigManager;
-import com.paypal.selion.configuration.LocalConfig;
 import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.platform.grid.BrowserFlavors;
+import com.paypal.selion.internal.platform.grid.BrowserFlavors;
 
 public class ConfigManagerTest {
     private static final String TEST_CONFIG_NAME = "Test1";

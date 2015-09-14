@@ -24,14 +24,14 @@ import java.util.Queue;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.LocalConfig;
-import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.platform.grid.AbstractTestSession;
+import com.paypal.selion.internal.platform.grid.AbstractTestSession;
+import com.paypal.selion.internal.platform.pageyaml.GuiMapReader;
+import com.paypal.selion.internal.platform.pageyaml.GuiMapReaderFactory;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.WebPage;
-import com.paypal.selion.platform.web.GuiMapReader;
-import com.paypal.selion.platform.web.GuiMapReaderFactory;
 
 public abstract class AbstractPage implements WebPage {
 

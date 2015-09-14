@@ -1,2 +1,2 @@
-com.paypal.selion.platform.grid.browsercapabilities.AdditionalSauceCapabilitiesBuilder
-com.paypal.selion.platform.grid.browsercapabilities.UserDefinedCapabilities
+com.paypal.selion.internal.platform.grid.browsercapabilities.AdditionalSauceCapabilitiesBuilder
+com.paypal.selion.internal.platform.grid.browsercapabilities.UserDefinedCapabilities
