@@ -34,8 +34,7 @@ public class TestNGUtilsTest {
     @Test(groups = "unit", dependsOnMethods = { "dummyTestMethod" })
     public void testGetInvokedMethodInformation() {
         ITestResult result = Reporter.getCurrentTestResult();
-        IInvokedMethod method = new InvokedMethod(this, result.getMethod(), null, true, false,
-                System.currentTimeMillis(), result);
+        IInvokedMethod method = new InvokedMethod(this, result.getMethod(), null, System.currentTimeMillis(), result);
         result.setAttribute("foo", "bar");
         InvokedMethodInformation response = TestNGUtils.getInvokedMethodInformation(method, result);
         SeLionAsserts.assertEquals(response.getCurrentTestName(), result.getTestContext().getCurrentXmlTest()
