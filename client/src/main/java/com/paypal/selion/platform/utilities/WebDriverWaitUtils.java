@@ -28,6 +28,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.common.base.Preconditions;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.html.PageValidationException;
 import com.paypal.selion.platform.html.WebPage;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -55,6 +56,15 @@ public final class WebDriverWaitUtils {
 
     private static void waitForCondition(ExpectedCondition<?> condition, long timeoutInSeconds) {
         new WebDriverWait(Grid.driver(), timeoutInSeconds).until(condition);
+    }
+
+    private static void waitForConditionIgnoring(ExpectedCondition<?> condition, Class<? extends Throwable> ignoring) {
+        waitForConditionIgnoring(condition, ignoring, timeoutInSeconds());
+    }
+
+    private static void waitForConditionIgnoring(ExpectedCondition<?> condition, Class<? extends Throwable> ignoring,
+            long timeoutInSeconds) {
+        new WebDriverWait(Grid.driver(), timeoutInSeconds).ignoring(ignoring).until(condition);
     }
 
     /**
@@ -173,17 +183,18 @@ public final class WebDriverWaitUtils {
      * @param pageObject
      *            a {@link WebPage} instance.
      */
-    public static void waitUntilWebPageIsValidated(WebPage pageObject) {
+    public static void waitUntilPageIsValidated(WebPage pageObject) {
         logger.entering(pageObject);
         Preconditions.checkArgument(pageObject != null, "Please provide a valid instance of WebPage.");
         final WebPage w = (WebPage) pageObject;
         ExpectedCondition<Boolean> conditionToCheck = new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                return w.isPageValidated();
+                w.validatePage();
+                return true;
             }
         };
-        waitForCondition(conditionToCheck);
+        waitForConditionIgnoring(conditionToCheck, PageValidationException.class);
         logger.exiting();
     }
 

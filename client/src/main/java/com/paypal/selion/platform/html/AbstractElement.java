@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
@@ -504,7 +506,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
                     continue;
                 }
                 if (expect instanceof WebPage) {
-                    WebDriverWaitUtils.waitUntilWebPageIsValidated((WebPage) expect);
+                    WebDriverWaitUtils.waitUntilPageIsValidated((WebPage) expect);
                     continue;
                 }
             }
@@ -585,11 +587,17 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
         try {
             WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
+            wait.ignoring(NoSuchElementException.class);
+            wait.ignoring(ExpectOneOfException.class);
+            
             ExpectedCondition<?> matchedCondition = wait.until(new Function<WebDriver, ExpectedCondition<?>>() {
 
                 // find the first condition that matches and return it
                 @Override
                 public ExpectedCondition<?> apply(WebDriver webDriver) {
+                    StringBuilder sb = new StringBuilder();
+
+                    int i = 1;
                     for (final ExpectedCondition<?> condition : conditions) {
                         try {
                             Object value = condition.apply(webDriver);
@@ -599,11 +607,16 @@ public abstract class AbstractElement implements Clickable, Hoverable {
                                 }
                             } else if (value != null) {
                                 return condition;
-                            }
-                        } catch (NoSuchElementException e) { // NOSONAR
+                            }  
+                        } catch(WebDriverException e) {
+                            sb.append("\n\tObject " + i + ":\n");
+                            sb.append("\t" + ExceptionUtils.getRootCauseMessage(e).split("\n")[0] + "\n");
+                            sb.append("\t\t" + StringUtils.substringBetween(ExceptionUtils.getStackTrace(e), "\n"));
                         }
+                        i++;
                     }
-                    return null;
+                    
+                    throw new ExpectOneOfException(sb.toString());
                 }
             });
 
@@ -643,12 +656,19 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         long timeout = Grid.getExecutionTimeoutValue() / 1000;
 
         try {
+
             WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
-            Object expectedObj = wait.until(new Function<WebDriver, Object>() {
+            wait.ignoring(NoSuchElementException.class);
+            wait.ignoring(PageValidationException.class);
+
+            Object expectedObj = wait.ignoring(ExpectOneOfException.class).until(new Function<WebDriver, Object>() {
 
                 // find the first object that is matched and return it
                 @Override
                 public Object apply(WebDriver webDriver) {
+                    StringBuilder sb = new StringBuilder();
+
+                    int i = 1;
                     for (Object expect : expected) {
                         try {
                             if (expect instanceof AbstractElement) {
@@ -664,14 +684,18 @@ public abstract class AbstractElement implements Clickable, Hoverable {
                             } else if (expect instanceof WebPage) {
                                 WebPage w = (WebPage) expect;
 
-                                if (w.isPageValidated()) {
-                                    return expect;
-                                }
+                                w.validatePage();
+                                return expect;
                             }
-                        } catch (NoSuchElementException e) { // NOSONAR
+                        } catch (NoSuchElementException | PageValidationException e) { // NOSONAR
+                            sb.append("\n\tObject " + i + ": " + expect.getClass().getSimpleName() + "\n");
+                            sb.append("\t" + ExceptionUtils.getRootCauseMessage(e) + "\n");
+                            sb.append("\t\t" + StringUtils.substringBetween(ExceptionUtils.getStackTrace(e), "\n"));
                         }
+                        i++;
                     }
-                    return null;
+
+                    throw new ExpectOneOfException(sb.toString());
                 }
             });
 

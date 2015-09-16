@@ -46,20 +46,14 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
         super();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * Return the actual page title for this page
+    /**
+     * @return the actual title for this page
      */
     public String getActualPageTitle() {
         return Grid.driver().getTitle();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.WebPage#getExpectedPageTitle()
-     */
+    @Override
     public String getExpectedPageTitle() {
         this.getObjectMap();
         return getPage().getPageTitle();
@@ -87,39 +81,23 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
     }
 
     /**
-     * Require extended class to provide this implementation.
-     * 
-     * @return the page
+     * @return the page object
      */
     public abstract BasicPageImpl getPage();
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.ParentType#locateChildElements(java.lang.String)
-     */
     public List<WebElement> locateChildElements(String locator) {
         return HtmlElementUtils.locateElements(locator);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.ParentType#locateChildElement(java.lang.String)
-     */
     public RemoteWebElement locateChildElement(String locator) {
         return HtmlElementUtils.locateElement(locator);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.ParentType#getCurrentPage()
-     */
     public BasicPageImpl getCurrentPage() {
         return this;
     }
 
+    @Override
     public void validatePage() {
         getObjectMap();
 
@@ -173,7 +151,9 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
      * Verify if the element is available based on a certain action
      * 
      * @param elementName
+     *            element to perform verification action on
      * @param action
+     *            verification action to perform
      */
     private void verifyElementByAction(String elementName, String action) {
         AbstractElement element = getAbstractElementThroughReflection(elementName);
@@ -184,35 +164,31 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
         case "isPresent":
             if (!present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't present.");
+                        + elementName + " with locator " + element.getLocator() + " isn't present.");
             }
             break;
         case "isVisible":
             if (!present || (present && !element.isVisible())) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't visible.");
+                        + elementName + " with locator " + element.getLocator() + " isn't visible.");
             }
             break;
         case "isEnabled":
             if (!present || (present && !element.isEnabled())) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't enabled.");
+                        + elementName + " with locator " + element.getLocator() + " isn't enabled.");
             }
             break;
         default:
             if (!present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't present.");
+                        + elementName + " with locator " + element.getLocator() + " isn't present.");
             }
             break;
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.WebPage#isPageValidated()
-     */
+    @Override
     public boolean isPageValidated() {
         try {
             validatePage();
