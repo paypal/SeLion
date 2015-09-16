@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -116,7 +117,7 @@ public class AbstractElementTest {
         assertTrue(expected.equals(success)); // success page should be found
     }
 
-    @Test(groups = { "functional" }, expectedExceptions = { org.openqa.selenium.TimeoutException.class })
+    @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
     @WebTest
     public void testClickAndExpectOneOfExpectedConditionsNegativeTest() throws IOException {
         Grid.driver().get(TestServerUtils.getTestEditableURL());
@@ -136,7 +137,6 @@ public class AbstractElementTest {
         }
     }
 
-    // failing, correct that
     @Test(groups = { "functional" })
     @WebTest
     public void testClickAndExpectOneOf() throws IOException, InterruptedException {
@@ -163,7 +163,7 @@ public class AbstractElementTest {
         assertTrue(expected3.equals(inMemoryPage));
     }
 
-    @Test(groups = { "functional" }, expectedExceptions = { org.openqa.selenium.TimeoutException.class })
+    @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
     @WebTest
     public void testClickAndExpectOneOfNegativeTest() throws IOException {
         Grid.driver().get(TestServerUtils.getTestEditableURL());

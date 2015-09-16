@@ -86,7 +86,7 @@ public class SeLionSeleniumTest {
         try {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
             Grid.driver().get(url);
-            WebDriverWaitUtils.waitUntilWebPageIsValidated(new BasicPageImpl() {
+            WebDriverWaitUtils.waitUntilPageIsValidated(new BasicPageImpl() {
                 @Override
                 public BasicPageImpl getPage() {
                     return this;

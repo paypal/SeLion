@@ -167,11 +167,6 @@ public abstract class AbstractPage implements WebPage {
         pageInitialized = true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.WebPage#initPage(java.lang.String, java.lang.String, java.lang.String)
-     */
     public void initPage(String pageDomain, String pageClassName, String siteLocale) {
         initPage(pageDomain, pageClassName);
         site = siteLocale;
@@ -181,22 +176,18 @@ public abstract class AbstractPage implements WebPage {
         return pageInitialized;
     }
 
-    @Override
     public String getExpectedPageTitle() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 
-    @Override
     public String getSiteLocale() {
         return site;
     }
 
-    @Override
     public void validatePage() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 
-    @Override
     public boolean isPageValidated() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
