@@ -3,8 +3,8 @@
     "name": "selenium",
     "roles": [ "node", "hub", "standalone", "sauce" ],
     "any": {
-      "url": "https://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar",
-      "checksum": "0e9f78edf114943e4f0288bf9c2157f8"
+      "url": "https://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.1.jar",
+      "checksum": "e6cb10b8f0f353c6ca4a8f62fb5cb472"
     }
   },
   {
@@ -43,8 +43,8 @@
     "name": "iedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://selenium-release.storage.googleapis.com/2.46/IEDriverServer_Win32_2.46.0.zip",
-      "checksum": "93616ec22088413ff9d8dec978d94474"
+      "url": "http://selenium-release.storage.googleapis.com/2.47/IEDriverServer_Win32_2.47.0.zip",
+      "checksum": "8d737f709699cc194af303660e47dfc4"
     }
   },
   {
