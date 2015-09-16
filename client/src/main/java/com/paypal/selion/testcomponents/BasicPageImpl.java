@@ -188,25 +188,25 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
         case "isPresent":
             if (!present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't present.");
+                        + elementName + " with locator " + element.getLocator() + " isn't present.");
             }
             break;
         case "isVisible":
             if (!present || (present && !element.isVisible())) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't visible.");
+                        + elementName + " with locator " + element.getLocator() + " isn't visible.");
             }
             break;
         case "isEnabled":
             if (!present || (present && !element.isEnabled())) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't enabled.");
+                        + elementName + " with locator " + element.getLocator() + " isn't enabled.");
             }
             break;
         default:
             if (!present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " isn't present.");
+                        + elementName + " with locator " + element.getLocator() + " isn't present.");
             }
             break;
         }
