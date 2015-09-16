@@ -301,7 +301,7 @@ public class UiObject implements UserinterfaceObject {
                 continue;
             }
             if (expect instanceof WebPage) {
-                WebDriverWaitUtils.waitUntilWebPageIsValidated((WebPage) expect);
+                WebDriverWaitUtils.waitUntilPageIsValidated((WebPage) expect);
                 continue;
             }
         }

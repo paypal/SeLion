@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -57,16 +58,26 @@ public class BasicPageImplTest {
 
     @Test(groups = { "functional" })
     @WebTest
-    public void testWebPageIsValidated() throws InterruptedException, IOException {
+    public void testWaitUntilPageIsValidated() throws InterruptedException, IOException {
         page = new TestPage();
         Grid.open("about:blank");
         String script = getScript();
         Grid.driver().executeScript(script);
         Thread.sleep(4000);
 
-        WebDriverWaitUtils.waitUntilWebPageIsValidated(page);
-        //Note: if the previous line passes and this fails something is really broken
-        SeLionAsserts.assertTrue(page.isPageValidated(), "TestPage did not pass pageValidations");
+        WebDriverWaitUtils.waitUntilPageIsValidated(page);
+    }
+
+    @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
+    @WebTest
+    public void testWaitUntilPageIsValidated_Neg() throws InterruptedException, IOException {
+        page = new TestPage("US", "TestWrongValidatorPage");
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+
+        WebDriverWaitUtils.waitUntilPageIsValidated(page);
     }
 
     @Test(groups = { "functional" })

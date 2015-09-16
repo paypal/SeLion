@@ -30,7 +30,9 @@ public interface WebPage {
      * Initialize the page by it's name and page path
      * 
      * @param pagePath
+     *            the path
      * @param pageClassName
+     *            the class name
      */
     void initPage(String pagePath, String pageClassName);
 
@@ -38,30 +40,31 @@ public interface WebPage {
      * Initialize the page by it's name, page path, and site locale
      * 
      * @param pagePath
+     *            the path
      * @param pageClassName
+     *            the class name
      * @param siteLocale
+     *            the locale to use
      */
     void initPage(String pagePath, String pageClassName, String siteLocale);
 
     /**
-     * Return initialization state
+     * @return initialization state
      */
     boolean isInitialized();
 
     /**
-     * Return the expected page title for this page
+     * @return the expected page title for this page
      */
     String getExpectedPageTitle();
 
     /**
-     * Return the current siteLocale setting for this page
+     * @return the current siteLocale setting for this page
      */
     String getSiteLocale();
 
     /**
-     * Return the WebPage object
-     * 
-     * @return a {@link WebPage}
+     * @return a {@link WebPage} object
      */
     WebPage getPage();
 
@@ -74,8 +77,8 @@ public interface WebPage {
     void validatePage();
 
     /**
-     * Return a boolean result based on the outcome of calling {@link WebPage#validatePage()} to validate the loaded
-     * page on the WebDriver session.
+     * Returns the outcome of calling {@link WebPage#validatePage()} to validate the loaded page on the WebDriver
+     * session.
      * 
      * @return <code>true</code> or <code>false</code>, if the page is validated, meaning all
      *         <code>pageValidators</code> pass

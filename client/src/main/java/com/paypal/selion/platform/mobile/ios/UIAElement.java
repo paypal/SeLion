@@ -171,7 +171,7 @@ public class UIAElement implements UIAutomationElement {
                 continue;
             }
             if (expect instanceof WebPage) {
-                WebDriverWaitUtils.waitUntilWebPageIsValidated((WebPage) expect);
+                WebDriverWaitUtils.waitUntilPageIsValidated((WebPage) expect);
                 continue;
             }
         }
