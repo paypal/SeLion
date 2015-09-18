@@ -59,8 +59,8 @@
     "name": "selendroid",
     "roles": [ "selendroid" ],
     "any": {
-      "url": "https://github.com/selendroid/selendroid/releases/download/0.15.0/selendroid-standalone-0.15.0-with-dependencies.jar",
-      "checksum": "1a8c63e7b74f9afd3dd490a26f13d00c02cdcb5f"
+      "url": "https://github.com/selendroid/selendroid/releases/download/0.16.0/selendroid-standalone-0.16.0-with-dependencies.jar",
+      "checksum": "88741e587cd18dbe449646a39ee39297ce5204c7"
     }
   }
 ]
