@@ -48,6 +48,7 @@ public final class Grid {
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private static ThreadLocal<RemoteWebDriver> threadLocalWebDriver = new ThreadLocal<RemoteWebDriver>();
     private static ThreadLocal<AbstractTestSession> threadTestSession = new ThreadLocal<AbstractTestSession>();
+    private static ThreadLocal<RuntimeException> threadLocalException = new ThreadLocal<RuntimeException>();
 
     static {
         Logger.getLogger("").setLevel(Level.OFF);
@@ -63,6 +64,10 @@ public final class Grid {
 
     static ThreadLocal<AbstractTestSession> getThreadLocalTestSession() {
         return threadTestSession;
+    }
+
+    static ThreadLocal<RuntimeException> getThreadLocalException() {
+        return threadLocalException;
     }
 
     /**
@@ -84,6 +89,12 @@ public final class Grid {
      *         {@link WebTest} flow.
      */
     public static RemoteWebDriver driver() {
+        //Need to throw an RuntimeException if already caught on SeleniumGridListener.beforeInvocation()
+        RuntimeException runtimeException = threadLocalException.get();
+        if(runtimeException != null) {
+            throw runtimeException;
+        }
+
         AbstractTestSession testSession = getTestSession();
         if (!testSession.isStarted()) {
             testSession.startSesion();
