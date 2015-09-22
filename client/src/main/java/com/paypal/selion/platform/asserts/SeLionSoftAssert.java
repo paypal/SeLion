@@ -33,10 +33,10 @@ import org.testng.collections.Maps;
 class SeLionSoftAssert extends Assertion {
 
     static final String SOFT_ASSERT_ATTRIBUTE_NAME = SeLionSoftAssert.class.getCanonicalName();
-    private Map<AssertionError, IAssert> allErrors = Maps.newLinkedHashMap();
+    private Map<AssertionError, IAssert<?>> allErrors = Maps.newLinkedHashMap();
 
     @Override
-    protected void doAssert(IAssert assertCommand) {
+    protected void doAssert(IAssert<?> assertCommand) {
         onBeforeAssert(assertCommand);
         try {
             executeAssert(assertCommand);
@@ -46,12 +46,12 @@ class SeLionSoftAssert extends Assertion {
     }
 
     @Override
-    public void onAssertSuccess(IAssert assertCommand) {
+    public void onAssertSuccess(IAssert<?> assertCommand) {
         showAssertInfo(assertCommand, null, false);
     }
 
     @Override
-    public void onAssertFailure(IAssert assertCommand, AssertionError ex) {
+    public void onAssertFailure(IAssert<?> assertCommand, AssertionError ex) {
         showAssertInfo(assertCommand, ex, true);
     }
 
@@ -65,7 +65,7 @@ class SeLionSoftAssert extends Assertion {
      * @param failedTest
      *            A boolean {@code true} when the assert has failed.
      */
-    private void showAssertInfo(IAssert assertCommand, AssertionError ex, boolean failedTest) {
+    private void showAssertInfo(IAssert<?> assertCommand, AssertionError ex, boolean failedTest) {
         ITestResult testResult = Reporter.getCurrentTestResult();
 
         // Checks whether the soft assert was called in a TestNG test run or else within a Java application.
@@ -92,7 +92,7 @@ class SeLionSoftAssert extends Assertion {
     }
 
     @Override
-    public void executeAssert(IAssert a) {
+    public void executeAssert(IAssert<?> a) {
         try {
             a.doAssert();
             onAssertSuccess(a);
@@ -120,7 +120,7 @@ class SeLionSoftAssert extends Assertion {
 
         int counter = 0;
         AssertionError eachError;
-        for (Entry<AssertionError, IAssert> eachEntry : allErrors.entrySet()) {
+        for (Entry<AssertionError, IAssert<?>> eachEntry : allErrors.entrySet()) {
             eachError = eachEntry.getKey();
             sb.append("\t")
                     .append(counter += 1)

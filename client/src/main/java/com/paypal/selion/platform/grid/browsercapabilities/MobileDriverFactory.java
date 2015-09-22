@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -83,7 +84,7 @@ public final class MobileDriverFactory {
         return driver;
     }
 
-    private static AndroidDriver createAppiumAndroidInstance(URL url, DesiredCapabilities capability) {
+    private static AndroidDriver<? extends WebElement> createAppiumAndroidInstance(URL url, DesiredCapabilities capability) {
         try {
             List<EventListener> listeners = DriverFactoryHelper.getSeLionEventListeners();
 
@@ -98,7 +99,7 @@ public final class MobileDriverFactory {
         }
     }
 
-    private static IOSDriver createAppiumIOSInstance(URL url, DesiredCapabilities capability) {
+    private static IOSDriver<? extends WebElement> createAppiumIOSInstance(URL url, DesiredCapabilities capability) {
         try {
             List<EventListener> listeners = DriverFactoryHelper.getSeLionEventListeners();
 
