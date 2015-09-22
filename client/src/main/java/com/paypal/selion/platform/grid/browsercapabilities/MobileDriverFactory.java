@@ -83,7 +83,7 @@ public final class MobileDriverFactory {
         return driver;
     }
 
-    private static AndroidDriver createAppiumAndroidInstance(URL url, DesiredCapabilities capability) {
+    private static AndroidDriver<?> createAppiumAndroidInstance(URL url, DesiredCapabilities capability) {
         try {
             List<EventListener> listeners = DriverFactoryHelper.getSeLionEventListeners();
 
@@ -98,7 +98,7 @@ public final class MobileDriverFactory {
         }
     }
 
-    private static IOSDriver createAppiumIOSInstance(URL url, DesiredCapabilities capability) {
+    private static IOSDriver<?> createAppiumIOSInstance(URL url, DesiredCapabilities capability) {
         try {
             List<EventListener> listeners = DriverFactoryHelper.getSeLionEventListeners();
 

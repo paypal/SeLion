@@ -25,16 +25,16 @@ import org.testng.asserts.IAssert;
 class SeLionHardAssert extends Assertion {
 
     @Override
-    public void onAssertSuccess(IAssert assertCommand) {
+    public void onAssertSuccess(IAssert<?> assertCommand) {
         showAssertInfo(assertCommand, "passed in ");
     }
 
     @Override
-    public void onAssertFailure(IAssert assertCommand, AssertionError ex) {
+    public void onAssertFailure(IAssert<?> assertCommand, AssertionError ex) {
         showAssertInfo(assertCommand, "failed in ");
     }
 
-    private void showAssertInfo(IAssert assertCommand, String msg) {
+    private void showAssertInfo(IAssert<?> assertCommand, String msg) {
         String methodName = Reporter.getCurrentTestResult().getMethod().getMethodName();
         StringBuilder sb = new StringBuilder();
         sb.append("Assert ");
