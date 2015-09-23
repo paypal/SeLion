@@ -225,18 +225,32 @@ function displaySource(src, title) {
 
     //Registering the util method with view helpers during refresh
     $.views.helpers({
-        setStatusAndTimeAsToolTip: function (status, startTime, endTime) {
-            "use strict";
-            var eStart = "Unavailable";
-            if (status !== "Skipped") {
-                eStart = helpers.formatDateValue(startTime, "currentDate");
-            }
-            var eEnd = "Unavailable";
-            if (status === "Passed" || status === "Failed") {
-                eEnd = helpers.formatDateValue(endTime, "currentDate");
-            }
-            return "Status: " + status + "\n" + "Started on: " + eStart + "\n" + "Ended at: " + eEnd;
+      setStatusAndTimeAsToolTip: function (status, startTime, endTime) {
+        "use strict";
+        var eStart = "Unavailable";
+        if (status !== "Skipped") {
+          eStart = helpers.formatDateValue(startTime, "currentDate");
         }
+        var eEnd = "Unavailable";
+        if (status === "Passed" || status === "Failed") {
+          eEnd = helpers.formatDateValue(endTime, "currentDate");
+        }
+        return "Status: " + status + "\n" + "Started on: " + eStart + "\n" + "Ended at: " + eEnd;
+      },
+      getLatestImage: function (logs) {
+        "use strict";
+        if (!logs) {
+          return null;
+        }
+        var i = logs.length - 1;
+        while (i >= 0) {
+          if (logs[i].image) {
+            return logs[i].image;
+          }
+          i -= 1;
+        }
+        return null;
+      }
     });
 
     renderPageCombo("#", ".pageSizeCombo");

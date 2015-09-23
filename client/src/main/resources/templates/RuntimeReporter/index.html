@@ -376,9 +376,9 @@
                             <h3 class="panel-title">{{:className}}.{{:methodName}}</h3>
                         </div>
                         <div class="panel-body">
-                            {{if logs != null && logs[(logs.length - 1)].image != null}}
+                            {{if ~getLatestImage(logs) != null}}
                             <span class="thumbnail">
-                                    <img src="../{{:logs[(logs.length - 1)].image}}" onclick='displayImage("../{{:logs[(logs.length - 1)].image}}", "");'>
+                                    <img src="../{{:~getLatestImage(logs)}}" onclick='displayImage("../{{:~getLatestImage(logs)}}", "");'>
                             </span>
                             {{/if}}
                             <ul data-toggle="tooltip" title='{{:~setStatusAndTimeAsToolTip(status, startTime, endTime)}}' class="list-group">
