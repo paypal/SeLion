@@ -2,31 +2,36 @@
   <h1 class="page-header">Sharing WebDriver Sessions</h1>
 
   <p class="lead">
-    How to share local and remote (on a Grid) web sessions in SeLion.
+    How to share local and remote (on a Grid) WebDriver sessions in SeLion.
   </p>
     <p>
     Session sharing is a mechanism built into SeLion that allows a session to be shared between two or more tests
-    running sequentially. When requested, a WebDriver session that is created in one test can be kept open and
+    running sequentially. When used, a WebDriver session that is created in one test can be kept open and
     reused in a following test.</p>
 
   <h2>Steps to Share WebDriver Sessions Between Tests</h2>
     <ol>
-      <li>Annotate the test class with <code>@Test</code> and <code>@WebTest</code>. Set the attribute
-        <code>singleThreaded = true</code>. The methods of this class are executed sequentially with the same
+      <li>Annotate the test class with <code>@Test</code> and <code>@WebTest</code> or <code>@MobileTest</code>. Set the
+        attribute <code>singleThreaded = true</code>. The methods of this class are executed sequentially with the same
         WebDriver session. You can now use the <code>priority</code> attribute to order
         the test method execution sequence.
 
       <pre data-src="../sample-files/webdriversessionsharing-sample1.java"></pre>
      </li>
 
-     <li>To start test session in a test method, annotate the test with <code>@Test</code>
-        and use the attribute <code>priority = 1</code>.
+     <li>To start test session in a configuration method, annotate a method with <code>@BeforeClass</code>.
+      <pre data-src="../sample-files/webdriversessionsharing-sample6.java"></pre>
+     </li>     
 
+     <li>If you do not use <code>@BeforeClass</code> to start test session, annotate a method with 
+      <code>@Test</code> and use the attribute <code>priority</code> to start a test session.
       <pre data-src="../sample-files/webdriversessionsharing-sample2.java"></pre>
+     </li>
 
-    <li>To pick up the same test session in a different test, annotate the test with <code>@Test</code>
-        and use the <code>priority</code> greater than defined in the master test. This will reuse the same session in this test 
-        instead of creating a new session. Since these tests order of execution controlled by TestNG priority.
+     <li>To pick up the same session in a different method, annotate the method with <code>@Test</code>
+        and use a <code>priority</code> greater than one defined in any other <code>@Test</code> method. The same 
+        session will be reused in this test instead of creating a new session. Order of execution, is controlled by the 
+        <code>priority</code>.
         <p class="alert-info">Note: It is a good practice to keep these tests in the same group.</p>
 
       <pre data-src="../sample-files/webdriversessionsharing-sample3.java"></pre>
@@ -36,7 +41,8 @@
       Sessions can be shared to any number of <code>@Test</code> methods as long as they are running sequentially.
       Here is an example where the session is shared across three <code>@Test</code> methods.
 
-      <pre data-src="../sample-files/webdriversessionsharing-sample5.java"></pre></li>
+      <pre data-src="../sample-files/webdriversessionsharing-sample5.java"></pre>
+     </li>
   </ol>
 </div>
 
