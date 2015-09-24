@@ -42,7 +42,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * class also implements the {@link SeLionIOSBridgeDriver} interface to expose methods for {@link UIAElement} and its
  * subclasses.
  */
-public class SeLionAppiumIOSDriver extends IOSDriver implements SeLionIOSBridgeDriver {
+public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLionIOSBridgeDriver {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 

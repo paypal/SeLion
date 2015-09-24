@@ -36,7 +36,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * {@link AndroidDriver}. This class also implements the {@link SeLionAndroidBridgeDriver} interface to expose
  * methods for {@link UiObject} and its subclasses.
  */
-public class SeLionAppiumAndroidDriver extends AndroidDriver implements SeLionAndroidBridgeDriver {
+public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> implements SeLionAndroidBridgeDriver {
 
     private static final int OPERATION_DURATION_MILLI_SECONDS = 1000;
     private static final SimpleLogger logger = SeLionLogger.getLogger();
