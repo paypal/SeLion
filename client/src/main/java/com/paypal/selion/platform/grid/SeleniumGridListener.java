@@ -325,6 +325,11 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     }
 
     private void warnUserOfTestFailures(ITestResult testResult) {
+        if (!(Grid.getTestSession() instanceof MobileTestSession) &&
+                !(Grid.getTestSession() instanceof WebTestSession)) {
+            return;
+        }
+
         String errMsg = "";
         if (testResult.getThrowable() != null) {
             errMsg = testResult.getThrowable().getMessage();

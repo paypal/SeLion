@@ -16,26 +16,45 @@
 package com.paypal.selion.platform.grid;
 
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * This class represents a basic test session.
  * 
  */
 public class BasicTestSession extends AbstractTestSession {
+    private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     @Override
     public void startSesion() {
+        logger.entering();
         setStarted(true);
+        logger.exiting();
     }
 
     @Override
     public WebDriverPlatform getPlatform() {
+        logger.entering();
+        logger.exiting(WebDriverPlatform.UNDEFINED);
         return WebDriverPlatform.UNDEFINED;
     }
 
     @Override
     public void initializeTestSession(InvokedMethodInformation method) {
+        logger.entering(method);
         this.initTestSession(method);
+        logger.exiting();
+    }
+
+    @Override
+    public final void closeSession() {
+        logger.entering();
+        Grid.getThreadLocalWebDriver().set(null);
+        Grid.getThreadLocalTestSession().set(null);
+        Grid.getThreadLocalException().set(null);
+        setStarted(false);
+        logger.exiting();
     }
 
 }

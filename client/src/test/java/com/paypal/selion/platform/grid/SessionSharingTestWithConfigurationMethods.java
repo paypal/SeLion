@@ -15,10 +15,9 @@
 
 package com.paypal.selion.platform.grid;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import org.openqa.selenium.remote.SessionId;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterGroups;
 import org.testng.annotations.AfterMethod;
@@ -38,17 +37,18 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
 @WebTest(browser = "chrome")
 @Test(singleThreaded = true, groups = "functional")
 public class SessionSharingTestWithConfigurationMethods {
+    private static SessionId sessionId;
 
     @BeforeSuite
     public void beforeSuite() {
         // not started yet
-        Assert.assertNull(Grid.getTestSession());
+        assertNull(Grid.getTestSession());
     }
 
     @BeforeTest
     public void beforeTest() {
         // not started yet
-        Assert.assertNull(Grid.getTestSession());
+        assertNull(Grid.getTestSession());
     }
 
     @BeforeGroups
@@ -65,16 +65,19 @@ public class SessionSharingTestWithConfigurationMethods {
         // session started
         Grid.open(TestServerUtils.getTestEditableURL());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
+        sessionId = getSessionId();
     }
 
     @BeforeMethod
     public void beforeMethod() {
         // session started by now, when beforeClass is present
-        Assert.assertNotNull(Grid.getTestSession());
+        assertNotNull(Grid.getTestSession());
+        assertEquals(getSessionId().toString(), sessionId.toString());
     }
 
     @Test(priority = 0)
     public void testSessionSharing_part1() {
+        assertEquals(getSessionId().toString(), sessionId.toString());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
         assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
                 "should be on Sample Unit Test Page already with this session");
@@ -82,6 +85,7 @@ public class SessionSharingTestWithConfigurationMethods {
 
     @Test(priority = 1)
     public void testSessionSharing_part2() throws Exception {
+        assertEquals(getSessionId().toString(), sessionId.toString());
         assertTrue(Grid.driver().getCapabilities().getBrowserName().contains("chrome"),
                 "Should be using chrome browser.");
     }
@@ -89,13 +93,15 @@ public class SessionSharingTestWithConfigurationMethods {
     @AfterMethod
     public void afterMethod() {
         // started by now, regardless if beforeClass is present
-        Assert.assertNotNull(Grid.getTestSession());
+        assertEquals(getSessionId().toString(), sessionId.toString());
+        assertNotNull(Grid.getTestSession());
     }
 
     @AfterClass
     public void afterClass() {
         // session still available, closed after this method
-        Assert.assertNotNull(Grid.getTestSession());
+        assertEquals(getSessionId().toString(), sessionId.toString());
+        assertNotNull(Grid.getTestSession());
     }
 
     @AfterGroups
@@ -110,13 +116,13 @@ public class SessionSharingTestWithConfigurationMethods {
     @AfterTest
     public void afterTest() {
         // session closed by now
-        Assert.assertNull(Grid.getTestSession());
+        assertNull(Grid.getTestSession());
     }
 
     @AfterSuite
     public void afterSuite() {
         // closed by now
-        Assert.assertNull(Grid.getTestSession());
+        assertNull(Grid.getTestSession());
     }
 
     private SessionId getSessionId() {

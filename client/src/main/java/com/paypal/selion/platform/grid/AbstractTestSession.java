@@ -103,6 +103,7 @@ public abstract class AbstractTestSession {
         this.methodName = method.getCurrentMethodName();
         this.parameters = getParamsInfo(method);
         this.xmlTestName = method.getCurrentTestName();
+        logger.exiting();
     }
 
     protected void initializeAdditionalCapabilities(String[] additionalCapabilities, InvokedMethodInformation method) {
@@ -202,10 +203,10 @@ public abstract class AbstractTestSession {
     /**
      * A method that helps in closing off the current session.
      */
-    public final void closeSession() {
+    public void closeSession() {
         logger.entering();
 
-        if (isStarted() && Grid.driver() != null) {
+        if (isStarted() && (Grid.getTestSession() != null)) {
             new SauceLabsHelper().embedSauceLabsJobUrlToTestReport();
             // If driver.quit() throws some exception then rest of the listeners will not get invoked, To handle this
             // we are gobbling this exception
@@ -218,6 +219,7 @@ public abstract class AbstractTestSession {
 
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
+        Grid.getThreadLocalException().set(null);
         this.isStarted = false;
         logger.exiting();
     }

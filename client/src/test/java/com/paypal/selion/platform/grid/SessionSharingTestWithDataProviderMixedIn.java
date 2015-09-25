@@ -15,8 +15,10 @@
 
 package com.paypal.selion.platform.grid;
 
+
+import static org.testng.Assert.*;
+
 import org.openqa.selenium.remote.SessionId;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -40,7 +42,7 @@ public class SessionSharingTestWithDataProviderMixedIn {
     @BeforeClass
     public void beforeClass() {
         sitesToOpen = new String[] { TestServerUtils.getContainerURL(), TestServerUtils.getTestEditableURL() };
-        Assert.assertNotNull(Grid.getTestSession());
+        assertNotNull(Grid.getTestSession());
     }
 
     @DataProvider(name = "testData")
@@ -51,23 +53,23 @@ public class SessionSharingTestWithDataProviderMixedIn {
     @Test(priority = 0)
     public void testSessionSharingWithDPStart() {
         Grid.driver().get(TestServerUtils.getDatePickerURL());
-        Assert.assertTrue(Grid.driver().getTitle().contains("jQuery Datepicker"));
+        assertTrue(Grid.driver().getTitle().contains("jQuery Datepicker"));
         sessionId = getSessionId();
     }
 
     @Test(priority = 1, dataProvider = "testData")
     public void testSessionSharingWithDp(String title) {
-        Assert.assertEquals(getSessionId().toString(), sessionId.toString());
+        assertEquals(getSessionId().toString(), sessionId.toString());
         Grid.driver().get(sitesToOpen[flag]);
-        Assert.assertTrue(Grid.driver().getTitle().contains(title));
+        assertTrue(Grid.driver().getTitle().contains(title));
         flag++;
     }
 
     @Test(priority = 2)
     public void testSessionSharingWithDPFinal() {
-        Assert.assertEquals(getSessionId().toString(), sessionId.toString());
+        assertEquals(getSessionId().toString(), sessionId.toString());
         Grid.driver().get(TestServerUtils.getDatePickerURL());
-        Assert.assertTrue(Grid.driver().getTitle().contains("jQuery Datepicker"));
+        assertTrue(Grid.driver().getTitle().contains("jQuery Datepicker"));
     }
 
     @AfterClass

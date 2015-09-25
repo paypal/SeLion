@@ -15,7 +15,7 @@
 
 package com.paypal.selion.platform.grid;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.IOException;
 
@@ -29,11 +29,13 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
 @WebTest(browser = "chrome")
 @Test(singleThreaded = true, groups = "functional")
 public class SessionSharingTest {
+    private static SessionId sessionId;
 
     @Test(priority = 1)
     public void testSessionSharing_part1() {
         Grid.open(TestServerUtils.getTestEditableURL());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
+        sessionId = getSessionId();
     }
 
     private SessionId getSessionId() {
@@ -43,6 +45,7 @@ public class SessionSharingTest {
     @Test(priority = 2)
     public void testSessionSharing_part2() throws IOException {
         // should already be on test Page
+        assertEquals(getSessionId().toString(), sessionId.toString());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
         assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
                 "should be on Sample Unit Test Page already with this session");
@@ -50,6 +53,7 @@ public class SessionSharingTest {
 
     @Test(priority = 3)
     public void testSessionSharing_part3() throws Exception {
+        assertEquals(getSessionId().toString(), sessionId.toString());
         assertTrue(Grid.driver().getCapabilities().getBrowserName().contains("chrome"),
                 "Should be using chrome browser.");
     }

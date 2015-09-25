@@ -15,7 +15,8 @@
 
 package com.paypal.selion.platform.grid;
 
-import org.testng.Assert;
+import static org.testng.Assert.*;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -34,7 +35,7 @@ public class SessionSharingTestWithDataProvider {
     @BeforeClass
     public void beforeClass() {
         sitesToOpen = new String[] { TestServerUtils.getContainerURL(), TestServerUtils.getTestEditableURL() };
-        Assert.assertNotNull(Grid.getTestSession());
+        assertNotNull(Grid.getTestSession());
     }
 
     @DataProvider(name = "testData")
@@ -45,7 +46,7 @@ public class SessionSharingTestWithDataProvider {
     @Test(priority = 0, dataProvider = "testData")
     public void testSessionSharingWithDpAlone(String title) {
         Grid.driver().get(sitesToOpen[flag]);
-        Assert.assertTrue(Grid.driver().getTitle().contains(title));
+        assertTrue(Grid.driver().getTitle().contains(title));
         flag++;
     }
 
