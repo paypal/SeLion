@@ -1,12 +1,12 @@
 package mypackage;
 
-public class Myobject{
+public class MyObject{
 
   private String testcaseid;
 
   private String country;
 
-  public Myobject() {}
+  public MyObject() {}
 
   public String getTestcaseid() {
     return testcaseid;
@@ -26,6 +26,6 @@ public class Myobject{
 
   public String toString() {
     return "[testcaseid: " + getTestcaseid().toString() + ", country: "
-      + getCountry().toString() + ", currency: ]";
+      + getCountry().toString() + "]";
   }
 }

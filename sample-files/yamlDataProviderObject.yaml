@@ -1,6 +1,6 @@
-- !!mypackage.Myobject
+- !!mypackage.MyObject
     testcaseid : testcaseid1
     country : country1
-- !!mypackage.Myobject
+- !!mypackage.MyObject
     testcaseid: testcaseid2
     country: country2
