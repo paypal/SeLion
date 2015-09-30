@@ -44,7 +44,12 @@ public class NodeForceRestartServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        resp.setContentType("application/json");
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setCharacterEncoding("UTF-8");
+        String json = new String("{ \"result\": \"success\" }".getBytes(), "UTF-8");
+        resp.getOutputStream().print(json);
+        resp.flushBuffer();
         LOGGER.warning("Shutting down the node");
         try {
             shutdownHandler.shutdownProcesses();

@@ -23,13 +23,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import org.openqa.grid.internal.ProxySet;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
 import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.proxy.SeLionRemoteProxy;
 import com.paypal.selion.utils.ServletHelper;
 
@@ -38,8 +38,11 @@ import com.paypal.selion.utils.ServletHelper;
  * nodes.<br>
  * <br>
  * This requires the hub to also have {@link LoginServlet} available. Furthermore, only nodes which use
- * {@link SeLionRemoteProxy} AND {@link NodeForceRestartServlet} or implement support for the HTTP request
- * <b>/extra/NodeForceRestartServlet</b> are compatible.
+ * {@link SeLionRemoteProxy} and {@link NodeForceRestartServlet} or implement support for the HTTP request
+ * <b>/extra/NodeForceRestartServlet</b> are compatible.<br>
+ * <br>
+ * If there isn't a process, such as SeLion's Grid with <i>continuousRestart</i> on, monitoring and restarting the node
+ * on exit(), the node will be shutdown but not restarted.
  */
 public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
 
@@ -63,10 +66,10 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
         process(req, response);
-
     }
 
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        LOGGER.entering();
 
         if (request.getSession(false) == null) {
             response.sendRedirect(LoginServlet.class.getSimpleName());
@@ -75,11 +78,13 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
         PrintWriter writer = response.getWriter();
 
         if (request.getParameter("form_id") != null && request.getParameter("form_id").equals("restart_nodes")) {
+            boolean isForcedRestart = request.getParameter("submit").equals("Force Restart");
+
             String nodes[] = request.getParameterValues("nodes");
 
             if (nodes == null || nodes.length == 0) {
                 ServletHelper.displayMessageOnRedirect(writer,
-                        "Please select atleast 1 node in order to perform restarts.");
+                        "Please select at least 1 node in order to perform restart.");
                 return;
             }
             for (String node : nodes) {
@@ -90,11 +95,17 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
 
                 // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
                 // NodeForceRestartServlet available. Without truth in this assumption, the call to
-                // proxy.shutdownNode() will do nothing.
+                // proxy.forceNodeShutdown() and proxy.requestNodeShutdown will do nothing.
                 if (proxy instanceof SeLionRemoteProxy) {
-                    ((SeLionRemoteProxy) proxy).shutdownNode();
+                    if (isForcedRestart) {
+                        LOGGER.info("Sending forced restart request to " + proxy.getId());
+                        ((SeLionRemoteProxy) proxy).forceNodeShutdown();
+                    } else {
+                        LOGGER.info("Sending restart request to " + proxy.getId());
+                        ((SeLionRemoteProxy) proxy).requestNodeShutdown();
+                    }
                 } else {
-                    LOGGER.warning("Node " + node + " does not support force restart.");
+                    LOGGER.warning("Node " + node + " does not support restart.");
                 }
             }
             ServletHelper.displayMessageOnRedirect(writer, "Restart process initiated on all nodes.");
@@ -105,11 +116,11 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
                     + GridForceRestartDelegateServlet.class.getSimpleName() + "' >");
             writer.write("<div class='form_description'>");
             writer.write("<h2>SeLion Grid - Node Restart</h2>");
-            writer.write("<p>Use this page to forcefully restart nodes</p>");
+            writer.write("<p>Use this page to restart nodes</p>");
             writer.write("</div>");
             writer.write("<ul>");
             writer.write("<li id='li_1' >");
-            writer.write("<label class='description' for='element_1'>List of nodes to restart forcefully </label>");
+            writer.write("<label class='description' for='element_1'>List of nodes to restart </label>");
             writer.write("<span>");
 
             ProxySet proxies = this.getRegistry().getAllProxies();
@@ -123,7 +134,7 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
 
                 // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
                 // NodeForceRestartServlet available. Without truth in this assumption, the call to
-                // proxy.shutdownNode() will do nothing.
+                // proxy.forceNodeShutdown() will do nothing.
                 if (proxy instanceof SeLionRemoteProxy) {
                     writer.write("<input name='nodes' class='element checkbox' type='checkbox' value='" + proxy.getId()
                             + "' />");
@@ -135,10 +146,11 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             }
 
             writer.write("</span></li>");
-            String defaultMsg = "<label class='choice'>No Nodes are available to Restart</label>";
+            String defaultMsg = "<label class='choice'>No nodes are available to restart</label>";
             if (nodesPresent) {
-                defaultMsg = "<li class='buttons'><input type='hidden' name='form_id' value='restart_nodes' />" +
-                        "<input id='saveForm' class='button_text' type='submit' name='submit' value='Submit' /></li>";
+                defaultMsg = "<li class='buttons'><input type='hidden' name='form_id' value='restart_nodes' />"
+                        + "<input id='saveForm' class='button_text' type='submit' name='submit' value='Restart'/>"
+                        + "<input id='saveForm' class='button_text' type='submit' name='submit' value='Force Restart'/></li>";
             }
             writer.write(defaultMsg);
             writer.write("</ul>");
@@ -147,6 +159,8 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             writer.write("</body>");
             writer.write("</html>");
         }
+
+        LOGGER.exiting();
     }
 
 }

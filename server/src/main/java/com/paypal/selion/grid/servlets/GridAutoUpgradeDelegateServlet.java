@@ -51,8 +51,12 @@ import com.paypal.selion.utils.ServletHelper;
  * </ul>
  * <br>
  * Requires the hub to also have {@link LoginServlet} available. Furthermore, only nodes which use
- * {@link SeLionRemoteProxy} AND {@link NodeAutoUpgradeServlet} or implement support for the HTTP request
- * <b>/extra/NodeAutoUpgradeServlet</b> are compatible.
+ * {@link SeLionRemoteProxy}, {@link NodeAutoUpgradeServlet}, and {@link NodeForceRestartServlet} or implement support
+ * for the HTTP requests <b>/extra/NodeAutoUpgradeServlet</b> and <b>/extra/NodeForceRestartServlet</b> are
+ * compatible.<br>
+ * <br>
+ * If there isn't a process, such as SeLion's Grid with <i>continuousRestart</i> on, monitoring and restarting the node
+ * on exit(), the node will be shutdown but not restarted.
  */
 public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
 
@@ -119,12 +123,12 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                 for (RemoteProxy eachProxy : this.getRegistry().getAllProxies()) {
                     // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
                     // NodeAutoUpgradeServlet available. Without truth in this assumption, the call to
-                    // proxy.release() will do nothing.
+                    // proxy.upgradeNode() will do nothing.
                     if (eachProxy == null) {
                         continue;
                     }
                     if (eachProxy instanceof SeLionRemoteProxy) {
-                        if (!((SeLionRemoteProxy) eachProxy).release(downloadJSON)) {
+                        if (!((SeLionRemoteProxy) eachProxy).upgradeNode(downloadJSON)) {
                             pendingProxy.add(eachProxy.getId());
                         }
                     } else {
@@ -137,14 +141,14 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                 for (String eachId : idList.split(",")) {
                     // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
                     // NodeAutoUpgradeServlet available. Without truth in this assumption, the call to
-                    // proxy.release() will do nothing.
+                    // proxy.upgradeNode() will do nothing.
                     if (!eachId.trim().isEmpty()) {
                         RemoteProxy proxy = getRegistry().getProxyById(eachId.trim());
                         if (proxy == null) {
                             continue;
                         }
                         if (proxy instanceof SeLionRemoteProxy) {
-                            if (!((SeLionRemoteProxy) proxy).release(downloadJSON)) {
+                            if (!((SeLionRemoteProxy) proxy).upgradeNode(downloadJSON)) {
                                 pendingProxy.add(proxy.getId());
                             }
                         } else {

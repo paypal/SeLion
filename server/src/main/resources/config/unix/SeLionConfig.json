@@ -1,6 +1,7 @@
 {
     "restartCycle": 60000,
     "uniqueSessionCount": 50,
+    "nodeRecycleThreadWaitTimeout": 300,
     "customProcessHandler": "com.paypal.selion.utils.process.UnixProcessHandler",
     "artifactMaxFileSize": 1073741824,
     "artifactExpiryInMilliSec": 86400000,
