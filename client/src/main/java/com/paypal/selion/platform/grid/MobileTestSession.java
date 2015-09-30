@@ -120,6 +120,11 @@ public class MobileTestSession extends AbstractTestSession {
         logger.entering(method);
         initTestSession(method);
         MobileTest deviceTestAnnotation = method.getAnnotation(MobileTest.class);
+        // check class has MobileTest annotation (i.e. using shared sessions)
+        if (deviceTestAnnotation == null) {
+            deviceTestAnnotation = method.getActualMethod().getDeclaringClass().getAnnotation(MobileTest.class);
+        }
+
         // load global config
         String mobileNode = Config.getConfigProperty(ConfigProperty.MOBILE_NODE_TYPE);
 
