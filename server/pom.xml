@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.paypal.selion</groupId>
         <artifactId>SeLion-Parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

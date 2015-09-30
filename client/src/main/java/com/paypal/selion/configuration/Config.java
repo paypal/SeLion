@@ -432,9 +432,9 @@ public final class Config {
         SELENIUM_PROXY_PORT("proxyServerPort", "", true),
 
         /**
-         * Use this parameter to indicate if your remote runs are to be run against the sauce lab grid or against the QI
-         * owned grid/your own grid. This flag is required because when running against Sauce lab furnished grid, we are
-         * to ensure that fetching of WebDriver node IP and Port is to be disabled.
+         * Use this parameter to indicate if your remote runs are to be run against the sauce lab grid or against your 
+         * own grid. This flag is required when running against the Sauce lab grid because we need to disable fetching 
+         * of the WebDriver node IP and Port details.
          */
         SELENIUM_USE_SAUCELAB_GRID("useSauceLabGrid", "false", true),
 
