@@ -63,7 +63,7 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
 public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionRemoteProxy.class);
-    private static SimpleLogger proxyLogger;
+    private SimpleLogger proxyLogger;
     private static final int MAX_SESSION_ALLOWED = 50;
 
     private int maxSessionsAllowed, totalSessionsCompleted = 0, totalSessionsStarted = 0;
@@ -104,7 +104,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         loggerSettings.setUserLogFileName(machine + ".log");
         loggerSettings.setLogsDir(SeLionGridConstants.LOGS_DIR);
         loggerSettings.setDevLevel(Level.OFF);
-        loggerSettings.setLoggerName(SeLionRemoteProxy.class.getCanonicalName());
+        loggerSettings.setLoggerName(machine);
         loggerSettings.setClassName(SeLionRemoteProxy.class.getSimpleName());
         loggerSettings.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
         loggerSettings.setMaxFileCount(1);
