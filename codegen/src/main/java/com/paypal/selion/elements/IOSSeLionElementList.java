@@ -28,43 +28,57 @@ import com.paypal.selion.plugins.GUIObjectDetails;
 public class IOSSeLionElementList extends AbstractSeLionElementList {
     public static final String UIAUTOMATION_ELEMENT_CLASS = "com.paypal.selion.platform.mobile.ios";
 
-    public static IOSSeLionElementList UIAButton = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAButton", true);
-    public static IOSSeLionElementList UIAAlert = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAAlert", true);
-    public static IOSSeLionElementList UIANavigationBar = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIANavigationBar", true);
-    public static IOSSeLionElementList UIAPicker = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAPicker", true);
-    public static IOSSeLionElementList UIASlider = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASlider", true);
-    public static IOSSeLionElementList UIAStaticText = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAStaticText", true);
-    public static IOSSeLionElementList UIASwitch = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASwitch", true);
-    public static IOSSeLionElementList UIATableView = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATableView", true);
-    public static IOSSeLionElementList UIATextField = new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
-    public static IOSSeLionElementList BASE_CLASS = new IOSSeLionElementList(null, "baseClass", false);
+    public static IOSSeLionElementList UIAButton =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAButton", true);
+    public static IOSSeLionElementList UIAAlert =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAAlert", true);
+    public static IOSSeLionElementList UIANavigationBar =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIANavigationBar", true);
+    public static IOSSeLionElementList UIAPicker =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAPicker", true);
+    public static IOSSeLionElementList UIASlider =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASlider", true);
+    public static IOSSeLionElementList UIAStaticText =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAStaticText", true);
+    public static IOSSeLionElementList UIASwitch =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASwitch", true);
+    public static IOSSeLionElementList UIATableView =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATableView", true);
+    public static IOSSeLionElementList UIATextField =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
+    public static IOSSeLionElementList UIAElement =
+            new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAElement", true);
+    public static IOSSeLionElementList BASE_CLASS =
+            new IOSSeLionElementList(null, "baseClass", false);
 
     private static IOSSeLionElementList[] values = { UIAButton, UIAAlert, UIANavigationBar, UIAPicker, UIASlider,
-            UIAStaticText, UIASwitch, UIATableView, UIATextField, BASE_CLASS };
+            UIAStaticText, UIASwitch, UIATableView, UIATextField, UIAElement, BASE_CLASS };
 
     private IOSSeLionElementList(String elementPackage, String element, boolean isHtmlType) {
         super(elementPackage, element, isHtmlType);
     }
-    
+
     /**
-     * By providing the qualified name of a custom element we can register it to the element array.
-     * Custom elements are inserted before SeLion elements, if you use the same name it will overwrite the existing element.
+     * By providing the qualified name of a custom element we can register it to the element array. Custom elements are
+     * inserted before SeLion elements, if you use the same name it will overwrite the existing element.
      * 
-     * @param element string of the qualified class
+     * @param element
+     *            string of the qualified class
      */
     public static void registerElement(String element) {
         List<IOSSeLionElementList> temp = new ArrayList<IOSSeLionElementList>(Arrays.asList(values));
-        
-        temp.add(0, new IOSSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true));
-        
+
+        temp.add(0, new IOSSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element),
+                true));
+
         values = temp.toArray(new IOSSeLionElementList[temp.size()]);
     }
 
     /**
      * @param rawType
      *            The String using which an attempt to find a matching {@link IOSSeLionElementList} is to be performed.
-     * @return A {@link IOSSeLionElementList} if the type ends with one of the values of {@link IOSSeLionElementList} enum (or)
-     *         <code>null</code> if there were no matches.
+     * @return A {@link IOSSeLionElementList} if the type ends with one of the values of {@link IOSSeLionElementList}
+     *         enum (or) <code>null</code> if there were no matches.
      */
     public static IOSSeLionElementList findMatch(String rawType) {
         return (IOSSeLionElementList) findMatch(values, rawType);
@@ -78,9 +92,10 @@ public class IOSSeLionElementList extends AbstractSeLionElementList {
     public static boolean isValid(String element) {
         return isValid(values, element);
     }
-    
+
     /**
-     * @param element The element that needs to be searched.
+     * @param element
+     *            The element that needs to be searched.
      * @return <code>true</code> if the element was found in the set of elements provided.
      */
     public static boolean isExactMatch(String element) {
