@@ -25,7 +25,7 @@
   <ol>
     <li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java
       JDK 1.7</a> and configure the <code>JAVA_HOME</code> environment variable on your system</li>
-    <li>If you <a href="#buildingSelion">compiled SeLion</a> locally, copy the <code>SeLion-Grid.jar</code> file of
+    <li>If you <a href="#buildingSelion">compiled SeLion</a> locally, copy the <code>SeLion-Grid-{version}-jar-with-dependencies.jar</code> file of
       SeLion's Enhanced Grid from <code>server/target/</code> and paste it to your working folder. Otherwise, you can obtain
       the latest SNAPSHOT
       <a href="https://oss.sonatype.org/content/repositories/snapshots/com/paypal/selion/SeLion-Grid/1.0.0-SNAPSHOT/">here</a>.
@@ -45,7 +45,7 @@
       clients and distribute them to the nodes registered with the grid.</p>
   <p>Open the command prompt and navigate to the location of the grid jar file. Type in the following command.</p>
 
-  <pre><code class="language-sh">java -jar SeLion-Grid.jar -role hub</code></pre>
+  <pre><code class="language-sh">java -jar SeLion-Grid-{version}-jar-with-dependencies.jar -role hub</code></pre>
 
   <p>
       The grid hub will start up using the port <var>4444</var> by default. You can view it by connecting
@@ -58,7 +58,7 @@
   <p>The grid node will execute the test cases.</p>
   <p>Open the command prompt and navigate to the location of the grid jar file. Type in the following command.</p>
 
-  <pre><code class="language-sh">java -jar SeLion-Grid.jar -role node -hub http://localhost:4444/grid/register</code></pre>
+  <pre><code class="language-sh">java -jar SeLion-Grid-{version}-jar-with-dependencies.jar -role node -hub http://localhost:4444/grid/register</code></pre>
 
   <p>
       The grid node will start up using the port <var>5555</var> by default. Once it is started,

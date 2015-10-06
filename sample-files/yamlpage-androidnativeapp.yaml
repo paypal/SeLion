@@ -4,9 +4,9 @@ defaultLocale: "US"
 elements:
   shortPressButtonUiObject:
     locators:
-      FR: "//TintButton[@value='Short Press']
-      US: "//TintButton[@value='Short Press']
+      FR: "//TintButton[@value='Short Press']"
+      US: "//TintButton[@value='Short Press']"
   shortPressLabelUiObject:
     locators:
-      FR: "//TextView[contains(@value, ', short press')]
-      US: "//TextView[contains(@value, ', short press')]
+      FR: "//TextView[contains(@value, ', short press')]"
+      US: "//TextView[contains(@value, ', short press')]"
