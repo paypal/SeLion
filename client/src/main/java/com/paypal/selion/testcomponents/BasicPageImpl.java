@@ -120,10 +120,6 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
         return this;
     }
 
-    /**
-     * Perform page validations against list of elements defined in the YAML file.
-     */
-    // Call getPage to make sure the page is initialized.
     public void validatePage() {
         getObjectMap();
 
@@ -149,7 +145,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
     }
 
     /**
-     * Get the AbstractElement by the key that is defined in the Yaml files.
+     * Get the AbstractElement by the key that is defined in the PageYAML files.
      * 
      * @param elementName
      *            The element name
@@ -174,7 +170,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
     }
 
     /**
-     * Verify if the element is availible based on a certain action
+     * Verify if the element is available based on a certain action
      * 
      * @param elementName
      * @param action
@@ -212,12 +208,12 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
         }
     }
 
-    /**
-     * Verify's if the current page is opened in the browser. It does this based on the pageValidators.
+    /*
+     * (non-Javadoc)
      * 
-     * @return boolean if page is opened.
+     * @see com.paypal.selion.platform.html.WebPage#isPageValidated()
      */
-    public boolean isCurrentPageInBrowser() {
+    public boolean isPageValidated() {
         try {
             validatePage();
             return true;

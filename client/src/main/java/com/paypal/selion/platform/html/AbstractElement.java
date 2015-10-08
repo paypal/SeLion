@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2015 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -449,14 +449,14 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     }
 
     /**
-     * The click function and wait for page to load
+     * Basic click event on the Element. Functionally equivalent to {@link #clickonly()}
      */
     public void click() {
         clickonly();
     }
 
     /**
-     * Basic click event on the Html Element, doesn't wait for page to load.
+     * Basic click event on the Element. Doesn't wait for anything to load.
      * 
      */
     public void clickonly() {
@@ -467,10 +467,10 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * The click function and wait for expected {@link Object} items to load.
      * 
      * @param expected
-     *            parameters in the form of an XPath element locator {@link String}, a {@link WebPage}, a
-     *            {@link Button}, a {@link TextField}, an {@link Image}, a {@link Form}, a {@link Label}, a
-     *            {@link Table}, a {@link SelectList}, a {@link CheckBox}, or a {@link RadioButton}.
+     *            parameters in the form of an element locator {@link String}, a {@link WebPage}, an
+     *            {@link AbstractElement}, or an {@link ExpectedCondition}
      */
+    @SuppressWarnings("unchecked")
     public void click(Object... expected) {
         dispatcher.beforeClick(this, expected);
 
@@ -479,10 +479,8 @@ public abstract class AbstractElement implements Clickable, Hoverable {
             logUIAction(UIActions.CLICKED);
         }
         // If there are no expected objects, then it means user wants this
-        // method
-        // to behave as a clickonly. So lets skip processing of alerts and leave
-        // that to the
-        // user.
+        // method to behave as a clickonly. So lets skip processing of alerts and leave
+        // that to the user.
         if (expected == null || expected.length == 0) {
             return;
         }
@@ -492,19 +490,22 @@ public abstract class AbstractElement implements Clickable, Hoverable {
                 if (expect instanceof AbstractElement) {
                     AbstractElement a = (AbstractElement) expect;
                     WebDriverWaitUtils.waitUntilElementIsPresent(a.getLocator());
-                } else if (expect instanceof String) {
+                    continue;
+                }
+                if (expect instanceof String) {
                     String s = (String) expect;
                     WebDriverWaitUtils.waitUntilElementIsPresent(s);
-                } else if (expect instanceof WebPage) {
-                    final WebPage w = (WebPage) expect;
+                    continue;
+                }
+                if (expect instanceof ExpectedCondition<?>) {
                     long timeOutInSeconds = Grid.getExecutionTimeoutValue() / 1000;
-                    ExpectedCondition<Boolean> condition = new ExpectedCondition<Boolean>() {
-                        @Override
-                        public Boolean apply(WebDriver webDriver) {
-                            return w.isCurrentPageInBrowser();
-                        }
-                    };
-                    new WebDriverWait(Grid.driver(), timeOutInSeconds).until(condition);
+                    WebDriverWait wait = new WebDriverWait(Grid.driver(), timeOutInSeconds);
+                    wait.until(ExpectedCondition.class.cast(expect));
+                    continue;
+                }
+                if (expect instanceof WebPage) {
+                    WebDriverWaitUtils.waitUntilWebPageIsValidated((WebPage) expect);
+                    continue;
                 }
             }
         } finally {
@@ -544,9 +545,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
             logUIAction(UIActions.CLICKED);
         }
         validatePresenceOfAlert();
-        String testName = Grid.getTestSession().getXmlTestName();
-        long timeout = Long.valueOf(ConfigManager.getConfig(testName).getConfigProperty(
-                ConfigProperty.EXECUTION_TIMEOUT)) / 1000;
+        long timeout = Grid.getExecutionTimeoutValue() / 1000;
         WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
         Object variable = wait.until(expectedCondition);
         processScreenShot();
@@ -621,9 +620,8 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * The click function and wait for one of the expected {@link Object} items to load.
      * 
      * @param expected
-     *            parameters in the form of an XPath element locator {@link String}, a {@link WebPage}, a
-     *            {@link Button}, a {@link TextField}, an {@link Image}, a {@link Form}, a {@link Label}, a
-     *            {@link Table}, a {@link SelectList}, a {@link CheckBox}, or a {@link RadioButton}.
+     *            parameters in the form of an element locator {@link String}, a {@link WebPage}, or an
+     *            {@link AbstractElement}
      * @return the first object that was matched
      */
     public Object clickAndExpectOneOf(final Object... expected) {
@@ -666,7 +664,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
                             } else if (expect instanceof WebPage) {
                                 WebPage w = (WebPage) expect;
 
-                                if (w.isCurrentPageInBrowser()) {
+                                if (w.isPageValidated()) {
                                     return expect;
                                 }
                             }
@@ -691,9 +689,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * Moves the mouse pointer to the middle of the element. And waits for the expected elements to be visible.
      * 
      * @param expected
-     *            parameters in the form of an element locator {@link String}, a {@link Button}, a {@link TextField},
-     *            an {@link Image}, a {@link Form}, a {@link Label}, a {@link Table}, a {@link SelectList}, a
-     *            {@link CheckBox}, or a {@link RadioButton}.
+     *            parameters in the form of an element locator {@link String} or an {@link AbstractElement}
      */
     public void hover(final Object... expected) {
         dispatcher.beforeHover(this, expected);

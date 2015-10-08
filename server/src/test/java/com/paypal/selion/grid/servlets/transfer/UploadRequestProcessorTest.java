@@ -16,7 +16,6 @@
 package com.paypal.selion.grid.servlets.transfer;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +30,6 @@ import org.testng.annotations.Test;
 import com.paypal.selion.grid.servlets.TransferServlet;
 import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.ApplicationUploadRequestProcessor;
 import com.paypal.selion.grid.servlets.transfer.UploadRequestProcessor.MultipartUploadRequestProcessor;
-import com.paypal.selion.utils.ConfigParser;
 
 @PrepareForTest({ HttpServletRequest.class, HttpServletResponse.class, TransferServlet.class })
 public class UploadRequestProcessorTest extends PowerMockTestCase {

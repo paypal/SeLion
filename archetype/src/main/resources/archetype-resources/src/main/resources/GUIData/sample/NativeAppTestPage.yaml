@@ -3,11 +3,11 @@ defaultLocale: "US"
 elements:
   sampleUIANavigationBar:
     locators:
-      english: "//UIAApplication[1]/UIAWindow[2]/UIANavigationBar[1]"
+      US: "//UIAApplication[1]/UIAWindow[2]/UIANavigationBar[1]"
   sampleUIATableView:
     locators:
-      english: "//UIAApplication[1]/UIAWindow[2]/UIATableView[1]"
+      US: "//UIAApplication[1]/UIAWindow[2]/UIATableView[1]"
   sampleUIAStaticText:
     locators:
-      english: "//UIAApplication[1]/UIAWindow[2]/UIAStaticText[1]"
+      US: "//UIAApplication[1]/UIAWindow[2]/UIAStaticText[1]"
 platform: "ios"

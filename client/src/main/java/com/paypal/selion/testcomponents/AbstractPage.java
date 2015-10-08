@@ -197,7 +197,7 @@ public abstract class AbstractPage implements WebPage {
     }
 
     @Override
-    public boolean isCurrentPageInBrowser() {
+    public boolean isPageValidated() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 

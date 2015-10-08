@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+ |  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -28,6 +28,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.common.base.Preconditions;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.html.WebPage;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -36,23 +37,23 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  *
  */
 public final class WebDriverWaitUtils {
-    
+
     private final static SimpleLogger logger = SeLionLogger.getLogger();
 
-    private WebDriverWaitUtils(){
-        //Utility class. So hide the constructor to defeat instantiation
+    private WebDriverWaitUtils() {
+        // Utility class. So hide the constructor to defeat instantiation
     }
 
-    private static String getTextFromBody(){
+    private static String getTextFromBody() {
         WebElement bodyTag = Grid.driver().findElement(By.tagName("body"));
         return bodyTag.getText();
     }
 
-    private static void waitForCondition(ExpectedCondition<?> condition){
+    private static void waitForCondition(ExpectedCondition<?> condition) {
         waitForCondition(condition, timeoutInSeconds());
     }
-    
-    private static void waitForCondition(ExpectedCondition<?> condition, long timeoutInSeconds){
+
+    private static void waitForCondition(ExpectedCondition<?> condition, long timeoutInSeconds) {
         new WebDriverWait(Grid.driver(), timeoutInSeconds).until(condition);
     }
 
@@ -83,7 +84,7 @@ public final class WebDriverWaitUtils {
         waitForCondition(condition);
         logger.exiting();
     }
-    
+
     /**
      * Waits until element element is present on the DOM of a page. This does not necessarily mean that the element is
      * visible.
@@ -98,7 +99,7 @@ public final class WebDriverWaitUtils {
         waitForCondition(condition);
         logger.exiting();
     }
-    
+
     /**
      * Waits until element is present on the DOM of a page and visible. Visibility means that the element is not only
      * displayed but also has a height and width that is greater than 0.
@@ -113,7 +114,7 @@ public final class WebDriverWaitUtils {
         waitForCondition(condition);
         logger.exiting();
     }
-    
+
     /**
      * Waits until the current page's title contains a case-sensitive substring of the given title.
      * 
@@ -122,12 +123,13 @@ public final class WebDriverWaitUtils {
      */
     public static void waitUntilPageTitleContains(final String pageTitle) {
         logger.entering(pageTitle);
-        Preconditions.checkArgument(StringUtils.isNotEmpty(pageTitle), "Expected Page title cannot be null (or) empty.");
+        Preconditions
+                .checkArgument(StringUtils.isNotEmpty(pageTitle), "Expected Page title cannot be null (or) empty.");
         ExpectedCondition<Boolean> condition = ExpectedConditions.titleContains(pageTitle);
         waitForCondition(condition);
         logger.exiting();
     }
-    
+
     /**
      * Waits until text appears anywhere within the current page's &lt;body&gt; tag.
      *
@@ -146,25 +148,46 @@ public final class WebDriverWaitUtils {
         waitForCondition(conditionToCheck);
         logger.exiting();
     }
-    
+
     /**
-     * Waits until both two elements appear at the page
-     * Waits until all the elements are present on the DOM of a page. 
+     * Waits until both two elements appear at the page Waits until all the elements are present on the DOM of a page.
      * This does not necessarily mean that the element is visible.
      *
-     * @param locators - An array of strings that represents the list of elements to check.
-     *            
+     * @param locators
+     *            an array of strings that represents the list of elements to check.
+     * 
      */
     public static void waitUntilAllElementsArePresent(final String... locators) {
         logger.entering(new Object[] { Arrays.toString(locators) });
         Preconditions.checkArgument(locators != null, "Please provide a valid set of locators.");
-        for (String eachLocator : locators){
+        for (String eachLocator : locators) {
             waitUntilElementIsPresent(eachLocator);
         }
         logger.exiting();
     }
 
-    private static long timeoutInSeconds(){
-        return Grid.getExecutionTimeoutValue()/1000;
+    /**
+     * Waits until all <code>pageValidators</code> for a given object pass. The {@link WebPage} instance must express
+     * something that validates the page or calling this will cause a wait timeout.
+     * 
+     * @param pageObject
+     *            a {@link WebPage} instance.
+     */
+    public static void waitUntilWebPageIsValidated(WebPage pageObject) {
+        logger.entering(pageObject);
+        Preconditions.checkArgument(pageObject != null, "Please provide a valid instance of WebPage.");
+        final WebPage w = (WebPage) pageObject;
+        ExpectedCondition<Boolean> conditionToCheck = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return w.isPageValidated();
+            }
+        };
+        waitForCondition(conditionToCheck);
+        logger.exiting();
+    }
+
+    private static long timeoutInSeconds() {
+        return Grid.getExecutionTimeoutValue() / 1000;
     }
 }

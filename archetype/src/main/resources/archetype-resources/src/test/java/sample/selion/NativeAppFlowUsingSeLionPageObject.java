@@ -40,7 +40,7 @@ public class NativeAppFlowUsingSeLionPageObject {
         // -DSELION_SITE_LOCALE=<locale_value>
         // 3. We can set this at a specific <test> level by setting the parameter
         // <parameter name="siteLocale" value="locale_value_to_be_set"/> in the suite xml file.
-        NativeAppTestPage samplePage = new NativeAppTestPage("english");
+        NativeAppTestPage samplePage = new NativeAppTestPage("US");
         
         //The NativeAppTestPage.java gets its data from NativeAppTestPage.yaml"
 

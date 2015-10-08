@@ -22,6 +22,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
+import com.paypal.selion.platform.html.WebPage;
+
 /**
  * <code> UIAutomationElement </code> is the super interface for all user interface elements in the context of the
  * Automation instrument for automating user interface testing of iOS apps. This interface defines more general methods
@@ -43,8 +45,8 @@ public interface UIAutomationElement {
      * Double-taps the specified element.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UIAElement} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UIAElement}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void doubleTap(Object... expected);
 
@@ -57,8 +59,8 @@ public interface UIAutomationElement {
      * Taps the specified element and optionally waits for the provided expected elements.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UIAElement} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UIAElement}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void tap(Object... expected);
 
@@ -69,8 +71,8 @@ public interface UIAutomationElement {
      * @param gestureOptions
      *            {@link EnumMap} specifying the gesture attributes.
      * @param expected
-     *            Expected entities in the form of objects extending {@link UIAElement} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UIAElement}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void tapWithOptions(EnumMap<GestureOptions, String> gestureOptions, Object... expected);
 
@@ -78,8 +80,8 @@ public interface UIAutomationElement {
      * Performs a two-finger (two-touch) tap on this element.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UIAElement} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UIAElement}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void twoFingerTap(Object... expected);
 

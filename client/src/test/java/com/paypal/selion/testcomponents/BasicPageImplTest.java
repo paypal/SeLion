@@ -26,6 +26,7 @@ import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.platform.asserts.SeLionAsserts;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.Container;
+import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.selion.testcomponents.BasicPageImpl;
 
 public class BasicPageImplTest {
@@ -52,6 +53,20 @@ public class BasicPageImplTest {
                 "Button value retrieved successfully");
 
         SeLionAsserts.assertFalse(page.getHiddenButton().isVisible(), "Yaml Hidden button is actually hidden");
+    }
+
+    @Test(groups = { "functional" })
+    @WebTest
+    public void testWebPageIsValidated() throws InterruptedException, IOException {
+        page = new TestPage();
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+
+        WebDriverWaitUtils.waitUntilWebPageIsValidated(page);
+        //Note: if the previous line passes and this fails something is really broken
+        SeLionAsserts.assertTrue(page.isPageValidated(), "TestPage did not pass pageValidations");
     }
 
     @Test(groups = { "functional" })
@@ -108,21 +123,19 @@ public class BasicPageImplTest {
         TestPage pageNotOpened = new TestPage("US", "TestWrongValidatorPage");
         TestPage pageTitleValidation = new TestPage("US", "PageTitleValidationPage");
 
-        SeLionAsserts.assertEquals(page.isCurrentPageInBrowser(), true, "Page is opened in the browser");
-        SeLionAsserts.assertEquals(pageNotOpened.isCurrentPageInBrowser(), false, "Page is not opened in the browser");
+        SeLionAsserts.assertEquals(page.isPageValidated(), true, "Page is opened in the browser");
+        SeLionAsserts.assertEquals(pageNotOpened.isPageValidated(), false, "Page is not opened in the browser");
         // Validate the page by pageTitle, which is the fallback if there are no pageValidators provided.
-        SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), true, "Page is opened in the browser");
+        SeLionAsserts.assertEquals(pageTitleValidation.isPageValidated(), true, "Page is opened in the browser");
 
         pageTitleValidation.setPageTitle("Incorrect page title");
-        SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), false,
-                "Page is not opened in the browser");
+        SeLionAsserts.assertEquals(pageTitleValidation.isPageValidated(), false, "Page is not opened in the browser");
 
         pageTitleValidation.setPageTitle("* JavaScript");
-        SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), true, "Page is opened in the browser");
+        SeLionAsserts.assertEquals(pageTitleValidation.isPageValidated(), true, "Page is opened in the browser");
 
         pageTitleValidation.setPageTitle("* title");
-        SeLionAsserts.assertEquals(pageTitleValidation.isCurrentPageInBrowser(), false,
-                "Page is not opened in the browser");
+        SeLionAsserts.assertEquals(pageTitleValidation.isPageValidated(), false, "Page is not opened in the browser");
     }
 
     @Test(groups = { "functional" })

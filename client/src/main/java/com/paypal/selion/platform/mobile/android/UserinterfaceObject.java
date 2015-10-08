@@ -17,6 +17,8 @@ package com.paypal.selion.platform.mobile.android;
 
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
+import com.paypal.selion.platform.html.WebPage;
+
 /**
  * <code>UserinterfaceObject</code> exposes the base interactions that can be carried on any Android UI automation
  * element. This class makes some minor changes to the methods exposed by UiObject of Android UiAutomator framework.
@@ -35,8 +37,8 @@ public interface UserinterfaceObject {
      * Performs a click at the center of the visible bounds of the UI element represented by this UiObject.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void click(Object... expected);
 
@@ -44,8 +46,8 @@ public interface UserinterfaceObject {
      * Clicks the bottom and right corner of the UI element.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void clickBottomRight(Object... expected);
 
@@ -53,8 +55,8 @@ public interface UserinterfaceObject {
      * Clicks the top and left corner of the UI element.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void clickTopLeft(Object... expected);
 
@@ -135,8 +137,8 @@ public interface UserinterfaceObject {
      * Long clicks the center of the visible bounds of the UI element.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void longClick(Object... expected);
 
@@ -144,8 +146,8 @@ public interface UserinterfaceObject {
      * Long clicks bottom and right corner of the UI element.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void longClickBottomRight(Object... expected);
 
@@ -153,8 +155,8 @@ public interface UserinterfaceObject {
      * Long clicks on the top and left corner of the UI element.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void longClickTopLeft(Object... expected);
 
@@ -171,8 +173,8 @@ public interface UserinterfaceObject {
      * UI element does not need to be scrollable.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void swipeLeft(Object... expected);
 
@@ -181,8 +183,8 @@ public interface UserinterfaceObject {
      * targeted UI element does not need to be scrollable.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void swipeRight(Object... expected);
 
@@ -191,8 +193,8 @@ public interface UserinterfaceObject {
      * UI element does not need to be scrollable.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void swipeUp(Object... expected);
 
@@ -201,8 +203,8 @@ public interface UserinterfaceObject {
      * UI element does not need to be scrollable.
      * 
      * @param expected
-     *            Expected entities in the form of objects extending {@link UiObject} or xpath location in the form of
-     *            {@link String} or instances of {@link ExpectedCondition}.
+     *            Expected entities in the form of objects extending {@link UiObject}, xpath location in the form of
+     *            {@link String}, instances of {@link ExpectedCondition}, or an instance of a {@link WebPage}
      */
     void swipeDown(Object... expected);
 

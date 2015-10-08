@@ -19,10 +19,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.html.WebPage;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -296,10 +295,13 @@ public class UiObject implements UserinterfaceObject {
                 continue;
             }
             if (expect instanceof ExpectedCondition<?>) {
-                WebDriverWait wait = new WebDriverWait(Grid.driver(),
-                        Long.valueOf(ConfigManager.getConfig(Grid.getTestSession().getXmlTestName()).getConfigProperty(
-                                ConfigProperty.EXECUTION_TIMEOUT)) / 1000);
+                long timeOutInSeconds = Grid.getExecutionTimeoutValue() / 1000;
+                WebDriverWait wait = new WebDriverWait(Grid.driver(), timeOutInSeconds);
                 wait.until(ExpectedCondition.class.cast(expect));
+                continue;
+            }
+            if (expect instanceof WebPage) {
+                WebDriverWaitUtils.waitUntilWebPageIsValidated((WebPage) expect);
                 continue;
             }
         }

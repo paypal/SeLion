@@ -52,7 +52,7 @@ public class UIFlowUsingSeLionPageObjectsTest {
         //-DSELION_SITE_LOCALE=english
         //3. We can set this at a specific <test> level by setting the parameter
         //<parameter name="siteLocale" value="english"/> in the suite xml file.
-        MyAppHomePage page = new MyAppHomePage("english");
+        MyAppHomePage page = new MyAppHomePage("US");
         page.getFirstNameTextField().type("Joe");
         page.getLastNameTextField().type("User");
         page.getEmailTextField().type("joeuser@foo.bar");

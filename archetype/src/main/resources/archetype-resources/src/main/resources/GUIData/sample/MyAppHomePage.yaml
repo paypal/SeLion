@@ -1,31 +1,31 @@
 baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
 pageTitle:
-    english: "Awesome Deals"
+    US: "Awesome Deals"
 elements:
     firstNameTextField:
         locators:
-            english: "first_name"
+            US: "first_name"
     lastNameTextField:
         locators:
-            english: "last_name"
+            US: "last_name"
     emailTextField:
         locators:
-            english: "email"
+            US: "email"
     submitButton:
         locators:
-            english: "submit_button"
+            US: "submit_button"
     firstNameLabel:
         locators:
-            english: "display_first_name"
+            US: "display_first_name"
     lastNameLabel:
         locators:
-            english: "display_last_name"
+            US: "display_last_name"
     emailLabel:
         locators:
-            english: "display_email"
+            US: "display_email"
     retryAgainButton:
         locators:
-            english: "retry_button"
+            US: "retry_button"
 pageValidators: [
     firstNameLabel,
     lastNameLabel,
