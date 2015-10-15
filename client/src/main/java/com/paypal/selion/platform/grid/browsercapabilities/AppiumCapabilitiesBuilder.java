@@ -29,6 +29,8 @@ class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private static final String APPIUM_ANDROID_PLATFORM_TYPE = "ANDROID";
     private static final String APPIUM_IOS_PLATFORM_TYPE = "iOS";
     private static final String MOBILE_NODE_TYPE = "mobileNodeType";
+    private static final String APPIUM_LOCALE_TYPE = "locale";
+    private static final String APPIUM_LANGUAGE_TYPE = "language";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
@@ -39,10 +41,11 @@ class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         if (StringUtils.isBlank(mobileSession.getAppName())) {
             capabilities.setCapability(MobileCapabilityType.APP, mobileSession.getAppPath());
         }
-
         capabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getAsString());
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, mobileSession.getDeviceType());
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, mobileSession.getPlatformVersion());
+        capabilities.setCapability(APPIUM_LOCALE_TYPE, mobileSession.getAppLocale());
+        capabilities.setCapability(APPIUM_LANGUAGE_TYPE, mobileSession.getAppLanguage());
         if (mobileSession.getPlatform() == WebDriverPlatform.ANDROID) {
             capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, APPIUM_ANDROID_PLATFORM_TYPE);
         }

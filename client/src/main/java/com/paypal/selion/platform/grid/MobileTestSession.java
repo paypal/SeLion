@@ -47,7 +47,9 @@ public class MobileTestSession extends AbstractTestSession {
     private String platformVersion;
     private String appPath;
     private String appVersion;
+
     private WebDriverPlatform platform;
+
     private MobileNodeType mobileNodeType;
 
     private static final String SAUCE_URL = "sauce-storage:";
@@ -129,13 +131,20 @@ public class MobileTestSession extends AbstractTestSession {
         String mobileNode = Config.getConfigProperty(ConfigProperty.MOBILE_NODE_TYPE);
 
         // First load these from the <test> local config
-        appLocale = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LOCALE);
-        appLanguage = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE);
         appName = getLocalConfigProperty(ConfigProperty.MOBILE_APP_NAME);
         appPath = getLocalConfigProperty(ConfigProperty.MOBILE_APP_PATH);
         deviceSerial = getLocalConfigProperty(ConfigProperty.SELENDROID_DEVICE_SERIAL);
+
         if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_NODE_TYPE))) {
             mobileNode = getLocalConfigProperty(ConfigProperty.MOBILE_NODE_TYPE);
+        }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_APP_LOCALE))) {
+            appLocale = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LOCALE);
+        }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE))) {
+            appLanguage = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE);
         }
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
@@ -147,6 +156,7 @@ public class MobileTestSession extends AbstractTestSession {
                     appName = appNames[0];
                 }
             }
+
             if (StringUtils.isNotBlank(deviceTestAnnotation.language())) {
                 this.appLanguage = deviceTestAnnotation.language();
             }
