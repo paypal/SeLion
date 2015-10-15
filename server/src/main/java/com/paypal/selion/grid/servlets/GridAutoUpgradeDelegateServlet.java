@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -168,7 +169,8 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                 for (String temp : pendingProxy) {
                     ids = ids + temp + ",";
                 }
-                writer.write("The following nodes were not auto upgraded: " + ids.substring(0, ids.length() - 2));
+                ids = StringUtils.chop(ids);
+                writer.write("The following nodes were not auto upgraded: " + ids);
                 writer.write("<br>Click the Submit button to retry.");
                 writer.write("<input type='hidden' name='" + IDS + "' value='" + ids + "'>");
                 writer.write("<input type='hidden' name='" + PARAM_JSON + "' value='" + downloadJSON + "'>");

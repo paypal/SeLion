@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2015 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,6 +16,7 @@
 package com.paypal.selion.node.servlets;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.paypal.selion.logging.SeLionGridLogger;
+import com.paypal.selion.utils.ServletHelper;
 import com.paypal.selion.utils.process.ProcessHandlerException;
 
 /**
@@ -31,33 +33,54 @@ import com.paypal.selion.utils.process.ProcessHandlerException;
  * node [not the Grid] so that it can help in terminating the node.
  * 
  */
-public class NodeForceRestartServlet extends HttpServlet {
+public class NodeForceRestartServlet extends HttpServlet implements InsecureHttpPostAuthChallenge {
 
     private static final long serialVersionUID = -8308677302003045927L;
+
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(NodeForceRestartServlet.class);
     private final ProcessShutdownHandler shutdownHandler = new ProcessShutdownHandler();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
+        LOGGER.entering();
+        ServletHelper.respondAsJsonWithHttpStatus(resp, new NodeResponseBody().setReady(), HttpServletResponse.SC_OK);
+        LOGGER.exiting();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setCharacterEncoding("UTF-8");
-        String json = new String("{ \"result\": \"success\" }".getBytes(), "UTF-8");
-        resp.getOutputStream().print(json);
-        resp.flushBuffer();
+        LOGGER.entering();
+        Map<String, String> requestParams = ServletHelper.getParameters(req);
+
+        if (!CONFIGURED_TOKEN_VALUE.equals(requestParams.get(TOKEN_PARAMETER))) {
+            ServletHelper.respondAsJsonWithHttpStatus(resp, new NodeResponseBody().setFailed(),
+                    HttpServletResponse.SC_FORBIDDEN);
+            LOGGER.exiting();
+            return;
+        }
+
+        ServletHelper.respondAsJsonWithHttpStatus(resp, new NodeResponseBody().setSuccess(), HttpServletResponse.SC_OK);
         LOGGER.warning("Shutting down the node");
         try {
             shutdownHandler.shutdownProcesses();
         } catch (ProcessHandlerException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
-            System.exit(0);
+            // Start a thread to exit the Node via System.exit(0).
+            // This thread gives the HTTP Response a chance to complete the communication.
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        System.exit(0);
+                    }
+                    System.exit(0);
+                }
+            }, "NodeForceRestartServlet-system-exit").start();
         }
-    }
 
+        LOGGER.exiting();
+    }
 }
