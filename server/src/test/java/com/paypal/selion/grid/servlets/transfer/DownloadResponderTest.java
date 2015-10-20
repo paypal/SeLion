@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,6 +56,16 @@ public class DownloadResponderTest extends PowerMockTestCase {
             @Override
             public void write(int b) throws IOException {
                 bos.write(b);
+            }
+
+            @Override
+            public boolean isReady() {
+                return true;
+            }
+
+            @Override
+            public void setWriteListener(WriteListener writeListener) {
+                // not implemented
             }
         });
 

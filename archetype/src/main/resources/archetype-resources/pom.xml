@@ -14,23 +14,37 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>false</skipTests>
         <suiteXmlFile>src/test/resources/SampleSuite.xml</suiteXmlFile>
+        <selion.version>1.0.0-SNAPSHOT</selion.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.paypal.selion</groupId>
+                <artifactId>SeLion-Project-BOM</artifactId>
+                <version>${selion.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${selion.version}</version>
         </dependency>
         <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion-Grid</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${selion.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>2.47.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -73,7 +87,7 @@
             <plugin>
                 <groupId>com.paypal.selion</groupId>
                 <artifactId>SeLion-Code-Generator</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${selion.version}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -165,7 +179,7 @@
                                             SeLion-Code-Generator
                                         </artifactId>
                                         <versionRange>
-                                            [1.0.0-SNAPSHOT,)
+                                            [${selion.version},)
                                         </versionRange>
                                         <goals>
                                             <goal>

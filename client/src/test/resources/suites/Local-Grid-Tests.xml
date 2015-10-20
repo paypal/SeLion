@@ -9,7 +9,7 @@
             </run>
         </groups>
         <classes>
-            <class name="com.paypal.selion.platform.grid.LocalGridManagerTest" />
+            <class name="com.paypal.selion.internal.platform.grid.LocalGridManagerTest" />
         </classes>
     </test>
 
