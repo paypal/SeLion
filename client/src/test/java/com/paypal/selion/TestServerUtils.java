@@ -17,8 +17,8 @@ package com.paypal.selion;
 
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.handler.ResourceHandler;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
