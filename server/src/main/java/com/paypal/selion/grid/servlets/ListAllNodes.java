@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2015 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,11 +15,10 @@
 
 package com.paypal.selion.grid.servlets;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,20 +29,16 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
-import com.google.common.io.ByteStreams;
-import com.paypal.selion.node.servlets.LogServlet;
-import com.paypal.selion.utils.FileBackedStringBuffer;
+import com.paypal.selion.utils.ServletHelper;
 
 /**
- * This is simple {@link RegistryBasedServlet} servlet which basically display the list of nodes connected to the grid.
- * This servlet would have to be injected into the Grid.
- * <br><br>
- * In addition this servlet will provide a link to view logs on the node. The node must use {@link LogServlet} or
- * handle a HTTP request to <b>/extra/LogServlet</b> for this to work.
- * 
+ * This is simple {@link RegistryBasedServlet} servlet which displays the list of nodes connected to the grid. This
+ * servlet would have to be injected into the Grid. <br>
  */
 public class ListAllNodes extends RegistryBasedServlet {
     private static final long serialVersionUID = -123L;
+
+    public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/listAllNodes.html";
 
     public ListAllNodes() {
         this(null);
@@ -51,7 +46,6 @@ public class ListAllNodes extends RegistryBasedServlet {
 
     public ListAllNodes(Registry registry) {
         super(registry);
-
     }
 
     @Override
@@ -62,46 +56,37 @@ public class ListAllNodes extends RegistryBasedServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         process(req, resp);
-
     }
 
     /**
-     * This method getS all the nodes which are connected to the grid machine from the Registry and displays them in
+     * This method gets all the nodes which are connected to the grid machine from the Registry and displays them in
      * html page.
      * 
      * @param request
-     *            - {@link HttpServletRequest} that represent the servlet request
+     *            {@link HttpServletRequest} that represents the servlet request
      * @param response
-     *            - {@link HttpServletResponse} that represent the servlet response
+     *            {@link HttpServletResponse} that represents the servlet response
      * @throws IOException
      */
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        boolean doStatusQuery = request.getParameter("pingNodes") != null;
+        if (request.getHeader("Accept").equalsIgnoreCase("application/json")) {
+            ServletHelper.respondAsJsonWithHttpStatus(response, getProxyInfo(doStatusQuery), HttpServletResponse.SC_OK);
+        } else {
+            ServletHelper.respondAsHtmlUsingJsonAndTemplateWithHttpStatus(response, getProxyInfo(doStatusQuery),
+                    RESOURCE_PAGE_FILE,
+                    HttpServletResponse.SC_OK);
+        }
+    }
 
-        response.setContentType("text/html");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(200);
-
-        FileBackedStringBuffer buffer = new FileBackedStringBuffer();
-
-        buffer.append("<html>").append("<head>").append("<title>Grid Logs Console</title>");
-        buffer.append("</head>").append("<body>");
-
+    private List<ProxyInfo> getProxyInfo(boolean doStatusQuery) {
+        List<ProxyInfo> nodes = new ArrayList<>();
         ProxySet proxies = this.getRegistry().getAllProxies();
         Iterator<RemoteProxy> iterator = proxies.iterator();
         while (iterator.hasNext()) {
             RemoteProxy proxy = iterator.next();
-            URL remoteHost = proxy.getRemoteHost();
-            String nodeAddress = remoteHost + "/extra/" + LogServlet.class.getSimpleName();
-            buffer.append("<br>View logs on <a href=").append(nodeAddress).append(" target=_blank>")
-                    .append(remoteHost.getHost()).append("</a></br>");
+            nodes.add(new ProxyInfo(proxy, doStatusQuery));
         }
-        buffer.append("</body></html>");
-        InputStream in = new ByteArrayInputStream(buffer.toString().getBytes("UTF-8"));
-        try {
-            ByteStreams.copy(in, response.getOutputStream());
-        } finally {
-            in.close();
-            response.flushBuffer();
-        }
+        return nodes;
     }
 }

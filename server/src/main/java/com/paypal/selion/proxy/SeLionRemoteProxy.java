@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -43,6 +44,7 @@ import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import com.paypal.selion.SeLionBuildInfo;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
+import com.paypal.selion.node.servlets.LogServlet;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet;
 import com.paypal.selion.logging.SeLionGridLogger;
@@ -71,14 +73,15 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private static final int MAX_SESSION_ALLOWED = 50;
     private static final int CONNECTION_TIMEOUT = 30000;
 
-    private volatile boolean forceShutDown;
+    private volatile boolean scheduledShutdown;
     private volatile int totalSessionsCompleted, totalSessionsStarted;
 
-    private SimpleLogger proxyLogger;
-    private int maxSessionsAllowed;
-    private String machine;
-    private NodeRecycleThread nodeRecycleThread;
-    private Lock accessLock;
+    private final boolean canForceShutdown, canAutoUpgrade, canViewLogs;
+    private final long proxyStartMillis;
+    private final SimpleLogger proxyLogger;
+    private final String machine;
+    private final NodeRecycleThread nodeRecycleThread;
+    private final Lock accessLock;
 
     /**
      * @param request
@@ -91,10 +94,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     public SeLionRemoteProxy(RegistrationRequest request, Registry registry) throws IOException {
         super(request, registry);
 
-        forceShutDown = false;
+        proxyStartMillis = System.currentTimeMillis();
+        scheduledShutdown = false;
         totalSessionsCompleted = 0;
         totalSessionsStarted = 0;
-        maxSessionsAllowed = ConfigParser.parse().getInt("uniqueSessionCount", MAX_SESSION_ALLOWED);
         machine = getRemoteHost().getHost();
         nodeRecycleThread = new NodeRecycleThread(getId());
         accessLock = new ReentrantLock();
@@ -117,17 +120,27 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         proxyLogger.info(info.toString());
         info = new StringBuffer();
         info.append("SeLionRemoteProxy will attempt to recycle the node [");
-        info.append(machine).append("] after ").append(maxSessionsAllowed).append(" unique sessions");
+        info.append(machine).append("] after ").append(getMaxSessionsAllowed()).append(" unique sessions");
         proxyLogger.info(info.toString());
+
+        // detect presence of SeLion servlet capabilities on proxy
+        canForceShutdown = isSupportedOnNode(NodeForceRestartServlet.class);
+        canAutoUpgrade = isSupportedOnNode(NodeAutoUpgradeServlet.class);
+        canViewLogs = isSupportedOnNode(LogServlet.class);
+
+        // push these important values to the registered configuration object.
+        getConfig().put("uniqueSessionCount", getMaxSessionsAllowed());
+        getConfig().put("nodeRecycleThreadWaitTimeout", getNodeRecycleThread().getThreadWaitTimeout());
     }
 
     private boolean isSupportedOnNode(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT).setSocketTimeout(CONNECTION_TIMEOUT).build();
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+                .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
         CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-        String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(),
+        String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(), 
                 servlet.getSimpleName());
 
         try {
@@ -135,8 +148,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             final HttpResponse getResponse = client.execute(get);
 
             if (getResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                proxyLogger.warning("Node " + getId() + " does not have or support "
-                        + servlet.getSimpleName());
+                proxyLogger.warning("Node " + getId() + " does not have or support " + servlet.getSimpleName());
                 LOGGER.exiting(false);
                 return false;
             }
@@ -157,7 +169,8 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private HttpResponse sendToNodeServlet(Class<? extends HttpServlet> servlet, List<NameValuePair> nvps) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT).setSocketTimeout(CONNECTION_TIMEOUT).build();
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+                .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
         CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
         String url = String.format("http://%s:%d/extra/%s", machine, this.getRemoteHost().getPort(),
@@ -192,7 +205,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         LOGGER.entering(downloadJSON);
 
         // verify the servlet is supported on the node
-        if (!isSupportedOnNode(NodeAutoUpgradeServlet.class)) {
+        if (!supportsAutoUpgrade()) {
             LOGGER.exiting(false);
             return false;
         }
@@ -230,7 +243,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         LOGGER.entering();
 
         // verification should be before lock to avoid unnecessarily acquiring lock
-        if (totalSessionsStarted >= maxSessionsAllowed || forceShutDown) {
+        if (totalSessionsStarted >= getMaxSessionsAllowed() || scheduledShutdown) {
             LOGGER.exiting(null);
             return logSessionInfo();
         }
@@ -240,7 +253,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
             // As per double-checked locking pattern need to have check once again
             // to avoid spawning additional session then maxSessionAllowed
-            if (totalSessionsStarted >= maxSessionsAllowed || forceShutDown) {
+            if (totalSessionsStarted >= getMaxSessionsAllowed() || scheduledShutdown) {
                 LOGGER.exiting(null);
                 return logSessionInfo();
             }
@@ -249,7 +262,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             if (session != null) {
                 // count ONLY if the session was a valid one
                 totalSessionsStarted++;
-                if (totalSessionsStarted >= maxSessionsAllowed) {
+                if (totalSessionsStarted >= getMaxSessionsAllowed()) {
                     startNodeRecycleThread();
                 }
                 proxyLogger.fine("Beginning session #" + totalSessionsStarted + " (" + session.toString() + ")");
@@ -262,23 +275,23 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     }
 
     private TestSession logSessionInfo() {
-        proxyLogger.fine("Was max sessions reached? " + (totalSessionsStarted >= maxSessionsAllowed) + " on node "
+        proxyLogger.fine("Was max sessions reached? " + (totalSessionsStarted >= getMaxSessionsAllowed()) + " on node "
                 + getId());
-        proxyLogger.fine("Was this a forced shutdown? " + (forceShutDown) + " on node " + getId());
+        proxyLogger.fine("Was this a scheduled shutdown? " + (scheduledShutdown) + " on node " + getId());
         return null;
     }
 
     private void startNodeRecycleThread() {
-        if (!nodeRecycleThread.isAlive()) {
-            nodeRecycleThread.start();
+        if (!getNodeRecycleThread().isAlive()) {
+            getNodeRecycleThread().start();
         }
     }
 
     private void stopNodeRecycleThread() {
-        if (nodeRecycleThread.isAlive()) {
+        if (getNodeRecycleThread().isAlive()) {
             try {
-                nodeRecycleThread.shutdown();
-                nodeRecycleThread.join(2000); // Wait no longer than 2x the recycle thread's loop
+                getNodeRecycleThread().shutdown();
+                getNodeRecycleThread().join(2000); // Wait no longer than 2x the recycle thread's loop
             } catch (InterruptedException e) { // NOSONAR
                 // ignore
             }
@@ -303,7 +316,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     public void requestNodeShutdown() {
         LOGGER.entering();
-        forceShutDown = true;
+        scheduledShutdown = true;
         startNodeRecycleThread();
         LOGGER.exiting();
     }
@@ -318,7 +331,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         stopNodeRecycleThread();
 
         // verify the servlet is supported on the node
-        if (!isSupportedOnNode(NodeForceRestartServlet.class)) {
+        if (!canForceShutdown) {
             LOGGER.exiting();
             return;
         }
@@ -327,8 +340,8 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         for (TestSlot slot : getTestSlots()) {
             if (slot.getSession() != null) {
                 totalSessionsCompleted++;
-                proxyLogger.info("Timing out session #" + totalSessionsCompleted + " ("
-                        + slot.getSession().toString() + ")");
+                proxyLogger.info("Timing out session #" + totalSessionsCompleted + " (" + slot.getSession().toString()
+                        + ")");
                 getRegistry().forceRelease(slot, SessionTerminationReason.TIMEOUT);
             }
         }
@@ -365,7 +378,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     class NodeRecycleThread extends Thread {
         private static final int DEFAULT_TIMEOUT = 0; // Waits forever
         private volatile boolean running;
-        private String nodeId;
+        private final String nodeId;
 
         NodeRecycleThread(String nodeId) {
             running = false;
@@ -376,7 +389,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         public void run() {
             LOGGER.entering();
             running = true;
-            int timeout = ConfigParser.parse().getInt("nodeRecycleThreadWaitTimeout", DEFAULT_TIMEOUT);
+            int timeout = getThreadWaitTimeout();
             int expired = 0;
 
             proxyLogger.fine("Started NodeRecycleThread with " + ((timeout == 0) ? "no" : "a " + timeout + " second")
@@ -406,8 +419,12 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             LOGGER.exiting();
         }
 
+        int getThreadWaitTimeout() {
+            return ConfigParser.parse().getInt("nodeRecycleThreadWaitTimeout", DEFAULT_TIMEOUT);
+        }
+
         private boolean keepLooping(int expired, int timeout) {
-            return (getTotalUsed() > 0) && (running) && ((expired < timeout) || (timeout == 0));
+            return (getTotalUsed() > 0) && running && ((expired < timeout) || (timeout == 0));
         }
 
         private boolean wasExpired(int expired, int timeout) {
@@ -421,5 +438,69 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             interrupt();
             LOGGER.exiting();
         }
+    }
+
+    /**
+     * @return the {@link NodeRecycleThread} associated with this proxy
+     */
+    private NodeRecycleThread getNodeRecycleThread() {
+        return nodeRecycleThread;
+    }
+
+    /**
+     * @return an integer value which represents the number of unique sessions this proxy allows for before
+     *         automatically spinning up a {@link NodeRecycleThread}
+     */
+    private int getMaxSessionsAllowed() {
+        return ConfigParser.parse().getInt("uniqueSessionCount", MAX_SESSION_ALLOWED);
+    }
+
+    /**
+     * @return total uptime since proxy came online in minutes
+     */
+    public long getUptimeInMinutes() {
+        return TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - proxyStartMillis);
+    }
+
+    /**
+     * @return total number of sessions completed since proxy came online
+     */
+    public int getTotalSessionsComplete() {
+        return totalSessionsCompleted;
+    }
+
+    /**
+     * @return total number of sessions started since proxy came online
+     */
+    public int getTotalSessionsStarted() {
+        return totalSessionsStarted;
+    }
+
+    /**
+     * @return <code>true</code> or <code>false</code>, whether the proxy is scheduled for recycle
+     */
+    public boolean isScheduledForRecycle() {
+        return getNodeRecycleThread().isAlive();
+    }
+
+    /**
+     * @return whether the proxy supports/has running {@link NodeForceRestartServlet}
+     */
+    public boolean supportsForceShutdown() {
+        return canForceShutdown;
+    }
+
+    /**
+     * @return whether the proxy supports/has running {@link NodeAutoUpgradeServlet}
+     */
+    public boolean supportsAutoUpgrade() {
+        return canAutoUpgrade;
+    }
+
+    /**
+     * @return whether the proxy supports/has running {@link LogServlet}
+     */
+    public boolean supportsViewLogs() {
+        return canViewLogs;
     }
 }

@@ -67,7 +67,7 @@ public final class AuthenticationHelper {
      * @return - <code>true</code> if the credentials were valid.
      */
     public static boolean authenticate(String userName, String userPassword) {
-        LOGGER.entering(userName, userPassword.replaceAll(".", "*"));
+        LOGGER.entering(userName, StringUtils.isBlank(userPassword) ? userPassword : userPassword.replaceAll(".", "*"));
         boolean validLogin = false;
         byte[] currentAuthData;
         byte[] hashedInputData;
