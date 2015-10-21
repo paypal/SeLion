@@ -93,10 +93,7 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
                     continue;
                 }
 
-                // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
-                // NodeForceRestartServlet available. Without truth in this assumption, the call to
-                // proxy.forceNodeShutdown() and proxy.requestNodeShutdown will do nothing.
-                if (proxy instanceof SeLionRemoteProxy) {
+                if ((proxy instanceof SeLionRemoteProxy) && (((SeLionRemoteProxy) proxy).supportsForceShutdown())) {
                     if (isForcedRestart) {
                         LOGGER.info("Sending forced restart request to " + proxy.getId());
                         ((SeLionRemoteProxy) proxy).forceNodeShutdown();
@@ -121,7 +118,6 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             writer.write("<ul>");
             writer.write("<li id='li_1' >");
             writer.write("<label class='description' for='element_1'>List of nodes to restart </label>");
-            writer.write("<span>");
 
             ProxySet proxies = this.getRegistry().getAllProxies();
             Iterator<RemoteProxy> iterator = proxies.iterator();
@@ -132,21 +128,20 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
                     continue;
                 }
 
-                // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
-                // NodeForceRestartServlet available. Without truth in this assumption, the call to
-                // proxy.forceNodeShutdown() will do nothing.
-                if (proxy instanceof SeLionRemoteProxy) {
+                if ((proxy instanceof SeLionRemoteProxy) && (((SeLionRemoteProxy) proxy).supportsForceShutdown())) {
                     writer.write("<input name='nodes' class='element checkbox' type='checkbox' value='" + proxy.getId()
                             + "' />");
-                    writer.write("<label class='choice'>" + proxy.getId() + "</label>");
+                    writer.write(((SeLionRemoteProxy) proxy).isScheduledForRecycle() ? "<label class='choice'>"
+                            + proxy.getId() + " (restart scheduled)</label>" : "<label class='choice'>" + proxy.getId()
+                            + "</label>");
                     nodesPresent = true;
                 } else {
                     LOGGER.warning("Node " + proxy.getId() + " does not support force restart.");
                 }
             }
 
-            writer.write("</span></li>");
-            String defaultMsg = "<label class='choice'>No nodes are available to restart</label>";
+            writer.write("</li>");
+            String defaultMsg = "<div style=\"padding-top: 20px\"><label class='choice'>No nodes are available to restart</label class='choice'></div>";
             if (nodesPresent) {
                 defaultMsg = "<li class='buttons'><input type='hidden' name='form_id' value='restart_nodes' />"
                         + "<input id='saveForm' class='button_text' type='submit' name='submit' value='Restart'/>"
