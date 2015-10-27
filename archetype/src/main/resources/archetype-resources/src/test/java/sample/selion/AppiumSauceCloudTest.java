@@ -38,7 +38,7 @@ public class AppiumSauceCloudTest {
      */
     @Test
     @MobileTest(appPath = "sauce-storage:selendroid-test-app-0.15.0.apk", device = "android:4.3",
-        deviceType = "Android Emulator")
+        deviceType = "Android Emulator", additionalCapabilities = { "appiumVersion:1.4.13" })
     public void testWithNativeAndroidApp() throws Exception {
         RemoteWebDriver driver = Grid.driver();
         WebDriverWaitUtils.waitUntilElementIsVisible("io.selendroid.testapp:id/my_text_field");
@@ -55,7 +55,7 @@ public class AppiumSauceCloudTest {
      */
     @Test
     @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", device = "iphone:8.1",
-        deviceType = "iPhone Simulator", additionalCapabilities = { "appiumVersion:1.3.4" })
+        deviceType = "iPhone Simulator", additionalCapabilities = { "appiumVersion:1.4.13" })
     public void testWithNativeIOSApp() throws InterruptedException {
         SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));

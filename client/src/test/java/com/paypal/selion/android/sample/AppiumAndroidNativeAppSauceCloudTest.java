@@ -31,7 +31,8 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 public class AppiumAndroidNativeAppSauceCloudTest {
 
     @Test
-    @MobileTest(appPath = "sauce-storage:selendroid-test-app-0.14.0.apk", device = "android:4.3", deviceType = "Android Emulator")
+    @MobileTest(appPath = "sauce-storage:selendroid-test-app-0.14.0.apk", device = "android:4.3",
+            deviceType = "Android Emulator", additionalCapabilities = { "appiumVersion:1.4.13" })
     public void testWithNativeApp() throws Exception {
 
         RemoteWebDriver driver = Grid.driver();

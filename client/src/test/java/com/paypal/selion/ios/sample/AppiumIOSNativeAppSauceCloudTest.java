@@ -32,8 +32,8 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
 public class AppiumIOSNativeAppSauceCloudTest {
 
     @Test
-    @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", device = "iphone:8.1", deviceType = "iPhone Simulator", additionalCapabilities = {
-            "appiumVersion:1.3.4" })
+    @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", device = "iphone:8.1",
+            deviceType = "iPhone Simulator", additionalCapabilities = { "appiumVersion:1.4.13" })
     public void testWithNativeApp() throws InterruptedException {
         SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));

@@ -32,7 +32,8 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
 public class AppiumIOSSafariSauceCloudTest {
 
     @Test
-    @MobileTest(appName = "safari", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appName = "safari", device = "iphone:8.1", deviceType = "iPhone Simulator", additionalCapabilities = {
+            "appiumVersion:1.4.13" })
     public void testWithSafari() {
         RemoteWebDriver driver = Grid.driver();
         assertNotNull(driver);
