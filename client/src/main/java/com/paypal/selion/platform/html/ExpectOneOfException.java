@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2015 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,14 +16,14 @@
 package com.paypal.selion.platform.html;
 
 /**
- * This exception is intended to encompass all exceptions that might be thrown when we validate pages
+ * This exception is used encompass all exceptions that occurred when multiple expected conditions are used in an OR
+ * fashion as a prequisite to further action.
  */
-public class PageValidationException extends RuntimeException {
+public class ExpectOneOfException extends RuntimeException {
 
-    private static final long serialVersionUID = 2293610118186851226L;
+    private static final long serialVersionUID = 4504271723751959171L;
 
-    public PageValidationException(String msg) {
+    public ExpectOneOfException(String msg) {
         super(msg);
     }
-
 }
