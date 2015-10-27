@@ -17,6 +17,7 @@ package com.paypal.selion.internal.platform.grid;
 
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.grid.Grid;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
