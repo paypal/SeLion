@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
@@ -42,14 +43,28 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * 
  */
 public abstract class AbstractTestSession {
+
+    /**
+     * Shared session flag. This flag is populated during initTestSession method.
+     */
+    protected boolean isSessionShared;
+
     private boolean isStarted = false;
+
     private String methodName = "";
+
     private String className = "";
+
     private DesiredCapabilities additionalCapabilities = new DesiredCapabilities();
+
     private String parameters;
+
     private String[] dependsOnMethods = new String[] {};
+
     private static final SimpleLogger logger = SeLionLogger.getLogger();
+
     private String xmlTestName = "";
+
     private List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
 
     /**
@@ -75,11 +90,11 @@ public abstract class AbstractTestSession {
 
     protected final String getParamsInfo(InvokedMethodInformation method) {
         logger.entering(method);
-        StringBuffer parameters = null;
+        StringBuilder parameters = null;
         for (Object eachParameter : method.getMethodParameters()) {
             String eachParamAsString = (eachParameter == null ? "null" : eachParameter.toString());
             if (parameters == null) {
-                parameters = new StringBuffer();
+                parameters = new StringBuilder();
                 parameters.append(eachParamAsString);
             } else {
                 parameters.append(",");
@@ -96,14 +111,30 @@ public abstract class AbstractTestSession {
 
     protected final void initTestSession(InvokedMethodInformation method) {
         logger.entering(method);
-
+        isSessionShared = isSessionShared(method);
         this.dependsOnMethods = method.getMethodsDependedUpon();
-
         this.className = method.getCurrentClassName();
         this.methodName = method.getCurrentMethodName();
         this.parameters = getParamsInfo(method);
         this.xmlTestName = method.getCurrentTestName();
         logger.exiting();
+    }
+
+    /*
+     * Returns true if SessionSharing is enforced by the client test class
+     */
+    private boolean isSessionShared(InvokedMethodInformation invokedMethodInformation) {
+
+        /*
+         * SessionSharing is identified positive if the Class is annotated by @Test annotation with 'singleThreaded'
+         * attribute as true and if the Class bears a @WebTest or @MobileTest annotation.
+         */
+        Class<?> declaringClass = invokedMethodInformation.getActualMethod().getDeclaringClass();
+        boolean isSingleThreaded = declaringClass.getAnnotation(Test.class) != null
+                && declaringClass.getAnnotation(Test.class).singleThreaded();
+        boolean isWebTestClass = declaringClass.getAnnotation(WebTest.class) != null;
+        boolean isMobileTestClass = declaringClass.getAnnotation(MobileTest.class) != null;
+        return isSingleThreaded && (isWebTestClass || isMobileTestClass);
     }
 
     protected void initializeAdditionalCapabilities(String[] additionalCapabilities, InvokedMethodInformation method) {
@@ -139,7 +170,7 @@ public abstract class AbstractTestSession {
                 }
                 capabilityMap.put(keyValuePair[0], desiredCapability);
             } else {
-                StringBuffer errMsg = new StringBuffer();
+                StringBuilder errMsg = new StringBuilder();
                 errMsg.append("Capabilities are to be provided as name value pair separated by colons. ");
                 errMsg.append("For e.g., capabilityName:capabilityValue");
                 throw new IllegalArgumentException(errMsg.toString());
@@ -170,16 +201,23 @@ public abstract class AbstractTestSession {
     }
 
     /**
-     * @return - The test name for the current method which is formed by concatenating the Class name, Method name and
-     *         Method parameters if any.
+     * Returns a test name for the current method. This method returns the the Class name, Method name, and Method
+     * parameters if any, for a test case running on a Non-Session-Sharing context. For a test case running under
+     * Session-Sharing context this method returns the Class name, Method name, and Method parameters if any.
+     * 
+     * @return - test name.
      */
     public final String getTestName() {
-        String testName = getDeclaringClassName() + ":" + getMethodName() + "()";
-        if (parameters != null) {
-            parameters = "[" + parameters + "]";
-            testName = testName + ":" + parameters;
+        StringBuilder stringBuilder = new StringBuilder();
+        if (isSessionShared) {
+            stringBuilder.append(getDeclaringClassName());
+        } else {
+            stringBuilder.append(getDeclaringClassName()).append(':').append(getMethodName()).append('(').append(')');
         }
-        return testName;
+        if (parameters != null) {
+            stringBuilder.append('[').append(parameters).append(']');
+        }
+        return stringBuilder.toString();
     }
 
     /**
@@ -212,7 +250,7 @@ public abstract class AbstractTestSession {
             // we are gobbling this exception
             try {
                 Grid.driver().quit();
-            } catch (Exception e) { //NOSONAR
+            } catch (Exception e) { // NOSONAR
                 logger.log(Level.SEVERE, "An error occurred while closing the Selenium session: " + e.getMessage(), e);
             }
         }
@@ -223,8 +261,6 @@ public abstract class AbstractTestSession {
         this.isStarted = false;
         logger.exiting();
     }
-
-
 
     public final boolean hasDependentMethods() {
         return (this.dependsOnMethods.length > 0);
