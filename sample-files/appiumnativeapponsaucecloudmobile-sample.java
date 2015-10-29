@@ -18,7 +18,8 @@ public class AppiumNativeAppSauceCloudMobileDemo {
 
   @Test
   @MobileTest(appPath = "sauce-storage:selendroid-test-app-0.15.0.apk", 
-  device = "android:4.3", deviceType = "Android Emulator")
+  device = "android:4.3", deviceType = "Android Emulator", additionalCapabilities = {
+    "appiumVersion:1.4.13" })
   public void nativeAppTestToRunOnSauceCloud() {
     RemoteWebDriver driver = Grid.driver();
     WebDriverWaitUtils

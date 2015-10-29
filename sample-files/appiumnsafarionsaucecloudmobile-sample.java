@@ -18,7 +18,8 @@ public class AppiumIOSSafariSauceCloudMobileDemo {
 
   @Test
   @MobileTest(appName = "safari", device = "iphone:8.1", 
-  deviceType = "iPhone Simulator", mobileNodeType = "appium")
+  deviceType = "iPhone Simulator", mobileNodeType = "appium", additionalCapabilities = {
+    "appiumVersion:1.4.13" })
   public void testWithSafari() {
     RemoteWebDriver driver = Grid.driver();
     assertNotNull(driver);
