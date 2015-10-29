@@ -15,16 +15,13 @@
 
 package com.paypal.selion.platform.dataprovider.pojos;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Mappable class for a collection of KeyValuePair
@@ -33,35 +30,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class KeyValueMap {
 
-
-    private Map<String, KeyValuePair> map;
-
-    public Map<String, KeyValuePair> getMap() {
-        if (map == null) {
-            map = new LinkedHashMap<String, KeyValuePair>();
-        }
-        return map;
-    }
+    private List<KeyValuePair> items;
 
     @XmlElement(name = "item")
-    private List<KeyValuePair> getItems() {
-        return new ArrayList<KeyValuePair>(getMap().values());
+    public List<KeyValuePair> getItems() {
+        return items;
     }
 
-    public List<Map.Entry<String, String>> getEntries() {
-        List<Map.Entry<String, String>> returned = new ArrayList<Map.Entry<String, String>>(getMap().values().size());
-        for (KeyValuePair item : getMap().values()) {
-            returned.add(new AbstractMap.SimpleImmutableEntry<String, String>(item.getKey(), item.getValue()));
+    public void setItems(List<KeyValuePair> items) {
+        this.items = items;
+    }
+
+    public Map<String, KeyValuePair> getMap() {
+        Map<String, KeyValuePair> returned = new LinkedHashMap<>();
+        for (KeyValuePair item : getItems()) {
+            returned.put(item.getKey(), item);
         }
         return returned;
-    }
-
-    @SuppressWarnings("unused")
-    private void setItems(final List<KeyValuePair> items) {
-        getMap().clear();
-        for (KeyValuePair item : items) {
-            getMap().put(item.getKey(), item);
-        }
     }
 
 }
