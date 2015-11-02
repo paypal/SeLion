@@ -1,0 +1,80 @@
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2015 PayPal                                                                                          |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
+
+.version-info {
+  float: right !important;
+}
+.busy {
+  opacity: 0.4 !important;
+  filter: alpha(opacity=40) !important;
+}
+.icon {
+  display: inline;
+  padding-left: 2px;
+  padding-right: 2px;
+  cursor: default;
+}
+.offline {
+  background-color: rgba(225, 0, 0, 0.25) !important;
+}
+.shuttingdown {
+  background-color: rgba(37, 206, 215, 0.25) !important;
+}
+#content li {
+  list-style-type: none;
+}
+#content div.left-cell {
+  box-sizing: border-box;
+  display: table-cell;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 300px;
+}
+#content div.right-cell {
+  box-sizing: border-box;
+  display: table-cell;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 300px;
+}
+#content div.row {
+  background-color: #f0f0f0;
+  display: block;
+  padding: 10px;
+}
+#content div.header {
+  background-color: rgba(0, 93, 97, 0.25);
+  display: block;
+  padding: 5px;
+}
+#content a:visited, #content a, #content a:hover, .icon a {
+  color: rgba(0, 93, 97, 0.75);
+}
+#content li.icon a {
+  background-color: #fefefe;
+  height: 16px;
+}
+#content li.icon img {
+  vertical-align: top;
+  height: 16px !important;
+}
+#content div.icon-row {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.javascript-enabled {
+  display: none !important;
+  visibility: hidden !important;
+}

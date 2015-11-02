@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.GsonBuilder;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.paypal.selion.grid.servlets.LoginServlet;
@@ -69,12 +71,40 @@ public final class ServletHelper {
      */
     public static void respondAsJsonWithHttpStatus(HttpServletResponse resp, Object response, int statusCode)
             throws IOException {
-        String json = new GsonBuilder().setPrettyPrinting().create().toJson(response);
+        String json = new GsonBuilder().serializeNulls().create().toJson(response);
         String jsonUtf8 = new String(json.getBytes(), "UTF-8");
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(statusCode);
         resp.getOutputStream().print(jsonUtf8);
+        resp.flushBuffer();
+    }
+
+    /**
+     * Sends an HTTP response as a text/html document and with a HTTP status code. Injects a json object into the
+     * template before responding.
+     * 
+     * @param resp
+     *            A {@link HttpServletResponse} object that the servlet is responding on.
+     * @param response
+     *            The response object which will be serialized to a JSON document
+     * @param resourcePageTemplate
+     *            The HTML template to use which is loaded as a classpath resource
+     * @param statusCode
+     *            The HTTP status code to send with the response
+     * @throws IOException
+     */
+    public static void respondAsHtmlUsingJsonAndTemplateWithHttpStatus(HttpServletResponse resp, Object response,
+            String resourcePageTemplate, int statusCode) throws IOException {
+        resp.setContentType("text/html");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(HttpServletResponse.SC_OK);
+
+        String template = IOUtils.toString(ServletHelper.class.getResourceAsStream(resourcePageTemplate), "UTF-8");
+        final String json = new GsonBuilder().serializeNulls().create().toJson(response);
+        final String jsonUtf8 = new String(json.getBytes(), "UTF-8");
+        template = String.format(template, jsonUtf8);
+        resp.getOutputStream().print(template);
         resp.flushBuffer();
     }
 
@@ -205,5 +235,4 @@ public final class ServletHelper {
         writer.write("<body id='main_body'>");
         writer.write("<img id='top' src='/grid/resources/form/top.png' alt='' >");
     }
-
 }

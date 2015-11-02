@@ -42,16 +42,21 @@ import com.paypal.selion.utils.ServletHelper;
 
 /**
  * This {@link RegistryBasedServlet} based servlet update the Sauce Configuration json file based on the input provided
- * via POST operation and re-load the SauceConfigReader proerties. For GET request it will return the
+ * via POST operation and re-load the SauceConfigReader properties. For GET request it will return the
  * updateSauceConfigPage.html content. URL of the Servlet :
- * <code>http://{hub-host}:{hub-port}/grid/admin/SauceConfigChangeServlet</code>.
+ * <code>http://{hub-host}:{hub-port}/grid/admin/SauceConfigChangeServlet</code>. <br>
  * <br>
- * <br>
- * This requires the hub to also have {@link LoginServlet} available. 
+ * This requires the hub to also have {@link LoginServlet} available.
  */
 public class SauceConfigChangeServlet extends RegistryBasedServlet {
 
+    /**
+     * Resource path to the sauce config html file
+     */
+    public static final String RESOURCE_PAGE_FILE = "/pages/updateSauceConfigPage.html";
+
     private static final long serialVersionUID = 1L;
+
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigChangeServlet.class);
 
     public SauceConfigChangeServlet(Registry registry) {
@@ -73,8 +78,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     }
 
     private void loadSauceConfigPage(PrintWriter writer) throws IOException {
-        String finalHtml = IOUtils.toString(this.getClass().getResourceAsStream(
-                SeLionGridConstants.SAUCE_CONFIG_UPDATE_PAGE_RESOURCE), "UTF-8");
+        String finalHtml = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCE_PAGE_FILE), "UTF-8");
         writer.write(finalHtml);
     }
 

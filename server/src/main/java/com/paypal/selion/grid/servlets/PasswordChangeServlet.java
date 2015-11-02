@@ -26,7 +26,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 
-import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.AuthenticationHelper;
 import com.paypal.selion.utils.ServletHelper;
 
@@ -34,6 +33,11 @@ import com.paypal.selion.utils.ServletHelper;
  * This servlet provides the ability to change the password for servlets which require/use {@link LoginServlet}
  */
 public class PasswordChangeServlet extends HttpServlet {
+
+    /**
+     * Resource path to the password change html template file
+     */
+    public static final String RESOURCE_PAGE_FILE = "/pages/changePageGetDetails.html";
 
     private static final long serialVersionUID = 1L;
 
@@ -46,8 +50,7 @@ public class PasswordChangeServlet extends HttpServlet {
     private void askForCredentialsPage(PrintWriter writer) throws IOException {
         String changePasswordMessage = "Fill out the form to change the management console password";
 
-        String template = IOUtils.toString(this.getClass().getResourceAsStream(
-                SeLionGridConstants.PASSWORD_CHANGE_PAGE_RESOURCE), "UTF-8");
+        String template = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCE_PAGE_FILE), "UTF-8");
         writer.write(String.format(template, PasswordChangeServlet.class.getSimpleName(), changePasswordMessage));
     }
 
