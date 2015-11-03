@@ -784,3 +784,8 @@ div.calendar {
   background: #dedede;
   font-weight: bold;
 }
+
+.javascript-enabled {
+  display: none !important;
+  visibility: hidden !important;
+}

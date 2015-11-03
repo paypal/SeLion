@@ -64,7 +64,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
     /**
      * Resource path to the grid auto upgrade html template file
      */
-    public static final String RESOURCE_PAGE_FILE = "/pages/gridAutoUpgradePage.html";
+    public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/gridAutoUpgradeDelegateServlet.html";
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridAutoUpgradeDelegateServlet.class);
     private static final String IDS = "ids";

@@ -37,7 +37,7 @@ public class PasswordChangeServlet extends HttpServlet {
     /**
      * Resource path to the password change html template file
      */
-    public static final String RESOURCE_PAGE_FILE = "/pages/changePageGetDetails.html";
+    public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/passwordChangeServlet.html";
 
     private static final long serialVersionUID = 1L;
 
