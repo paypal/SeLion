@@ -24,7 +24,7 @@ import org.testng.ITestResult;
 @SuppressWarnings("unused")
 class ConfigMethodInfo extends MethodInfo {
 
-    private String type;
+    private final String type;
 
     /**
      * Instantiate ConfigMethodInfo object with suite, test, packages, class name and result details

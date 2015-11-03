@@ -18,7 +18,6 @@ package com.paypal.selion.internal.reports.runtimereport;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -28,23 +27,24 @@ import org.testng.Reporter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.internal.reports.model.BaseLog;
 import com.paypal.selion.internal.reports.services.ReporterDateFormatter;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
+/**
+ * Used to hold test method information for reporting purposes.
+ */
 @SuppressWarnings("unused")
 class MethodInfo {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    private String suite;
-    private String test;
-    private String packageInfo;
-    private String className;
-    private String methodName;
+    private final String suite;
+    private final String test;
+    private final String packageInfo;
+    private final String className;
+    private final String methodName;
     private String status;
     private String startTime;
     private String endTime;
@@ -52,7 +52,9 @@ class MethodInfo {
     private String exception;
     private String stacktrace;
     private List<LogInfo> logs;
-    private transient ITestResult result;
+    // transient because we don't want this field serialized.
+    // final because we don't want the object re-assigned
+    private final transient ITestResult result;
 
     /**
      * Constructor.
@@ -69,7 +71,6 @@ class MethodInfo {
      *            ITestResult of the method which need to be reported
      */
     public MethodInfo(String suite, String test, String packages, String classname, ITestResult result) {
-
         this.suite = suite;
         this.test = test;
         this.packageInfo = packages;
@@ -176,8 +177,7 @@ class MethodInfo {
 
         parseResults();
 
-        Gson gson = new GsonBuilder().setPrettyPrinting()
-                .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT).create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(this);
         logger.exiting(json);
         return json;

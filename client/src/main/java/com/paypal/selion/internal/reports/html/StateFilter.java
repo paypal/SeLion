@@ -22,7 +22,7 @@ import org.testng.ITestResult;
  * {@link ITestResult#SKIP}). It will filter those {@link ITestResult} that matches the state of the filter
  * 
  */
-class StateFilter implements Filter {
+public class StateFilter implements Filter {
 
     private int state;
 

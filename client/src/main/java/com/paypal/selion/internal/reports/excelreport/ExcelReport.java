@@ -15,7 +15,6 @@
 
 package com.paypal.selion.internal.reports.excelreport;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -71,19 +70,19 @@ public class ExcelReport implements IReporter {
     private HSSFWorkbook wb;
     private String reportFileName = "Excel_Report.xls";
 
-    private List<SummarizedData> lSuites = new ArrayList<SummarizedData>();
-    private List<SummarizedData> lTests = new ArrayList<SummarizedData>();
-    private List<SummarizedData> lGroups = new ArrayList<SummarizedData>();
-    private List<SummarizedData> lClasses = new ArrayList<SummarizedData>();
-    private List<TestCaseResult> allTestsResults = new ArrayList<TestCaseResult>();
+    private final List<SummarizedData> lSuites = new ArrayList<SummarizedData>();
+    private final List<SummarizedData> lTests = new ArrayList<SummarizedData>();
+    private final List<SummarizedData> lGroups = new ArrayList<SummarizedData>();
+    private final List<SummarizedData> lClasses = new ArrayList<SummarizedData>();
+    private final List<TestCaseResult> allTestsResults = new ArrayList<TestCaseResult>();
 
-    private List<List<String>> tcFailedData = new ArrayList<List<String>>();
-    private List<List<String>> tcPassedData = new ArrayList<List<String>>();
-    private List<List<String>> tcSkippedData = new ArrayList<List<String>>();
-    private List<List<String>> tcDefectData = new ArrayList<List<String>>();
-    private List<List<String>> tcOutputData = new ArrayList<List<String>>();
+    private final List<List<String>> tcFailedData = new ArrayList<List<String>>();
+    private final List<List<String>> tcPassedData = new ArrayList<List<String>>();
+    private final List<List<String>> tcSkippedData = new ArrayList<List<String>>();
+    private final List<List<String>> tcDefectData = new ArrayList<List<String>>();
+    private final List<List<String>> tcOutputData = new ArrayList<List<String>>();
 
-    private Map<String, SummarizedData> mpGroupClassData = new HashMap<String, SummarizedData>();
+    private final Map<String, SummarizedData> mpGroupClassData = new HashMap<String, SummarizedData>();
 
     private static List<ReportMap<?>> fullReportMap = new ArrayList<ReportMap<?>>();
 
@@ -98,7 +97,7 @@ public class ExcelReport implements IReporter {
      */
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String sOpDirectory) {
         logger.entering(new Object[] { xmlSuites, suites, sOpDirectory });
-        if (ListenerManager.executeCurrentMethod(this) == false) {
+        if (ListenerManager.isCurrentMethodSkipped(this)) {
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
@@ -128,8 +127,6 @@ public class ExcelReport implements IReporter {
             FileOutputStream fOut = new FileOutputStream(p.toFile());
             wb.write(fOut);
             fOut.flush();
-        } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -139,10 +136,11 @@ public class ExcelReport implements IReporter {
         }
     }
 
-    /*
+    /**
      * Sets the output file name for the Excel Report. The file should have 'xls' extension.
      * 
-     * @param fileName The file name without any path.
+     * @param fileName
+     *            The file name without any path.
      */
     public void setExcelFileName(String fileName) {
         Preconditions.checkArgument(StringUtils.endsWith(fileName, ".xls"), "Excel file name must end with '.xls'.");
@@ -153,6 +151,7 @@ public class ExcelReport implements IReporter {
      * Initialized styles used in the workbook. Generates the report related info. Creates the structure of the Excel
      * Reports
      */
+    @SuppressWarnings("rawtypes")
     private void createExcelReport() {
         logger.entering();
 
@@ -166,7 +165,7 @@ public class ExcelReport implements IReporter {
         this.createReportMap();
 
         // Render reports in the Workbook
-        for (@SuppressWarnings("rawtypes") ReportMap rm : fullReportMap) {
+        for (ReportMap rm : fullReportMap) {
             List<BaseReport<?>> allReports = rm.getGeneratedReport();
             allReports.iterator().next().generateRep(this.wb, rm.getName(), rm.getGeneratedReport());
         }
@@ -188,11 +187,11 @@ public class ExcelReport implements IReporter {
             reportInfo.put(temp.getKey(), temp.getValue());
         }
 
-        int rowNum = 0, colNum = 0;
+        int rowNum = 0;
         HSSFCell col;
         HSSFRow row;
         for (Entry<String, String> eachReportInfo : reportInfo.entrySet()) {
-            colNum = 2;
+            int colNum = 2;
             row = summarySheet.createRow(rowNum++);
 
             col = row.createCell(colNum);
@@ -232,7 +231,7 @@ public class ExcelReport implements IReporter {
 
         SummarizedData naGroupData = new SummarizedData();
         naGroupData.setsName(TestCaseResult.NA);
-        groupsClone.add(naGroupData); 
+        groupsClone.add(naGroupData);
         subReportMap = new LinkedHashMap<String, List<SummarizedData>>();
         for (SummarizedData group : groupsClone) {
 
@@ -270,15 +269,16 @@ public class ExcelReport implements IReporter {
         // Changing the titles of the Defect Report
         BaseReport<List<String>> bR = (BaseReport<List<String>>) fullReportMap.get(fullReportMap.size() - 1)
                 .getGeneratedReport().iterator().next();
-        List<String> lsTitles = Arrays.asList(new String[] { "Class Name", "Method/Testcase id", "Test Description",
-                "Group[s]", "Time taken", "Output Logs", "Error Message", "Error Details" });
+        List<String> lsTitles = Arrays.asList("Class Name", "Method/Testcase id", "Test Description",
+                "Group[s]", "Time taken", "Output Logs", "Error Message", "Error Details");
         bR.setColTitles(lsTitles);
-        
+
         // TestCase Output Details Report
         Map<String, List<List<String>>> fifthTestOutputSubReportMap = new LinkedHashMap<String, List<List<String>>>();
         fifthTestOutputSubReportMap.put("Test Output", tcOutputData);
 
-        ReportMap<List<String>> fifthReportSheet = new ReportMap<List<String>>(ReportSheetNames.TESTOUTPUTDETAILSREPORT.getName(),
+        ReportMap<List<String>> fifthReportSheet = new ReportMap<List<String>>(
+                ReportSheetNames.TESTOUTPUTDETAILSREPORT.getName(),
                 fifthTestOutputSubReportMap, 2);
         fullReportMap.add(fifthReportSheet);
         logger.exiting();
@@ -288,13 +288,14 @@ public class ExcelReport implements IReporter {
      * Generates all summarized counts for various reports
      * 
      * @param suites
+     *            the {@link List} of {@link ISuite}
      */
     private void generateSummaryData(List<ISuite> suites) {
         logger.entering(suites);
 
-        SummarizedData tempSuite = null;
+        SummarizedData tempSuite;
         SummarizedData tempTest;
-        SummarizedData tempGroups = null;
+        SummarizedData tempGroups;
         this.generateTestCaseResultData(suites);
 
         // Generating Group Summary data
@@ -400,11 +401,12 @@ public class ExcelReport implements IReporter {
     }
 
     /**
-     * Generates class based summary and the basis for Detailed groupwise summary report
+     * Generates class based summary and the basis for Detailed group-wise summary report
      */
     private void generateTCBasedData(List<TestCaseResult> allTestsList) {
         logger.entering(allTestsList);
-        SummarizedData tempClass = null, tempGroupClass = null;
+        SummarizedData tempClass;
+        SummarizedData tempGroupClass;
         Map<String, SummarizedData> mpClassData = new HashMap<String, SummarizedData>();
         int outputSheetRowCounter = 3;
 
@@ -450,8 +452,9 @@ public class ExcelReport implements IReporter {
             str.add(tcResult.getTestDesc());
             str.add(tcResult.getGroup().toString());
             str.add(String.valueOf(tcResult.getDurationTaken()));
-            str.add("'" + ReportSheetNames.TESTOUTPUTDETAILSREPORT.getName() + "'!B" + Integer.toString(outputSheetRowCounter));
-            
+            str.add("'" + ReportSheetNames.TESTOUTPUTDETAILSREPORT.getName() + "'!B"
+                    + Integer.toString(outputSheetRowCounter));
+
             List<String> outputStr = new ArrayList<String>();
             outputStr.add("Class Name:" + tcResult.getClassName());
             outputStr.add("Method/Testcase id:" + tcResult.getMethodName());
@@ -481,6 +484,9 @@ public class ExcelReport implements IReporter {
                     tcSkippedData.add(str);
                     break;
                 }
+                default: {
+                    break;
+                }
             }
             tcOutputData.add(outputStr);
             outputSheetRowCounter = outputSheetRowCounter + 1 + outputStr.size();
@@ -490,8 +496,7 @@ public class ExcelReport implements IReporter {
             tempClass.setlRuntime(tempClass.getlRuntime() + tcResult.getDurationTaken());
             mpClassData.put(sTempClassName, tempClass);
         }
-        SummarizedData[] ps = new SummarizedData[mpClassData.size()];
-        lClasses = Arrays.asList(mpClassData.values().toArray(ps));
+        lClasses.addAll(mpClassData.values());
         Collections.sort(lClasses);
         logger.exiting();
     }

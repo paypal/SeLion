@@ -25,7 +25,6 @@ import org.testng.ITestResult;
  * Reporter
  * 
  */
-
 @SuppressWarnings("unused")
 class TestMethodInfo extends MethodInfo {
 

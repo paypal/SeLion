@@ -32,7 +32,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * display the result in a table, 1 line for all the test that match a given criteria
  * 
  */
-class GroupingView implements View {
+public class GroupingView implements View {
 
     private List<ISuite> suites;
     private String id;

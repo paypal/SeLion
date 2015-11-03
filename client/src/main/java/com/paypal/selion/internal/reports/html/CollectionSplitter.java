@@ -29,7 +29,7 @@ import org.testng.ITestResult;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
-abstract class CollectionSplitter {
+public abstract class CollectionSplitter {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 

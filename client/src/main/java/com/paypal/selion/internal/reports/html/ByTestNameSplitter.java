@@ -26,7 +26,7 @@ import com.paypal.selion.logger.SeLionLogger;
 /**
  * Internal use only. This class is responsible by the Velocity engine to render the "per testName" view.
  */
-final class ByTestNameSplitter extends CollectionSplitter {
+public final class ByTestNameSplitter extends CollectionSplitter {
     @Override
     public List<String> getKeys(ITestResult result) {
         SeLionLogger.getLogger().entering(result);

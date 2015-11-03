@@ -21,7 +21,7 @@ import org.testng.ITestResult;
  * A Dummy Filter implementation which doesn't filter any {@link ITestResult}
  * 
  */
-class BlankFilter implements Filter {
+public class BlankFilter implements Filter {
 
     @Override
     public boolean isValid(ITestResult result) {

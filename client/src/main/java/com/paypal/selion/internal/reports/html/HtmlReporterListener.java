@@ -357,7 +357,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
             StringBuilder contentBuffer) {
         logger.entering(new Object[] { exception, method, title, contentBuffer });
         contentBuffer.append(" <div class='stContainer' >" + exception.getClass() + ":" + title// escape(title)
-                + "<a  class='exceptionlnk'>(+)</a>");
+                + "<a class='exceptionlnk' href='#'>(+)</a>");
 
         contentBuffer.append("<div class='exception' style='display:none'>");
 
@@ -434,7 +434,7 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
             fileSystemWriter.flush();
             fileSystemWriter.close();
         } catch (Exception e) { // catching exception because velocity throws
-                                // that and we cant change it
+                                // that and we can't change it
             ReporterException re = new ReporterException(e);
             throw re;
         }

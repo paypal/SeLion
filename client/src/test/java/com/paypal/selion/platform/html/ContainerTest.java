@@ -33,8 +33,6 @@ import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 
 public class ContainerTest {
-	
-
     private static final String name = "name";
     private static final String id = "id";
     private static final String uniqueName = "uniqueName";
@@ -46,7 +44,7 @@ public class ContainerTest {
     public void testContainerWithXpathBase() {
         Grid.driver().get(TestServerUtils.getContainerURL());
         String baseLocator = "//*[contains(@class,'base')]";
-        testContainerWithLocatorsTypes(baseLocator);
+        testContainerWithLocatorTypes(baseLocator);
     }
 
     @Test(groups = { "browser-tests" })
@@ -54,7 +52,7 @@ public class ContainerTest {
     public void testContainerWithCssBase() {
         Grid.driver().get(TestServerUtils.getContainerURL());
         String baseLocator = "css=.base";
-        testContainerWithLocatorsTypes(baseLocator);
+        testContainerWithLocatorTypes(baseLocator);
     }
 
     @Test(groups = { "browser-tests" })
@@ -62,7 +60,7 @@ public class ContainerTest {
     public void testContainerWithIdBase() {
         Grid.driver().get(TestServerUtils.getContainerURL());
         String baseLocator = "id=base";
-        testContainerWithLocatorsTypes(baseLocator);
+        testContainerWithLocatorTypes(baseLocator);
     }
 
     @Test(groups = { "browser-tests" })
@@ -70,7 +68,7 @@ public class ContainerTest {
     public void testContainerWithNameBase() {
         Grid.driver().get(TestServerUtils.getContainerURL());
         String baseLocator = "name=base";
-        testContainerWithLocatorsTypes(baseLocator);
+        testContainerWithLocatorTypes(baseLocator);
     }
 
     @Test(groups = { "browser-tests" })
@@ -78,28 +76,10 @@ public class ContainerTest {
     public void testContainerWithLinkBase() {
         Grid.driver().get(TestServerUtils.getContainerURL());
         String baseLocator = "link=baseLink";
-        testContainerWithLocatorsTypes(baseLocator);
+        testContainerWithLocatorTypes(baseLocator);
     }
 
-    // NOT SUPPORTED BY SELION
-    // @Test(groups={"browser-tests"})
-    // @WebTest
-    public void testContainerWithPartialLinkTextBase() {
-        Grid.driver().get(TestServerUtils.getContainerURL());
-        String baseLocator = "partiallink='seLink'";
-        testContainerWithLocatorsTypes(baseLocator);
-    }
-
-    // NOT SUPPORTED BY SELION
-    // @Test(groups={"browser-tests"})
-    // @WebTest
-    public void testContainerWithTagNameBase() {
-        Grid.driver().get(TestServerUtils.getContainerURL());
-        String baseLocator = "tag='baseTag'";
-        testContainerWithLocatorsTypes(baseLocator);
-    }
-
-    private void testContainerWithLocatorsTypes(String baseLocator) {
+    private void testContainerWithLocatorTypes(String baseLocator) {
 
         SampleContainer container = new SampleContainer(baseLocator);
         int totalContainers = container.size();
@@ -132,10 +112,6 @@ public class ContainerTest {
             Label xpathChild = container.getXpathChild();
             actualAttributeValue = xpathChild.getAttribute(name);
             verifyEquals(actualAttributeValue, uniqueName + expectedIndex, xpathChild.getLocator());
-
-            // NOT SUPPORTED BY SELION
-            // Label tagChild;
-            // Label partialLinkChild;
         }
     }
 
@@ -168,14 +144,14 @@ public class ContainerTest {
             container.getCssChild().getElement();
             fail(failureMsg);
         } catch (NoSuchElementException e) {
-
+            // NOSONAR
         }
 
         try {
             container.getCssChild().getElements();
             fail(failureMsg);
         } catch (NoSuchElementException e) {
-
+            // NOSONAR
         }
 
         container = new SampleContainer("id=base");
@@ -184,14 +160,14 @@ public class ContainerTest {
             container.getCssChild().getElement();
             fail(failureMsg);
         } catch (NoSuchElementException e) {
-
+            // NOSONAR
         }
 
         try {
             container.getCssChild().getElements();
             fail(failureMsg);
         } catch (NoSuchElementException e) {
-
+            // NOSONAR
         }
     }
 
@@ -271,20 +247,20 @@ public class ContainerTest {
     public void testIsElementPresent() {
         Grid.driver().get(TestServerUtils.getContainerURL());
         Container container = new Container("id=base", "base");
-        assertTrue(container.isElementPresent() == true);
+        assertTrue(container.isElementPresent());
 
         Container childContainer = new Container("css=.dupId", "dupId", container);
-        assertTrue(childContainer.isElementPresent() == true);
+        assertTrue(childContainer.isElementPresent());
     }
 
     class SampleContainer extends Container {
-        private TextField cssChild = new TextField(this, "css=.dupId");
-        private Label idChild = new Label(this, "id=duplicateId");
-        private Image nameChild = new Image(this, "name=duplicateName");
-        private Link linkChild = new Link(this, "link=dupLinkText");
-        private Label xpathChild = new Label(this, ".//*[@id='duplicateId']");
-        private Label badXpathLocator1 = new Label(this, "//*[@class='dupId']");
-        private Label badXpathLocator2 = new Label(this, "xpath=//*[@class='dupId']");
+        private final TextField cssChild = new TextField(this, "css=.dupId");
+        private final Label idChild = new Label(this, "id=duplicateId");
+        private final Image nameChild = new Image(this, "name=duplicateName");
+        private final Link linkChild = new Link(this, "link=dupLinkText");
+        private final Label xpathChild = new Label(this, ".//*[@id='duplicateId']");
+        private final Label badXpathLocator1 = new Label(this, "//*[@class='dupId']");
+        private final Label badXpathLocator2 = new Label(this, "xpath=//*[@class='dupId']");
 
         public SampleContainer(String locator) {
             super(locator);

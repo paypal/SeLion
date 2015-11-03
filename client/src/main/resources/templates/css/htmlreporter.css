@@ -58,8 +58,7 @@ h2.yuk_goldgrad_ltitle {
     color: #5d5d5d;
     font-size: small;
     font-weight: bold;
-    background: #faf5ce
-        repeat-x bottom;
+    background: #faf5ce repeat-x bottom;
     border-style: solid;
     border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
     border-width: 0 1px 1px 1px;
@@ -73,8 +72,7 @@ h2.yuk_grad_ltitle_passed {
     color: green;
     font-size: small;
     font-weight: bold;
-    background: #faf5ce
-        repeat-x bottom;
+    background: #faf5ce repeat-x bottom;
     border-style: solid;
     border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
     border-width: 0 1px 1px 1px;
@@ -88,8 +86,7 @@ h2.yuk_grad_ltitle_failed {
     color: red;
     font-size: small;
     font-weight: bold;
-    background: #faf5ce
-        repeat-x bottom;
+    background: #faf5ce repeat-x bottom;
     border-style: solid;
     border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
     border-width: 0 1px 1px 1px;
@@ -103,8 +100,7 @@ h2.yuk_grad_ltitle_skipped {
     color: blue;
     font-size: small;
     font-weight: bold;
-    background: #faf5ce
-        repeat-x bottom;
+    background: #faf5ce repeat-x bottom;
     border-style: solid;
     border-color: #fcd13c #fcd13c #e1bf48 #fcd13c;
     border-width: 0 1px 1px 1px;
@@ -112,7 +108,18 @@ h2.yuk_grad_ltitle_skipped {
     text-align: left;
 }
 
-h2.yuk_grey_midpnl_ltitle {padding:7px 9px 3px 9px; margin:0; color:#5d5d5d; font-size:small; font-weight:bold; background-color:#e8e8e8; border-style:solid; border-color:#ccc; border-width:1px; font-family:Arial, Helvetica, sans-serif;}
+h2.yuk_grey_midpnl_ltitle {
+    padding:7px 9px 3px 9px; 
+    margin:0; 
+    color:#5d5d5d; 
+    font-size:small; 
+    font-weight:bold; 
+    background-color:#e8e8e8; 
+    border-style:solid; 
+    border-color:#ccc; 
+    border-width:1px; 
+    font-family:Arial, Helvetica, sans-serif;
+}
 
 /*------------------------------------------------------------------------------------------------------------------------------------------ */
     /* -----------table--------------------------- */
@@ -178,7 +185,6 @@ h2.yuk_grey_midpnl_ltitle {padding:7px 9px 3px 9px; margin:0; color:#5d5d5d; fon
     border-style: solid;
     border-color: #ccc #ccc #ccc #ccc;
     border-width: 0 1px 0 0;
-    // background: none;
     padding: 0 17px;
 }
 
@@ -202,25 +208,21 @@ h2.yuk_grey_midpnl_ltitle {padding:7px 9px 3px 9px; margin:0; color:#5d5d5d; fon
     border-style: solid;
     border-color: #ccc #ccc #ccc #ccc;
     border-width: 0 1px 0 0;
-    
     padding: 0 18px;
 }
 
 .yuk_table tr.even td.last {
     border: none;
-    background: #fff
-        repeat-y bottom right;
+    background: #fff repeat-y bottom right;
 }
 
 /* -----------separator lines / other color determined by bg color of table--------------------------- */
 .yuk_table tr.alt td.first {
-    background: #fff
-        repeat-x bottom left;
+    background: #fff repeat-x bottom left;
 }
 
 .yuk_table tr.alt td.last {
-    background: #fff
-        repeat-x bottom right;
+    background: #fff repeat-x bottom right;
 }
 
 /* -----------alignment of td's and text (ps. align property used in colgroup within html file for IE--------------------------- */
@@ -263,7 +265,8 @@ h2.yuk_grey_midpnl_ltitle {padding:7px 9px 3px 9px; margin:0; color:#5d5d5d; fon
     width: 99%;
 }
 
-h2.yuk_grey_midpnl_ltitle {width =95%;
+h2.yuk_grey_midpnl_ltitle {
+    width: 95%;
     padding: 7px 9px 3px 9px;
     margin: 0;
     color: #5d5d5d;
@@ -296,8 +299,7 @@ h2.yuk_tab_title {
     position: relative;
     top: -1px;
     right: -1px;
-    background:
-        no-repeat top right;
+    background: no-repeat top right;
 }
 
 .yuk_goldgrad_tl .yuk_goldgrad_m {
@@ -305,19 +307,18 @@ h2.yuk_tab_title {
     left: -2px;
     height: 4px;
     font-size: 0;
-    background:
-        no-repeat top left;
+    background: no-repeat top left;
 }
 
 /* -----------tabbed navigation container--------------------------- */
 .yuk_tabbed_nav {
     float: left;
-    background: #faf5ce
-        repeat-x bottom;
+    background: #faf5ce repeat-x bottom;
     border-style: solid;
     border-color: #ccc #fcd13c #ccc #fcd13c;
-    border-width: 0 1px 0px 1px;
+    border-width: 0 1px 0 1px;
     width: 100%;
+    box-sizing: border-box;
     /* set width -2px from panel width so that 1px left/right borders are taken into account */
 }
 
@@ -330,15 +331,13 @@ h2.yuk_tab_title {
 
 .yuk_tabbed_nav li {
     display: inline;
-    margin: 0;
     padding: 0;
 }
 
 /* -----------normal state of tabs--------------------------- */
 .yuk_tabbed_nav a {
     float: left;
-    background:
-        no-repeat left top;
+    background: no-repeat left top;
     margin: 0;
     padding: 0 3px 0 4px;
     border-bottom: 1px solid #aaa;
@@ -348,8 +347,7 @@ h2.yuk_tab_title {
 .yuk_tabbed_nav a span {
     float: left;
     display: block;
-    background:
-        no-repeat right top;
+    background: no-repeat right top;
     padding: 6px 8px 3px 4px;
     font-weight: bold;
     color: #333;
@@ -380,7 +378,7 @@ h2.yuk_tab_title {
 
 /* -----------hover state of tabs--------------------------- */
 .yuk_tabbed_nav a:hover {
-    background-position: 0% -150px;
+    background-position: 0 -150px;
 }
 
 .yuk_tabbed_nav a:hover span {
@@ -412,7 +410,7 @@ h4.yuk_pnl_subheading_passed {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: x-small;
     font-weight: normal;
-    color: : #5d5d5d;
+    color: #5d5d5d;
 }
 
 h4.yuk_pnl_subheading_failed {
@@ -425,7 +423,7 @@ h4.yuk_pnl_subheading_failed {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: x-small;
     font-weight: normal;
-    color: : #5d5d5d;
+    color: #5d5d5d;
 }
 
 h4.yuk_pnl_subheading_skipped {
@@ -438,7 +436,7 @@ h4.yuk_pnl_subheading_skipped {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: x-small;
     font-weight: normal;
-    color: : #5d5d5d;
+    color: #5d5d5d;
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------ */
@@ -501,8 +499,7 @@ h4.yuk_pnl_subheading_skipped {
     position: relative;
     bottom: -1px;
     right: -1px;
-    background:
-        no-repeat bottom right;
+    background: no-repeat bottom right;
 }
 
 .yuk_grey_bl {
@@ -510,16 +507,14 @@ h4.yuk_pnl_subheading_skipped {
     left: -2px;
     height: 6px;
     font-size: 0;
-    background:
-        no-repeat bottom left;
+    background: no-repeat bottom left;
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------ */
     /* -----------footerbar gradient--------------------------- */
 .yuk_pnl_footerbar {
     text-align: right;
-    background: #e9e9e9
-        repeat-x scroll top;
+    background: #e9e9e9 repeat-x scroll top;
     border-style: solid;
     border-color: #e8e8e8 #ccc #e8e8e8 #ccc;
     border-width: 1px 1px 0 1px;
@@ -530,4 +525,8 @@ h4.yuk_pnl_subheading_skipped {
 .yuk_pnl_footerbar_link {
     padding: 6px 10px 0 0;
     font-size: small;
+}
+
+.clickable .exceptionlnk {
+    cursor: pointer;
 }

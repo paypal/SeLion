@@ -15,19 +15,13 @@
 
 package com.paypal.selion.platform.dataprovider;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
@@ -44,6 +38,8 @@ import com.paypal.selion.platform.dataprovider.pojos.yaml.AREA_CODE;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.BANK;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.USER;
 import com.paypal.selion.platform.utilities.FileAssistant;
+
+import static org.testng.Assert.*;
 
 public class YamlDataProviderTest {
     private static String documentSeparatedLists = "src/test/resources/DocumentSeparatedLists.yaml";
@@ -84,75 +80,75 @@ public class YamlDataProviderTest {
 
         user1.setName("Thomas");
         user1.setPassword("password");
-        user1.setAccountNumber(new Long(78901));
-        user1.setAmount(new Double(120.00));
-        user1.setAreaCode(new AREA_CODE[] { ph1, ph5 });
+        user1.setAccountNumber((long) 78901);
+        user1.setAmount(120.00);
+        user1.setAreaCode(new AREA_CODE[]{ph1, ph5});
         user1.setBank(bnk2);
         user1.setPhoneNumber("1-408-666-5508");
         user1.setPreintTest(10);
         user1.setIsbooleanGood(false);
-        user1.setDoubleTest((double) 1340.24);
+        user1.setDoubleTest(1340.24);
         user1.setLongTest((long) 599880);
         user1.setFloatTest((float) 0.002);
         user1.setByteTest((byte) 2);
 
         user2.setName("rama");
         user2.setPassword("abc123");
-        user2.setAccountNumber(new Long(123456));
-        user2.setAmount(new Double(100.00));
-        user2.setAreaCode(new AREA_CODE[] { ph1, ph2, ph3 });
+        user2.setAccountNumber((long) 123456);
+        user2.setAmount(100.00);
+        user2.setAreaCode(new AREA_CODE[]{ph1, ph2, ph3});
         user2.setBank(bnk1);
         user2.setPhoneNumber("1-408-225-8040");
         user2.setPreintTest(12);
         user2.setIsbooleanGood(true);
-        user2.setDoubleTest((double) 12.5);
+        user2.setDoubleTest(12.5);
         user2.setLongTest((long) 167045);
         user2.setFloatTest((float) 12.5);
         user2.setByteTest((byte) 2);
 
         user3.setName("binh");
         user3.setPassword("abc124");
-        user3.setAccountNumber(new Long(124567));
-        user3.setAmount(new Double(200.50));
-        user3.setAreaCode(new AREA_CODE[] { ph4, ph5, ph6 });
+        user3.setAccountNumber((long) 124567);
+        user3.setAmount(200.50);
+        user3.setAreaCode(new AREA_CODE[]{ph4, ph5, ph6});
         user3.setBank(bnk2);
         user3.setPhoneNumber("1-714-666-0043");
         user3.setPreintTest(14);
         user3.setIsbooleanGood(true);
-        user3.setDoubleTest((double) 13.5);
+        user3.setDoubleTest(13.5);
         user3.setLongTest((long) 1234);
         user3.setFloatTest((float) 13.5);
         user3.setByteTest((byte) 4);
 
         user4.setName("suri");
         user4.setPassword("abc124");
-        user4.setAccountNumber(new Long(1234567));
-        user4.setAmount(new Double(300.75));
-        user4.setAreaCode(new AREA_CODE[] { ph1, ph5, ph2 });
+        user4.setAccountNumber((long) 1234567);
+        user4.setAmount(300.75);
+        user4.setAreaCode(new AREA_CODE[]{ph1, ph5, ph2});
         user4.setBank(bnk1);
         user4.setPhoneNumber("1-213-580-6070");
         user4.setPreintTest(17);
         user4.setIsbooleanGood(false);
-        user4.setDoubleTest((double) 14.5);
+        user4.setDoubleTest(14.5);
         user4.setLongTest((long) 456567);
         user4.setFloatTest((float) 14.5);
         user4.setByteTest((byte) 8);
 
         // user5 intentionally not set to any values except account number
-        user5.setAccountNumber(new Long(385749204));
+        user5.setAccountNumber((long) 385749204);
 
         user6.setName("suri");
         user6.setPassword("abc124");
-        user6.setAccountNumber(new Long(1234567));
-        user6.setAmount(new Double(300.75));
-        user6.setAreaCode(new AREA_CODE[] { ph1, ph5, ph2 });
+        user6.setAccountNumber((long) 1234567);
+        user6.setAmount(300.75);
+        user6.setAreaCode(new AREA_CODE[]{ph1, ph5, ph2});
         user6.setBank(bnk1);
         user6.setPhoneNumber("1-213-580-6070");
         user6.setPreintTest(17);
         user6.setIsbooleanGood(false);
-        user6.setDoubleTest(new Double(14.5));
-        user6.setLongTest(new Long(456567));
-        user6.setFloatTest(new Float(14.5));
+        user6.setDoubleTest(14.5);
+        user6.setLongTest((long) 456567);
+        user6.setFloatTest((float) 14.5);
         user6.setByteTest((byte) 8);
     }
 
@@ -189,7 +185,7 @@ public class YamlDataProviderTest {
      * simple/flexible. Just validate that some expected text exists so we know the dump call is still outputting
      * something.
      * 
-     * @param output
+     * @param output the output as a {@link String}
      */
     private void verifySerializedOutput(String output) {
         assertTrue(output.contains(user1.getName()));
@@ -264,7 +260,7 @@ public class YamlDataProviderTest {
         Object[][] allStrings = dataProvider.getAllData();
         List<String> fetchedStrings = transferStringDataIntoList(allStrings);
         fetchedStrings.add((String) allStrings[0][0]);
-        arrayComparer(new String[] { "string1", "string2", "string3" }, fetchedStrings.toArray());
+        arrayComparer(new String[]{"string1", "string2", "string3"}, fetchedStrings.toArray());
     }
 
     @Test(groups = "unit")
@@ -272,7 +268,7 @@ public class YamlDataProviderTest {
         DataResource resource = new InputStreamResource(new BufferedInputStream(
                 FileAssistant.loadFile(associativeArrayOfUsers)), USER.class, "yaml");
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Hashtable<String, Object> allUsers = dataProvider.getDataAsHashtable();
+        Map<String, Object> allUsers = dataProvider.getDataAsHashtable();
         // Keys cannot be repeated in a map, so only expecting one "suri"
         assertTrue(((USER) allUsers.get("tom")).getName().equals("Thomas"));
         assertTrue(((USER) allUsers.get("1")).getName().equals("rama"));
@@ -295,14 +291,14 @@ public class YamlDataProviderTest {
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         Object[][] allUsers = dataProvider.getDataByKeys(new String[] { "3" });
         List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
-        arrayComparer(new String[] { "suri" }, fetchedNames.toArray());
+        arrayComparer(new String[]{"suri"}, fetchedNames.toArray());
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class }, groups = "unit")
     public void testGetDataByKeys_InvalidKey() throws IOException {
         DataResource resource = new FileSystemResource(associativeArrayOfUsers, USER.class);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        dataProvider.getDataByKeys(new String[] { "selion" });
+        dataProvider.getDataByKeys(new String[]{"selion"});
     }
 
     @Test(groups = "unit")
@@ -311,14 +307,14 @@ public class YamlDataProviderTest {
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         Object[][] allUsers = dataProvider.getDataByKeys(new String[] { "tom", "binh" });
         List<String> fetchedNames = transferUserDataArrayInArrayIntoList(allUsers);
-        arrayComparer(new String[] { "Thomas", "binh" }, fetchedNames.toArray());
+        arrayComparer(new String[]{"Thomas", "binh"}, fetchedNames.toArray());
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class }, groups = "unit")
     public void testGetDataByKeys_MultipleKeysInvalidKey() throws IOException {
         DataResource resource = new FileSystemResource(associativeArrayOfUsers, USER.class);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        dataProvider.getDataByKeys(new String[] { "Thomas", "selion" });
+        dataProvider.getDataByKeys(new String[]{"Thomas", "selion"});
     }
 
     @Test(groups = "unit")
@@ -336,7 +332,7 @@ public class YamlDataProviderTest {
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         Object[][] allUsers = dataProvider.getDataByIndex("4");
         List<String> fetchedNames = transferUserDataIteratorIntoList(allUsers);
-        arrayComparer(new String[] { "suri" }, fetchedNames.toArray());
+        arrayComparer(new String[]{"suri"}, fetchedNames.toArray());
     }
 
     @Test(expectedExceptions = { DataProviderException.class }, groups = "unit")
@@ -387,7 +383,7 @@ public class YamlDataProviderTest {
         assertEquals(user.getByteTest(), 0);
         assertEquals(user.getDoubleTest(), (double) 0);
         assertEquals(user.getFloatTest(), (float) 0);
-        assertEquals(user.getIsbooleanGood(), false);
+        assertFalse(user.getIsbooleanGood());
         assertEquals(user.getLongTest(), 0);
         assertEquals(user.getName(), null);
         assertEquals(user.getPassword(), null);
@@ -424,16 +420,6 @@ public class YamlDataProviderTest {
         return fetchedStrings;
     }
 
-    public synchronized List<String> transferDataIntoList(Hashtable<String, Object> allUsers) {
-        List<String> fetchedNames = new ArrayList<String>();
-        Set<String> keys = allUsers.keySet();
-        for (String key : keys) {
-            USER user = (USER) allUsers.get(key);
-            fetchedNames.add(user.getName());
-        }
-        return fetchedNames;
-    }
-
     private synchronized void arrayComparer(String[] expected, Object[] actual) {
         for (int i = 0; i < expected.length; i++) {
             assertEquals(expected[i], (String) actual[i]);
@@ -458,8 +444,7 @@ public class YamlDataProviderTest {
     public static Object[][] dataProviderGetList() throws IOException {
         DataResource resource = new FileSystemResource(list);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getListOfLists")
@@ -467,88 +452,77 @@ public class YamlDataProviderTest {
         DataResource resource = new InputStreamResource(new BufferedInputStream(
                 FileAssistant.loadFile(listOfLists)), "yaml");
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getListOfAssociativeArrays")
     public static Object[][] dataProviderGetListOfAssociativeArrays() throws IOException {
         DataResource resource = new FileSystemResource(listOfAssociativeArrays);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getListOfUsers")
     public static Object[][] dataProviderGetListOfUsers() throws IOException {
         DataResource resource = new FileSystemResource(listOfUsers);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArray")
     public static Object[][] dataProviderGetAssociativeArray() throws IOException {
         DataResource resource = new FileSystemResource(associativeArrays);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArrayOfLists")
     public static Object[][] dataProviderGetAssociativeArrayOfLists() throws IOException {
         DataResource resource = new FileSystemResource(associativeArrayOfLists);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArrayOfArrays")
     public static Object[][] dataProviderGetAssociativeArrayOfArrays() throws IOException {
         DataResource resource = new FileSystemResource(associativeArrayOfArrays);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getAssociativeArrayOfUsers")
     public static Object[][] dataProviderGetAssociativeArrayOfUsers() throws IOException {
         DataResource resource = new FileSystemResource(associativeArrayOfUsers);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDocumentSeparatedLists")
     public static Object[][] dataProviderGetDocumentSeparatedLists() throws IOException {
         DataResource resource = new FileSystemResource(documentSeparatedLists);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDocumentSeparatedAssociativeArrays")
     public static Object[][] dataProviderGetDocumentSeparatedAssociativeArrays() throws IOException {
         DataResource resource = new FileSystemResource(documentSeparatedAssociativeArrays);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDocumentSeparatedUsers")
     public static Object[][] dataProviderGetDocumentSeparatedUsers() throws IOException {
         DataResource resource = new FileSystemResource(documentSeparatedUsers, USER.class);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getAllData();
-        return data;
+        return dataProvider.getAllData();
     }
 
     @DataProvider(name = "getDataByKeys")
     public static Object[][] dataProviderGetDataByKeys() throws IOException {
         DataResource resource = new FileSystemResource(associativeArrayOfUsers, USER.class);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Object[][] data = dataProvider.getDataByKeys(new String[] { "tom", "1", "binh", "3" });
-        return data;
+        return dataProvider.getDataByKeys(new String[] { "tom", "1", "binh", "3" });
     }
 
     @DataProvider(name = "getDataByIndex")
@@ -571,8 +545,7 @@ public class YamlDataProviderTest {
         DataResource resource = new FileSystemResource(listOfUsers, USER.class);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-6");
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Iterator<Object[]> data = dataProvider.getDataByFilter(filter);
-        return data;
+        return dataProvider.getDataByFilter(filter);
     }
 
     @DataProvider(name = "getDataFilterByIndexRangeAndIndividual")
@@ -580,8 +553,7 @@ public class YamlDataProviderTest {
         DataResource resource = new FileSystemResource(listOfUsers, USER.class);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-2,4,5");
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Iterator<Object[]> data = dataProvider.getDataByFilter(filter);
-        return data;
+        return dataProvider.getDataByFilter(filter);
     }
 
     @DataProvider(name = "getDataFilterByIndexIndividual")
@@ -589,8 +561,7 @@ public class YamlDataProviderTest {
         DataResource resource = new FileSystemResource(listOfUsers, USER.class);
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1,3,5");
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
-        Iterator<Object[]> data = dataProvider.getDataByFilter(filter);
-        return data;
+        return dataProvider.getDataByFilter(filter);
     }
 
     @DataProvider(name = "getDataByCustomKeysFilterByAccountNumber")
@@ -616,10 +587,7 @@ public class YamlDataProviderTest {
         List<DataResource> yamlResources = new ArrayList<DataResource>();
         yamlResources.add(new FileSystemResource(list));
         yamlResources.add(new FileSystemResource(list));
-
-        Object[][] data = DataProviderHelper.getAllDataMultipleArgsFromYAML(yamlResources);
-
-        return data;
+        return DataProviderHelper.getAllDataMultipleArgsFromYAML(yamlResources);
     }
 
     @DataProvider(name = "getMultipleArguments")
@@ -627,10 +595,7 @@ public class YamlDataProviderTest {
         List<DataResource> yamlResources = new ArrayList<DataResource>();
         yamlResources.add(new FileSystemResource(documentSeparatedUsers, USER.class));
         yamlResources.add(new FileSystemResource(documentSeparatedUsers2, USER.class));
-
-        Object[][] data = DataProviderHelper.getAllDataMultipleArgsFromYAML(yamlResources);
-
-        return data;
+        return DataProviderHelper.getAllDataMultipleArgsFromYAML(yamlResources);
     }
 
     @Test(groups = "unit", dataProvider = "getList")
@@ -648,7 +613,7 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit", dataProvider = "getListOfAssociativeArrays")
-    public void testDataProviderGetListOfAssociativeArrays(LinkedHashMap<?, ?> test) {
+    public void testDataProviderGetListOfAssociativeArrays(Map<?, ?> test) {
         assertNotNull(test);
         assertEquals(test.keySet().size(), 3);
         for (Entry<?, ?> entry : test.entrySet()) {
@@ -669,7 +634,7 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit", dataProvider = "getAssociativeArray")
-    public void testDataProviderGetAssociativeArray(LinkedHashMap<?, ?> test) {
+    public void testDataProviderGetAssociativeArray(Map<?, ?> test) {
         assertNotNull(test);
         assertEquals(test.keySet().size(), 3);
         for (Entry<?, ?> entry : test.entrySet()) {
@@ -679,7 +644,7 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit", dataProvider = "getAssociativeArrayOfLists")
-    public void testDataProviderGetAssociativeArrayOfLists(ArrayList<?> test) {
+    public void testDataProviderGetAssociativeArrayOfLists(List<?> test) {
         assertNotNull(test);
         assertEquals(test.size(), 3);
         for (Object obj : test) {
@@ -688,7 +653,7 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit", dataProvider = "getAssociativeArrayOfArrays")
-    public void testDataProviderGetAssociativeArrayOfArrays(LinkedHashMap<?, ?> test) {
+    public void testDataProviderGetAssociativeArrayOfArrays(Map<?, ?> test) {
         assertNotNull(test);
         assertEquals(test.keySet().size(), 3);
         for (Entry<?, ?> entry : test.entrySet()) {
@@ -709,7 +674,7 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit", dataProvider = "getDocumentSeparatedLists")
-    public void testDataProviderGetDocumentSeparatedLists(ArrayList<?> list) {
+    public void testDataProviderGetDocumentSeparatedLists(List<?> list) {
         assertNotNull(list);
         assertEquals(list.size(), 3);
         for (Object obj : list) {
@@ -718,7 +683,7 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit", dataProvider = "getDocumentSeparatedAssociativeArrays")
-    public void testDataProviderGetDocumentSeparatedLists(LinkedHashMap<?, ?> map) {
+    public void testDataProviderGetDocumentSeparatedLists(Map<?, ?> map) {
         assertNotNull(map);
         assertEquals(map.keySet().size(), 3);
         for (Entry<?, ?> entry : map.entrySet()) {

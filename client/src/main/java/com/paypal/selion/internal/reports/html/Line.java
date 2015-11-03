@@ -30,7 +30,7 @@ import com.paypal.selion.logger.SeLionLogger;
  * Holds single unit of information for each type of {@link GroupingView}.
  * 
  */
-class Line {
+public class Line {
     private String id = null;
     private String label = "NA";
 
