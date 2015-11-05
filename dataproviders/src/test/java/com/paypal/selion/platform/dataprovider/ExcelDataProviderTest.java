@@ -63,7 +63,7 @@ public class ExcelDataProviderTest {
 
     private static String fileName = "src/test/resources/User.xlsx";
     private static final String assertFailedMsg = "Assert condition failed.";
-    private ExcelDataProvider dataSource = null;
+    private ExcelDataProvider dataSource;
 
     @BeforeClass(alwaysRun = true)
     public void init() throws IOException {

@@ -28,11 +28,11 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * This is an abstract representation of a typical yaml reader.
  */
 abstract class AbstractYamlReader implements GuiMapReader, ProcessGuiMap {
-    private Yaml yaml = null;
+    private Yaml yaml;
     private String defaultLocale = DEFAULT_LOCALE;
     private Page pageYaml;
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
-    private boolean processed = false;
+    private boolean processed;
 
     private List<Object> allObjects = new ArrayList<Object>();
 

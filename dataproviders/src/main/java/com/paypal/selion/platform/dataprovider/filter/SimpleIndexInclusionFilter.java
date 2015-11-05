@@ -40,7 +40,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class SimpleIndexInclusionFilter implements DataProviderFilter {
 
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
-    private int invocationCount = 0;
+    private int invocationCount;
     
     private int[] indexes;
 

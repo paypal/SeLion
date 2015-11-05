@@ -29,8 +29,8 @@ import com.paypal.selion.annotations.WebTest;
 @Test(singleThreaded = true, groups = "functional")
 public class SessionSharingTestWithDataProvider {
 
-    private static int flag = 0;
-    private String[] sitesToOpen = null;
+    private static int flag;
+    private String[] sitesToOpen;
 
     @BeforeClass
     public void beforeClass() {

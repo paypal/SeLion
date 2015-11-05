@@ -55,7 +55,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     /*
      * Whether this launcher has been initialized.
      */
-    private boolean initialized = false;
+    private boolean initialized;
 
     /*
      * The current instance type

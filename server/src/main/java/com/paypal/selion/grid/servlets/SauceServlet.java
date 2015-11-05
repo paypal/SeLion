@@ -45,7 +45,7 @@ import com.paypal.selion.utils.ServletHelper;
  */
 public class SauceServlet extends RegistryBasedServlet {
 
-    private static int count = 0;
+    private static int count;
 
     public SauceServlet(Registry registry) {
         super(registry);

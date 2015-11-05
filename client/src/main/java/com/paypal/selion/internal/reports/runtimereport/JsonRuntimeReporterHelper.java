@@ -76,7 +76,7 @@ public class JsonRuntimeReporterHelper {
     private File jsonCompletedConfig;
     private JsonArray testJsonLocalConfigSummary = new JsonArray();
     private JsonObject jsonConfigSummary;
-    private long previousTime = 0;
+    private long previousTime;
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 

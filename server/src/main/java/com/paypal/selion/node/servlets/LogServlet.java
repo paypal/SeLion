@@ -54,7 +54,7 @@ public class LogServlet extends HttpServlet {
     }
 
     private static final long serialVersionUID = -445566L;
-    private File logsDirectory = null;
+    private File logsDirectory;
 
     private static final String PREFIX = "selion-grid-node";
     private static final String EXTENSION = ".log";

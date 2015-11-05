@@ -49,7 +49,7 @@ public abstract class AbstractTestSession {
      */
     protected boolean isSessionShared;
 
-    private boolean isStarted = false;
+    private boolean isStarted;
 
     private String methodName = "";
 

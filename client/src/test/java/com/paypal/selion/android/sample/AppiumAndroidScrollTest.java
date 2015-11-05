@@ -36,9 +36,9 @@ public class AppiumAndroidScrollTest {
     private String menuLocator ="com.paypal.selion.pageobjectsdemoapp:id/action_button";
     private String listViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/scroll_view";
     
-    private UiButton menuButton = null;
-    private UiObject scrollView = null;
-    private UiObject messageBox = null;
+    private UiButton menuButton;
+    private UiObject scrollView;
+    private UiObject messageBox;
 
     @BeforeClass
     public void initElements(){

@@ -59,7 +59,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     private DefaultExecuteResultHandler handler;
     private ProcessLauncherOptions launcherOptions;
-    private boolean shutdownCalled = false;
+    private boolean shutdownCalled;
     private SeLionExecuteWatchDog watchdog = new SeLionExecuteWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
 
     /*
@@ -75,7 +75,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
     }
 
     class SeLionExecuteWatchDog extends ExecuteWatchdog {
-        boolean starting = false;
+        boolean starting;
         Process process;
 
         SeLionExecuteWatchDog(long timeout) {

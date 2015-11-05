@@ -33,7 +33,7 @@ import com.paypal.selion.platform.html.support.HtmlElementUtils;
 public class Table extends AbstractElement {
 
     // the index of the row where the table's data starts.
-    private Integer dataStartIndex = null;
+    private Integer dataStartIndex;
 
     /**
      * Table Construction method <br>

@@ -33,7 +33,7 @@ import com.paypal.selion.platform.dataprovider.pojos.excel.USER;
 
 public class ExcelReaderTest {
     private static String fileName_User = "src/test/resources/User.xlsx";
-    private ExcelReader excelReader = null;
+    private ExcelReader excelReader;
 
     @BeforeClass(alwaysRun = true)
     public void init() throws IOException {

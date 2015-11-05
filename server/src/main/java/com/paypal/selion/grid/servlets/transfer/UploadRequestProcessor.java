@@ -73,15 +73,15 @@ public interface UploadRequestProcessor {
 
         protected TransferContext transferContext;
 
-        protected HttpServletRequest httpServletRequest = null;
+        protected HttpServletRequest httpServletRequest;
 
-        protected ServerRepository repository = null;
+        protected ServerRepository repository;
 
-        protected List<ManagedArtifact> managedArtifactList = null;
+        protected List<ManagedArtifact> managedArtifactList;
 
-        protected RequestParameters managedArtifactRequestParameters = null;
+        protected RequestParameters managedArtifactRequestParameters;
 
-        private ManagedArtifact instance = null;
+        private ManagedArtifact instance;
 
         protected AbstractUploadRequestProcessor(TransferContext transferContext) {
             super();
@@ -241,9 +241,9 @@ public interface UploadRequestProcessor {
         private static final SeLionGridLogger LOGGER = SeLionGridLogger
                 .getLogger(MultipartUploadRequestProcessor.class);
 
-        private ServletFileUpload servletFileUpload = null;
+        private ServletFileUpload servletFileUpload;
 
-        private List<FileItem> fileItems = null;
+        private List<FileItem> fileItems;
 
         public MultipartUploadRequestProcessor(TransferContext transferContext) {
             super(transferContext);

@@ -30,8 +30,8 @@ import com.paypal.selion.pojos.SeLionGridConstants;
 //TODO files downloaded here may interfere with other tests.. Need to isolate them
 public class FileDownloaderTest {
 
-    File downloadedFile = null;
-    File downloadDir = null;
+    File downloadedFile;
+    File downloadDir;
 
     @BeforeClass
     public void mkDownloadDir() throws IOException {

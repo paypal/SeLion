@@ -47,7 +47,7 @@ final class FileDownloader {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(FileDownloader.class);
     private static List<String> files = new ArrayList<String>();
-    private static long lastModifiedTime = 0;
+    private static long lastModifiedTime;
     private static final List<String> SUPPORTED_TYPES = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR,
             ArchiveStreamFactory.JAR, "bz2");
     private static final File DOWNLOAD_FILE = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);

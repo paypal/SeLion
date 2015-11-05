@@ -31,8 +31,8 @@ import com.paypal.selion.annotations.WebTest;
 @Test(singleThreaded = true, groups = "functional")
 public class SessionSharingTestWithDataProviderMixedIn {
 
-    private static int flag = 0;
-    private String[] sitesToOpen = null;
+    private static int flag;
+    private String[] sitesToOpen;
     private static SessionId sessionId;
 
     private SessionId getSessionId() {

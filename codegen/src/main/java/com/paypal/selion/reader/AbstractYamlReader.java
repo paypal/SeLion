@@ -32,8 +32,8 @@ import com.paypal.selion.plugins.TestPlatform;
  */
 //TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 public abstract class AbstractYamlReader {
-    private Yaml yaml = null;
-    private boolean processed = false;
+    private Yaml yaml;
+    private boolean processed;
     private String baseClassName;
     private TestPlatform platform;
 

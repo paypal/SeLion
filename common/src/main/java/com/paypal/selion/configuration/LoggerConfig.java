@@ -90,7 +90,7 @@ public final class LoggerConfig {
         }
     }
 
-    private static volatile BaseConfiguration config = null;
+    private static volatile BaseConfiguration config;
 
     private static BaseConfiguration getConfig() {
         if (config != null) {

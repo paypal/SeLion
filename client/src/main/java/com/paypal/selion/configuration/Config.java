@@ -97,7 +97,7 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * </ol>
  */
 public final class Config {
-    private static volatile XMLConfiguration config = null;
+    private static volatile XMLConfiguration config;
 
     private Config() {
         // Utility class. So hide the constructor
@@ -664,8 +664,8 @@ public final class Config {
          */
         SELENDROID_SERVER_START_TIMEOUT("serverStartTimeout", "20000", false);
 
-        private String name = null;
-        private String defaultValue = null;
+        private String name;
+        private String defaultValue;
         private boolean isGlobalScopeOnly;
 
         private ConfigProperty(String name, String defaultValue, boolean globalScopeOnly) {

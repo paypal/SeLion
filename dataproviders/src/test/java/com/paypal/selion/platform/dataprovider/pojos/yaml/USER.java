@@ -23,18 +23,18 @@ public class USER {
      * 
      * This is the starting point of our data.
      */
-    private String name = null;
-    private String password = null;
-    private Long accountNumber = null;
-    private Double amount = null;
-    private AREA_CODE[] areaCode = null;
-    private BANK bank = null;
-    private String phoneNumber = null;
-    private int preintTest = 0;
-    private boolean isbooleanGood = false;
-    private double doubleTest = 0.0;
-    private long longTest = 0;
-    private float floatTest = (float) 0.0;
+    private String name;
+    private String password;
+    private Long accountNumber;
+    private Double amount;
+    private AREA_CODE[] areaCode;
+    private BANK bank;
+    private String phoneNumber;
+    private int preintTest;
+    private boolean isbooleanGood;
+    private double doubleTest;
+    private long longTest;
+    private float floatTest;
     private byte byteTest;
 
     public USER() {

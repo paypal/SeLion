@@ -52,15 +52,15 @@ public class DefaultManagedArtifact implements ManagedArtifact {
     private static final String REPO_ABSOLUTE_PATH =
             ManagedArtifactRepository.getInstance().getRepositoryFolder().getAbsolutePath();
 
-    private File artifactFile = null;
+    private File artifactFile;
 
-    private String artifactName = null;
+    private String artifactName;
 
-    private String subFolderName = null;
+    private String subFolderName;
 
-    private String uidFolderName = null;
+    private String uidFolderName;
 
-    private byte[] contents = null;
+    private byte[] contents;
 
     private static final long timeToLiveInMillis = ConfigParser.parse().getLong(EXPIRY_CONFIG_PROPERTY);
 

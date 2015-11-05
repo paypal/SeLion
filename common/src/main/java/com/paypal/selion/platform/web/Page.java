@@ -39,7 +39,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public final class Page {
     private Map<String, String> pageTitle = new HashMap<String, String>();
-    private String baseClass = null;
+    private String baseClass;
     private String platform = "web";
     private Map<String, GUIElement> elements = new HashMap<String, GUIElement>();
     private String defaultLocale = "US";

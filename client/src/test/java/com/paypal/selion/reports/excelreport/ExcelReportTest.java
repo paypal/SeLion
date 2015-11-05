@@ -53,7 +53,7 @@ public class ExcelReportTest {
     private String excelReportFileName = "dummy_excel_test.xls";
     private String strReportsDirectory;
     private Path excelFile;
-    private boolean currentState = false;
+    private boolean currentState;
 
     @BeforeGroups(groups = { "excel-report-test" })
     public void beforeClass() {

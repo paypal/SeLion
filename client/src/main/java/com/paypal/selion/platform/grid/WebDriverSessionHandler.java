@@ -67,7 +67,7 @@ public class WebDriverSessionHandler {
     private Future<String> result;
     private WebDriverCaller webDriverCaller;
 
-    private volatile boolean bStartSession = false;
+    private volatile boolean bStartSession;
 
     private class WebDriverCaller implements Callable<String> {
 

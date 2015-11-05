@@ -36,8 +36,8 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class WebTestSession extends AbstractTestSession {
 
     private String browser = "";
-    private int browserHeight = 0;
-    private int browserWidth = 0;
+    private int browserHeight;
+    private int browserWidth;
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     WebTestSession() {

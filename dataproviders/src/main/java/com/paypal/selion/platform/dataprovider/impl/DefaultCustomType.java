@@ -30,10 +30,10 @@ import java.lang.reflect.Method;
  * instantiations (Factories are good examples of this).
  */
 public class DefaultCustomType {
-    private Object objectToUseForInstantiation = null;
-    private Method instantiationMechanism = null;
-    private Constructor<?> constructor = null;
-    private Class<?> customTypeClass = null;
+    private Object objectToUseForInstantiation;
+    private Method instantiationMechanism;
+    private Constructor<?> constructor;
+    private Class<?> customTypeClass;
 
     /**
      * @param objectToUseForInstantiation

@@ -30,7 +30,7 @@ import com.paypal.selion.reader.YamlReaderFactory;
  * 
  */
 public class DataReader {
-    private AbstractYamlReader reader = null;
+    private AbstractYamlReader reader;
     private String fileName;
 
     public DataReader(String fileName) throws IOException {
@@ -92,8 +92,8 @@ public class DataReader {
     }
 
     private List<String> getDuplicateKeys(List<String> keys) {
-        List<String> result = new ArrayList<String>();
-        Set<String> keySet = new HashSet<String>(keys);
+        List<String> result = new ArrayList<>();
+        Set<String> keySet = new HashSet<>(keys);
 
         if (keys.size() == keySet.size()) {
             return result;

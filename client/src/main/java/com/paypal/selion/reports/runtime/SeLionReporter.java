@@ -42,7 +42,7 @@ public final class SeLionReporter {
     private volatile static List<LogAction> actionList = new ArrayList<LogAction>();
 
     private static String output;
-    private static DataSaver saver = null;
+    private static DataSaver saver;
     private String baseFileName = UUID.randomUUID().toString();
 
     private BaseLog currentLog;

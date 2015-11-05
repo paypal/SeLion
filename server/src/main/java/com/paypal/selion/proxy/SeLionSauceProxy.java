@@ -47,9 +47,9 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionSauceProxy.class);
 
-    private int maxTestCase = 0;
+    private final int maxTestCase;
 
-    private Lock accessLock = new ReentrantLock();
+    private final Lock accessLock = new ReentrantLock();
 
     public SeLionSauceProxy(RegistrationRequest request, Registry registry) {
         super(request, registry);
@@ -156,7 +156,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
 
     private String getSauceLabsRestApi(String urlString) {
 
-        URL url = null;
+        URL url;
         HttpURLConnection conn = null;
         String result = "";
         try {

@@ -35,9 +35,9 @@ public class AppiumAndroidButtonLongClickTest {
     private final String longPressButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/long_press_button";
     private final String textViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/long_press_button_output";
 
-    private UiButton menuButton = null;
-    private UiButton longPressButton = null;
-    private UiTextView textView = null;
+    private UiButton menuButton;
+    private UiButton longPressButton;
+    private UiTextView textView;
 
     @BeforeClass
     public void initElements() {

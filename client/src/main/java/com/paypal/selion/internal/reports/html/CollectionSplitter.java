@@ -35,13 +35,13 @@ public abstract class CollectionSplitter {
 
     private ISuite suite;
     private Filter filter;
-    private Map<String, Line> lineById = new HashMap<String, Line>();
-    private int totalInstancePassed = 0;
-    private int totalInstancePassedEnvt = 0;
-    private int totalInstanceFailed = 0;
-    private int totalInstanceFailedEnvt = 0;
-    private int totalInstanceSkipped = 0;
-    private int totalInstanceSkippedEnvt = 0;
+    private Map<String, Line> lineById = new HashMap<>();
+    private int totalInstancePassed;
+    private int totalInstancePassedEnvt;
+    private int totalInstanceFailed;
+    private int totalInstanceFailedEnvt;
+    private int totalInstanceSkipped;
+    private int totalInstanceSkippedEnvt;
 
     public final void incrementRotalInstancePassedEnvt() {
         this.totalInstancePassedEnvt++;

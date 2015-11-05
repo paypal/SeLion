@@ -31,17 +31,17 @@ public class InputStreamResource implements DataResource {
     /**
      * Input stream of the data file
      */
-    private InputStream stream = null;
+    private InputStream stream;
 
     /**
      * User defined POJO to map with data file
      */
-    private Class<?> cls = null;
+    private Class<?> cls;
 
     /**
      * Type of the data file which means extension of the file
      */
-    private String type = null;
+    private String type;
 
     public InputStreamResource(InputStream stream, Class<?> cls, String type) {
         this.stream = stream;

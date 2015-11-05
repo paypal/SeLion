@@ -41,12 +41,12 @@ public class AppiumAndroidCheckBoxSeekBarTest {
     private final String checkBoxiOSLocator = "com.paypal.selion.pageobjectsdemoapp:id/ios_checkbox";
     private final String valueTextViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/checkbox_textview";
 
-    private UiButton menuButton = null;
-    private UiObject seekBar = null;
-    private UiTextView seekBarTextView = null;
-    private UiTextView checkBoxTextView = null;
-    private UiObject iosCheckBox = null;
-    private UiObject androidCheckBox = null;
+    private UiButton menuButton;
+    private UiObject seekBar;
+    private UiTextView seekBarTextView;
+    private UiTextView checkBoxTextView;
+    private UiObject iosCheckBox;
+    private UiObject androidCheckBox;
 
     @BeforeClass
     public void initElements() {

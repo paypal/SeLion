@@ -171,8 +171,8 @@ import com.paypal.selion.testcomponents.BasicPageImpl;
  */
 public abstract class AbstractContainer extends AbstractElement implements ParentTraits {
 
-    private int index = 0;
-    protected Map<String, String> containerElements = null;
+    private int index;
+    protected Map<String, String> containerElements;
 
     /**
      * Constructs a Container with locator.

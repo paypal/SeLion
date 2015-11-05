@@ -45,7 +45,7 @@ public class RuntimeReporterListener implements ISuiteListener, ITestListener, I
      */
     public static final String ENABLE_RUNTIME_REPORTER_LISTENER = "enable.runtime.reporter.listener";
 
-    boolean bInitConfig = false;
+    boolean bInitConfig;
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 

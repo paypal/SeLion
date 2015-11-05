@@ -27,10 +27,14 @@ import org.testng.annotations.Test;
 import com.paypal.selion.internal.platform.pageyaml.YamlReaderFactory;
 
 public class PageDataProviderTest {
-    public Map<String, String> myYamlMap = null, myLocalizedYamlMap = null, myYamlV2Map = null,
-            myLocalizedYamlV2Map = null;
-    public Map<String, String> myYamlContainerMap = null, myLocalizedYamlContainerMap = null,
-            myYamlV2ContainerMap = null, myLocalizedYamlV2ContainerMap = null;
+    public Map<String, String> myYamlMap;
+    public Map<String, String> myLocalizedYamlMap;
+    public Map<String, String> myYamlV2Map;
+    public Map<String, String> myLocalizedYamlV2Map;
+    public Map<String, String> myYamlContainerMap;
+    public Map<String, String> myLocalizedYamlContainerMap;
+    public Map<String, String> myYamlV2ContainerMap;
+    public Map<String, String> myLocalizedYamlV2ContainerMap;
 
     @BeforeMethod(groups = { "unit" })
     public void setUp() throws IOException {

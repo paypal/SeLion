@@ -26,19 +26,19 @@ import java.util.Map;
 public final class TestCaseErrors {
 
     private static final String WAIT_EXCEPTION = "Wait Timed Out.  Load issue?";
-    private static final String ELMNOTFOUND_EXCEPTION = "Element not found. Locator issue? Page fully loaded? bug?";
+    private static final String ELEMENT_NOT_FOUND_EXCEPTION = "Element not found. Locator issue? Page fully loaded? bug?";
     private static final String XHR_ERROR_EXCEPTION = "Cert Error. Certificate added to profile?";
     private static final String BIND_EXCEPTION = "Bind Exception. Kill all javaw.exe and retry.";
 
-    private static TestCaseErrors tcErrors = null;
-    private Map<String, String> mpErrorsInfo = new HashMap<String, String>();
+    private static TestCaseErrors tcErrors;
+    private Map<String, String> mpErrorsInfo = new HashMap<>();
 
     private TestCaseErrors() {
         mpErrorsInfo.put("(?s).*WaitTimedOutException(?s).*", WAIT_EXCEPTION);
-        mpErrorsInfo.put("(?s).*SeleniumException: ERROR: Element.*not found(?s).*", ELMNOTFOUND_EXCEPTION);
+        mpErrorsInfo.put("(?s).*SeleniumException: ERROR: Element.*not found(?s).*", ELEMENT_NOT_FOUND_EXCEPTION);
         mpErrorsInfo.put("(?s).*XHR ERROR: URL(?s).*", XHR_ERROR_EXCEPTION);
         mpErrorsInfo.put("(?s).*java.net.BindException(?s).*Address already in use(?s).*", BIND_EXCEPTION);
-        mpErrorsInfo.put("(?s).*NoSuchElementException(?s).*", ELMNOTFOUND_EXCEPTION);
+        mpErrorsInfo.put("(?s).*NoSuchElementException(?s).*", ELEMENT_NOT_FOUND_EXCEPTION);
     }
 
     public static TestCaseErrors getInstance() {

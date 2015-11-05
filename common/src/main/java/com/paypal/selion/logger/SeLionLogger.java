@@ -40,13 +40,15 @@ public final class SeLionLogger {
         // defeat all instantiation
     }
 
-    private static SimpleLogger baseLogger = null;
+    private static SimpleLogger baseLogger;
 
     /**
      * Establish the {@link SimpleLoggerSettings} for {@link SeLionLogger}
      */
     public static class SeLionLoggerSettings extends SimpleLoggerSettings {
         public SeLionLoggerSettings() {
+            super();
+
             this.setLoggerName(SELION_LOGGER_NAME);
             this.setLogsDir(LoggerConfig.getConfigProperty(LoggerConfig.LoggerProperties.LOGS_DIR));
             this.setClassName(CLASS_NAME);
@@ -90,10 +92,12 @@ public final class SeLionLogger {
 
         @Override
         public void onPreInitialization(SimpleLogger logger) {
+            // nothing to do here
         }
 
         @Override
         public void onLog(LogRecord record) {
+            // nothing to do here
         }
     }
 

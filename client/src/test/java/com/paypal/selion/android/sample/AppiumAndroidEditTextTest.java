@@ -34,8 +34,8 @@ public class AppiumAndroidEditTextTest {
     private String actionButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
     private String textFieldLocator = "com.paypal.selion.pageobjectsdemoapp:id/edit_text";
 
-    private UiButton menuButton = null;
-    private UiObject textField = null;
+    private UiButton menuButton;
+    private UiObject textField;
     
     @BeforeClass
     public void initElements(){

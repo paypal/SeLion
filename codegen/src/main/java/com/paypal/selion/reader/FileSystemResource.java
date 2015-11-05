@@ -25,7 +25,7 @@ import java.io.InputStream;
  */
 public class FileSystemResource {
 
-    private String fileName = null;
+    private String fileName;
 
     public FileSystemResource(String fileName) {
         this.fileName = fileName;

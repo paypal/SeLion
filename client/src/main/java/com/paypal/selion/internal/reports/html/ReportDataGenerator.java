@@ -35,7 +35,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 final class ReportDataGenerator {
 
-    private static boolean isReportInitialized = false;
+    private static boolean isReportInitialized;
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
     private ReportDataGenerator() {

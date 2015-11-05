@@ -26,7 +26,7 @@ public final class SeLionBuildInfo {
 
     private static final String BUILD_INFO_FILE = "/selionbuildinfo.properties";
 
-    private static SeLionBuildInfoProperties buildProperties = null;
+    private static SeLionBuildInfoProperties buildProperties;
 
     private SeLionBuildInfo() {
 
@@ -52,7 +52,7 @@ public final class SeLionBuildInfo {
      * Returns values for build time info
      * 
      * @param property
-     *            - The {@link SeLionBuildProperty} of interest
+     *           The {@link SeLionBuildProperty} of interest
      * @return The build time value.</br></br> The fall back value which can be obtained via
      *         {@link SeLionBuildProperty#getFallBackValue()} if the build time property is not defined.
      */
@@ -81,7 +81,7 @@ public final class SeLionBuildInfo {
     /**
      * SeLion build time properties
      */
-    public static enum SeLionBuildProperty {
+    public enum SeLionBuildProperty {
 
         /**
          * The version of SeLion
@@ -158,13 +158,13 @@ public final class SeLionBuildInfo {
          */
         BUILD_DEPENDENCY_APPIUM("selion.build.dependency.appium.version");
 
-        private SeLionBuildProperty(String value) {
+        SeLionBuildProperty(String value) {
             this.propertyValue = value;
             this.fallBackValue = "Undefined " + value;
         }
 
         private String propertyValue;
-        private String fallBackValue = null;
+        private String fallBackValue;
 
         /**
          * Returns the build property value

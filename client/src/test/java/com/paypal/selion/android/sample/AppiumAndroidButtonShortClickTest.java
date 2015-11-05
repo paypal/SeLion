@@ -35,9 +35,9 @@ public class AppiumAndroidButtonShortClickTest {
     private final String shortPressButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button";
     private final String textViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button_output";
 
-    UiButton menuButton = null;
-    UiButton shortPressButton = null;
-    UiTextView textView = null;
+    UiButton menuButton;
+    UiButton shortPressButton;
+    UiTextView textView;
 
     @BeforeClass
     public void initElements() {

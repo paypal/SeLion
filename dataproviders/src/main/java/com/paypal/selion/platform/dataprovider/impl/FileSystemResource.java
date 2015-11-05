@@ -66,8 +66,8 @@ import com.paypal.selion.platform.utilities.FileAssistant;
  */
 public class FileSystemResource implements DataResource {
 
-    private String fileName = null;
-    private Class<?> cls = null;
+    private String fileName;
+    private Class<?> cls;
 
     /**
      * Use this constructor when a data source file can be found as a resource and contains a user-defined object.

@@ -30,7 +30,7 @@ import ${package}.logging.AppLogger;
  */
 public class TestServerUtils {
 
-    static int serverPort = 0;
+    static int serverPort;
     static String localIP;
 
     private static String TEST_APP_FILE = "/testapp.html";

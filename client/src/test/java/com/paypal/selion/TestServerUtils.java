@@ -38,7 +38,7 @@ public class TestServerUtils {
     private static final int lowerBoundConnectPort = 10000;
     private static final int upperBoundConnectPort = 14000;
 
-    private static int serverPort = 0;
+    private static int serverPort;
     private static String localIP;
     private static Server server;
 
