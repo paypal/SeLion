@@ -18,7 +18,7 @@
         <selenium.version>2.48.2</selenium.version>
         <iosdriver.version>0.6.5</iosdriver.version>
         <selendroid.version>0.17.0</selendroid.version>
-        <appium.version>3.1.0</appium.version>
+        <appium.version>3.2.0</appium.version>
         <testng.version>6.9.6</testng.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <project.bom.version>${project.version}</project.bom.version>
