@@ -123,7 +123,7 @@ public enum GestureOptions {
         @SuppressWarnings("unused")
         private TapOffset tapOffset;
 
-        private Gson gson;
+        private final Gson gson;
 
         public TapOptions() {
             gson = new GsonBuilder().disableHtmlEscaping().create();
@@ -200,10 +200,10 @@ public enum GestureOptions {
     public static class TapOffset {
 
         @SuppressWarnings("unused")
-        private double x;
+        private final double x;
 
         @SuppressWarnings("unused")
-        private double y;
+        private final double y;
 
         private Gson gson;
 

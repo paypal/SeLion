@@ -40,7 +40,7 @@ public abstract class AbstractYamlReader {
     public static final String KEY = "Key";
     public static final String DELIMITER = "#";
 
-    private List<String> allkeys = new ArrayList<>();
+    private final List<String> allkeys = new ArrayList<>();
 
     final Yaml getYaml() {
         if (this.yaml == null) {

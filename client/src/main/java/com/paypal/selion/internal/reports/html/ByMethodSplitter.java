@@ -29,7 +29,7 @@ import com.paypal.selion.logger.SeLionLogger;
  * Internal use only. This class is responsible by the Velocity engine to render the "per method" view.
  */
 public final class ByMethodSplitter extends CollectionSplitter {
-    private Map<String, ITestNGMethod> methodByName = new HashMap<String, ITestNGMethod>();
+    private final Map<String, ITestNGMethod> methodByName = new HashMap<String, ITestNGMethod>();
 
     public ITestNGMethod getAssociatedMethod(String key) {
         return methodByName.get(key);

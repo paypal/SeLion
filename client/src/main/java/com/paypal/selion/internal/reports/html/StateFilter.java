@@ -24,7 +24,7 @@ import org.testng.ITestResult;
  */
 public class StateFilter implements Filter {
 
-    private int state;
+    private final int state;
 
     public StateFilter(int state) {
         this.state = state;

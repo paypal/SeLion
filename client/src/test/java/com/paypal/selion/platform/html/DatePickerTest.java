@@ -40,7 +40,7 @@ public class DatePickerTest {
     private final String prevLoc = "//a[contains(text(),'<Prev')]";
     private final String dateLoc = "popupDatepicker";
 
-    private DatePicker datePicker = new DatePicker(datePickerLoc, prevLoc, nextLoc, datePickerLoc);
+    private final DatePicker datePicker = new DatePicker(datePickerLoc, prevLoc, nextLoc, datePickerLoc);
     
     @Test(groups = { "browser-tests", "ie-broken-test" })
     @WebTest

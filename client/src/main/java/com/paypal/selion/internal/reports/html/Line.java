@@ -31,17 +31,17 @@ import com.paypal.selion.logger.SeLionLogger;
  * 
  */
 public class Line {
-    private String id;
-    private String label = "NA";
+    private final String id;
+    private final String label;
 
-    private Set<ITestNGMethod> methods = new HashSet<ITestNGMethod>();
-    private CollectionSplitter splitter;
+    private final Set<ITestNGMethod> methods = new HashSet<ITestNGMethod>();
+    private final CollectionSplitter splitter;
 
     private int instancePassed;
     private int instanceFailed ;
     private int instanceSkipped;
 
-    private List<ITestResult> associatedResults = new ArrayList<ITestResult>();
+    private final List<ITestResult> associatedResults = new ArrayList<ITestResult>();
 
     public Line(String label, CollectionSplitter splitter) {
         this.splitter = splitter;

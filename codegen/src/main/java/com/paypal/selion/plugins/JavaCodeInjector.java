@@ -32,8 +32,8 @@ import java.util.List;
  */
 public class JavaCodeInjector {
 
-    private List<ImportDeclaration> importsFromExtendedFile;
-    private File baseFile;
+    private final List<ImportDeclaration> importsFromExtendedFile;
+    private final File baseFile;
 
     JavaCodeInjector(File extendedFile, File baseFile) throws IOException, ParseException {
         JavaCodeParser parser = new JavaCodeParser(extendedFile);

@@ -41,11 +41,11 @@ public class DownloadResponder {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(DownloadResponder.class);
 
-    private HttpServletResponse httpServletResponse;
+    private final HttpServletResponse httpServletResponse;
 
-    private DownloadRequestProcessor downloadRequestProcessor;
+    private final DownloadRequestProcessor downloadRequestProcessor;
 
-    private String pathInfo;
+    private final String pathInfo;
 
     private ManagedArtifact managedArtifact;
 

@@ -30,7 +30,7 @@ import org.openqa.selenium.WebElement;
 
 public class ByOrOperator extends By {
 
-    private List<By> bys;
+    private final List<By> bys;
 
     public ByOrOperator(List<By> bys) {
         this.bys = bys;

@@ -21,8 +21,8 @@ package com.paypal.selion.platform.grid;
  * 
  */
 public class RemoteNodeInformation {
-    private String hostName;
-    private int portNumber;
+    private final String hostName;
+    private final int portNumber;
 
     public RemoteNodeInformation(String hostName, int portNumber) {
         this.hostName = hostName;

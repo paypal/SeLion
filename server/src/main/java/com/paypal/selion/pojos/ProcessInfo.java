@@ -33,8 +33,8 @@ public class ProcessInfo {
         return "ProcessInfo [processName=" + processName + ", processId=" + processId + "]";
     }
 
-    private String processName;
-    private String processId;
+    private final String processName;
+    private final String processId;
 
     public ProcessInfo(String processName, String processId) {
         this.processId = processId.replaceAll("\"", "");

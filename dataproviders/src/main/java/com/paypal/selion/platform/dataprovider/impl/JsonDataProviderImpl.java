@@ -48,7 +48,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public final class JsonDataProviderImpl implements SeLionDataProvider {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
-    private DataResource resource;
+    private final DataResource resource;
 
     public JsonDataProviderImpl(DataResource resource) {
         this.resource = resource;

@@ -602,8 +602,8 @@ public final class SimpleLogger extends Logger implements Closeable {
      * Used to encapsulate class and method info from the stack trace
      */
     private final class FrameInfo {
-        private String className;
-        private String methodName;
+        private final String className;
+        private final String methodName;
 
         private FrameInfo(String className, String methodName) {
             this.className = className;
@@ -648,8 +648,8 @@ public final class SimpleLogger extends Logger implements Closeable {
      */
     public final class SingleLineFormatter extends Formatter {
         private final String LINE_SEPARATOR = System.getProperty("line.separator");
-        private Format df = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss.SSS");
-        private String identifier;
+        private final Format df = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss.SSS");
+        private final String identifier;
 
         public SingleLineFormatter(String identifier) {
             this.identifier = identifier;

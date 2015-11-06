@@ -140,7 +140,7 @@ class ArtifactDetails {
      *
      */
     static class URLChecksumEntity {
-        private NameValuePair url, checksum;
+        private final NameValuePair url, checksum;
 
         URLChecksumEntity(NameValuePair url, NameValuePair checksum) {
             this.url = url;

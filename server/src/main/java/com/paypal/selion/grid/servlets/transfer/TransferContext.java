@@ -27,9 +27,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TransferContext {
 
-    private HttpServletRequest httpServletRequest;
+    private final HttpServletRequest httpServletRequest;
 
-    private HttpServletResponse httpServletResponse;
+    private final HttpServletResponse httpServletResponse;
 
     private Map<String, String> headersMap;
 

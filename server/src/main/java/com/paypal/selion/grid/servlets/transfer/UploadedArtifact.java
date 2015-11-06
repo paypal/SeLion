@@ -25,9 +25,9 @@ import java.util.TreeMap;
  */
 public class UploadedArtifact {
 
-    private Map<String, String> artifactMetaInfo;
+    private final Map<String, String> artifactMetaInfo;
 
-    private byte[] artifactContents;
+    private final byte[] artifactContents;
 
     private UploadedArtifact(byte[] artifactContents) {
         super();

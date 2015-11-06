@@ -62,12 +62,12 @@ public class ManagedArtifactRepository implements ServerRepository {
 
     private static ManagedArtifactRepository instance = new ManagedArtifactRepository();
 
-    private File repoFolder;
+    private final File repoFolder;
 
     /*
      * Lock used for synchronizing reading and deletion cycles
      */
-    private Lock repositorySynchronizationLock;
+    private final Lock repositorySynchronizationLock;
 
     public static synchronized ManagedArtifactRepository getInstance() {
         return instance;

@@ -154,8 +154,8 @@ public class SeLionGridLogger extends Logger {
     }
 
     private static class FrameInfo {
-        private String className;
-        private String methodName;
+        private final String className;
+        private final String methodName;
 
         private FrameInfo(String className, String methodName) {
             this.className = className;

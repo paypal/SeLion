@@ -33,8 +33,8 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class CustomKeyFilter implements DataProviderFilter {
 
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
-    private String filterKeyName;
-    private String filterKeyValues;
+    private final String filterKeyName;
+    private final String filterKeyValues;
 
     /**
      * @param keyName   - The key name that is to be used for filtering.

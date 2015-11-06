@@ -43,7 +43,7 @@ public final class SeLionReporter {
 
     private static String output;
     private static DataSaver saver;
-    private String baseFileName = UUID.randomUUID().toString();
+    private final String baseFileName = UUID.randomUUID().toString();
 
     private BaseLog currentLog;
 

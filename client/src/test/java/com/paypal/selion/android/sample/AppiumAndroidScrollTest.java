@@ -30,11 +30,11 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  */
 public class AppiumAndroidScrollTest {
 
-    private static final String pageObjectsAppPath = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String deviceName = "android:19";
-    private String messageBoxLocator = "android:id/message";
-    private String menuLocator ="com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private String listViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/scroll_view";
+    private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
+    private static final String DEVICE_NAME = "android:19";
+    private static final String MESSGAE_BOX_LOCATOR = "android:id/message";
+    private static final String MENU_LOCATOR ="com.paypal.selion.pageobjectsdemoapp:id/action_button";
+    private static final String LIST_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/scroll_view";
     
     private UiButton menuButton;
     private UiObject scrollView;
@@ -42,19 +42,19 @@ public class AppiumAndroidScrollTest {
 
     @BeforeClass
     public void initElements(){
-        menuButton = new UiButton(menuLocator);
-        scrollView = new UiObject(listViewLocator);
-        messageBox = new UiObject(messageBoxLocator);
+        menuButton = new UiButton(MENU_LOCATOR);
+        scrollView = new UiObject(LIST_VIEW_LOCATOR);
+        messageBox = new UiObject(MESSGAE_BOX_LOCATOR);
     }
     
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testSwipeActions() {
         UiObject sampleCell = new UiObject("com.paypal.selion.pageobjectsdemoapp:id/TextView13");
         UiButton sampleButton = new UiButton("android:id/button1");
-        WebDriverWaitUtils.waitUntilElementIsVisible(menuLocator);
-        menuButton.click(menuLocator);
-        menuButton.click(menuLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(MENU_LOCATOR);
+        menuButton.click(MENU_LOCATOR);
+        menuButton.click(MENU_LOCATOR);
         menuButton.click(scrollView);
         scrollView.swipeUp();
         sampleCell.click(sampleButton);

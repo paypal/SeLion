@@ -30,8 +30,8 @@ import com.paypal.selion.reader.YamlReaderFactory;
  * 
  */
 public class DataReader {
-    private AbstractYamlReader reader;
-    private String fileName;
+    private final AbstractYamlReader reader;
+    private final String fileName;
 
     public DataReader(String fileName) throws IOException {
         reader = YamlReaderFactory.createInstance(fileName);

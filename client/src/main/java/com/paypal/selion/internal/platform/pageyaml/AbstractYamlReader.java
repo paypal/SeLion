@@ -34,7 +34,7 @@ abstract class AbstractYamlReader implements GuiMapReader, ProcessGuiMap {
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
     private boolean processed;
 
-    private List<Object> allObjects = new ArrayList<Object>();
+    private final List<Object> allObjects = new ArrayList<Object>();
 
     final String getDefaultLocale() {
         return defaultLocale;

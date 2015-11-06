@@ -54,7 +54,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
     protected ExcelReader excelReader;
 
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
-    private List<DefaultCustomType> customTypes = new ArrayList<>();
+    private final List<DefaultCustomType> customTypes = new ArrayList<>();
 
     /**
      * The constructor will use the path name and the file name of the Excel workbook to initialize the input stream

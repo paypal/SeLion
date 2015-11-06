@@ -68,13 +68,13 @@ public class JsonRuntimeReporterHelper {
     private static final String BEFORE_GROUP = "BeforeGroup";
     private static final String BEFORE_TEST = "BeforeTest";
     private static final String BEFORE_SUITE = "BeforeSuite";
-    private List<TestMethodInfo> runningTest = new ArrayList<TestMethodInfo>();;
-    private List<ConfigMethodInfo> runningConfig = new ArrayList<ConfigMethodInfo>();
+    private final List<TestMethodInfo> runningTest = new ArrayList<TestMethodInfo>();;
+    private final List<ConfigMethodInfo> runningConfig = new ArrayList<ConfigMethodInfo>();
     private List<TestMethodInfo> completedTest = new ArrayList<TestMethodInfo>();
 
     private File jsonCompletedTest;
     private File jsonCompletedConfig;
-    private JsonArray testJsonLocalConfigSummary = new JsonArray();
+    private final JsonArray testJsonLocalConfigSummary = new JsonArray();
     private JsonObject jsonConfigSummary;
     private long previousTime;
 

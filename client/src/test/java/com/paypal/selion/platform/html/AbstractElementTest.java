@@ -192,7 +192,7 @@ public class AbstractElementTest {
     }
 
     private class SampleSuccessInMemoryPage extends BasicPageImpl {
-        private HashMap<String, String> oMap = new HashMap<String, String>();
+        private final HashMap<String, String> oMap = new HashMap<String, String>();
 
         SampleSuccessInMemoryPage() {
             getPage();

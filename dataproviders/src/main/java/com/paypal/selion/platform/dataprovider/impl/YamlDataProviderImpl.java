@@ -49,7 +49,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public final class YamlDataProviderImpl implements SeLionDataProvider {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
-    private DataResource resource;
+    private final DataResource resource;
 
     public YamlDataProviderImpl(DataResource resource) {
         this.resource = resource;

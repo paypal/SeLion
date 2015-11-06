@@ -37,7 +37,7 @@ public class SelectListTest {
     static final String sExpected = "Red";
     static final String sLabel = "black";
     SelectList normalSelectList = new SelectList(TestObjectRepository.SELECTLIST_LOCATOR.getValue());
-    private  SelectList multiSelect = new SelectList("name=multiple_select");
+    private final SelectList multiSelect = new SelectList("name=multiple_select");
     
 
     @BeforeClass(groups = {"browser-tests"})

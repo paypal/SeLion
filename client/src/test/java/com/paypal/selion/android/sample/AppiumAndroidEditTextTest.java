@@ -29,33 +29,33 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  */
 public class AppiumAndroidEditTextTest {
     
-    private static final String pageObjectsAppPath = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String deviceName = "android:19";
-    private String actionButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private String textFieldLocator = "com.paypal.selion.pageobjectsdemoapp:id/edit_text";
+    private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
+    private static final String DEVICE_NAME = "android:19";
+    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
+    private static final String TEXT_FIELD_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/edit_text";
 
     private UiButton menuButton;
     private UiObject textField;
     
     @BeforeClass
     public void initElements(){
-        menuButton = new UiButton(actionButtonLocator);
-        textField = new UiObject(textFieldLocator);
+        menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
+        textField = new UiObject(TEXT_FIELD_LOCATOR);
     }
     
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testSetText() {
-        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(textField);
         textField.setText("SeLion");
         Assert.assertEquals(textField.getText(), "SeLion", "Set edit text value does not match");
     }
     
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testSetClearText() {
-        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(textField);
         textField.setText("SeLion");
         Assert.assertEquals(textField.getText(), "SeLion", "Set value of edit-text does not match");

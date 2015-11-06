@@ -38,9 +38,9 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class SauceLabsHelper {
     private static final String ALGORITHM = "HmacMD5";
     private String jobURL;
-    private String userName;
-    private String apiKey;
-    private SimpleLogger logger = SeLionLogger.getLogger();
+    private final String userName;
+    private final String apiKey;
+    private final SimpleLogger logger = SeLionLogger.getLogger();
 
     public SauceLabsHelper() {
         userName = Config.getConfigProperty(ConfigProperty.SAUCELAB_USER_NAME);

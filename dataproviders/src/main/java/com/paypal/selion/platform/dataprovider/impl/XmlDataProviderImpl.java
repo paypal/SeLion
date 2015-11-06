@@ -56,7 +56,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public final class XmlDataProviderImpl implements XmlDataProvider {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
-    private XmlDataSource resource;
+    private final XmlDataSource resource;
 
     public XmlDataProviderImpl(XmlDataSource resource) {
         this.resource = resource;

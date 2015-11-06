@@ -39,7 +39,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class MobileTestSession extends AbstractTestSession {
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private String appName;
-    private String appLocation;
+    private final String appLocation;
     private String device = "iphone";
     private String appLanguage;
     private String appLocale;

@@ -50,7 +50,7 @@ import com.paypal.selion.internal.reports.excelreport.ReportSheetNames;
  */
 public class ExcelReportTest {
 
-    private String excelReportFileName = "dummy_excel_test.xls";
+    private static final String EXCEL_REPORT_FILE_NAME = "dummy_excel_test.xls";
     private String strReportsDirectory;
     private Path excelFile;
     private boolean currentState;
@@ -74,7 +74,7 @@ public class ExcelReportTest {
     @BeforeMethod(groups = { "excel-report-test" })
     public void removeExcelFileBeforeTest(ITestContext context) {
         strReportsDirectory = context.getOutputDirectory();
-        excelFile = Paths.get(strReportsDirectory, excelReportFileName);
+        excelFile = Paths.get(strReportsDirectory, EXCEL_REPORT_FILE_NAME);
         if (Files.isRegularFile(excelFile)) {
             FileUtils.deleteQuietly(excelFile.toFile());
         }
@@ -103,7 +103,7 @@ public class ExcelReportTest {
         iSuites.add(iSuite);
 
         ExcelReport excelReport = new ExcelReport();
-        excelReport.setExcelFileName(excelReportFileName);
+        excelReport.setExcelFileName(EXCEL_REPORT_FILE_NAME);
         excelReport.generateReport(xmlSuites, iSuites, strReportsDirectory);
 
         // Check whether the ExcelReport exists.

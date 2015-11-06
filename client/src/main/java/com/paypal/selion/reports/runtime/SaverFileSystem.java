@@ -36,7 +36,7 @@ class SaverFileSystem implements DataSaver {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    private String outputFolder;
+    private final String outputFolder;
 
     public SaverFileSystem(String testNGOutputFolder) {
         this.outputFolder = testNGOutputFolder;

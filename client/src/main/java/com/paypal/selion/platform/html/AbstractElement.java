@@ -64,7 +64,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     private String locator;
     private String controlName;
     private ParentTraits parent;
-    private Map<String, String> propMap = new HashMap<String, String>();
+    private final Map<String, String> propMap = new HashMap<String, String>();
     protected static final String LOG_DEMARKER = "&#8594;";
 
     private static SimpleLogger logger = SeLionLogger.getLogger();

@@ -332,7 +332,7 @@ public class ReflectionUtilsTest {
     }
 
     public static class PhoneyClass {
-        private String s;
+        private final String s;
 
         public PhoneyClass(String s) {
             this.s = s;

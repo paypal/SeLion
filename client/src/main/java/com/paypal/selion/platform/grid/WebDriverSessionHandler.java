@@ -63,9 +63,9 @@ public class WebDriverSessionHandler {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    private RemoteWebDriver driver;
+    private final RemoteWebDriver driver;
     private Future<String> result;
-    private WebDriverCaller webDriverCaller;
+    private final WebDriverCaller webDriverCaller;
 
     private volatile boolean bStartSession;
 

@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Wrapper<T> {
 
-    private List<T> list;
+    private final List<T> list;
 
     /**
      * Default constructor initializes empty list. 

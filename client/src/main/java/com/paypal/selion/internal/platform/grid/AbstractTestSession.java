@@ -55,7 +55,7 @@ public abstract class AbstractTestSession {
 
     private String className = "";
 
-    private DesiredCapabilities additionalCapabilities = new DesiredCapabilities();
+    private final DesiredCapabilities additionalCapabilities = new DesiredCapabilities();
 
     private String parameters;
 
@@ -65,7 +65,7 @@ public abstract class AbstractTestSession {
 
     private String xmlTestName = "";
 
-    private List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
+    private final List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
 
     /**
      * @return whether the session is started <code>true</code> or <code>false</code>

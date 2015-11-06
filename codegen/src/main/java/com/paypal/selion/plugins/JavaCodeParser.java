@@ -35,12 +35,12 @@ import java.util.List;
  */
 public class JavaCodeParser {
 
-    private List<FieldDeclaration> fields;
+    private final List<FieldDeclaration> fields;
 
-    private List<MethodDeclaration> methods;
+    private final List<MethodDeclaration> methods;
     private List<ImportDeclaration> imports;
 
-    private File file;
+    private final File file;
 
     /**
      * @param file

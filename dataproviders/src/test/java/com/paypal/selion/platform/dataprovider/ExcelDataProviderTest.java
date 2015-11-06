@@ -49,7 +49,7 @@ import com.paypal.selion.platform.utilities.FileAssistant;
 public class ExcelDataProviderTest {
 
     public static class MyCustomClass {
-        private String name = "";
+        private final String name;
 
         public MyCustomClass(String name) {
             this.name = name;

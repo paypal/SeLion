@@ -42,7 +42,7 @@ public class SimpleIndexInclusionFilter implements DataProviderFilter {
     protected static final SimpleLogger logger = SeLionLogger.getLogger();
     private int invocationCount;
     
-    private int[] indexes;
+    private final int[] indexes;
 
     /**
      * Initializes indexes to be included for filter using a conforming string.

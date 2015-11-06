@@ -45,7 +45,7 @@ class ExcelReader {
     /**
      * Logging object
      */
-    private SimpleLogger logger = SeLionLogger.getLogger();
+    private final SimpleLogger logger = SeLionLogger.getLogger();
 
     /**
      * Use this constructor when a file that is available in the classpath is to be read by the ExcelDataProvider for

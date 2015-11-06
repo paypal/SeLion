@@ -40,7 +40,7 @@ public abstract class AbstractPage implements WebPage {
     private boolean pageInitialized;
     // Object map queue for loading
     /** The map queue. */
-    private Queue<String[]> mapQueue;
+    private final Queue<String[]> mapQueue;
     // used to determine our locale (e.g. US, UK, DE, etc.)
     /** The site. */
     private String site;
@@ -54,10 +54,10 @@ public abstract class AbstractPage implements WebPage {
     private static final String UNKNOWN_PAGE_TITLE = "unknown-title";
 
     /** The elements that should be present on the Page **/
-    private List<String> pageValidators = new ArrayList<String>();
+    private final List<String> pageValidators = new ArrayList<String>();
 
     /** Map to store our GUI object map content for all Containers */
-    private Map<String, Map<String, String>> objectContainerMap = new HashMap<String, Map<String, String>>();
+    private final Map<String, Map<String, String>> objectContainerMap = new HashMap<String, Map<String, String>>();
 
     protected void setPageInitialized(boolean pageInitialized) {
         this.pageInitialized = pageInitialized;

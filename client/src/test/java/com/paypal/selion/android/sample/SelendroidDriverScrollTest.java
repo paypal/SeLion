@@ -36,11 +36,11 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  */
 public class SelendroidDriverScrollTest {
 
-    private static final String appFolder = "/apps";
+    private static final String APP_FOLDER = "/apps";
 
     @BeforeClass
     public void setup() {
-        URL url = AndroidTest.class.getResource(appFolder);
+        URL url = AndroidTest.class.getResource(APP_FOLDER);
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 

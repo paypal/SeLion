@@ -17,9 +17,9 @@ package com.paypal.selion.elements;
 
 public abstract class AbstractSeLionElementList {
 
-    private String element;
-    private boolean uiElement;
-    private String elementPackage;
+    private final String element;
+    private final boolean uiElement;
+    private final String elementPackage;
 
     protected AbstractSeLionElementList(String elementPackage, String element, boolean uiElement) {
         this.element = element;

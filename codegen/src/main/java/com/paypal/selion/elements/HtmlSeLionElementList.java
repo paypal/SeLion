@@ -105,7 +105,7 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
         return isValidUIElement(values, element);
     }
 
-    private boolean canHaveParent;
+    private final boolean canHaveParent;
 
     private HtmlSeLionElementList(String elementPackage, String element, boolean isHtmlType, boolean canHaveParent) {
         super(elementPackage, element, isHtmlType);

@@ -30,16 +30,16 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  */
 public class AppiumAndroidCheckBoxSeekBarTest {
 
-    private static final String pageObjectsAppPath = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String deviceName = "android:19";
-    private final String actionButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private final String seekBarLocator = "com.paypal.selion.pageobjectsdemoapp:id/seekBar";
-    private final String longPressButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/long_press_button";
-    private final String textViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/seekBar_textview";
+    private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
+    private static final String DEVICE_NAME = "android:19";
+    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
+    private static final String SEEK_BAR_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/seekBar";
+    private static final String LONG_PRESS_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/long_press_button";
+    private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/seekBar_textview";
     // Check box
-    private final String checkBoxAndroidLocator = "com.paypal.selion.pageobjectsdemoapp:id/android_checkbox";
-    private final String checkBoxiOSLocator = "com.paypal.selion.pageobjectsdemoapp:id/ios_checkbox";
-    private final String valueTextViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/checkbox_textview";
+    private static final String CHECKBOX_ANDROID_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/android_checkbox";
+    private static final String CHECKBOX_IOS_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/ios_checkbox";
+    private static final String VALUE_TEXTVIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/checkbox_textview";
 
     private UiButton menuButton;
     private UiObject seekBar;
@@ -50,20 +50,20 @@ public class AppiumAndroidCheckBoxSeekBarTest {
 
     @BeforeClass
     public void initElements() {
-        menuButton = new UiButton(actionButtonLocator);
-        seekBar = new UiObject(seekBarLocator);
-        seekBarTextView = new UiTextView(textViewLocator);
-        iosCheckBox = new UiObject(checkBoxiOSLocator);
-        androidCheckBox = new UiObject(checkBoxAndroidLocator);
-        checkBoxTextView = new UiTextView(valueTextViewLocator);
+        menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
+        seekBar = new UiObject(SEEK_BAR_LOCATOR);
+        seekBarTextView = new UiTextView(TEXT_VIEW_LOCATOR);
+        iosCheckBox = new UiObject(CHECKBOX_IOS_LOCATOR);
+        androidCheckBox = new UiObject(CHECKBOX_ANDROID_LOCATOR);
+        checkBoxTextView = new UiTextView(VALUE_TEXTVIEW_LOCATOR);
     }
 
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testCheckBox() throws InterruptedException {
-        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
-        menuButton.click(longPressButtonLocator);
-        WebDriverWaitUtils.waitUntilElementIsVisible(longPressButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
+        menuButton.click(LONG_PRESS_BUTTON_LOCATOR);
+        WebDriverWaitUtils.waitUntilElementIsVisible(LONG_PRESS_BUTTON_LOCATOR);
         menuButton.click(androidCheckBox);
         androidCheckBox.click();
         Assert.assertEquals(checkBoxTextView.getText(), "Android");
@@ -73,15 +73,15 @@ public class AppiumAndroidCheckBoxSeekBarTest {
     }
 
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testSeekBar() throws InterruptedException {
-        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click();
-        WebDriverWaitUtils.waitUntilElementIsVisible(longPressButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(LONG_PRESS_BUTTON_LOCATOR);
         menuButton.click(seekBar);
         seekBar.swipeRight();
         Assert.assertEquals(seekBarTextView.getText(), "Value: 100", "Seek Bar swipe right value does not match");
-        seekBar = new UiObject(seekBarLocator);
+        seekBar = new UiObject(SEEK_BAR_LOCATOR);
         seekBar.swipeLeft();
         Assert.assertEquals(seekBarTextView.getText(), "Value: 0", "Seek Bar swipe right value does not match");
     }

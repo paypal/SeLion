@@ -36,7 +36,7 @@ public final class SeLionSoftAssert extends Assertion {
 
     public static final String SOFT_ASSERT_ATTRIBUTE_NAME = SeLionSoftAssert.class.getCanonicalName();
     
-    private Map<AssertionError, IAssert<?>> allErrors = Maps.newLinkedHashMap();
+    private final Map<AssertionError, IAssert<?>> allErrors = Maps.newLinkedHashMap();
     
     @Override
     protected void doAssert(IAssert<?> assertCommand) {

@@ -37,7 +37,7 @@ import org.apache.velocity.app.Velocity;
  */
 public class CodeGenerator {
 
-    private String baseDirectory;
+    private final String baseDirectory;
 
     public CodeGenerator(String baseDirectory) {
         this.baseDirectory = baseDirectory;

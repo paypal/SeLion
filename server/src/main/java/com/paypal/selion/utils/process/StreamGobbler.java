@@ -29,8 +29,8 @@ import org.apache.commons.io.IOUtils;
  *
  */
 public class StreamGobbler extends Thread {
-    private InputStreamReader stream;
-    private List<String> contents = new ArrayList<>();
+    private final InputStreamReader stream;
+    private final List<String> contents = new ArrayList<>();
 
     public StreamGobbler(InputStream stream) {
         this.stream = new InputStreamReader(stream);

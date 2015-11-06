@@ -36,11 +36,11 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
  */
 public class AndroidTest {
-    private static final String appFolder = "/apps";
+    private static final String APP_FOLDER = "/apps";
 
     @BeforeClass
     public void setup() {
-        URL url = AndroidTest.class.getResource(appFolder);
+        URL url = AndroidTest.class.getResource(APP_FOLDER);
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 

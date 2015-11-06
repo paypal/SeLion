@@ -27,23 +27,23 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  */
 public class AppiumAndroidTextViewTest {
 
-    private static final String pageObjectsAppPath = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String deviceName = "android:19";
-    private static String texViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/page_objects_text_view";
+    private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
+    private static final String DEVICE_NAME = "android:19";
+    private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/page_objects_text_view";
     
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testTextView() throws InterruptedException {
-        WebDriverWaitUtils.waitUntilElementIsVisible(texViewLocator);
-        UiObject uiObject = new UiObject(texViewLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_VIEW_LOCATOR);
+        UiObject uiObject = new UiObject(TEXT_VIEW_LOCATOR);
         Assert.assertEquals(uiObject.getText(), "Page Objects Demo", "Text View value does not match");
     }
 
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testTextViewEnabled() throws InterruptedException {
-        WebDriverWaitUtils.waitUntilElementIsVisible(texViewLocator);
-        UiObject uiObject = new UiObject(texViewLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_VIEW_LOCATOR);
+        UiObject uiObject = new UiObject(TEXT_VIEW_LOCATOR);
         Assert.assertEquals(uiObject.isEnabled(), true, "Text View is not enabled");
     }
 

@@ -37,7 +37,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class RuntimeReporterListener implements ISuiteListener, ITestListener, IConfigurationListener {
 
     private String outputDirectory;
-    private JsonRuntimeReporterHelper jsonHelper;
+    private final JsonRuntimeReporterHelper jsonHelper;
 
     /**
      * This String constant represents the JVM argument that can be enabled/disabled to enable/disable

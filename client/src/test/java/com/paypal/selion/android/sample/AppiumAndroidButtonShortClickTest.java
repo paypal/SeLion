@@ -29,11 +29,11 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
  */
 public class AppiumAndroidButtonShortClickTest {
 
-    private static final String pageObjectsAppPath = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String deviceName = "android:19";
-    private final String actionButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private final String shortPressButtonLocator = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button";
-    private final String textViewLocator = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button_output";
+    private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
+    private static final String DEVICE_NAME = "android:19";
+    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
+    private static final String SHORT_PRESS_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button";
+    private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button_output";
 
     UiButton menuButton;
     UiButton shortPressButton;
@@ -41,15 +41,15 @@ public class AppiumAndroidButtonShortClickTest {
 
     @BeforeClass
     public void initElements() {
-        menuButton = new UiButton(actionButtonLocator);
-        shortPressButton = new UiButton(shortPressButtonLocator);
-        textView = new UiTextView(textViewLocator);
+        menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
+        shortPressButton = new UiButton(SHORT_PRESS_BUTTON_LOCATOR);
+        textView = new UiTextView(TEXT_VIEW_LOCATOR);
     }
 
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testButtonClick() throws InterruptedException {
-        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(shortPressButton);
         shortPressButton.click(textView);
         String output = textView.getText();
@@ -57,20 +57,20 @@ public class AppiumAndroidButtonShortClickTest {
     }
 
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testButtonClickTopLeft() throws InterruptedException {
-        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(shortPressButton);
-        WebDriverWaitUtils.waitUntilElementIsVisible(shortPressButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(SHORT_PRESS_BUTTON_LOCATOR);
         shortPressButton.clickTopLeft(textView);
         String output = textView.getText();
         Assert.assertEquals(output.contains("short press"), true, "Button top left click not working properly");
     }
 
     @Test
-    @MobileTest(appPath = pageObjectsAppPath, device = deviceName)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testButtonClickBottomRight() throws InterruptedException {
-        WebDriverWaitUtils.waitUntilElementIsVisible(actionButtonLocator);
+        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(shortPressButton);
         shortPressButton.clickBottomRight(textView);
         String output = textView.getText();

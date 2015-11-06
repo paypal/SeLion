@@ -139,11 +139,11 @@ public interface UploadResponder {
 
         public static final String CONTENT_TYPE_VALUE = AcceptHeaderEnum.APPLICATION_JSON.getAcceptHeader();
 
-        private Gson gson;
+        private final Gson gson;
 
-        private JsonObject jsonResponse;
+        private final JsonObject jsonResponse;
 
-        private JsonArray files;
+        private final JsonArray files;
 
         public JsonUploadResponder(TransferContext transferContext) {
             super(transferContext);
@@ -191,7 +191,7 @@ public interface UploadResponder {
 
         private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(TextPlainUploadResponder.class);
 
-        private StringBuffer textResponse;
+        private final StringBuffer textResponse;
 
         public TextPlainUploadResponder(TransferContext transferContext) {
             super(transferContext);

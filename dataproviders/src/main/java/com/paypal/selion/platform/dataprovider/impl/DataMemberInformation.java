@@ -23,10 +23,10 @@ import java.lang.reflect.Field;
  * 
  */
 class DataMemberInformation {
-    private Field field;
-    private Object userProvidedObject;
-    private Object objectToSetDataInto;
-    private String dataToUse;
+    private final Field field;
+    private final Object userProvidedObject;
+    private final Object objectToSetDataInto;
+    private final String dataToUse;
 
     public DataMemberInformation(Field eachField, Object userObj, Object objectToReturn, String data) {
         this.field = eachField;

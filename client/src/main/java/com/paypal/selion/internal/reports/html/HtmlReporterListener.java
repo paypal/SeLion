@@ -77,9 +77,9 @@ public class HtmlReporterListener implements IReporter, IInvokedMethodListener {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private PrintWriter out;
-    private VelocityEngine ve;
+    private final VelocityEngine ve;
     private String outputDir;
-    private Map<Integer, String> statusMap = new HashMap<Integer, String>();
+    private final Map<Integer, String> statusMap = new HashMap<Integer, String>();
 
     public HtmlReporterListener() {
         // Register this listener with the ListenerManager; disabled by default when not defined in VM argument.
