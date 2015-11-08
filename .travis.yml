@@ -2,6 +2,7 @@ language: java
 sudo: false
 jdk:
   - oraclejdk7
+  - oraclejdk8
   - openjdk7
 script:
   - sh -e utilities/run-travis-ci-tests.sh
