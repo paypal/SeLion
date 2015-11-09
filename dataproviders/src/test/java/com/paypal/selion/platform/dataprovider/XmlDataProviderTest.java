@@ -28,7 +28,6 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -167,18 +166,18 @@ public class XmlDataProviderTest {
         XmlDataSource resource = new XmlFileSystemResource(listOfKeyValuePairs, KeyValueMap.class);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         Hashtable<String, Object> data = dataProvider.getDataAsHashtable();
-        Assert.assertNotNull(data);
-        Assert.assertNotNull(data.get("k1"));
+        assertNotNull(data);
+        assertNotNull(data.get("k1"));
         KeyValuePair k1 = (KeyValuePair) data.get("k1");
-        Assert.assertNotNull(k1.getKey());
-        Assert.assertNotNull(k1.getValue());
-        Assert.assertNotNull(data.get("k2"));
+        assertNotNull(k1.getKey());
+        assertNotNull(k1.getValue());
+        assertNotNull(data.get("k2"));
         KeyValuePair k2 = (KeyValuePair) data.get("k2");
-        Assert.assertNotNull(k2.getKey());
-        Assert.assertNotNull(k2.getValue());
-        Assert.assertNotNull(data.get("k3"));
+        assertNotNull(k2.getKey());
+        assertNotNull(k2.getValue());
+        assertNotNull(data.get("k3"));
         KeyValuePair k3 = (KeyValuePair) data.get("k3");
-        Assert.assertNotNull(k3.getKey());
-        Assert.assertNotNull(k3.getValue());
+        assertNotNull(k3.getKey());
+        assertNotNull(k3.getValue());
     }
 }

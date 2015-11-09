@@ -117,7 +117,7 @@ public class LocalConfigTest {
         // Ensure you've configured this test to run with browser param in suite file.
         assertTrue(!browserParam.isEmpty());
         // Drop the "* in browser and first char"
-        if (browserParam.equals("*iexplore")) {
+        if ("*iexplore".equals(browserParam)) {
             //Only for IE the user agent parsing library returns it as IE.
             assertTrue(actualBrowser.equalsIgnoreCase("ie"));
         }else {

@@ -402,9 +402,6 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         logger.exiting();
     }
 
-    // TODO: This method would need re-factoring in the future.
-    // The moment alerts processing is supported in iPhone, we need to disable the edit checks that are put in this
-    // method.
     private void processAlerts(String browser) {
         logger.entering(browser);
         if (doesNotHandleAlerts(browser)) {
@@ -417,9 +414,8 @@ public abstract class AbstractElement implements Clickable, Hoverable {
             logger.exiting();
             return;
         } catch (NoAlertPresentException exception) {
-            // gobble the exception and do nothing with it. No alert was
-            // triggered.
-            // so its safe to proceed with taking screenshots.
+            // Gobble the exception and do nothing with it. No alert was triggered. So it is safe to proceed with taking 
+            // screenshots.
         }
 
     }
@@ -444,9 +440,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
             String errorMsg = "Encountered an alert. Cannot wait for an element when an operation triggers an alert.";
             throw new InvalidElementStateException(errorMsg);
         } catch (NoAlertPresentException exception) {
-            // gobble the exception and do nothing with it. No alert was
-            // triggered.
-            // so its safe to proceed ahead.
+            // Gobble the exception and do nothing with it. No alert was triggered. So it is safe to proceed ahead.
         }
     }
 

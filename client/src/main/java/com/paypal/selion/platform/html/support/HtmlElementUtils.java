@@ -189,38 +189,38 @@ public class HtmlElementUtils {
         logger.entering(locator);
         Preconditions.checkArgument(StringUtils.isNotBlank(locator), INVALID_LOCATOR_ERR_MSG);
         By valueToReturn = null;
-        locator = locator.trim();
-        int typeDelimiterIndex = locator.indexOf('=');
-        String locatorType = typeDelimiterIndex != -1 ? locator.substring(0, typeDelimiterIndex) : locator;
+        String seleniumLocator = locator.trim();
+        int typeDelimiterIndex = seleniumLocator.indexOf('=');
+        String locatorType = typeDelimiterIndex != -1 ? seleniumLocator.substring(0, typeDelimiterIndex) : seleniumLocator;
         switch (locatorType) {
         case "id":
-            valueToReturn = By.id(locator.substring(typeDelimiterIndex + 1));
+            valueToReturn = By.id(seleniumLocator.substring(typeDelimiterIndex + 1));
             break;
         case "name":
-            valueToReturn = By.name(locator.substring(typeDelimiterIndex + 1));
+            valueToReturn = By.name(seleniumLocator.substring(typeDelimiterIndex + 1));
             break;
         case "link":
-            valueToReturn = By.linkText(locator.substring(typeDelimiterIndex + 1));
+            valueToReturn = By.linkText(seleniumLocator.substring(typeDelimiterIndex + 1));
             break;
         case "xpath":
-            valueToReturn = By.xpath(locator.substring(typeDelimiterIndex + 1));
+            valueToReturn = By.xpath(seleniumLocator.substring(typeDelimiterIndex + 1));
             break;
         case "css":
-            valueToReturn = By.cssSelector(locator.substring(typeDelimiterIndex + 1));
+            valueToReturn = By.cssSelector(seleniumLocator.substring(typeDelimiterIndex + 1));
             break;
         case "classname":
-            valueToReturn = By.className(locator.substring(typeDelimiterIndex + 1));
+            valueToReturn = By.className(seleniumLocator.substring(typeDelimiterIndex + 1));
             break;
         default:
-            if (locator.startsWith("/") || locator.startsWith("./")) {
-                valueToReturn = By.xpath(locator);
+            if (seleniumLocator.startsWith("/") || seleniumLocator.startsWith("./")) {
+                valueToReturn = By.xpath(seleniumLocator);
                 break;
             }
-            valueToReturn = new ByIdOrName(locator);
+            valueToReturn = new ByIdOrName(seleniumLocator);
         }
         if (logger.isLoggable(Level.FINE)) {
             String msg = valueToReturn.getClass().getSimpleName()
-                    + " will be the location strategy that will be used for locating " + locator;
+                    + " will be the location strategy that will be used for locating " + seleniumLocator;
             logger.log(Level.FINE, msg);
         }
         logger.exiting(valueToReturn);

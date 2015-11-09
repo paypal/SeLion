@@ -33,6 +33,7 @@ public class StreamGobbler extends Thread {
     private final List<String> contents = new ArrayList<>();
 
     public StreamGobbler(InputStream stream) {
+        super();
         this.stream = new InputStreamReader(stream);
     }
 

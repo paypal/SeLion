@@ -43,6 +43,7 @@ public class TestPage extends BasicPageImpl {
      * Creates a new TestPage object
      */
     public TestPage() {
+        super();
         super.initPage(PAGE_DOMAIN, CLASS_NAME);
     }
 
@@ -53,10 +54,12 @@ public class TestPage extends BasicPageImpl {
      *            The Country locale for the site you are accessing
      */
     public TestPage(String siteLocale) {
+        super();
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
     }
 
     public TestPage(String siteLocale, String className) {
+        super();
         super.initPage(PAGE_DOMAIN, className, siteLocale);
     }
 

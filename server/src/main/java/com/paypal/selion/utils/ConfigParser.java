@@ -38,20 +38,16 @@ import com.paypal.selion.pojos.SeLionGridConstants;
  *
  */
 public final class ConfigParser {
-    private static ConfigParser parser;
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ConfigParser.class);
+    private static ConfigParser parser = new ConfigParser();
     private JsonObject configuration;
     private static String configFile;
-    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ConfigParser.class);
 
     /**
      * @return A {@link ConfigParser} object that can be used to retrieve values from the Configuration object as
      *         represented by the JSON file passed via the JVM argument <b>SeLionConfig</b>
      */
     public static ConfigParser parse() {
-        LOGGER.entering();
-        if (parser == null) {
-            parser = new ConfigParser();
-        }
         LOGGER.exiting(parser.toString());
         return parser;
     }

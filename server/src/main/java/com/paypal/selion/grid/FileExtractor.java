@@ -94,8 +94,9 @@ final class FileExtractor {
             outputArchiveName = archiveFile.substring(0, archiveFile.lastIndexOf('.'));
             LOGGER.fine("Output archive name: " + outputArchiveName);
         }
-        // TODO: For any other compress format a simple else-if part with proper assignments will suffice
 
+        // TODO: For any other compress format a simple else-if part with proper assignments will suffice
+        String workingArchiveFile = archiveFile;
         if (isCompressedArchive) {
             LOGGER.fine("Found a compressed archive");
             CompressorInputStream is;
@@ -107,7 +108,7 @@ final class FileExtractor {
                 is.close();
                 decompressStream.close();
                 // The archive is de-compressed. Replacing the compressed file name to the archive name
-                archiveFile = outputArchiveName;
+                workingArchiveFile = outputArchiveName;
                 // Add the file name to the list
                 files.add(outputArchiveName);
             } catch (CompressorException | IOException e) {
@@ -116,13 +117,13 @@ final class FileExtractor {
         }
 
         archiveStreamType = ArchiveStreamFactory.ZIP;
-        if (archiveFile.endsWith(".tar")) {
+        if (workingArchiveFile.endsWith(".tar")) {
             archiveStreamType = ArchiveStreamFactory.TAR;
         }
         // TODO: For any new archive formats a simple else-if will suffice
 
         OutputStream outputFileStream = null;
-        LOGGER.fine("Getting file list for archive " + archiveFile);
+        LOGGER.fine("Getting file list for archive " + workingArchiveFile);
 
         List<String> executableNameList = FileExtractor.getExecutableNames();
         LOGGER.fine("Executable list: " + executableNameList.toString());
@@ -131,7 +132,7 @@ final class FileExtractor {
 
         try {
             archiveStream = new ArchiveStreamFactory().createArchiveInputStream(archiveStreamType,
-                    new FileInputStream(archiveFile));
+                    new FileInputStream(workingArchiveFile));
             ArchiveEntry entry;
             while ((entry = archiveStream.getNextEntry()) != null) {
                 String fileNameInEntry = getFileNameFromPath(entry.getName());

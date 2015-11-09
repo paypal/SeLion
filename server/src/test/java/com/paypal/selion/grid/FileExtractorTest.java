@@ -84,7 +84,7 @@ public class FileExtractorTest extends PowerMockTestCase {
     public void testExtractingZip() {
         List<String> files = FileExtractor.extractArchive(DUMMY_ZIP_ARCHIVE_FILE_PATH);
         assertTrue(extractedFile.exists());
-        assertTrue(files.size() == 1);
+        assertEquals(files.size(), 1);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class FileExtractorTest extends PowerMockTestCase {
                         .getAbsolutePath());
 
         assertTrue(tarFile.exists());
-        assertTrue(files.size() == 2);
+        assertEquals(files.size(), 2);
     }
 
     @AfterMethod(alwaysRun = true)

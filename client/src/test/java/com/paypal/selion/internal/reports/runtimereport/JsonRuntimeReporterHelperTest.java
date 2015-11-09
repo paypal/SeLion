@@ -55,7 +55,7 @@ public class JsonRuntimeReporterHelperTest {
 
         assertEquals(completedTests.size(), 1);
         TestMethodInfo testMethod = completedTests.get(0);
-        JsonObject jsonObject = new JsonParser().parse(testMethod.toJson()).getAsJsonObject();;
+        JsonObject jsonObject = new JsonParser().parse(testMethod.toJson()).getAsJsonObject();
         assertEquals(jsonObject.get("suite").getAsString(), suiteName);
         assertEquals(jsonObject.get("test").getAsString(), testName);
         assertEquals(jsonObject.get("packageInfo").getAsString(), packageName);

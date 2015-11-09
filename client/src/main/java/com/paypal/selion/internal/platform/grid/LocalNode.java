@@ -148,10 +148,7 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
             // check the CWD and PATH for the driverBinary
             @SuppressWarnings("deprecation")
             String location = CommandLine.find(driverBinary.replace(".exe", ""));
-            if (location != null) {
-                return true;
-            }
-            return false;
+            return (location != null);
         }
         return true;
     }

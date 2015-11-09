@@ -43,6 +43,7 @@ class YamlV2Reader extends AbstractYamlReader {
      * @throws IOException
      */
     public YamlV2Reader(String fileName) throws IOException {
+        super();
         FileSystemResource resource = new FileSystemResource(fileName);
         processPage(resource);
     }

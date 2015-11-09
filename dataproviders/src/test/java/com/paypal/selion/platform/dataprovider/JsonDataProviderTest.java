@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -235,7 +234,7 @@ public class JsonDataProviderTest {
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         String[] keys = {"test1", "test2"};
         Object[][] dataObjects = dataProvider.getDataByKeys(keys );
-        Assert.assertNotNull(dataObjects);
-        Assert.assertEquals(dataObjects.length, 2);
+        assertNotNull(dataObjects);
+        assertEquals(dataObjects.length, 2);
     }
 }

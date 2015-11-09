@@ -27,6 +27,7 @@ public class ProcessHandlerException extends Exception {
     private static final long serialVersionUID = 5445790498525782457L;
 
     public ProcessHandlerException() {
+        super();
     }
 
     public ProcessHandlerException(String message) {

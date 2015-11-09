@@ -62,7 +62,7 @@ final class Styles {
         return existingStyle;
     }
 
-    static public void initStyles(HSSFWorkbook wb) {
+    public static void initStyles(HSSFWorkbook wb) {
         wb1 = wb;
         setHeadingStyle(createCustomStyle(createCustomFont(HSSFColor.LEMON_CHIFFON.index, HSSFFont.U_NONE),
                 HSSFCellStyle.ALIGN_CENTER));

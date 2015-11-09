@@ -107,7 +107,7 @@ class YamlV1Reader extends AbstractYamlReader {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> map = (Map<String, Object>) data;
                 String key = ((String) map.get(KEY)).trim();
-                if (key.equals("")) {
+                if ("".equals(key)) {
                     continue;
                 }
                 if (map.get(KEY).equals("baseClass") || map.get(KEY).equals("platform")) {

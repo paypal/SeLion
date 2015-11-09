@@ -414,11 +414,12 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      *
      */
     protected Object getSingleExcelRow(Object userObj, int index, boolean isExternalCall) {
+        int newIndex = index;
         if (isExternalCall) {
-            index++;
+            newIndex++;
 
         }
-        logger.entering(new Object[] { userObj, index });
+        logger.entering(new Object[] { userObj, newIndex });
         Object obj;
 
         Class<?> cls;
@@ -429,7 +430,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
         }
         Field[] fields = cls.getDeclaredFields();
 
-        List<String> excelRowData = getRowContents(cls.getSimpleName(), index, fields.length);
+        List<String> excelRowData = getRowContents(cls.getSimpleName(), newIndex, fields.length);
         if (excelRowData != null && excelRowData.size() != 0) {
             try {
                 obj = prepareObject(userObj, fields, excelRowData);
@@ -438,7 +439,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
                         + "'", e);
             }
         } else {
-            throw new DataProviderException("Row with key '" + index + "' is not found");
+            throw new DataProviderException("Row with key '" + newIndex + "' is not found");
         }
 
         logger.exiting(obj);

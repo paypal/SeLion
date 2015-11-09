@@ -32,7 +32,6 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * A class for loading and representing the {@link WebTest} annotation parameters. Also performs sanity checks.
  */
-// TODO: Should this be moved to an "internal" package ?
 public class WebTestSession extends AbstractTestSession {
 
     private String browser = "";
@@ -41,7 +40,7 @@ public class WebTestSession extends AbstractTestSession {
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     WebTestSession() {
-        // nothing to do
+        super();
     }
 
     /**

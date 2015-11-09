@@ -35,7 +35,6 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A class for loading and representing the {@link MobileTest} annotation parameters. Also performs sanity checks.
  * 
  */
-// TODO: Should this be moved to an "internal" package ?
 public class MobileTestSession extends AbstractTestSession {
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private String appName;
@@ -244,11 +243,7 @@ public class MobileTestSession extends AbstractTestSession {
     }
 
     private boolean isDeviceDefined() {
-        if (device.contains("android") || device.contains("iphone") || device.contains("ipad")) {
-            return true;
-        } else {
-            return false;
-        }
+        return (device.contains("android") || device.contains("iphone") || device.contains("ipad"));
     }
 
 

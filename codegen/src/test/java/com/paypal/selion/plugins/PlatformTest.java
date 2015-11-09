@@ -15,7 +15,7 @@
 
 package com.paypal.selion.plugins;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -40,14 +40,14 @@ public class PlatformTest {
     public void testWebPlatform() throws Exception {
         // When no platform is specified the default should be WEB
         TestPlatform currentPlatform = getPlatformToTest("src/test/resources/PayPalAbstractPage.yml");
-        assertTrue(currentPlatform == TestPlatform.WEB);
+        assertEquals(currentPlatform, TestPlatform.WEB);
     }
 
     @Test
     public void testIOSPlatform() throws Exception {
         // For IOS platform, the value must be specified
         TestPlatform currentPlatform = getPlatformToTest("src/test/resources/IOSInteractionPage.yaml");
-        assertTrue(currentPlatform == TestPlatform.IOS);
+        assertEquals(currentPlatform, TestPlatform.IOS);
     }
 
     @Test(expectedExceptions = { CodeGeneratorException.class })
