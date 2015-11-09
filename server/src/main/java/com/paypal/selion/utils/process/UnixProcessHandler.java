@@ -30,6 +30,7 @@ import com.paypal.selion.pojos.ProcessNames;
  */
 public class UnixProcessHandler extends AbstractProcessHandler implements ProcessHandler {
     public UnixProcessHandler() {
+        super();
         LOGGER.info("You have chosen to use a Unix Process Handler.");
     }
 

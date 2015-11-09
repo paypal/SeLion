@@ -74,8 +74,8 @@ public class UIAPicker extends UIAElement implements UIAutomationPicker {
     private List<String> asList(String allValues) {
         List<String> valuesList = Collections.emptyList();
         if (!StringUtils.isBlank(allValues)) {
-            allValues = allValues.trim().substring(1, allValues.length() - 1);
-            valuesList = Arrays.asList(allValues.split("\\s*,\\s*"));
+            String tempAllValues = allValues.trim().substring(1, allValues.length() - 1);
+            valuesList = Arrays.asList(tempAllValues.split("\\s*,\\s*"));
         }
         return valuesList;
     }

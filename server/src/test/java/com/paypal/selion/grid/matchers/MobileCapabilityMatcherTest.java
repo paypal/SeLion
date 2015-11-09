@@ -15,7 +15,8 @@
 
 package com.paypal.selion.grid.matchers;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import io.selendroid.common.SelendroidCapabilities;
 
 import java.util.HashMap;
@@ -24,8 +25,6 @@ import java.util.Map;
 import org.openqa.selenium.remote.CapabilityType;
 import org.testng.annotations.Test;
 import org.uiautomation.ios.IOSCapabilities;
-
-import com.paypal.selion.grid.matchers.MobileCapabilityMatcher;
 
 public class MobileCapabilityMatcherTest {
 
@@ -44,13 +43,13 @@ public class MobileCapabilityMatcherTest {
         requestedCapability.put("platformName", "Android");
         requestedCapability.put("platformVersion", "4.4.2");
         requestedCapability.put("deviceName", "Android Emulator");
-        assertEquals(matcher.matches(nodeCapability, requestedCapability), true);
+        assertTrue(matcher.matches(nodeCapability, requestedCapability));
 
         //Success scenario2
         requestedCapability.clear();
         requestedCapability.put("mobileNodeType", "appium");
         requestedCapability.put("platformName", "Android");
-        assertEquals(matcher.matches(nodeCapability, requestedCapability), true);
+        assertTrue(matcher.matches(nodeCapability, requestedCapability));
 
         //Failure scenario
         requestedCapability.clear();
@@ -58,7 +57,7 @@ public class MobileCapabilityMatcherTest {
         requestedCapability.put("platformName", "Android");
         requestedCapability.put("platformVersion", "4.2.2");
         requestedCapability.put("deviceName", "Android Emulator");
-        assertEquals(matcher.matches(nodeCapability, requestedCapability), false);
+        assertFalse(matcher.matches(nodeCapability, requestedCapability));
     }
 
     @Test
@@ -75,13 +74,13 @@ public class MobileCapabilityMatcherTest {
         requestedCapability.put(CapabilityType.BROWSER_NAME, "selendroid");
         requestedCapability.put(SelendroidCapabilities.AUT, "appname");
         requestedCapability.put(SelendroidCapabilities.LOCALE, "en_us");
-        assertEquals(matcher.matches(nodeCapability, requestedCapability), true);
+        assertTrue(matcher.matches(nodeCapability, requestedCapability));
 
         //Failure scenario
         requestedCapability.clear();
         requestedCapability.put("mobileNodeType", "selendroid");
         requestedCapability.put(CapabilityType.BROWSER_NAME, "firefox");
-        assertEquals(matcher.matches(nodeCapability, requestedCapability), false);
+        assertFalse(matcher.matches(nodeCapability, requestedCapability));
     }
 
     @Test
@@ -95,7 +94,7 @@ public class MobileCapabilityMatcherTest {
         requestedCapability.put(IOSCapabilities.LANGUAGE, "english");
         requestedCapability.put(IOSCapabilities.LOCALE, "en_us");
         requestedCapability.put(IOSCapabilities.BUNDLE_NAME, "appname");
-        assertEquals(matcher.matches(new HashMap<String, Object>(), requestedCapability), false);
+        assertFalse(matcher.matches(new HashMap<String, Object>(), requestedCapability));
     }
 
     @Test
@@ -109,7 +108,7 @@ public class MobileCapabilityMatcherTest {
         Map<String, Object> requestedCapability = new HashMap<String, Object>();
         requestedCapability.put(CapabilityType.BROWSER_NAME, "chrome");
 
-        assertEquals(matcher.matches(nodeCapability, requestedCapability), true);
+        assertTrue(matcher.matches(nodeCapability, requestedCapability));
     }
 
     @Test
@@ -124,6 +123,6 @@ public class MobileCapabilityMatcherTest {
         requestedCapability.put("mobileNodeType", "");
         requestedCapability.put(CapabilityType.BROWSER_NAME, "ff");
 
-        assertEquals(matcher.matches(nodeCapability, requestedCapability), true);
+        assertTrue(matcher.matches(nodeCapability, requestedCapability));
     }
 }

@@ -35,7 +35,7 @@ public abstract class CollectionSplitter {
 
     private ISuite suite;
     private Filter filter;
-    private Map<String, Line> lineById = new HashMap<>();
+    private final Map<String, Line> lineById = new HashMap<>();
     private int totalInstancePassed;
     private int totalInstancePassedEnvt;
     private int totalInstanceFailed;

@@ -52,7 +52,7 @@ public class TransferServlet extends HttpServlet {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(TransferServlet.class);
 
     public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
-            throws ServletException, java.io.IOException {
+            throws ServletException, IOException {
         LOGGER.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
         try {
             TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);
@@ -73,7 +73,7 @@ public class TransferServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
-            throws ServletException, java.io.IOException {
+            throws ServletException, IOException {
         LOGGER.entering((Object)new Object[] { httpServletRequest, httpServletResponse });
         try {
             TransferContext transferContext = new TransferContext(httpServletRequest, httpServletResponse);

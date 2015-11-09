@@ -40,6 +40,7 @@ public class GUIPageExtensionTest {
         private Button testButton;
 
         public SampleTestPage() {
+            super();
             super.initPage("paypal", "SampleTestPage");
         }
         

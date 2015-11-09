@@ -15,15 +15,20 @@
 
 package com.paypal.selion.grid;
 
-import static com.paypal.selion.pojos.SeLionGridConstants.*;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
-import com.paypal.selion.grid.RunnableLauncher.InstanceType;
-import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.pojos.SeLionGridConstants;
+import static com.paypal.selion.pojos.SeLionGridConstants.HUB_CONFIG_ARG;
+import static com.paypal.selion.pojos.SeLionGridConstants.HUB_CONFIG_FILE;
+import static com.paypal.selion.pojos.SeLionGridConstants.HUB_CONFIG_FILE_RESOURCE;
+import static com.paypal.selion.pojos.SeLionGridConstants.HUB_SAUCE_CONFIG_FILE;
+import static com.paypal.selion.pojos.SeLionGridConstants.HUB_SAUCE_CONFIG_FILE_RESOURCE;
+import static com.paypal.selion.pojos.SeLionGridConstants.NODE_CONFIG_ARG;
+import static com.paypal.selion.pojos.SeLionGridConstants.NODE_CONFIG_FILE;
+import static com.paypal.selion.pojos.SeLionGridConstants.NODE_CONFIG_FILE_RESOURCE;
+import static com.paypal.selion.pojos.SeLionGridConstants.ROLE_ARG;
+import static com.paypal.selion.pojos.SeLionGridConstants.SAUCE_CONFIG_FILE;
+import static com.paypal.selion.pojos.SeLionGridConstants.SAUCE_CONFIG_FILE_RESOURCE;
+import static com.paypal.selion.pojos.SeLionGridConstants.SELION_CONFIG_ARG;
+import static com.paypal.selion.pojos.SeLionGridConstants.SELION_CONFIG_FILE;
+import static com.paypal.selion.pojos.SeLionGridConstants.TYPE_ARG;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,6 +44,12 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
+import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
  * An abstract base {@link RunnableLauncher} for SeLion Grid components
@@ -333,13 +344,13 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
         InstanceType type = getType();
         
         if (type.equals(InstanceType.SELENIUM_NODE)) {
-            result = SeLionGridConstants.NODE_CONFIG_FILE;
+            result = NODE_CONFIG_FILE;
             if (commands.contains("-nodeConfig")) {
                 result = commands.get(commands.indexOf("-nodeConfig" + 1));
             }
         }
         if (type.equals(InstanceType.SELENIUM_HUB)) {
-            result = SeLionGridConstants.HUB_CONFIG_FILE;
+            result = HUB_CONFIG_FILE;
             if (commands.contains("-hubConfig")) {
                 result = commands.get(commands.indexOf("-hubConfig" + 1));
             }

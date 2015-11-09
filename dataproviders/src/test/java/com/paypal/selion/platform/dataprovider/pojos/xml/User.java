@@ -15,6 +15,8 @@
 
 package com.paypal.selion.platform.dataprovider.pojos.xml;
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -74,7 +76,7 @@ public class User {
      */
     @XmlElement(name="phoneNumber")
     public String[] getPhoneNumbers() {
-        return phoneNumbers;
+        return Arrays.copyOf(phoneNumbers, phoneNumbers.length);
     }
 
     /**

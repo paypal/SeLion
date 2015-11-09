@@ -33,6 +33,7 @@ public class ByOrOperator extends By {
     private final List<By> bys;
 
     public ByOrOperator(List<By> bys) {
+        super();
         this.bys = bys;
     }
 

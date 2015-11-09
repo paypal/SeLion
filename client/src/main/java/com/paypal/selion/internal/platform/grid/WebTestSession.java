@@ -41,7 +41,7 @@ public class WebTestSession extends AbstractTestSession {
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     WebTestSession() {
-        // nothing to do
+        super();
     }
 
     /**

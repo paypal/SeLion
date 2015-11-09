@@ -652,6 +652,7 @@ public final class SimpleLogger extends Logger implements Closeable {
         private final String identifier;
 
         public SingleLineFormatter(String identifier) {
+            super();
             this.identifier = identifier;
         }
 

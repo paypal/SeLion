@@ -86,7 +86,7 @@ public class FileBackedStringBuffer {
                 copy(new FileReader(file), bw);
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, ex.getMessage(), ex);
         }
     }
 

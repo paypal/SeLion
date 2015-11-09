@@ -74,6 +74,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
      *            The list of binaries to download. These names MUST match the names from the download.json file
      */
     public ThreadedLauncher(String[] args, LauncherOptions launcherOptions, List<String> downloadList) {
+        super();
         setLauncherOptions(launcherOptions);
 
         InstallHelper.firstTimeSetup();

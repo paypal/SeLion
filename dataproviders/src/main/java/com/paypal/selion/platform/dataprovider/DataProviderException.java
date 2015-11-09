@@ -23,7 +23,7 @@ public class DataProviderException extends RuntimeException {
     private static final long serialVersionUID = 3290312548375984346L;
 
     public DataProviderException() {
-
+        super();
     }
 
     public DataProviderException(String message) {

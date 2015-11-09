@@ -15,6 +15,8 @@
 
 package com.paypal.selion.platform.dataprovider.pojos.yaml;
 
+import java.util.Arrays;
+
 public class USER {
 
     /*

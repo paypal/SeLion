@@ -34,7 +34,7 @@ public class ArtifactDetailsTest {
         File fileToTest = new File("src/test/resources/config/Dummydownload.json");
         List<URLChecksumEntity> parsedDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatformByRole(fileToTest,
                 InstanceType.SELENIUM_NODE);
-        assertTrue(parsedDetails.size() == 2);
+        assertEquals(parsedDetails.size(), 2);
         URLChecksumEntity entity = parsedDetails.get(0);
         // Asserting for details read using any key
         assertEquals(entity.getUrl().getValue(), "seleniumURL");
@@ -53,7 +53,7 @@ public class ArtifactDetailsTest {
         File fileToTest = new File("src/test/resources/config/Dummydownload.json");
         List<URLChecksumEntity> parsedDetails = ArtifactDetails.getArtifactDetailsForCurrentPlatformByNames(fileToTest,
                 downloads);
-        assertTrue(parsedDetails.size() == 1);
+        assertEquals(parsedDetails.size(), 1);
         URLChecksumEntity entity = parsedDetails.get(0);
         // Asserting for details read using any key
         assertEquals(entity.getUrl().getValue(), "seleniumURL");

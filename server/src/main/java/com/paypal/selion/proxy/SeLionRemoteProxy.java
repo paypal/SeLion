@@ -381,6 +381,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         private final String nodeId;
 
         NodeRecycleThread(String nodeId) {
+            super();
             running = false;
             this.nodeId = nodeId;
         }
