@@ -60,6 +60,8 @@ public final class MobileDriverFactory {
 
         DesiredCapabilities capability = new MobileCapabilitiesBuilder().createCapabilities();
         capability = new UserCapabilitiesBuilder().getCapabilities(capability);
+        logger.log(Level.FINE, "Spawning a mobile with the following capabilitiesgit: "
+                + DriverFactoryHelper.showCapabilities(capability));
 
         RemoteWebDriver driver = null;
         MobileTestSession mobileSession = Grid.getMobileTestSession();
@@ -77,8 +79,6 @@ public final class MobileDriverFactory {
             driver = createSelendroidInstance(DriverFactoryHelper.getURL(), capability);
         }
 
-        logger.log(Level.FINE, "Spawning a mobile with the following capabilities : "
-                + DriverFactoryHelper.showCapabilities(capability));
         DriverFactoryHelper.printDebugInfoForUser(driver);
         return driver;
     }

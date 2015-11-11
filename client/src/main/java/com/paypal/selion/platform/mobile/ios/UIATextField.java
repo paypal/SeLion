@@ -33,7 +33,7 @@ public class UIATextField extends UIAElement implements UIAutomationTextField {
 
     @Override
     public void setValue(CharSequence... keysToSend) {
-        logger.entering(keysToSend);
+        logger.entering((Object[]) keysToSend);
         WebElement webElement = findElement(getLocator());
         webElement.click();
         webElement.sendKeys(keysToSend);

@@ -80,10 +80,10 @@ public class WebDriverSessionHandler {
                     Thread.sleep(1000 * 10);
                 }
             } catch (InterruptedException e) {
-                logger.exiting(null);
+                logger.exiting(new Object[] {null});
                 return null;
             }
-            logger.exiting(null);
+            logger.exiting(new Object[] {null});
             return null;
         }
     }

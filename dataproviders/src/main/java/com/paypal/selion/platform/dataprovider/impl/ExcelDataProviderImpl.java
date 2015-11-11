@@ -184,7 +184,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
 
         Object[][] obj = getDataByIndex(arrayIndex);
 
-        logger.exiting(obj);
+        logger.exiting((Object[]) obj);
         return obj;
     }
 
@@ -207,7 +207,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
             int actualIndex = indexes[i] + 1;
             obj[i][0] = getSingleExcelRow(getObject(), actualIndex, false);
         }
-        logger.exiting(obj);
+        logger.exiting((Object[]) obj);
         return obj;
     }
 
@@ -228,7 +228,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
         for (int i = 0; i < keys.length; i++) {
             obj[i][0] = getSingleExcelRow(getObject(), keys[i], true);
         }
-        logger.exiting(obj);
+        logger.exiting((Object[]) obj);
         return obj;
     }
 
@@ -307,7 +307,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
                 }
             }
         }
-        logger.exiting(obj);
+        logger.exiting((Object[]) obj);
         return obj;
     }
 
@@ -370,14 +370,14 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      * as an Object which can be cast back into the user's actual data type.
      *
      * @param userObj
-     *            - An Object into which data is to be packed into
+     *            An Object into which data is to be packed into
      * @param key
-     *            - A string that represents a key to search for in the excel sheet
+     *            A string that represents a key to search for in the excel sheet
      * @param isExternalCall
-     *            - A boolean that helps distinguish internally if the call is being made internally or by the user. For
+     *            A boolean that helps distinguish internally if the call is being made internally or by the user. For
      *            external calls the index of the row would need to be bumped up,because the first row is to be ignored
      *            always.
-     * @return - An Object which can be cast into the user's actual data type.
+     * @return An Object which can be cast into the user's actual data type.
      */
     protected Object getSingleExcelRow(Object userObj, String key, boolean isExternalCall) {
         logger.entering(new Object[] { userObj, key, isExternalCall });
@@ -400,17 +400,17 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
 
     /**
      * @param userObj
-     *            - The User defined object into which the data is to be packed into.
+     *            The User defined object into which the data is to be packed into.
      * @param index
-     *            - The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
+     *            The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
      *            (which is where your data exists) in your excel sheet, the value for index would be 1. <b>This method
      *            assumes that your excel sheet would have a header which it would EXCLUDE.</b> When specifying index
      *            value always remember to ignore the header, since this method will look for a particular row ignoring
      *            the header row.
      * @param isExternalCall
-     *            - A boolean that helps distinguish internally if the call is being made internally or by the user.
+     *            A boolean that helps distinguish internally if the call is being made internally or by the user.
      *
-     * @return - An object that represents the data for a given row in the excel sheet.
+     * @return An object that represents the data for a given row in the excel sheet.
      *
      */
     protected Object getSingleExcelRow(Object userObj, int index, boolean isExternalCall) {
@@ -541,7 +541,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      * A utility method that setups up data members which are arrays.
      *
      * @param memberInfo
-     *            - A {@link DataMemberInformation} object that represents values pertaining to every data member.
+     *            A {@link DataMemberInformation} object that represents values pertaining to every data member.
      * @throws IllegalAccessException
      * @throws ArrayIndexOutOfBoundsException
      * @throws IllegalArgumentException
@@ -595,7 +595,7 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      * A utility method that setups up data members which are NOT arrays.
      *
      * @param memberInfo
-     *            - A {@link DataMemberInformation} object that represents values pertaining to every data member.
+     *            A {@link DataMemberInformation} object that represents values pertaining to every data member.
      *
      * @throws IllegalAccessException
      * @throws InstantiationException
@@ -654,13 +654,13 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      * in a list of string format.
      *
      * @param rowIndex
-     *            - The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
+     *            The row number from the excel sheet that is to be read. For e.g., if you wanted to read the 2nd row
      *            (which is where your data exists) in your excel sheet, the value for index would be 1. <b>This method
      *            assumes that your excel sheet would have a header which it would EXCLUDE.</b> When specifying index
      *            value always remember to ignore the header, since this method will look for a particular row ignoring
      *            the header row.
      * @param size
-     *            - The number of columns to read, including empty and blank column.
+     *            The number of columns to read, including empty and blank column.
      * @return List<String> String array contains the row data.
      */
     public List<String> getRowContents(String sheetName, int rowIndex, int size) {
@@ -671,11 +671,11 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      * Get all excel rows from a specified sheet.
      *
      * @param sheetName
-     *            - A String that represents the Sheet name from which data is to be read
+     *            A String that represents the Sheet name from which data is to be read
      * @param heading
-     *            - If true, will return all rows along with the heading row. If false, will return all rows except the
+     *            If true, will return all rows along with the heading row. If false, will return all rows except the
      *            heading row.
-     * @return - A List of {@link Row} that are read.
+     * @return A List of {@link Row} that are read.
      */
     public List<Row> getAllRawExcelRows(String sheetName, boolean heading) {
         return excelReader.getAllExcelRows(sheetName, heading);

@@ -74,14 +74,14 @@ final class ReflectionUtils {
                 return eachMethod;
             }
         }
-        logger.exiting(null);
+        logger.exiting(new Object[] { null });
         return null;
     }
 
     /**
      * @param type
-     *            - The type to check.
-     * @return - <code>true</code> If the Class represented by the type has a 1 argument constructor defined that
+     *            The type to check.
+     * @return <code>true</code> If the Class represented by the type has a 1 argument constructor defined that
      *         accepts a String.
      */
     public static boolean hasOneArgStringConstructor(Class<?> type) {
@@ -102,8 +102,8 @@ final class ReflectionUtils {
 
     /**
      * @param type
-     *            - The type to check.
-     * @return - <code>true</code> If the Class represented by the type has a default constructor defined.
+     *            The type to check.
+     * @return <code>true</code> If the Class represented by the type has a default constructor defined.
      */
     public static boolean hasDefaultConstructor(Class<?> type) {
         logger.entering(type);
@@ -125,11 +125,11 @@ final class ReflectionUtils {
      * set of String values provided.
      * 
      * @param type
-     *            - A {@link DefaultCustomType} object that represents the type of the array to be instantiated.
+     *            A {@link DefaultCustomType} object that represents the type of the array to be instantiated.
      * @param values
-     *            - A {@link String} array that represents the set of values that should be used to pre-populate the
+     *            A {@link String} array that represents the set of values that should be used to pre-populate the
      *            newly constructed array.
-     * @return - An array of type {@link DefaultCustomType}
+     * @return An array of type {@link DefaultCustomType}
      */
     public static Object instantiateDefaultCustomTypeArray(DefaultCustomType type, String[] values) {
         logger.entering(new Object[] { type, values });
@@ -150,13 +150,13 @@ final class ReflectionUtils {
      * provided.
      * 
      * @param type
-     *            - The type of the array to create. Note that this method will only accept primitive types (as the name
+     *            The type of the array to create. Note that this method will only accept primitive types (as the name
      *            suggests) i.e., only int[],float[], boolean[] and so on.
      * @param values
-     *            - A {@link String} array that represents the set of values that should be used to pre-populate the
+     *            A {@link String} array that represents the set of values that should be used to pre-populate the
      *            newly constructed array.
      * 
-     * @return - An array of the type that was specified.
+     * @return An array of the type that was specified.
      */
     public static Object instantiatePrimitiveArray(Class<?> type, String[] values) {
         logger.entering(new Object[] { type, values });
@@ -183,13 +183,13 @@ final class ReflectionUtils {
      * This helper method facilitates creation of primitive data type object and initialize it with the provided value.
      * 
      * @param type
-     *            - The type to instantiate. It has to be only a primitive data type [ such as int, float, boolean
+     *            The type to instantiate. It has to be only a primitive data type [ such as int, float, boolean
      *            etc.,]
      * @param objectToInvokeUpon
-     *            - The object upon which the invocation is to be carried out.
+     *            The object upon which the invocation is to be carried out.
      * @param valueToAssign
-     *            - The value to initialize with.
-     * @return - An initialized object that represents the primitive data type.
+     *            The value to initialize with.
+     * @return An initialized object that represents the primitive data type.
      */
     public static Object instantiatePrimitiveObject(Class<?> type, Object objectToInvokeUpon, String valueToAssign) {
         logger.entering(new Object[] { type, objectToInvokeUpon, valueToAssign });
@@ -212,12 +212,12 @@ final class ReflectionUtils {
      * used to create arrays of types which has a 1 argument String constructor defined.
      * 
      * @param type
-     *            - The type of the desired array.
+     *            The type of the desired array.
      * @param values
-     *            - A {@link String} array that represents the set of values that should be used to pre-populate the
+     *            A {@link String} array that represents the set of values that should be used to pre-populate the
      *            newly constructed array.
      * 
-     * @return - An array of the type that was specified.
+     * @return An array of the type that was specified.
      */
     public static Object instantiateWrapperArray(Class<?> type, String[] values) {
         logger.entering(new Object[] { type, values });
@@ -243,13 +243,13 @@ final class ReflectionUtils {
      * This helper method facilitates creation of Wrapper data type object and initialize it with the provided value.
      * 
      * @param type
-     *            - The type to instantiate. It has to be only a Wrapper data type [ such as Integer, Float, Boolean
+     *            The type to instantiate. It has to be only a Wrapper data type [ such as Integer, Float, Boolean
      *            etc.,]
      * @param objectToInvokeUpon
-     *            - The object upon which the invocation is to be carried out.
+     *            The object upon which the invocation is to be carried out.
      * @param valueToAssign
-     *            - The value to initialize with.
-     * @return - An initialized object that represents the Wrapper data type.
+     *            The value to initialize with.
+     * @return An initialized object that represents the Wrapper data type.
      */
     public static Object instantiateWrapperObject(Class<?> type, Object objectToInvokeUpon, String valueToAssign) {
         logger.entering(new Object[] { type, objectToInvokeUpon, valueToAssign });
@@ -271,8 +271,8 @@ final class ReflectionUtils {
      * This method confirms if a type is of primitive array type ( int[], float[], boolean[] and so on).
      * 
      * @param type
-     *            - The type which is to be checked.
-     * @return - <code>true</code> if type is a primitive array type.
+     *            The type which is to be checked.
+     * @return <code>true</code> if type is a primitive array type.
      */
     public static boolean isPrimitiveArray(Class<?> type) {
         logger.entering(type);
@@ -285,8 +285,8 @@ final class ReflectionUtils {
      * This method confirms if a type is of primitive array type ( Integer[], Float[], Boolean[] and so on).
      * 
      * @param type
-     *            - The type which is to be checked.
-     * @return - <code>true</code> if type is a wrapper array type.
+     *            The type which is to be checked.
+     * @return <code>true</code> if type is a wrapper array type.
      */
     public static boolean isWrapperArray(Class<?> type) {
         logger.entering(type);

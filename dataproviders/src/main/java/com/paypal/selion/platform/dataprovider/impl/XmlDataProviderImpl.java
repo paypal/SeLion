@@ -140,7 +140,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
      * XML file.
      *
      * @param filterIndexes
-     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     *            The indexes for which data is to be fetched as a conforming string pattern.
      *
      * @return An Object[][] object to be used with TestNG DataProvider.
      */
@@ -152,7 +152,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
         List<Object[]> objectList = getDataListByFilter(filter);
         Object[][] objectArray = DataProviderHelper.convertToObjectArray(objectList);
 
-        logger.exiting(objectArray);
+        logger.exiting((Object[]) objectArray);
         return objectArray;
     }
 
@@ -162,7 +162,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
      * file.
      *
      * @param indexes
-     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     *            The indexes for which data is to be fetched as a conforming string pattern.
      *
      * @return An Object[][] object to be used with TestNG DataProvider.
      */
@@ -174,7 +174,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
         List<Object[]> objectList = getDataListByFilter(filter);
         Object[][] objectArray = DataProviderHelper.convertToObjectArray(objectList);
 
-        logger.exiting(objectArray);
+        logger.exiting((Object[]) objectArray);
         return objectArray;
     }
 
@@ -188,7 +188,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
      *
      * The hierarchy and name of the nodes are strictly as instructed. A name value pair should be represented as nodes
      * 'key' and 'value' as child nodes contained in a parent node named 'item'. A sample data with proper tag names is
-     * shown here as an example :-
+     * shown here as an example:
      *
      * <pre>
      * <items>
@@ -236,7 +236,7 @@ public final class XmlDataProviderImpl implements XmlDataProvider {
      *
      * A name value item should use the node name 'item' and a specific child structure since the implementation depends
      * on {@link KeyValuePair} class. The structure of an item in collection is shown below where 'key' and 'value' are
-     * child nodes contained in a parent node named 'item' :-
+     * child nodes contained in a parent node named 'item':
      *
      * <pre>
      * <items>

@@ -432,7 +432,7 @@ public final class SimpleLogger extends Logger implements Closeable {
     }
 
     @Override
-    public void log(Level level, String msg, Object... params) {
+    public void log(Level level, String msg, Object[] params) {
         if (this.isLoggable(level)) {
             FrameInfo fi = getLoggingFrame();
             getLogger().logp(level, fi.className, fi.methodName, msg, params);

@@ -78,9 +78,9 @@ public final class WebDriverFactory {
             break;
         }
         capability = new UserCapabilitiesBuilder().getCapabilities(capability);
-        driver = createDriverInstance(DriverFactoryHelper.getURL(), capability);
-        logger.log(Level.FINE, "Spawning a browser with the following capabilities : "
+        logger.log(Level.FINE, "Spawning a browser with the following capabilities: "
                 + DriverFactoryHelper.showCapabilities(capability));
+        driver = createDriverInstance(DriverFactoryHelper.getURL(), capability);
         DriverFactoryHelper.printDebugInfoForUser(driver);
         return driver;
     }

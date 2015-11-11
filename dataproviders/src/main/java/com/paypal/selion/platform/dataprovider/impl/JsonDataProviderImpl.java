@@ -119,7 +119,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
         } finally {
             IOUtils.closeQuietly(reader);
         }
-        logger.exiting(dataToBeReturned);
+        logger.exiting((Object[]) dataToBeReturned);
         return dataToBeReturned;
     }
 
@@ -135,7 +135,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
         Preconditions.checkArgument(!StringUtils.isEmpty(indexes), "Indexes cannot be empty");
         logger.entering(indexes);
         Object[][] requestedData = getDataByIndex(DataProviderHelper.parseIndexString(indexes));
-        logger.exiting(requestedData);
+        logger.exiting((Object[]) requestedData);
         return requestedData;
     }
 
@@ -171,7 +171,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
         } finally {
             IOUtils.closeQuietly(reader);
         }
-        logger.exiting(requestedData);
+        logger.exiting((Object[]) requestedData);
         return requestedData;
     }
 
@@ -277,7 +277,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
 
         Object[][] objArray = DataProviderHelper.getDataByKeys(dataAsHashTable, keys);
 
-        logger.exiting(objArray);
+        logger.exiting((Object[]) objArray);
         return objArray;
     }
 
@@ -298,7 +298,7 @@ public final class JsonDataProviderImpl implements SeLionDataProvider {
             dataArray[i][0] = currentData;
             i++;
         }
-        logger.exiting(dataArray);
+        logger.exiting((Object[]) dataArray);
         return dataArray;
     }
 

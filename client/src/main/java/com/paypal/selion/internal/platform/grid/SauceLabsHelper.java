@@ -99,7 +99,7 @@ public class SauceLabsHelper {
             return encodedString;
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             SeLionLogger.getLogger().log(Level.SEVERE, "Encountered errors when encoding the Sauce Credentials", e);
-            logger.exiting(null);
+            logger.exiting(new Object[] {null});
             return null;
         }
     }

@@ -271,7 +271,7 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
 
         Object[][] objArray = DataProviderHelper.convertToObjectArray(yamlObject);
 
-        logger.exiting(objArray);
+        logger.exiting((Object[]) objArray);
         return objArray;
     }
 
@@ -329,7 +329,7 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
      * </pre>
      *
      * @param keys
-     *            - A String array that represents the keys.
+     *            A String array that represents the keys.
      *
      * @return Object[][] two dimensional object to be used with TestNG DataProvider
      */
@@ -344,7 +344,7 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
 
         Object[][] objArray = DataProviderHelper.getDataByKeys(map, keys);
 
-        logger.exiting(objArray);
+        logger.exiting((Object[]) objArray);
         return objArray;
     }
 
@@ -389,7 +389,8 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
     /**
      * Gets yaml data for requested indexes.
      *
-     * @param indexes - the input string represent the indexes to be parse
+     * @param indexes
+     *            the input string represent the indexes to be parse
      *
      * @return Object[][] Two dimensional object to be used with TestNG DataProvider
      * @throws IOException
@@ -401,7 +402,7 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
         logger.entering(indexes);
         int[] arrayIndex = DataProviderHelper.parseIndexString(indexes);
         Object[][] yamlObjRequested = getDataByIndex(arrayIndex);
-        logger.exiting(yamlObjRequested);
+        logger.exiting((Object[]) yamlObjRequested);
         return yamlObjRequested;
     }
 
@@ -411,7 +412,7 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
      * file.
      *
      * @param indexes
-     *            - The indexes for which data is to be fetched as a conforming string pattern.
+     *            The indexes for which data is to be fetched as a conforming string pattern.
      *
      * @return An Object[][] object to be used with TestNG DataProvider.
      * @throws IOException
@@ -430,7 +431,7 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
             i++;
         }
 
-        logger.exiting(yamlObjRequested);
+        logger.exiting((Object[]) yamlObjRequested);
         return yamlObjRequested;
     }
 
@@ -472,9 +473,9 @@ public final class YamlDataProviderImpl implements SeLionDataProvider {
      * </pre>
      *
      * @param yaml
-     *            - A {@link Yaml} object that represents a Yaml document.
+     *            A {@link Yaml} object that represents a Yaml document.
      * @param inputStream
-     *            - A {@link InputStream} object.
+     *            A {@link InputStream} object.
      * @return an List containing multiple yaml documents loaded by SnakeYaml
      */
     private List<Object> loadDataFromDocuments(Yaml yaml, InputStream inputStream) {
