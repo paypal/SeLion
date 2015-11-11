@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -408,6 +408,12 @@ public final class Config {
          * local runs involving the IE browser.
          */
         SELENIUM_IEDRIVER_PATH("ieDriverPath", "", true),
+
+        /**
+         * The path to the EdgeDriver executable on the local machine. This parameter is taken into consideration for
+         * local runs involving the Edge browser.
+         */
+        SELENIUM_EDGEDRIVER_PATH("edgeDriverPath", "", true),
 
         /**
          * Use this parameter to set the user agent for firefox when working with Mobile version. This parameter should

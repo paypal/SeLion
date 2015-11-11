@@ -62,6 +62,9 @@ public final class WebDriverFactory {
         case INTERNET_EXPLORER:
             capability = new IECapabilitiesBuilder().createCapabilities();
             break;
+        case MICROSOFT_EDGE:
+            capability = new EdgeCapabilitiesBuilder().createCapabilities();
+            break;
         case HTMLUNIT:
             capability = new HtmlUnitCapabilitiesBuilder().createCapabilities();
             break;

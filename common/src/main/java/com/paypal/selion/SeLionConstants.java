@@ -77,4 +77,8 @@ public class SeLionConstants {
      */
     public static final String WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY = "phantomjs.binary.path";
 
+    /**
+     * Selenium system property for defining the location of edge driver.
+     */
+    public static final String WEBDRIVER_EDGE_DRIVER_PROPERTY = "webdriver.edge.driver";
 }

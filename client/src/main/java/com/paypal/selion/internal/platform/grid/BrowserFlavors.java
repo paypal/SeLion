@@ -24,6 +24,7 @@ import java.util.List;
 public enum BrowserFlavors {
     FIREFOX("*firefox"),
     INTERNET_EXPLORER("*iexplore"),
+    MICROSOFT_EDGE("*microsoftedge"),
     HTMLUNIT("*htmlunit"),
     CHROME("*chrome"),
     SAFARI("*safari"),
