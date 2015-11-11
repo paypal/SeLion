@@ -60,6 +60,7 @@ public class TestInitializeElementsPage extends BasicPageImpl {
      * Creates a new TestInitializeElementsPage object
      */
     public TestInitializeElementsPage() {
+        super();
         super.initPage(PAGE_DOMAIN, CLASS_NAME);
     }
     
@@ -69,6 +70,7 @@ public class TestInitializeElementsPage extends BasicPageImpl {
      *         The Country locale for the site you are accessing
      */
     public TestInitializeElementsPage(String siteLocale) {
+        super();
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
     }
 

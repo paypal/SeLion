@@ -118,7 +118,7 @@ public final class ListenerManager {
     }
 
     private static boolean isServiceLoaderDisabled() {
-        return serviceLoaderEnabled == false;
+        return !serviceLoaderEnabled;
     }
 
 }

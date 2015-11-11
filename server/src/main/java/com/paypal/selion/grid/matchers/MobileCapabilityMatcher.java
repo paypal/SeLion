@@ -86,10 +86,7 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
         if (StringUtils.isBlank(nodeValue)) {
             return false;
         }
-        if (!nodeValue.equalsIgnoreCase(mobileNodeType)) {
-            return false;
-        }
-        return true;
+        return nodeValue.equalsIgnoreCase(mobileNodeType);
     }
 
     /**

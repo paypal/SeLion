@@ -75,7 +75,7 @@ public class USER {
     }
 
     public AREA_CODE[] getAreaCode() {
-        return areaCode;
+        return Arrays.copyOf(areaCode, areaCode.length);
     }
 
     public void setAreaCode(AREA_CODE[] areaCode) {

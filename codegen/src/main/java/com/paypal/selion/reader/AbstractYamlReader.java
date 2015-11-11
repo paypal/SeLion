@@ -91,7 +91,7 @@ public abstract class AbstractYamlReader {
             Map<String, Object> elementMap = (Map<String, Object>) element;
             try {
                 String elementKey = ((String) elementMap.get(KEY)).trim();
-                if (elementKey.equals("")) {
+                if ("".equals(elementKey)) {
                     continue;
                 }
 

@@ -15,9 +15,6 @@
 
 package com.paypal.selion.grid;
 
-import com.paypal.selion.SeLionConstants;
-import com.paypal.selion.pojos.SeLionGridConstants;
-
 /**
  * {@link LauncherOptions} which apply to {@link RunnableLauncher}s which spawn a new process
  */

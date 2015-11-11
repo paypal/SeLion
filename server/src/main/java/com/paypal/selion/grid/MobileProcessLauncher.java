@@ -60,6 +60,7 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
     }
 
     public MobileProcessLauncher(String[] args, ProcessLauncherOptions options) {
+        super();
         init(args, options);
     }
     

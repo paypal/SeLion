@@ -155,10 +155,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         if (method.isTestMethod()) {
             return true;
         }
-        if (method.getTestMethod().isBeforeClassConfiguration()) {
-            return true;
-        }
-        return false;
+        return method.getTestMethod().isBeforeClassConfiguration();
     }
 
     private void testSessionSharingRules(IInvokedMethod method) {
@@ -219,11 +216,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             int parameterInvocationCount = method.getTestMethod().getParameterInvocationCount();
             // If the data set from the data provider is exhausted
             // It means its the last method with the data provider- this is the exit condition
-            if (currentInvocationCount == parameterInvocationCount) {
-                return true;
-            }
-            // Otherwise,keep holding on to the session
-            return false;
+            return (currentInvocationCount == parameterInvocationCount);
         }
 
         return true;

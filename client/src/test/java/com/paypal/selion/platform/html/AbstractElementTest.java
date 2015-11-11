@@ -182,6 +182,7 @@ public class AbstractElementTest {
 
     private static class SampleSuccessPage extends BasicPageImpl {
         public SampleSuccessPage() {
+            super();
             super.initPage("paypal", "SampleSuccessPage");
         }
 
@@ -195,6 +196,7 @@ public class AbstractElementTest {
         private final HashMap<String, String> oMap = new HashMap<String, String>();
 
         SampleSuccessInMemoryPage() {
+            super();
             getPage();
         }
 

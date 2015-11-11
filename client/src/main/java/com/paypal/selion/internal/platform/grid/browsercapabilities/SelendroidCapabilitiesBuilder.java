@@ -36,29 +36,29 @@ class SelendroidCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
         MobileTestSession mobileSession = Grid.getMobileTestSession();
-        capabilities = SelendroidCapabilities.android();
+        DesiredCapabilities tempCapabilities = SelendroidCapabilities.android();
 
         // check if apk exists for native app to set BrowserName to 'selendroid'
         // else set it to 'android'
         if ((new File(mobileSession.getAppLocation()).exists())
                 && ((new File(mobileSession.getAppLocation() + File.separator + mobileSession.getAppName())).exists())) {
-            capabilities.setBrowserName(SELENDROID);
+            tempCapabilities.setBrowserName(SELENDROID);
         } else {
-            capabilities.setBrowserName(ANDROID);
+            tempCapabilities.setBrowserName(ANDROID);
         }
 
-        capabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getAsString());
-        capabilities.setCapability(SelendroidCapabilities.AUT, mobileSession.getAppName());
-        capabilities.setCapability(SelendroidCapabilities.LOCALE, mobileSession.getAppLocale());
+        tempCapabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getAsString());
+        tempCapabilities.setCapability(SelendroidCapabilities.AUT, mobileSession.getAppName());
+        tempCapabilities.setCapability(SelendroidCapabilities.LOCALE, mobileSession.getAppLocale());
         if (StringUtils.isNotBlank(mobileSession.getDeviceType())) {
-            capabilities.setCapability(SelendroidCapabilities.MODEL, mobileSession.getDeviceType());
+            tempCapabilities.setCapability(SelendroidCapabilities.MODEL, mobileSession.getDeviceType());
         }
         if (StringUtils.isNotBlank(mobileSession.getPlatformVersion())) {
-            capabilities.setCapability(SelendroidCapabilities.PLATFORM_VERSION, mobileSession.getPlatformVersion());
+            tempCapabilities.setCapability(SelendroidCapabilities.PLATFORM_VERSION, mobileSession.getPlatformVersion());
         }
         if (StringUtils.isNotBlank(mobileSession.getdeviceSerial())) {
-            capabilities.setCapability(SelendroidCapabilities.SERIAL, mobileSession.getdeviceSerial());
+            tempCapabilities.setCapability(SelendroidCapabilities.SERIAL, mobileSession.getdeviceSerial());
         }
-        return capabilities;
+        return tempCapabilities;
     }
 }

@@ -244,11 +244,7 @@ public class MobileTestSession extends AbstractTestSession {
     }
 
     private boolean isDeviceDefined() {
-        if (device.contains("android") || device.contains("iphone") || device.contains("ipad")) {
-            return true;
-        } else {
-            return false;
-        }
+        return (device.contains("android") || device.contains("iphone") || device.contains("ipad"));
     }
 
 

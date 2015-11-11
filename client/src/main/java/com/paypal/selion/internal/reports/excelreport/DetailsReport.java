@@ -65,14 +65,14 @@ public class DetailsReport extends BaseReport<List<String>> {
         HSSFRow row;
         // Overriding style for Details Reports, as these do not have counts.
         // The details content are the test logs and stack trace.
-        style = Styles.getStyleBorderThinLeftTop();
+        HSSFCellStyle tempStyle = Styles.getStyleBorderThinLeftTop();
 
         for (List<String> dataString : this.getLstEntities()) {
             row = sheet.createRow(rowNum);
             int iColNum = getStartColNum();
             for (int i = 0; i < this.getColTitles().size(); i++) {
                 row.createCell(iColNum);
-                row.getCell(iColNum).setCellStyle(style);
+                row.getCell(iColNum).setCellStyle(tempStyle);
 
                 // Displaying time after converting to minutes
                 if (this.getColTitles().get(i).contains("Time")) {
@@ -87,7 +87,7 @@ public class DetailsReport extends BaseReport<List<String>> {
                     row.getCell(iColNum).setHyperlink(link);
                 }
                 else {
-                    row.getCell(iColNum).setCellStyle(style);
+                    row.getCell(iColNum).setCellStyle(tempStyle);
                     row.getCell(iColNum).setCellValue(dataString.get(i));
                 }
                 sheet.autoSizeColumn(iColNum++);

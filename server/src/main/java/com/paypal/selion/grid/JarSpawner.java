@@ -41,6 +41,7 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
     }
 
     public JarSpawner(String[] args, ProcessLauncherOptions options) {
+        super();
         init(args, options);
     }
 

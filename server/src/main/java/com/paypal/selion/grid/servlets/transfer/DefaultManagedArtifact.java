@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -177,7 +178,7 @@ public class DefaultManagedArtifact implements ManagedArtifact {
         if (contents == null) {
             readContents();
         }
-        return contents;
+        return Arrays.copyOf(contents, contents.length);
     }
 
     public boolean matchesPathInfo(String pathInfo) {
@@ -219,10 +220,7 @@ public class DefaultManagedArtifact implements ManagedArtifact {
         if (!getSubFolderName().equals(otherManagedArtifact.getSubFolderName())) {
             return false;
         }
-        if (!getUIDFolderName().equals(otherManagedArtifact.getUIDFolderName())) {
-            return false;
-        }
-        return true;
+        return getUIDFolderName().equals(otherManagedArtifact.getUIDFolderName());
     }
 
     @Override

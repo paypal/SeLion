@@ -32,6 +32,7 @@ public class WindowsProcessHandler extends AbstractProcessHandler implements Pro
     private static final String DELIMITER = ",";
 
     public WindowsProcessHandler() {
+        super();
         LOGGER.info("You have chosen to use a Windows Process Handler.");
     }
 
