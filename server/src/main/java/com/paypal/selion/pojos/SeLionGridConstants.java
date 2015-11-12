@@ -39,10 +39,6 @@ import static com.paypal.selion.SeLionConstants.*;
  */
 public class SeLionGridConstants {
 
-    private SeLionGridConstants() {
-        // Restricting Object creation
-    }
-
     private static final String PLATFORM_RESOURCE_DIR = SystemUtils.IS_OS_WINDOWS ? "windows/" : "unix/";
 
     /**
@@ -187,4 +183,8 @@ public class SeLionGridConstants {
      * Dash argument for disabling continuous restart nature of any {@link RunnableLauncher} which spawns a new process
      */
     public static final String SELION_NOCONTINUOUS_ARG = "-noContinuousRestart";
+
+    private SeLionGridConstants() {
+        // Restricting Object creation
+    }
 }
