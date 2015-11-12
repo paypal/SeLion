@@ -28,20 +28,20 @@ import com.paypal.selion.plugins.GUIObjectDetails;
 public class HtmlSeLionElementList extends AbstractSeLionElementList {
     public static final String SELION_ELEMENT_CLASS = "com.paypal.selion.platform.html";
     
-    public static HtmlSeLionElementList TEXT_FIELD = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "TextField", true, true);
-    public static HtmlSeLionElementList TABLE = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Table", true, true);
-    public static HtmlSeLionElementList SELECT_LIST = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "SelectList", true, true);
-    public static HtmlSeLionElementList RADIO_BUTTON = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "RadioButton", true, true);
-    public static HtmlSeLionElementList BUTTON = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Button", true, true);
-    public static HtmlSeLionElementList LINK = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Link", true, true);
-    public static HtmlSeLionElementList LABEL = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Label", true, true);
-    public static HtmlSeLionElementList IMAGE = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Image", true, true);
-    public static HtmlSeLionElementList FORM = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Form", true, true);
-    public static HtmlSeLionElementList DATE_PICKER = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "DatePicker", true, true);
-    public static HtmlSeLionElementList CHECK_BOX = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "CheckBox", true, true);
-    public static HtmlSeLionElementList CONTAINER = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Container", true, false);
-    public static HtmlSeLionElementList BASE_CLASS = new HtmlSeLionElementList(null, "baseClass", false, false);
-    public static HtmlSeLionElementList PAGE_TITLE = new HtmlSeLionElementList(null, "pageTitle", false, false);
+    public static final HtmlSeLionElementList TEXT_FIELD = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "TextField", true, true);
+    public static final HtmlSeLionElementList TABLE = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Table", true, true);
+    public static final HtmlSeLionElementList SELECT_LIST = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "SelectList", true, true);
+    public static final HtmlSeLionElementList RADIO_BUTTON = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "RadioButton", true, true);
+    public static final HtmlSeLionElementList BUTTON = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Button", true, true);
+    public static final HtmlSeLionElementList LINK = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Link", true, true);
+    public static final HtmlSeLionElementList LABEL = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Label", true, true);
+    public static final HtmlSeLionElementList IMAGE = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Image", true, true);
+    public static final HtmlSeLionElementList FORM = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Form", true, true);
+    public static final HtmlSeLionElementList DATE_PICKER = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "DatePicker", true, true);
+    public static final HtmlSeLionElementList CHECK_BOX = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "CheckBox", true, true);
+    public static final HtmlSeLionElementList CONTAINER = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Container", true, false);
+    public static final HtmlSeLionElementList BASE_CLASS = new HtmlSeLionElementList(null, "baseClass", false, false);
+    public static final HtmlSeLionElementList PAGE_TITLE = new HtmlSeLionElementList(null, "pageTitle", false, false);
 
     //DONOT alter the order of RADIO_BUTTON and BUTTON because of the following reason:
     //consider a field in the yaml file which looks like this : fxBankRadioButton
