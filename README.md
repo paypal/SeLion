@@ -63,7 +63,11 @@ Projects we depend on that need contributors
 
 Current version
 ---------------
-1.0.0-SNAPSHOT
+1.0.0
+
+Development version
+-------------------
+1.1.0-SNAPSHOT
 
 License
 -----------
