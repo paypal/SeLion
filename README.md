@@ -1,6 +1,10 @@
 [![Build Status](https://travis-ci.org/paypal/SeLion.svg?branch=develop)](https://travis-ci.org/paypal/SeLion)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/a885c7bf48794b27aa72dfe8e85ee22b)](https://www.codacy.com/app/SeLion/paypal-SeLion)
+
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/paypal/SeLion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 
 SeLion
 =======
@@ -63,7 +67,54 @@ Projects we depend on that need contributors
 
 Current version
 ---------------
-1.0.0
+[1.0.0](http://search.maven.org/#search%7Cga%7C1%7Cselion)
+
+Client module (includes SeLion DataProviders)
+```xml
+<dependency>
+    <groupId>com.paypal.selion</groupId>
+    <artifactId>SeLion</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+SeLion-DataProviders only
+```xml
+<dependency>
+  <groupId>com.paypal.selion</groupId>
+  <artifactId>SeLion-DataProviders</artifactId>
+  <version>1.0.0</version>
+</dependency
+```
+
+SeLion Grid enhancments -- Required for local run support with the Client module
+```xml
+<dependency>
+  <groupId>com.paypal.selion</groupId>
+  <artifactId>SeLion-Grid</artifactId>
+  <version>1.0.0</version>
+</dependency
+```
+
+SeLion Code Generator Maven plugin -- Adds "page object" code geneartion
+```xml
+<plugin>
+    <groupId>com.paypal.selion</groupId>
+    <artifactId>SeLion-Code-Generator</artifactId>
+    <version>1.0.0</version>
+    <executions>
+        <execution>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <basePackage>coo.foo.bar</basePackage>
+    </configuration>
+</plugin>
+```
 
 Development version
 -------------------
