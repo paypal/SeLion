@@ -10,7 +10,11 @@
   <name>Sample</name>
   <url>http://maven.apache.org</url>
 
-  <!-- you need this to pull SeLion SNAPSHOT artifacts from the global repo -->
+  <properties>
+    <selion.version>1.0.0</selion.version>
+  </properties>
+
+  <!-- Optional, required when you want to use a SeLion SNAPSHOT version -->
   <repositories>
     <repository>
       <id>sonatype-nexus-snapshots</id>
@@ -18,7 +22,8 @@
     </repository>
   </repositories>
 
-  <!-- you need this to pull SeLion SNAPSHOT plugin artifacts from the global repo -->
+  <!-- Optional, required when you want to use a SeLion maven plugin SNAPSHOT
+    version -->
   <pluginRepositories>
     <pluginRepository>
       <id>sonatype-nexus-snapshots</id>
@@ -26,11 +31,36 @@
     </pluginRepository>
   </pluginRepositories>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.paypal.selion</groupId>
+        <artifactId>SeLion-Project-BOM</artifactId>
+        <version>${selion.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>com.paypal.selion</groupId>
       <artifactId>SeLion</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>${selion.version}</version>
+    </dependency>
+
+    <!-- Required only for local runs -->
+    <dependency>
+      <groupId>com.paypal.selion</groupId>
+      <artifactId>SeLion-Grid</artifactId>
+      <version>${selion.version}</version>
+    </dependency>
+
+    <!-- Required only for local runs -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-server</artifactId>
     </dependency>
   </dependencies>
 

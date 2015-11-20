@@ -19,7 +19,7 @@ public class Demo {
     Grid.driver().get("http://www.google.com/");
 
     //Define the text field
-    TextField field = new TextField("id=gbqfq");
+    TextField field = new TextField("id=lst-ib");
 
     //Thread will wait until TextFiled element present in the browser
     WebDriverWaitUtils.waitUntilElementIsPresent(field.getLocator());
