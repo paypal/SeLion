@@ -35,12 +35,11 @@ import com.paypal.test.utilities.logging.SimpleLogger.ConsoleLevel;
 public final class SeLionLogger {
     private static final String SELION_LOGGER_NAME = "com.paypal.selion";
     private static final String CLASS_NAME = SeLionLogger.class.getSimpleName();
+    private static SimpleLogger baseLogger;
 
     private SeLionLogger() {
         // defeat all instantiation
     }
-
-    private static SimpleLogger baseLogger;
 
     /**
      * Establish the {@link SimpleLoggerSettings} for {@link SeLionLogger}

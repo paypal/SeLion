@@ -28,7 +28,7 @@ import com.paypal.selion.platform.asserts.SeLionAsserts;
 public class TestNGUtilsTest {
     @Test(groups = "unit")
     public void dummyTestMethod() {
-
+        // dummy test method
     }
 
     @Test(groups = "unit", dependsOnMethods = { "dummyTestMethod" })

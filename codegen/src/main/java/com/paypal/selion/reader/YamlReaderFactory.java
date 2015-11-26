@@ -35,10 +35,10 @@ public final class YamlReaderFactory {
             throw new IllegalArgumentException("Data file not supported : " + fileName);
         }
         AbstractYamlReader provider = new YamlV2Reader(fileName);
-        if (!provider.processed()) {
+        if (!provider.isProcessed()) {
             provider = new YamlV1Reader(fileName);
         }
-        if (!provider.processed()) {
+        if (!provider.isProcessed()) {
             throw new CodeGeneratorException("Error parsing document. Please check file contents for syntax errors.");
         }
         return provider;

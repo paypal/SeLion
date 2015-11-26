@@ -25,7 +25,6 @@ import java.util.Properties;
 public final class SeLionBuildInfo {
 
     private static final String BUILD_INFO_FILE = "/selionbuildinfo.properties";
-
     private static SeLionBuildInfoProperties buildProperties;
 
     private SeLionBuildInfo() {
@@ -56,17 +55,13 @@ public final class SeLionBuildInfo {
      * @return The build time value.</br></br> The fall back value which can be obtained via
      *         {@link SeLionBuildProperty#getFallBackValue()} if the build time property is not defined.
      */
-    public static final String getBuildValue(SeLionBuildProperty property) {
+    public static String getBuildValue(SeLionBuildProperty property) {
         return getInfo().getProperty(property.getPropertyValue(), property.getFallBackValue());
     }
 
     private static class SeLionBuildInfoProperties extends Properties {
 
         private static final long serialVersionUID = -4808947170980686563L;
-
-        public SeLionBuildInfoProperties() {
-            super();
-        }
 
         public String getProperty(String name, String fallBackValue) {
             String returnValue = super.getProperty(name, fallBackValue);
@@ -158,13 +153,13 @@ public final class SeLionBuildInfo {
          */
         BUILD_DEPENDENCY_APPIUM("selion.build.dependency.appium.version");
 
+        private String propertyValue;
+        private String fallBackValue;
+
         SeLionBuildProperty(String value) {
             this.propertyValue = value;
             this.fallBackValue = "Undefined " + value;
         }
-
-        private String propertyValue;
-        private String fallBackValue;
 
         /**
          * Returns the build property value

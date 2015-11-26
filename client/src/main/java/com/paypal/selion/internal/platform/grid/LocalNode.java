@@ -41,14 +41,14 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalNode instance;
 
-    static synchronized final LocalServerComponent getSingleton() {
+    static synchronized LocalServerComponent getSingleton() {
         if (instance == null) {
             return new LocalNode().getLocalServerComponent();
         }
         return instance;
     }
 
-    synchronized final LocalNode getLocalServerComponent() {
+    synchronized LocalNode getLocalServerComponent() {
         if (instance == null) {
             instance = new LocalNode();
 
@@ -107,14 +107,12 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
         }
 
         // for IEDriver
-        if (SystemUtils.IS_OS_WINDOWS) {
-            if (!checkForPresenceOf(ConfigProperty.SELENIUM_IEDRIVER_PATH,
-                    SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY, SeLionConstants.IE_DRIVER)) {
-                Config.setConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
-                        + SeLionConstants.IE_DRIVER);
-                list.add("iedriver");
-            }
-
+        if (SystemUtils.IS_OS_WINDOWS
+                && !checkForPresenceOf(ConfigProperty.SELENIUM_IEDRIVER_PATH,
+                        SeLionConstants.WEBDRIVER_IE_DRIVER_PROPERTY, SeLionConstants.IE_DRIVER)) {
+            Config.setConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
+                    + SeLionConstants.IE_DRIVER);
+            list.add("iedriver");
         }
 
         // for chromedriver

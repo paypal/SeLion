@@ -30,12 +30,12 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 final class LocalGridManager {
 
+    private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
+    private static List<LocalServerComponent> toBoot = new ArrayList<>();
+
     private LocalGridManager() {
         // Utility class. So hide the constructor
     }
-
-    private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
-    private static List<LocalServerComponent> toBoot = new ArrayList<>();
 
     private static void setupToBootList() {
         if (!toBoot.isEmpty()) {
@@ -87,7 +87,7 @@ final class LocalGridManager {
     /**
      * This method helps shut down the already spawned hub for local runs
      */
-    final static synchronized void shutDownHub() {
+    static synchronized void shutDownHub() {
         LOGGER.entering();
         if (!isRunLocally()) {
             LOGGER.exiting();

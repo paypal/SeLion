@@ -114,7 +114,7 @@ public final class ListenerManager {
      * @return true if method is to be skipped.
      */
     public static boolean isCurrentMethodSkipped(ITestNGListener listener) {
-        return (executeCurrentMethod(listener) == false);
+        return !executeCurrentMethod(listener);
     }
 
     private static boolean isServiceLoaderDisabled() {

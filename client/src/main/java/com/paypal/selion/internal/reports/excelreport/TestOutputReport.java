@@ -73,6 +73,7 @@ public class TestOutputReport extends BaseReport<List<String>> {
 
         HSSFRow row;
         HSSFCell col;
+        int rowNumber = rowNum;
 
         for (List<String> dataString : this.getLstEntities()) {
             for (String output : dataString) {
@@ -81,7 +82,7 @@ public class TestOutputReport extends BaseReport<List<String>> {
                 String outputValue = (outputLines.length > 1) ? outputLines[1].trim() : output.trim();
 
                 int colNum = getStartColNum();
-                row = sheet.createRow(rowNum);
+                row = sheet.createRow(rowNumber);
                 col = row.createCell(colNum);
                 col.setCellStyle(Styles.getSubHeading2StyleThinBorder());
                 col.setCellValue(outputColumn);
@@ -108,15 +109,15 @@ public class TestOutputReport extends BaseReport<List<String>> {
                 } else {
                     col.setCellValue(outputValue);
                 }
-                rowNum += 1;
+                rowNumber += 1;
             }
-            rowNum += 1;
+            rowNumber += 1;
         }
 
         sheet.autoSizeColumn(getStartColNum());
         sheet.autoSizeColumn(getStartColNum() + 1);
 
-        logger.exiting(rowNum);
-        return rowNum;
+        logger.exiting(rowNumber);
+        return rowNumber;
     }
 }

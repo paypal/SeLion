@@ -48,11 +48,11 @@ public class IOSSeLionElementList extends AbstractSeLionElementList {
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
     public static IOSSeLionElementList UIAElement =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAElement", true);
-    public static IOSSeLionElementList BASE_CLASS =
+    public static IOSSeLionElementList baseClass =
             new IOSSeLionElementList(null, "baseClass", false);
 
     private static IOSSeLionElementList[] values = { UIAButton, UIAAlert, UIANavigationBar, UIAPicker, UIASlider,
-            UIAStaticText, UIASwitch, UIATableView, UIATextField, UIAElement, BASE_CLASS };
+            UIAStaticText, UIASwitch, UIATableView, UIATextField, UIAElement, baseClass };
 
     private IOSSeLionElementList(String elementPackage, String element, boolean isHtmlType) {
         super(elementPackage, element, isHtmlType);

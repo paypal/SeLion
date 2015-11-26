@@ -71,7 +71,8 @@ public final class DataProviderHelper {
         logger.entering(value);
 
         List<Integer> indexes = new ArrayList<>();
-        int begin, end;
+        int begin;
+        int end;
         String[] parsed;
         String[] parsedIndex = value.split(",");
         for (String index : parsedIndex) {

@@ -75,7 +75,7 @@ public abstract class AbstractYamlReader {
         return objects;
     }
 
-    boolean processed() {
+    boolean isProcessed() {
         return processed;
     }
 
@@ -121,7 +121,7 @@ public abstract class AbstractYamlReader {
             try {
                 String elementKey = element.getKey().trim();
 
-                if (elementKey.equals("")) {
+                if (("").equals(elementKey)) {
                     continue;
                 }
 

@@ -29,14 +29,14 @@ import com.paypal.selion.platform.grid.Grid;
  * This class test the Image class methods
  */
 public class ImageTest {
-    Image imageTest = new Image(TestObjectRepository.IMAGE_TEST.getValue());
+    Image testImage = new Image(TestObjectRepository.IMAGE_TEST.getValue());
     
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void imageTestClick() {
         Grid.driver().get(TestServerUtils.getTestEditableURL());
-        imageTest.click(new Object[] {});
+        testImage.click(new Object[] {});
         Alert alert = Grid.driver().switchTo().alert();
         assertTrue(alert.getText().matches("onsubmit called"), "Validate Click method");
         alert.accept();
@@ -46,10 +46,10 @@ public class ImageTest {
     @WebTest
     public void imageTestClickAndWaitNegativeTest() {
         Grid.driver().get(TestServerUtils.getTestEditableURL());
-        Image imageTest = new Image(TestObjectRepository.IMAGE_TEST.getValue());
+        Image testImage = new Image(TestObjectRepository.IMAGE_TEST.getValue());
         String locatorToWaitFor = TestObjectRepository.LINK_LOCATOR.getValue();
         try {
-            imageTest.click(locatorToWaitFor);
+            testImage.click(locatorToWaitFor);
         } finally {
             AlertHandler.flushAllAlerts();
         }
@@ -60,9 +60,9 @@ public class ImageTest {
     public void imageTestClickAndWait() {
         AlertHandler.flushAllAlerts();
         Grid.driver().get(TestServerUtils.getTestEditableURL());
-        Image imageTest = new Image(TestObjectRepository.CHROME_IMAGE_TEST.getValue());
+        Image testImage = new Image(TestObjectRepository.CHROME_IMAGE_TEST.getValue());
         String locatorToWaitFor = TestObjectRepository.SUCCESS_PAGE_TEXT.getValue();
-        imageTest.click(locatorToWaitFor);
+        testImage.click(locatorToWaitFor);
         String title = Grid.driver().getTitle();
         assertTrue(title.matches("Success"), "Validate Click(Object...Expected) method");
     }
@@ -71,14 +71,14 @@ public class ImageTest {
     @WebTest
     public void imageTestGetHeight() {
         Grid.driver().get(TestServerUtils.getTestEditableURL());
-        assertTrue((imageTest.getHeight() == 41), "Validated GetHeight method");
+        assertTrue((testImage.getHeight() == 41), "Validated GetHeight method");
     }
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void imageTestGetWidth() {
         Grid.driver().get(TestServerUtils.getTestEditableURL());
-        assertTrue((imageTest.getWidth() == 41), "Validated GetWidth method");
+        assertTrue((testImage.getWidth() == 41), "Validated GetWidth method");
         AlertHandler.flushAllAlerts();
     }
 

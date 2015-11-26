@@ -35,6 +35,8 @@ import com.paypal.selion.plugins.TestPlatform;
 class YamlV1Reader extends AbstractYamlReader {
 
     private static final String ELEMENTS = "Elements";
+    private static final String BASE_CLASS = "baseClass";
+    private static final String PLATFORM = "platform";
 
     /**
      * This is a public constructor to create an input stream and YAML instance for the input file.
@@ -66,27 +68,25 @@ class YamlV1Reader extends AbstractYamlReader {
                 Map<String, Object> map = (Map<String, Object>) data;
 
                 String key = ((String) map.get(KEY)).trim();
-                if (key.equals("")) {
+                if (("").equals(key)) {
                     continue;
                 }
 
-                if ("baseClass".equals(map.get(KEY))) {
+                if (BASE_CLASS.equals(map.get(KEY))) {
                     Logger.getLogger().debug(
                             String.format("++ Retrieved [%s] as the base class in [%s] PageYAML V1.", map.get("Value"),
                                     fileName));
                     setBaseClassName((String) map.get("Value"));
                 }
 
-                if ("platform".equals(map.get(KEY))) {
-                    if (!platformDefined) {
-                        TestPlatform currentPlatform = TestPlatform.identifyPlatform((String) map.get("Value"));
-                        if (currentPlatform == null) {
-                            String dataFile = new File(fileName).getAbsolutePath();
-                            throw new IllegalArgumentException("Missing or incorrect platform in Data file:" + dataFile);
-                        }
-                        setPlatform(currentPlatform);
-                        platformDefined = true;
+                if (PLATFORM.equals(map.get(KEY)) && !platformDefined) {
+                    TestPlatform currentPlatform = TestPlatform.identifyPlatform((String) map.get("Value"));
+                    if (currentPlatform == null) {
+                        String dataFile = new File(fileName).getAbsolutePath();
+                        throw new IllegalArgumentException("Missing or incorrect platform in Data file:" + dataFile);
                     }
+                    setPlatform(currentPlatform);
+                    platformDefined = true;
                 }
             }
 
@@ -110,7 +110,7 @@ class YamlV1Reader extends AbstractYamlReader {
                 if ("".equals(key)) {
                     continue;
                 }
-                if (map.get(KEY).equals("baseClass") || map.get(KEY).equals("platform")) {
+                if (map.get(KEY).equals(BASE_CLASS) || map.get(KEY).equals(PLATFORM)) {
                     continue;
                 }
 
