@@ -690,6 +690,7 @@ public final class SimpleLogger extends Logger implements Closeable {
                     pw.close();
                     sb.append(sw.toString());
                 } catch (Exception ignore) {
+                    // ignored Exception.
                 }
             }
 

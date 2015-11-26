@@ -47,15 +47,13 @@ public interface UploadResponder {
         TEXT_PLAIN("text/plain", TextPlainUploadResponder.class);
 
         private String acceptHeader;
-
+        private static final Logger LOGGER = SeLionGridLogger.getLogger(AcceptHeaderEnum.class);
         private Class<? extends UploadResponder> uploadResponder;
 
         AcceptHeaderEnum(String acceptHeader, Class<? extends UploadResponder> uploadResponder) {
             this.acceptHeader = acceptHeader;
             this.uploadResponder = uploadResponder;
         }
-
-        private static final Logger LOGGER = SeLionGridLogger.getLogger(AcceptHeaderEnum.class);
 
         public String getAcceptHeader() {
             return acceptHeader;

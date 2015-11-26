@@ -25,7 +25,7 @@ public class TestServerListener implements ISuiteListener {
         try {
             TestServerUtils.startServer();
         } catch (Exception e) { // NOSONAR
-            e.printStackTrace();
+            System.err.println(" Unable to start test server");
         }
     }
 
@@ -34,7 +34,7 @@ public class TestServerListener implements ISuiteListener {
         try {
             TestServerUtils.stopServer();
         } catch (Exception e) { // NOSONAR
-            e.printStackTrace();
+            System.err.println(" Unable to stop test server");
         }
 
     }

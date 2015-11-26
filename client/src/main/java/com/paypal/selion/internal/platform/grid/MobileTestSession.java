@@ -40,6 +40,8 @@ public class MobileTestSession extends AbstractTestSession {
     private String appName;
     private final String appLocation;
     private String device = "iphone";
+    private static final String IPHONE = "iphone";
+    private static final String IPAD = "ipad";
     private String appLanguage;
     private String appLocale;
     private String deviceSerial;
@@ -218,7 +220,7 @@ public class MobileTestSession extends AbstractTestSession {
         }
 
         this.platform = WebDriverPlatform.ANDROID;
-        if ("iphone".equalsIgnoreCase(getDevice()) || "ipad".equalsIgnoreCase(getDevice())) {
+        if (IPHONE.equalsIgnoreCase(getDevice()) || IPAD.equalsIgnoreCase(getDevice())) {
             this.platform = WebDriverPlatform.IOS;
         }
 

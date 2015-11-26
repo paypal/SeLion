@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
  */
 @ThreadSafe
 public final class LoggerConfig {
+    private static volatile BaseConfiguration config;
 
     private LoggerConfig() {
         // Utility class. So hide the constructor
@@ -89,8 +90,6 @@ public final class LoggerConfig {
             return this.defaultValue;
         }
     }
-
-    private static volatile BaseConfiguration config;
 
     private static BaseConfiguration getConfig() {
         if (config != null) {

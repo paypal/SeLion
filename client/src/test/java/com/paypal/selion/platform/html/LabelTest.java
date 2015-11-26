@@ -32,7 +32,7 @@ public class LabelTest {
 	
 
     Label editableTestField = new Label(TestObjectRepository.LABEL_EDITABLE.getValue());
-    Label testLabel2 = new Label(TestObjectRepository.LABEL_EDITABLE.getValue(), "normal_text");
+    Label testLabelWithControlName = new Label(TestObjectRepository.LABEL_EDITABLE.getValue(), "normal_text");
 
     @Test(groups = { "browser-tests" })
     @WebTest
@@ -45,8 +45,8 @@ public class LabelTest {
     @WebTest
     public void testLabel2() {
         Grid.driver().get(TestServerUtils.getTestEditableURL());
-        assertTrue(testLabel2.isTextPresent("Editable text-field"), "Validated isTextPresent method");
-        assertEquals(testLabel2.getControlName(), "normal_text", "Validated isTextPresent method");
+        assertTrue(testLabelWithControlName.isTextPresent("Editable text-field"), "Validated isTextPresent method");
+        assertEquals(testLabelWithControlName.getControlName(), "normal_text", "Validated isTextPresent method");
 
     }
 

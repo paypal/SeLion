@@ -37,14 +37,14 @@ final class LocalIOSNode extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalIOSNode instance;
 
-    static synchronized final LocalServerComponent getSingleton() {
+    static synchronized LocalServerComponent getSingleton() {
         if (instance == null) {
             instance = new LocalIOSNode().getLocalServerComponent();
         }
         return instance;
     }
 
-    synchronized final LocalIOSNode getLocalServerComponent() {
+    synchronized LocalIOSNode getLocalServerComponent() {
         if (instance == null) {
             instance = new LocalIOSNode();
 

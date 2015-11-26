@@ -20,6 +20,10 @@ package com.paypal.selion.pojos;
  * 
  */
 public class ProcessInfo {
+
+    private final String processName;
+    private final String processId;
+
     public String getProcessName() {
         return processName.toLowerCase();
     }
@@ -32,9 +36,6 @@ public class ProcessInfo {
     public String toString() {
         return "ProcessInfo [processName=" + processName + ", processId=" + processId + "]";
     }
-
-    private final String processName;
-    private final String processId;
 
     public ProcessInfo(String processName, String processId) {
         this.processId = processId.replaceAll("\"", "");

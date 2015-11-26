@@ -51,13 +51,13 @@ import com.paypal.selion.logger.SeLionLogger;
 public class LocalConfig {
     // config intentionally kept basic. We support no loading of configuration from files etc. To support the global
     // configuration "over-rides" and possible future passing as a parameter into methods.
-    private final BaseConfiguration localConfig;
+    private final BaseConfiguration baseConfig;
 
     /**
      * Constructs a new instance of this class.
      */
     public LocalConfig() {
-        localConfig = new BaseConfiguration();
+        baseConfig = new BaseConfiguration();
     }
 
     /**
@@ -75,7 +75,7 @@ public class LocalConfig {
         checkArgument(checkNotInGlobalScope(configProperty),
                 String.format("The configuration property (%s) is not supported in local config.", configProperty)); // NOSONAR
 
-        localConfig.setProperty(configProperty.getName(), value);
+        baseConfig.setProperty(configProperty.getName(), value);
     }
 
     /**
@@ -93,7 +93,7 @@ public class LocalConfig {
                             entry.getKey());
                     throw new IllegalArgumentException(message);
                 }
-                localConfig.setProperty(entry.getKey().getName(), entry.getValue());
+                baseConfig.setProperty(entry.getKey().getName(), entry.getValue());
             }
         }
     }
@@ -112,8 +112,8 @@ public class LocalConfig {
 
         // Search locally then query SeLionConfig if not found
         String propValue = null;
-        if (localConfig.containsKey(configProperty.getName())) {
-            propValue = localConfig.getString(configProperty.getName());
+        if (baseConfig.containsKey(configProperty.getName())) {
+            propValue = baseConfig.getString(configProperty.getName());
         }
 
         if (StringUtils.isBlank(propValue)) {
@@ -137,7 +137,7 @@ public class LocalConfig {
                 String.format("The configuration property (%s) is not supported in local config.", configProperty)); // NOSONAR
         checkArgument(configPropertyValue != null, "Config property value cannot be null");
 
-        localConfig.setProperty(configProperty.getName(), configPropertyValue);
+        baseConfig.setProperty(configProperty.getName(), configPropertyValue);
     }
 
     /**
@@ -147,7 +147,7 @@ public class LocalConfig {
      *            - The &lt;test&gt; to which this configuration pertains to.
      */
     public synchronized void printConfigValues(String testName) {
-        if (localConfig.isEmpty()) {
+        if (baseConfig.isEmpty()) {
             return;
         }
 
@@ -155,8 +155,8 @@ public class LocalConfig {
         for (ConfigProperty configProperty : ConfigProperty.values()) {
             String value = Config.getConfig().getString(configProperty.getName());
             String msg = null;
-            if (localConfig.containsKey(configProperty.getName())) {
-                value = localConfig.getString(configProperty.getName());
+            if (baseConfig.containsKey(configProperty.getName())) {
+                value = baseConfig.getString(configProperty.getName());
             }
             if (value != null && !value.trim().isEmpty()) {
                 msg = String.format("(%s , %s),", configProperty, value);
@@ -174,10 +174,10 @@ public class LocalConfig {
      */
     public synchronized Map<String, String> getLocalConfigValues() {
         Map<String, String> result = new HashMap<String, String>();
-        Iterator<String> iter = localConfig.getKeys();
+        Iterator<String> iter = baseConfig.getKeys();
         while (iter.hasNext()) {
             String key = iter.next();
-            result.put(key, localConfig.getString(key));
+            result.put(key, baseConfig.getString(key));
         }
         return result;
     }
@@ -189,11 +189,11 @@ public class LocalConfig {
      */
     public synchronized boolean isLocalValuePresent(ConfigProperty configProperty) {
         checkArgument(configProperty != null, "Config property cannot be null");
-        String value = localConfig.getString(configProperty.getName());
+        String value = baseConfig.getString(configProperty.getName());
         return (value != null ? true : false);
     }
 
     private boolean checkNotInGlobalScope(ConfigProperty configProperty) {
-        return (configProperty.isGlobalScopeOnly() == false);
+        return !configProperty.isGlobalScopeOnly();
     }
 }

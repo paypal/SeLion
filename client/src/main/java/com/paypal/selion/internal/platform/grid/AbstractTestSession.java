@@ -47,9 +47,9 @@ public abstract class AbstractTestSession {
     /**
      * Shared session flag. This flag is populated during initTestSession method.
      */
-    protected boolean isSessionShared;
+    protected boolean isSharedSession;
 
-    private boolean isStarted;
+    private boolean isSessionStarted;
 
     private String methodName = "";
 
@@ -71,7 +71,7 @@ public abstract class AbstractTestSession {
      * @return whether the session is started <code>true</code> or <code>false</code>
      */
     public boolean isStarted() {
-        return isStarted;
+        return isSessionStarted;
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class AbstractTestSession {
      *            <code>true</code> or <code>false</code>
      */
     protected final void setStarted(boolean started) {
-        this.isStarted = started;
+        this.isSessionStarted = started;
     }
 
     public final DesiredCapabilities getAdditionalCapabilities() {
@@ -111,7 +111,7 @@ public abstract class AbstractTestSession {
 
     protected final void initTestSession(InvokedMethodInformation method) {
         logger.entering(method);
-        isSessionShared = isSessionShared(method);
+        isSharedSession = isSessionShared(method);
         this.dependsOnMethods = method.getMethodsDependedUpon();
         this.className = method.getCurrentClassName();
         this.methodName = method.getCurrentMethodName();
@@ -209,7 +209,7 @@ public abstract class AbstractTestSession {
      */
     public final String getTestName() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (isSessionShared) {
+        if (isSharedSession) {
             stringBuilder.append(getDeclaringClassName());
         } else {
             stringBuilder.append(getDeclaringClassName()).append(':').append(getMethodName()).append('(').append(')');
@@ -258,7 +258,7 @@ public abstract class AbstractTestSession {
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
         Grid.getThreadLocalException().set(null);
-        this.isStarted = false;
+        this.isSessionStarted = false;
         logger.exiting();
     }
 

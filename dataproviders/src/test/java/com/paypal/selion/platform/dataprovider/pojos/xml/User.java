@@ -38,6 +38,7 @@ public class User {
     public double amount;
     private Address address;
     private String[] phoneNumbers;
+    private String name;
 
     /**
      * @return the address
@@ -54,7 +55,6 @@ public class User {
         this.address = address;
     }
 
-    private String name;
 
     /**
      * @return the name

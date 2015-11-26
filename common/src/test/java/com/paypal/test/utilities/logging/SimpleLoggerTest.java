@@ -84,6 +84,7 @@ public class SimpleLoggerTest {
 
             @Override
             public void onLog(LogRecord record) {
+                // Nothing to Log
             }
         };
 

@@ -48,6 +48,7 @@ public class BaseLog {
     private String href;
 
     public BaseLog() {
+        // default constructor
     }
 
     /**

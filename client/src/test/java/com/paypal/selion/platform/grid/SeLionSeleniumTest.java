@@ -26,57 +26,57 @@ import org.testng.annotations.Test;
 
 public class SeLionSeleniumTest {
 
-    final String badLocator = "//wrong locator or text or page title";
-    final String locator = "//input[@id='lst-ib']";
-    final String pipedLocator = "//input[@id='lst-ib']|SomeOtherLocator";
-    final String disappearElement = "btnI";
-    final String pageTitle = "Google";
-    final String text = "Gmail";
-    final String url = "http://www.google.com";
+    static final String BAD_LOCATOR = "//wrong locator or text or page title";
+    static final String LOCATOR = "//input[@id='lst-ib']";
+    static final String PIPED_LOCATOR = "//input[@id='lst-ib']|SomeOtherLocator";
+    static final String DISAPPEAR_ELEMENT = "btnI";
+    static final String PAGE_TITLE = "Google";
+    static final String TEXT = "Gmail";
+    static final String URL = "http://www.google.com";
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void testWaitUntilPageTitlePresentPos() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilPageTitleContains(pageTitle);
+        Grid.driver().get(URL);
+        WebDriverWaitUtils.waitUntilPageTitleContains(PAGE_TITLE);
     }
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void testWaitUntilElementVisiblePos() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilElementIsVisible(locator);
+        Grid.driver().get(URL);
+        WebDriverWaitUtils.waitUntilElementIsVisible(LOCATOR);
     }
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void testWaitUntilTextPresentPos() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilTextPresent(text);
+        Grid.driver().get(URL);
+        WebDriverWaitUtils.waitUntilTextPresent(TEXT);
     }
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void testWaitUntilElementDisapearPos() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilPageTitleContains(pageTitle);
-        Button btn = new Button(disappearElement);
+        Grid.driver().get(URL);
+        WebDriverWaitUtils.waitUntilPageTitleContains(PAGE_TITLE);
+        Button btn = new Button(DISAPPEAR_ELEMENT);
         btn.click();
-        WebDriverWaitUtils.waitUntilElementIsInvisible(disappearElement);
+        WebDriverWaitUtils.waitUntilElementIsInvisible(DISAPPEAR_ELEMENT);
     }
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void testWaitUntilElementPresentPos() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilElementIsPresent(locator);
+        Grid.driver().get(URL);
+        WebDriverWaitUtils.waitUntilElementIsPresent(LOCATOR);
     }
 
     @Test(groups = { "browser-tests" })
     @WebTest
     public void testWasitUntilElementPipedLocator() {
-        Grid.driver().get(url);
-        WebDriverWaitUtils.waitUntilElementIsPresent(pipedLocator);
+        Grid.driver().get(URL);
+        WebDriverWaitUtils.waitUntilElementIsPresent(PIPED_LOCATOR);
     }
 
     @Test(groups = { "browser-tests" }, expectedExceptions = { TimeoutException.class })
@@ -85,7 +85,7 @@ public class SeLionSeleniumTest {
         String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
         try {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            Grid.driver().get(url);
+            Grid.driver().get(URL);
             WebDriverWaitUtils.waitUntilPageIsValidated(new BasicPageImpl() {
                 @Override
                 public BasicPageImpl getPage() {
@@ -103,8 +103,8 @@ public class SeLionSeleniumTest {
         String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
         try {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            Grid.driver().get(url);
-            WebDriverWaitUtils.waitUntilPageTitleContains(badLocator);
+            Grid.driver().get(URL);
+            WebDriverWaitUtils.waitUntilPageTitleContains(BAD_LOCATOR);
         } finally {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }
@@ -116,8 +116,8 @@ public class SeLionSeleniumTest {
         String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
         try {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            Grid.driver().get(url);
-            WebDriverWaitUtils.waitUntilElementIsVisible(badLocator);
+            Grid.driver().get(URL);
+            WebDriverWaitUtils.waitUntilElementIsVisible(BAD_LOCATOR);
         } finally {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }
@@ -126,11 +126,11 @@ public class SeLionSeleniumTest {
     @Test(groups = { "browser-tests" }, expectedExceptions = { TimeoutException.class })
     @WebTest
     public void testWaitUntilTextPresentNeg() {
-        Grid.driver().get(url);
+        Grid.driver().get(URL);
         String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
         try {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            WebDriverWaitUtils.waitUntilTextPresent(badLocator);
+            WebDriverWaitUtils.waitUntilTextPresent(BAD_LOCATOR);
         } finally {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }
@@ -142,8 +142,8 @@ public class SeLionSeleniumTest {
         String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
         try {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            Grid.driver().get(url);
-            WebDriverWaitUtils.waitUntilElementIsInvisible(disappearElement);
+            Grid.driver().get(URL);
+            WebDriverWaitUtils.waitUntilElementIsInvisible(DISAPPEAR_ELEMENT);
         } finally {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }
@@ -152,11 +152,11 @@ public class SeLionSeleniumTest {
     @Test(groups = { "browser-tests" }, expectedExceptions = { TimeoutException.class })
     @WebTest
     public void testWaitUntilElementPresentNeg() {
-        Grid.driver().get(url);
+        Grid.driver().get(URL);
         String origTimeout = Config.getConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT);
         try {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, "20000");
-            WebDriverWaitUtils.waitUntilElementIsPresent(badLocator);
+            WebDriverWaitUtils.waitUntilElementIsPresent(BAD_LOCATOR);
         } finally {
             Config.setConfigProperty(Config.ConfigProperty.EXECUTION_TIMEOUT, origTimeout);
         }

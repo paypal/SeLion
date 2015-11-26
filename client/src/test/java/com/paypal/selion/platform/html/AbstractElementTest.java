@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -193,7 +194,7 @@ public class AbstractElementTest {
     }
 
     private class SampleSuccessInMemoryPage extends BasicPageImpl {
-        private final HashMap<String, String> oMap = new HashMap<String, String>();
+        private final Map<String, String> oMap = new HashMap<String, String>();
 
         SampleSuccessInMemoryPage() {
             super();

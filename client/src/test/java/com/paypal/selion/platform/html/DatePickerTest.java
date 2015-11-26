@@ -35,18 +35,18 @@ import com.paypal.selion.platform.grid.Grid;
 public class DatePickerTest {
 	
 
-    private final String datePickerLoc = "popupDatepicker";
-    private final String nextLoc = "//a[contains(text(),'Next>')]";
-    private final String prevLoc = "//a[contains(text(),'<Prev')]";
-    private final String dateLoc = "popupDatepicker";
+    private static final String DATE_PICKER_LOC = "popupDatepicker";
+    private static final String NEXT_LOC = "//a[contains(text(),'Next>')]";
+    private static final String PREV_LOC = "//a[contains(text(),'<Prev')]";
+    private static final String DATE_LOC = "popupDatepicker";
 
-    private final DatePicker datePicker = new DatePicker(datePickerLoc, prevLoc, nextLoc, datePickerLoc);
+    private final DatePicker datePicker = new DatePicker(DATE_PICKER_LOC, PREV_LOC, NEXT_LOC, DATE_PICKER_LOC);
     
     @Test(groups = { "browser-tests", "ie-broken-test" })
     @WebTest
     public void datePickerTest() throws Exception {
         Grid.open(TestServerUtils.getDatePickerURL());
-        Grid.driver().findElement(By.id(dateLoc)).click();
+        Grid.driver().findElement(By.id(DATE_LOC)).click();
         datePicker.setDate(2010, 05, 20);
 
         Assert.assertTrue(datePicker.getDate().compareTo("06/20/2010") == 0, "Unexpected Date returned from getDate.");
@@ -57,7 +57,7 @@ public class DatePickerTest {
     @WebTest
     public void testPreviousNextMonth() throws Exception {
         Grid.open(TestServerUtils.getDatePickerURL());
-        Grid.driver().findElement(By.id(dateLoc)).click();
+        Grid.driver().findElement(By.id(DATE_LOC)).click();
 
         // test click previous 5 times
         for (int i = 0; i < 5; i++) {
@@ -74,7 +74,7 @@ public class DatePickerTest {
     @WebTest
     public void testReset() throws Exception {
         Grid.open(TestServerUtils.getDatePickerURL());
-        Grid.driver().findElement(By.id(dateLoc)).click();
+        Grid.driver().findElement(By.id(DATE_LOC)).click();
 
         // test reset
         datePicker.reset();
@@ -91,10 +91,10 @@ public class DatePickerTest {
     public void testDefaultConstructor() throws Exception {
         Grid.open(TestServerUtils.getDatePickerURL());
 
-        Grid.driver().findElement(By.id(dateLoc)).click();
+        Grid.driver().findElement(By.id(DATE_LOC)).click();
 
-        DatePicker datePicker = new DatePicker(datePickerLoc);
-        datePicker.datePickerInit(prevLoc, nextLoc, datePickerLoc);
+        DatePicker datePicker = new DatePicker(DATE_PICKER_LOC);
+        datePicker.datePickerInit(PREV_LOC, NEXT_LOC, DATE_PICKER_LOC);
 
         Assert.assertTrue(datePicker != null);
     }
@@ -103,7 +103,7 @@ public class DatePickerTest {
     @WebTest
     public void testSetDate() throws ParseException {
         Grid.open(TestServerUtils.getDatePickerURL());
-        Grid.driver().findElement(By.id(dateLoc)).click();
+        Grid.driver().findElement(By.id(DATE_LOC)).click();
 
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date date = formatter.parse("01/30/2014");
