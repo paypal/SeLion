@@ -28,6 +28,84 @@ Documentation
 -------------
 Project documentation including prerequisites, compilation, usage, and more is at http://paypal.github.io/SeLion/html/documentation.html
 
+Create a new project using the SeLion maven archetype
+```
+mvn archetype:generate -B -DartifactId=Sample -Dversion=1.0.0 -DgroupId=com.mycompany.myproject \
+ -DarchetypeGroupId=com.paypal.selion -DarchetypeArtifactId=SeLion-Archetype -DarchetypeVersion=1.0.0
+```
+
+Client module (includes SeLion DataProviders)
+```xml
+<dependency>
+    <groupId>com.paypal.selion</groupId>
+    <artifactId>SeLion</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+SeLion-DataProviders only
+```xml
+<dependency>
+  <groupId>com.paypal.selion</groupId>
+  <artifactId>SeLion-DataProviders</artifactId>
+  <version>1.0.0</version>
+</dependency
+```
+
+SeLion Grid enhancements -- Required for local run support with the Client module
+```xml
+<dependency>
+  <groupId>com.paypal.selion</groupId>
+  <artifactId>SeLion-Grid</artifactId>
+  <version>1.0.0</version>
+</dependency
+```
+
+SeLion Code Generator Maven plugin -- Adds "page object" code generation
+```xml
+<plugin>
+    <groupId>com.paypal.selion</groupId>
+    <artifactId>SeLion-Code-Generator</artifactId>
+    <version>1.0.0</version>
+    <executions>
+        <execution>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <basePackage>coo.foo.bar</basePackage>
+    </configuration>
+</plugin>
+```
+
+Run the SeLion Grid as a standalone selenium server
+```
+java -jar SeLion-Grid-1.0.0-jar-with-dependencies.jar
+```
+Run the SeLion Grid as a selenium hub
+```
+java -jar SeLion-Grid-1.0.0-jar-with-dependencies.jar -role hub
+```
+Run the SeLion Grid as a selenium web node
+```
+java -jar SeLion-Grid-1.0.0-jar-with-dependencies.jar -role node
+```
+Run the SeLion Grid as a Selendroid node (beta feature)
+```
+java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar com.paypal.selion.grid.SelendroidJarSpawner
+```
+Run the SeLion Grid as an ios-driver node (beta feature)
+```
+java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar com.paypal.selion.grid.IOSDriverJarSpawner
+```
+Run the SeLion Grid as an Appium node (beta feature)
+```
+java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar com.paypal.selion.grid.AppiumSpawner
+```
+
 Contact
 -------
 Feel free to ask questions and/or share ideas.
@@ -68,53 +146,6 @@ Projects we depend on that need contributors
 Current version
 ---------------
 [1.0.0](http://search.maven.org/#search%7Cga%7C1%7Cselion)
-
-Client module (includes SeLion DataProviders)
-```xml
-<dependency>
-    <groupId>com.paypal.selion</groupId>
-    <artifactId>SeLion</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-SeLion-DataProviders only
-```xml
-<dependency>
-  <groupId>com.paypal.selion</groupId>
-  <artifactId>SeLion-DataProviders</artifactId>
-  <version>1.0.0</version>
-</dependency
-```
-
-SeLion Grid enhancments -- Required for local run support with the Client module
-```xml
-<dependency>
-  <groupId>com.paypal.selion</groupId>
-  <artifactId>SeLion-Grid</artifactId>
-  <version>1.0.0</version>
-</dependency
-```
-
-SeLion Code Generator Maven plugin -- Adds "page object" code geneartion
-```xml
-<plugin>
-    <groupId>com.paypal.selion</groupId>
-    <artifactId>SeLion-Code-Generator</artifactId>
-    <version>1.0.0</version>
-    <executions>
-        <execution>
-            <phase>generate-sources</phase>
-            <goals>
-                <goal>generate</goal>
-            </goals>
-        </execution>
-    </executions>
-    <configuration>
-        <basePackage>coo.foo.bar</basePackage>
-    </configuration>
-</plugin>
-```
 
 Development version
 -------------------
