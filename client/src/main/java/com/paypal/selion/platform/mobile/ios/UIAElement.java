@@ -63,7 +63,7 @@ public class UIAElement implements UIAutomationElement {
     @Override
     public WebElement findElement(String locator) {
         logger.entering(locator);
-        By by = HtmlElementUtils.getFindElementType(locator);
+        By by = HtmlElementUtils.resolveByType(locator);
         WebElement webElement = bridgeDriver.findElementBy(by);
         logger.exiting(webElement);
         return webElement;

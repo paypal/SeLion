@@ -46,7 +46,7 @@ public class UiObject implements UserinterfaceObject {
     public void clearText() {
         logger.entering();
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.clearText(webElement);
         logger.exiting();
     }
@@ -55,7 +55,7 @@ public class UiObject implements UserinterfaceObject {
     public void click(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.click(webElement);
             waitFor(expected);
         logger.exiting();
@@ -65,7 +65,7 @@ public class UiObject implements UserinterfaceObject {
     public void clickBottomRight(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.clickBottomRight(webElement);
             waitFor(expected);
         logger.exiting();
@@ -76,7 +76,7 @@ public class UiObject implements UserinterfaceObject {
     public void clickTopLeft(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.clickTopLeft(webElement);
             waitFor(expected);
         logger.exiting();
@@ -87,7 +87,7 @@ public class UiObject implements UserinterfaceObject {
     public String getText() {
         logger.entering();
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         String text = driver.getText(webElement);
         logger.exiting(text);
         return text;
@@ -98,7 +98,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isCheckable(webElement);
         logger.exiting(result);
         return result;
@@ -109,7 +109,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isChecked(webElement);
         logger.exiting(result);
         return result;
@@ -120,7 +120,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isClickable(webElement);
         logger.exiting(result);
         return result;
@@ -131,7 +131,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isEnabled(webElement);
         logger.exiting(result);
         return result;
@@ -142,7 +142,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isFocusable(webElement);
         logger.exiting(result);
         return result;
@@ -153,7 +153,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isFocused(webElement);
         logger.exiting(result);
         return result;
@@ -164,7 +164,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isLongClickable(webElement);
         logger.exiting(result);
         return result;
@@ -175,7 +175,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isScrollable(webElement);
         logger.exiting(result);
         return result;
@@ -186,7 +186,7 @@ public class UiObject implements UserinterfaceObject {
         logger.entering();
         getBridgeDriver();
         boolean result = false;
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         result = driver.isSelected(webElement);
         logger.exiting(result);
         return result;
@@ -196,7 +196,7 @@ public class UiObject implements UserinterfaceObject {
     public void longClick(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.longClick(webElement);
             waitFor(expected);
         logger.exiting();
@@ -206,7 +206,7 @@ public class UiObject implements UserinterfaceObject {
     public void longClickBottomRight(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.longClickBottomRight(webElement);
             waitFor(expected);
         logger.exiting();
@@ -216,7 +216,7 @@ public class UiObject implements UserinterfaceObject {
     public void longClickTopLeft(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.longClickTopLeft(webElement);
             waitFor(expected);
         logger.exiting();
@@ -226,7 +226,7 @@ public class UiObject implements UserinterfaceObject {
     public void setText(String text) {
         logger.entering(text);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.clearText(webElement);
         driver.setText(webElement, text);
         logger.exiting();
@@ -236,7 +236,7 @@ public class UiObject implements UserinterfaceObject {
     public void swipeLeft(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeLeft(webElement);
             waitFor(expected);
         logger.exiting();
@@ -246,7 +246,7 @@ public class UiObject implements UserinterfaceObject {
     public void swipeRight(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeRight(webElement);
             waitFor(expected);
         logger.exiting();
@@ -257,7 +257,7 @@ public class UiObject implements UserinterfaceObject {
     public void swipeUp(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeUp(webElement);
             waitFor(expected);
         logger.exiting();
@@ -267,7 +267,7 @@ public class UiObject implements UserinterfaceObject {
     public void swipeDown(Object... expected) {
         logger.entering(expected);
         getBridgeDriver();
-        WebElement webElement = driver.findElement(HtmlElementUtils.getFindElementType(locator));
+        WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeDown(webElement);
             waitFor(expected);
         logger.exiting();
