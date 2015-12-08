@@ -223,7 +223,7 @@ public abstract class AbstractTestSession {
     /**
      * A Method to start a new session.
      */
-    public abstract void startSesion();
+    public abstract void startSession();
 
     /**
      * A initializer that initializes the sub-class of {@link AbstractTestSession} based on the annotation.

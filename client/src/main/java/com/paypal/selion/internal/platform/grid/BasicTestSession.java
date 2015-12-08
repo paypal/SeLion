@@ -28,7 +28,7 @@ public class BasicTestSession extends AbstractTestSession {
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     @Override
-    public void startSesion() {
+    public void startSession() {
         logger.entering();
         setStarted(true);
         logger.exiting();

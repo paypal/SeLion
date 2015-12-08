@@ -77,7 +77,7 @@ public class MobileTestSession extends AbstractTestSession {
         return appVersion;
     }
 
-    public String getdeviceSerial() {
+    public String getDeviceSerial() {
         return deviceSerial;
     }
 
@@ -110,7 +110,7 @@ public class MobileTestSession extends AbstractTestSession {
     }
 
     @Override
-    public void startSesion() {
+    public void startSession() {
         logger.entering();
         Grid.getThreadLocalWebDriver().set(MobileDriverFactory.createInstance());
         setStarted(true);
@@ -146,15 +146,11 @@ public class MobileTestSession extends AbstractTestSession {
         if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE))) {
             appLanguage = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE);
         }
+
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
             if (StringUtils.isNotBlank(deviceTestAnnotation.appName())) {
                 this.appName = deviceTestAnnotation.appName();
-                String[] appNames = StringUtils.split(this.appName, ":");
-                if (StringUtils.contains(this.appName, ":")) {
-                    appVersion = appNames[1];
-                    appName = appNames[0];
-                }
             }
 
             if (StringUtils.isNotBlank(deviceTestAnnotation.language())) {
@@ -179,18 +175,6 @@ public class MobileTestSession extends AbstractTestSession {
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.appPath())) {
                 this.appPath = deviceTestAnnotation.appPath();
-
-                if (this.appPath.startsWith(SELION_HUB_STORAGE)) {
-                    // parse and construct the absolute url for selion hub storage
-                    this.appPath = getSelionHubStorageUrl(this.appPath);
-                } else if (!this.appPath.startsWith(SAUCE_URL) && !StringUtils.startsWithIgnoreCase(appPath, "http")) {
-
-                    // construct the absolute url for apps exist in resource folder.
-                    Path p = Paths.get(appPath);
-                    if (!p.isAbsolute()) {
-                        this.appPath = String.format("%s/%s", System.getProperty("user.dir"), appPath);
-                    }
-                }
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.mobileNodeType())) {
                 mobileNode = deviceTestAnnotation.mobileNodeType();
@@ -214,6 +198,25 @@ public class MobileTestSession extends AbstractTestSession {
                 "The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
                         + " 'android:17', 'android:18', etc.");
 
+        // appName can be passed via the annotation or as a config var. It may contain precision info.
+        if (StringUtils.contains(this.appName, ":")) {
+            String[] appNames = StringUtils.split(this.appName, ":");
+            appVersion = appNames[1];
+            appName = appNames[0];
+        }
+
+        // appPath can be passed via the annotation or as a config var. It may need formatting.
+        if (this.appPath.startsWith(SELION_HUB_STORAGE)) {
+            // parse and construct the absolute url for selion hub storage
+            this.appPath = getSelionHubStorageUrl(this.appPath);
+        } else if (!this.appPath.startsWith(SAUCE_URL) && !StringUtils.startsWithIgnoreCase(appPath, "http")) {
+            // construct the absolute url for apps exist in resource folder.
+            Path p = Paths.get(appPath);
+            if (!p.isAbsolute()) {
+                this.appPath = String.format("%s/%s", System.getProperty("user.dir"), appPath);
+            }
+        }
+
         this.platform = WebDriverPlatform.ANDROID;
         if ("iphone".equalsIgnoreCase(getDevice()) || "ipad".equalsIgnoreCase(getDevice())) {
             this.platform = WebDriverPlatform.IOS;
@@ -222,10 +225,10 @@ public class MobileTestSession extends AbstractTestSession {
         logger.exiting();
     }
 
-    private String getSelionHubStorageUrl(String selionHubappPath) {
+    private String getSelionHubStorageUrl(String selionHubAppPath) {
         String COLON = ":";
         String SLASH = "/";
-        String appPathTokens[] = StringUtils.split(selionHubappPath, ":");
+        String appPathTokens[] = StringUtils.split(selionHubAppPath, ":");
         String hostName = Config.getConfigProperty(ConfigProperty.SELENIUM_HOST);
         int port = Integer.parseInt(Config.getConfigProperty(ConfigProperty.SELENIUM_PORT));
         StringBuffer url = new StringBuffer("http://");

@@ -52,35 +52,35 @@ public @interface MobileTest {
     String appName() default "";
 
     /**
-     * Establish the type of device to be used(android, iphone, etc). Default's to <code>iphone</code> Platform version
-     * can be specified as part of the device as:
+     * Establish the type of device to be used (android, iphone, etc). No default. Platform version can be specified as
+     * part of the device as:
      * 
      * <pre>
      * device = &quot;iphone:7.1&quot;
      * </pre>
      */
-    String device() default "iphone";
+    String device() default "";
 
     /**
-     * Establish the application's language that is to be used. Default's to <code>English</code> specified as
-     * <code>en</code>
+     * Establish the application's language that is to be used. For example; <code>en</code> for English. Defaults to
+     * the language chosen by Selendroid / ios-driver / Appium
      */
-    String language() default "en";
+    String language() default "";
 
     /**
-     * Establish the application's locale that is to be used. Default's to <code>English</code> specified as
-     * <code>en_US</code>
+     * Establish the application's locale that is to be used. For example; <code>en_US</code> for US English. Defaults
+     * to the locale chosen by Selendroid / ios-driver / Appium
      */
-    String locale() default "en_US";
+    String locale() default "";
 
     /**
-     * Device Serial to be used. Defaults to device/emulator chosen by Selendroid / iosDriver
+     * Device Serial to be used. Defaults to the device/emulator chosen by Selendroid / ios-driver / Appium
      */
     String deviceSerial() default "";
 
     /**
-     * Establish the type of device to be used (Nexus5, Iphone5s, etc). Defaults to device/emulator chosen by Selendroid
-     * / iosDriver /Appium
+     * Establish the type of device to be used (Nexus5, Iphone5s, etc). Defaults to the device/emulator chosen by
+     * Selendroid / ios-driver / Appium
      */
     String deviceType() default "";
 
@@ -102,7 +102,7 @@ public @interface MobileTest {
      * This parameter represents the fully qualified path of the app that is to be spawned. For app exist in the local
      * disk this should be an absolute path, for app exist in the remote location it should be http URL and for app
      * exist in sauce cloud it can be sauce storage "sauce-storage:testApp.apk". This is mandatory for installable apps
-     * running on appium. appPath cannot be used along with the appName.
+     * running on Appium. <code>appPath</code> cannot be used along with the <code>appName</code>.
      * 
      * <pre>
      *  for app in local disk it can be like appPath = C:\\test\\testApp.apk;
@@ -111,7 +111,7 @@ public @interface MobileTest {
      * </pre>
      */
     String appPath() default "";
-    
+
     /**
      * This parameter specifies to execute mobile test cases using respective mobile driver.
      */

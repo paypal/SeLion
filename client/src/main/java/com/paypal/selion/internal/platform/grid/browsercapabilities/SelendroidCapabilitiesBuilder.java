@@ -56,8 +56,8 @@ class SelendroidCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         if (StringUtils.isNotBlank(mobileSession.getPlatformVersion())) {
             tempCapabilities.setCapability(SelendroidCapabilities.PLATFORM_VERSION, mobileSession.getPlatformVersion());
         }
-        if (StringUtils.isNotBlank(mobileSession.getdeviceSerial())) {
-            tempCapabilities.setCapability(SelendroidCapabilities.SERIAL, mobileSession.getdeviceSerial());
+        if (StringUtils.isNotBlank(mobileSession.getDeviceSerial())) {
+            tempCapabilities.setCapability(SelendroidCapabilities.SERIAL, mobileSession.getDeviceSerial());
         }
         return tempCapabilities;
     }

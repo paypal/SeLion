@@ -157,7 +157,7 @@ public class WebTestSession extends AbstractTestSession {
     }
 
     @Override
-    public void startSesion() {
+    public void startSession() {
         createSession();
         setStarted(true);
     }

@@ -104,7 +104,7 @@ public final class Grid {
 
         AbstractTestSession testSession = getTestSession();
         if (!testSession.isStarted()) {
-            testSession.startSesion();
+            testSession.startSession();
         }
         RemoteWebDriver rwd = threadLocalWebDriver.get();
         if (rwd == null) {
