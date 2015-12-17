@@ -59,13 +59,13 @@ public class NodeForceRestartServlet extends HttpServlet implements InsecureHttp
             return;
         }
 
-        ServletHelper.respondAsJsonWithHttpStatus(resp, new NodeResponseBody().setSuccess(), HttpServletResponse.SC_OK);
         LOGGER.warning("Shutting down the node");
         try {
             shutdownHandler.shutdownProcesses();
         } catch (ProcessHandlerException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
+            ServletHelper.respondAsJsonWithHttpStatus(resp, new NodeResponseBody().setSuccess(), HttpServletResponse.SC_OK);
             // Start a thread to exit the Node via System.exit(0).
             // This thread gives the HTTP Response a chance to complete the communication.
             new Thread(new Runnable() {

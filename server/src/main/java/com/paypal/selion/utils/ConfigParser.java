@@ -40,7 +40,7 @@ import com.paypal.selion.pojos.SeLionGridConstants;
 public final class ConfigParser {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ConfigParser.class);
     private static ConfigParser parser = new ConfigParser();
-    private JsonObject configuration;
+    private static JsonObject configuration;
     private static String configFile;
 
     /**
@@ -48,6 +48,14 @@ public final class ConfigParser {
      *         represented by the JSON file passed via the JVM argument <b>SeLionConfig</b>
      */
     public static ConfigParser parse() {
+        LOGGER.entering();
+        if (configuration == null) {
+            try {
+                readConfigFileContents();
+            } catch (IOException e) {
+                throw new ConfigParserException(e);
+            }
+        }
         LOGGER.exiting(parser.toString());
         return parser;
     }
@@ -58,9 +66,13 @@ public final class ConfigParser {
      * @param file
      *            the SeLion Grid config file to use
      */
-    public static void setConfigFile(String file) {
+    public static ConfigParser setConfigFile(String file) {
         LOGGER.entering(file);
-        configFile = file;
+        if (configuration == null) {
+            configFile = file;
+        }
+        LOGGER.exiting(parser.toString());
+        return parser;
     }
 
     /**
@@ -184,20 +196,15 @@ public final class ConfigParser {
     }
 
     private ConfigParser() {
-        try {
-            readConfigFileContents();
-        } catch (IOException e) {
-            throw new ConfigParserException(e);
-        }
-
+        //Intentionally left blank
     }
 
-    private void readConfigFileContents() throws IOException {
+    private static void readConfigFileContents() throws IOException {
         LOGGER.entering();
         InputStream stream = null;
         if (StringUtils.isBlank(configFile)) {
             LOGGER.fine("Config file will be loaded as a resource.");
-            stream = this.getClass().getResourceAsStream(SeLionGridConstants.SELION_CONFIG_FILE_RESOURCE);
+            stream = ConfigParser.class.getResourceAsStream(SeLionGridConstants.SELION_CONFIG_FILE_RESOURCE);
         } else {
             File config = new File(configFile);
             String path = config.getAbsolutePath();
@@ -228,7 +235,7 @@ public final class ConfigParser {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("ConfigParser [configuration=");
-        builder.append(configuration.toString());
+        builder.append(configuration == null ? null : configuration.toString());
         builder.append(", configFile=");
         builder.append(configFile);
         builder.append("]");

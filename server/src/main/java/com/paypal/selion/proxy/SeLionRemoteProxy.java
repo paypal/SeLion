@@ -366,8 +366,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         }
 
         proxyLogger.info("Node " + getId() + " shutdown successfully.");
-        // remove the node from the hub registry, if it reported 200 OK for NodeForceRestartServlet request
-        getRegistry().removeIfPresent(this);
 
         LOGGER.exiting();
     }

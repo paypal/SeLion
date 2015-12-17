@@ -15,8 +15,10 @@
 
 package com.paypal.selion.utils;
 
-import static org.testng.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 
@@ -34,6 +36,7 @@ public class ConfigParserTest extends PowerMockTestCase {
         mockStatic(ConfigParser.class);
         doCallRealMethod().when(ConfigParser.class, "setConfigFile", Mockito.anyString());
         when(ConfigParser.parse()).thenCallRealMethod();
+        doCallRealMethod().when(ConfigParser.class, "readConfigFileContents");
 
         // use the mock instance to allow for invocation of setConfigFile
         ConfigParser.setConfigFile(new File(ConfigParserTest.class.getResource("/config/DummySeLionConfig.json")
