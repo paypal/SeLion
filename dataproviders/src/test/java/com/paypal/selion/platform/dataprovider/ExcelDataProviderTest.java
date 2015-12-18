@@ -48,22 +48,21 @@ import com.paypal.selion.platform.utilities.FileAssistant;
 
 public class ExcelDataProviderTest {
 
+    private static String fileName = "src/test/resources/User.xlsx";
+    private static final String assertFailedMsg = "Assert condition failed.";
+    private ExcelDataProvider dataSource;
+
     public static class MyCustomClass {
         private final String name;
 
         public MyCustomClass(String name) {
             this.name = name;
-
         }
 
         public String getName() {
             return name;
         }
     }
-
-    private static String fileName = "src/test/resources/User.xlsx";
-    private static final String assertFailedMsg = "Assert condition failed.";
-    private ExcelDataProvider dataSource;
 
     @BeforeClass(alwaysRun = true)
     public void init() throws IOException {
@@ -72,6 +71,10 @@ public class ExcelDataProviderTest {
     }
 
     public static class ColorsData {
+
+        private String productName;
+        private Colors whatColor;
+
         /**
          * @return the productName
          */
@@ -102,12 +105,13 @@ public class ExcelDataProviderTest {
             this.whatColor = whatColor;
         }
 
-        private String productName;
-        private Colors whatColor;
-
     }
 
     public static class TweakedColorsData {
+
+        private String productName;
+        private List<String> whatColor;
+
         /**
          * @return the productName
          */
@@ -138,8 +142,6 @@ public class ExcelDataProviderTest {
             this.whatColor = whatColor;
         }
 
-        private String productName;
-        private List<String> whatColor;
     }
 
     @Test(groups = "unit")
@@ -286,7 +288,8 @@ public class ExcelDataProviderTest {
     }
 
     @Test(groups = "unit")
-    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithIndividualAndRangeOfIndexes() throws IOException {
+    public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithIndividualAndRangeOfIndexes()
+            throws IOException {
         SimpleIndexInclusionFilter filter = new SimpleIndexInclusionFilter("1-2,4,5");
         Iterator<Object[]> allUsers = dataSource.getDataByFilter(filter);
         List<String> fetchedNames = transformExcelDataIntoList(allUsers);
@@ -294,8 +297,7 @@ public class ExcelDataProviderTest {
                 assertFailedMsg);
     }
 
-    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class },
-            expectedExceptionsMessageRegExp = "Please provide valid indexes for filtering")
+    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Please provide valid indexes for filtering")
     public void testGetExcelRowsWithSimpleInclusionDataProviderFilterWithNullIndexes() {
         // Passing just null will give compilation error.
         new SimpleIndexInclusionFilter((String) null);
@@ -324,15 +326,13 @@ public class ExcelDataProviderTest {
         assertTrue(arrayComparer(new String[] { "Thomas", "rama", "binh" }, fetchedNames.toArray()), assertFailedMsg);
     }
 
-    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class },
-            expectedExceptionsMessageRegExp = "Please specify values to use for filtering.")
+    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Please specify values to use for filtering.")
     public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithNullFilterKeyValues() {
         @SuppressWarnings("unused")
         CustomKeyFilter filter = new CustomKeyFilter("phoneNumber", null);
     }
 
-    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class },
-            expectedExceptionsMessageRegExp = "Please specify a valid key.")
+    @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class }, expectedExceptionsMessageRegExp = "Please specify a valid key.")
     public void testGetExcelRowsWithCustomKeyInclusionDataProviderFilterWithNullFilterKey() {
         new CustomKeyFilter(null, "1-408-666-5508,1-408-225-8040,1-714-666-0043");
     }

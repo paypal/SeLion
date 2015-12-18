@@ -42,6 +42,7 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
     public static final HtmlSeLionElementList CONTAINER = new HtmlSeLionElementList(SELION_ELEMENT_CLASS, "Container", true, false);
     public static final HtmlSeLionElementList BASE_CLASS = new HtmlSeLionElementList(null, "baseClass", false, false);
     public static final HtmlSeLionElementList PAGE_TITLE = new HtmlSeLionElementList(null, "pageTitle", false, false);
+    private final boolean isParentAllowed;
 
     //DONOT alter the order of RADIO_BUTTON and BUTTON because of the following reason:
     //consider a field in the yaml file which looks like this : fxBankRadioButton
@@ -54,7 +55,7 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
 
     @Override
     public String toString() {
-        return String.format("%s, canHaveParent=%s",super.toString(), canHaveParent);
+        return String.format("%s, isParentAllowed=%s",super.toString(), isParentAllowed);
     }
     
     /**
@@ -105,18 +106,16 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
         return isValidUIElement(values, element);
     }
 
-    private final boolean canHaveParent;
-
-    private HtmlSeLionElementList(String elementPackage, String element, boolean isHtmlType, boolean canHaveParent) {
+    private HtmlSeLionElementList(String elementPackage, String element, boolean isHtmlType, boolean isParentAllowed) {
         super(elementPackage, element, isHtmlType);
-        this.canHaveParent = canHaveParent;
+        this.isParentAllowed = isParentAllowed;
     }
 
     /**
      * @return <code>true</code> if the current element can have a parent to it.
      */
     public boolean canHaveParent() {
-        return canHaveParent;
+        return isParentAllowed;
     }
 
     /**

@@ -49,12 +49,11 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
             return capabilities;
         }
 
-        capabilities = appendSauceLabsCredentials(capabilities);
-        capabilities = appendSeleniumVersion(capabilities);
-        capabilities = appendSauceLabsCapabilities(capabilities);
+        DesiredCapabilities dc = capabilities.merge(appendSauceLabsCredentials(capabilities))
+                .merge(appendSeleniumVersion(capabilities)).merge(appendSauceLabsCapabilities(capabilities));
 
-        logger.exiting(capabilities);
-        return capabilities;
+        logger.exiting(dc);
+        return dc;
     }
 
     private DesiredCapabilities appendSauceLabsCapabilities(DesiredCapabilities capabilities) {

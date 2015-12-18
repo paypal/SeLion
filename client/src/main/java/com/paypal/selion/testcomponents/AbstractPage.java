@@ -102,8 +102,9 @@ public abstract class AbstractPage implements WebPage {
      * Load object map.
      */
     protected Map<String, String> getObjectMap() {
-        if (isInitialized())
+        if (isInitialized()) {
             return objectMap;
+        }
         while (mapQueue.size() > 0) {
             String[] map = mapQueue.poll();
             String pageDomain = map[0];
@@ -146,7 +147,7 @@ public abstract class AbstractPage implements WebPage {
      * @param sourceMap
      *            the source map
      */
-    protected void loadObjectMap(HashMap<String, String> sourceMap) {
+    protected void loadObjectMap(Map<String, String> sourceMap) {
 
         if (sourceMap == null) {
             return;

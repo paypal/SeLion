@@ -97,18 +97,18 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * </ol>
  */
 public final class Config {
-    private static volatile XMLConfiguration config;
+    private static volatile XMLConfiguration xmlConfig;
 
     private Config() {
         // Utility class. So hide the constructor
     }
 
     static XMLConfiguration getConfig() {
-        if (config != null) {
-            return config;
+        if (xmlConfig != null) {
+            return xmlConfig;
         }
         initConfig();
-        return config;
+        return xmlConfig;
     }
 
     /**
@@ -187,14 +187,14 @@ public final class Config {
 
     private static void loadInitialValues() {
         for (ConfigProperty configProps : ConfigProperty.values()) {
-            config.setProperty(configProps.getName(), configProps.getDefaultValue());
+            xmlConfig.setProperty(configProps.getName(), configProps.getDefaultValue());
         }
     }
 
     private static void loadValuesFromUser(Map<ConfigProperty, String> initialValues) {
         if (!initialValues.isEmpty()) {
             for (Entry<ConfigProperty, String> eachConfig : initialValues.entrySet()) {
-                config.setProperty(eachConfig.getKey().getName(), eachConfig.getValue());
+                xmlConfig.setProperty(eachConfig.getKey().getName(), eachConfig.getValue());
             }
         }
     }
@@ -204,12 +204,12 @@ public final class Config {
         for (ConfigProperty configProps : ConfigProperty.values()) {
             String envValue = System.getenv(PREFIX + configProps.name());
             if (StringUtils.isNotBlank(envValue)) {
-                config.setProperty(configProps.getName(), envValue);
+                xmlConfig.setProperty(configProps.getName(), envValue);
             }
             // Now load system properties variables (if defined).
             String sysValue = System.getProperty(PREFIX + configProps.name());
             if (StringUtils.isNotBlank(sysValue)) {
-                config.setProperty(configProps.getName(), sysValue);
+                xmlConfig.setProperty(configProps.getName(), sysValue);
             }
         }
     }
@@ -241,12 +241,12 @@ public final class Config {
         }
 
         // only do this if the global config is not already initialized.
-        if (config == null) {
-            config = new XMLConfiguration();
+        if (xmlConfig == null) {
+            xmlConfig = new XMLConfiguration();
             // don't auto throw, let each config value decide
-            config.setThrowExceptionOnMissing(false);
+            xmlConfig.setThrowExceptionOnMissing(false);
             // because we can config on the fly, don't auto-save
-            config.setAutoSave(false);
+            xmlConfig.setAutoSave(false);
 
             // Set defaults
             loadInitialValues();
@@ -263,9 +263,9 @@ public final class Config {
         loadValuesFromEnvironment();
 
         // Init Selenium configuration
-        boolean runLocally = config.getBoolean(ConfigProperty.SELENIUM_RUN_LOCALLY.getName());
+        boolean runLocally = xmlConfig.getBoolean(ConfigProperty.SELENIUM_RUN_LOCALLY.getName());
         if (runLocally) {
-            config.setProperty(ConfigProperty.SELENIUM_HOST.getName(), "localhost");
+            xmlConfig.setProperty(ConfigProperty.SELENIUM_HOST.getName(), "localhost");
         }
 
         SeLionLogger.getLogger().exiting();

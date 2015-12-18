@@ -45,14 +45,14 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
         init(args, options);
     }
 
-    public static final void main(String[] args) {
+    public static void main(String[] args) {
         new JarSpawner(args).run();
     }
 
     /**
      * Print the usage of SeLion Grid jar
      */
-    final void printUsageInfo() {
+    void printUsageInfo() {
         StringBuilder usage = new StringBuilder();
         usage.append(SEPARATOR);
         usage.append("To use SeLion Grid");

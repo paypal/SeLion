@@ -24,10 +24,12 @@ public class DoNotReportTest {
     @Test(groups = "donot-report-functional")
     @DoNotReport
     public void testBaseMethodPassed() {
+        // Base method
     }
 
     @Test(groups = "donot-report-functional", dependsOnMethods = "testBaseMethodPassed")
     public void testPassed() {
+        // Test should pass.
     }
 
     @DoNotReport
@@ -38,6 +40,7 @@ public class DoNotReportTest {
 
     @Test(groups = "donot-report-functional", dependsOnMethods = "testBaseMethodFailed")
     public void testFailed() {
+        // won't get executed.
     }
 
     @DoNotReport
@@ -49,10 +52,11 @@ public class DoNotReportTest {
     @DoNotReport
     @Test(groups = "donot-report-functional", dependsOnMethods = "testBaseMethodSkipped")
     public void testBaseMethodSkipped2() {
-
+        // method will get skipped
     }
 
     @Test(groups = "donot-report-functional", dependsOnMethods = "testBaseMethodSkipped2")
     public void testSkipped() {
+        // method will get skipped
     }
 }

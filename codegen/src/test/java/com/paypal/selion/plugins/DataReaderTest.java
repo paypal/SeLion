@@ -32,6 +32,7 @@ public class DataReaderTest {
     class DummyMojo extends AbstractMojo {
         @Override
         public void execute() throws MojoExecutionException, MojoFailureException {
+            // Nothing to execute
         }
     }
 

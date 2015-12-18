@@ -32,14 +32,14 @@ final class LocalHub extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalHub instance;
 
-    static synchronized final LocalServerComponent getSingleton() {
+    static synchronized LocalServerComponent getSingleton() {
         if (instance == null) {
             instance = new LocalHub().getLocalServerComponent();
         }
         return instance;
     }
 
-    synchronized final LocalHub getLocalServerComponent() {
+    synchronized LocalHub getLocalServerComponent() {
         if (instance == null) {
             instance = new LocalHub();
 

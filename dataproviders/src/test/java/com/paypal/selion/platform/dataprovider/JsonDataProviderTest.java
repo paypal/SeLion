@@ -22,9 +22,9 @@ import static org.testng.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.testng.annotations.Test;
 
@@ -230,7 +230,7 @@ public class JsonDataProviderTest {
 
     @Test(groups = "unit")
     public void testGetDataByKeys() throws IOException {
-        DataResource resource = new FileSystemResource(jsonRawDataFile, HashMap[].class);
+        DataResource resource = new FileSystemResource(jsonRawDataFile, Map[].class);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         String[] keys = {"test1", "test2"};
         Object[][] dataObjects = dataProvider.getDataByKeys(keys );

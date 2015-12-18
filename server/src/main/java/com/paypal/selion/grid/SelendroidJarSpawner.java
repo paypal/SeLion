@@ -44,7 +44,7 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
         setType(InstanceType.SELENDROID);
     }
 
-    public static final void main(String[] args) {
+    public static void main(String[] args) {
         new SelendroidJarSpawner(args).run();
     }
 

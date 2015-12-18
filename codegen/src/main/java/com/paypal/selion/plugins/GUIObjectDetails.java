@@ -169,20 +169,16 @@ public class GUIObjectDetails {
             }
 
             // Validations for IOS
-            if ((currentPlatform == TestPlatform.IOS)) {
-                if (!(IOSSeLionElementList.isValidUIElement(currentKey))) {
+            if ((currentPlatform == TestPlatform.IOS && !(IOSSeLionElementList.isValidUIElement(currentKey)))) {
                     throw new IllegalArgumentException(String.format(
                             "Detected an invalid key [%s] in data file %s for Platform IOS", currentKey, dataFileName));
-                }
             }
             
             // Validations for Android - If a user provides an element that is not registered as custom element this
             // validation takes care of it
-            if((currentPlatform == TestPlatform.ANDROID)) {
-                if (!(AndroidSeLionElementList.isValidUIElement(currentKey))) {
+            if((currentPlatform == TestPlatform.ANDROID && !(AndroidSeLionElementList.isValidUIElement(currentKey)))) {
                     throw new IllegalArgumentException(String.format(
                             "Detected an invalid key [%s] in data file %s for Platform Android", currentKey, dataFileName));
-                }
             }
         }
     }

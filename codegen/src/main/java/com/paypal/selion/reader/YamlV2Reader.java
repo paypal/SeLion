@@ -66,18 +66,15 @@ class YamlV2Reader extends AbstractYamlReader {
 
             for (Entry<String, GUIElement> eachElement : page.getElements().entrySet()) {
                 if (!eachElement.getKey().isEmpty()) {
-
                     appendKey(eachElement.getKey());
                     if ((currentPlatform == TestPlatform.WEB)
-                            && HtmlSeLionElementList.CONTAINER.looksLike(eachElement.getKey())) {
-                        if (!eachElement.getValue().getContainerElements().isEmpty()) {
-                            Map<String, HtmlContainerElement> allElements = eachElement.getValue()
-                                    .getContainerElements();
-                            List<String> elementKeys = parseKeysForContainer(fileName, allElements);
-                            for (String elementKey : elementKeys) {
-                                // concat parent key separated with # to retain association
-                                appendKey(eachElement.getKey() + DELIMITER + elementKey);
-                            }
+                            && HtmlSeLionElementList.CONTAINER.looksLike(eachElement.getKey())
+                            && !eachElement.getValue().getContainerElements().isEmpty()) {
+                        Map<String, HtmlContainerElement> allElements = eachElement.getValue().getContainerElements();
+                        List<String> elementKeys = parseKeysForContainer(fileName, allElements);
+                        for (String elementKey : elementKeys) {
+                            // concat parent key separated with # to retain association
+                            appendKey(eachElement.getKey() + DELIMITER + elementKey);
                         }
                     }
                 }

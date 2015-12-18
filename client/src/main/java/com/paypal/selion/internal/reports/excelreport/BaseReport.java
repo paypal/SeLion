@@ -137,12 +137,13 @@ public abstract class BaseReport<T> {
         logger.entering(new Object[] { sheet, rowNum, iColStart, style });
         HSSFRow row = sheet.createRow(rowNum);
         HSSFCell newCell;
+        int colStart = iColStart;
 
         for (int iTitle = 0; iTitle < this.colTitles.size(); iTitle++) {
-            newCell = row.createCell(iColStart);
+            newCell = row.createCell(colStart);
             newCell.setCellValue(colTitles.get(iTitle));
             newCell.setCellStyle(style);
-            sheet.autoSizeColumn(iColStart++);
+            sheet.autoSizeColumn(colStart++);
         }
         logger.exiting();
     }

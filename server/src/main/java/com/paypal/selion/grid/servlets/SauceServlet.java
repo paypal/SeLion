@@ -45,6 +45,7 @@ import com.paypal.selion.utils.ServletHelper;
  */
 public class SauceServlet extends RegistryBasedServlet {
 
+    private static final long serialVersionUID = 9187677490975386050L;
     private static int count;
 
     public SauceServlet(Registry registry) {
@@ -54,8 +55,6 @@ public class SauceServlet extends RegistryBasedServlet {
     public SauceServlet() {
         this(null);
     }
-
-    private static final long serialVersionUID = 9187677490975386050L;
 
     /**
      * A helper method that takes care of registering a virtual node to the hub.

@@ -31,6 +31,7 @@ public class GUIObjectDetailsTest {
     class DummyMojo extends AbstractMojo {
         @Override
         public void execute() throws MojoExecutionException, MojoFailureException {
+            // Nothing to execute
         }
     }
 

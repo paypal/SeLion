@@ -191,11 +191,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         // by returning false
         int currentInvocationCount = method.getTestMethod().getCurrentInvocationCount();
         if (!t.dataProvider().isEmpty()) {
-            if (currentInvocationCount == 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return currentInvocationCount == 0;
         }
 
         return true;
@@ -305,13 +301,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     }
 
     private boolean isValidAfterCondition(IInvokedMethod method) {
-        if (method.isTestMethod()) {
-            return true;
-        }
-        if (method.getTestMethod().isAfterClassConfiguration()) {
-            return true;
-        }
-        return false;
+        return method.isTestMethod() || method.getTestMethod().isAfterClassConfiguration();
     }
 
     private boolean hasValidAfterCondition(IInvokedMethod method) {
@@ -410,7 +400,6 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
-        return;
     }
 
     /**
@@ -464,8 +453,6 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
-        return;
-
     }
 
     @Override
@@ -476,7 +463,6 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
-        return;
     }
 
     @Override
@@ -487,8 +473,6 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
             logger.exiting(ListenerManager.THREAD_EXCLUSION_MSG);
             return;
         }
-        return;
-
     }
 
     @Override

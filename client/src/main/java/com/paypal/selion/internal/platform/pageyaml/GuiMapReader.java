@@ -23,11 +23,11 @@ import java.util.Map;
  */
 public interface GuiMapReader {
 
-    static final String KEY = "Key";
-    static final String CONTAINER = "Container";
-    static final String ELEMENTS = "Elements";
-    static final String ELEMENTSv2 = "containerElements";
-    static final String DEFAULT_LOCALE = "US";
+    String KEY = "Key";
+    String CONTAINER = "Container";
+    String ELEMENTS = "Elements";
+    String ELEMENTSv2 = "containerElements";
+    String DEFAULT_LOCALE = "US";
 
     Map<String, String> getGuiMap(String locale);
 

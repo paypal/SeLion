@@ -275,10 +275,8 @@ public class JsonRuntimeReporterHelper {
         logger.entering(new Object[] { outputDirectory, bForceWrite });
 
         long currentTime = System.currentTimeMillis();
-        if (!bForceWrite) {
-            if (currentTime - previousTime < ONE_MINUTE) {
-                return;
-            }
+        if (!bForceWrite && (currentTime - previousTime < ONE_MINUTE)) {
+            return;
         }
         previousTime = currentTime;
 
