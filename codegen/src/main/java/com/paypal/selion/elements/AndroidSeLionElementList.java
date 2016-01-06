@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -26,14 +26,14 @@ public class AndroidSeLionElementList extends AbstractSeLionElementList {
 
     public static AndroidSeLionElementList UiButton =
             new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiButton", true);
-    public static AndroidSeLionElementList UiTextField =
-            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiTextField", true);
+    public static AndroidSeLionElementList UiTextView =
+            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiTextView", true);
     public static AndroidSeLionElementList UiObject =
             new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiObject", true);
     public static AndroidSeLionElementList BASE_CLASS =
             new AndroidSeLionElementList(null, "baseClass", false);
 
-    private static AndroidSeLionElementList[] values = { UiButton, UiTextField, UiObject, BASE_CLASS };
+    private static AndroidSeLionElementList[] values = { UiButton, UiTextView, UiObject, BASE_CLASS };
 
     protected AndroidSeLionElementList(String elementPackage, String element, boolean uiElement) {
         super(elementPackage, element, uiElement);

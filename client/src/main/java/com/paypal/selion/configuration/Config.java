@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,14 +24,11 @@ import java.util.Map.Entry;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
 import org.testng.ITestContext;
 
-import com.paypal.selion.configuration.ConfigManager;
-import com.paypal.selion.configuration.LocalConfig;
 import com.paypal.selion.internal.platform.grid.MobileNodeType;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventListener;
@@ -175,10 +172,15 @@ public final class Config {
      */
     public static void printSeLionConfigValues() {
         SeLionLogger.getLogger().entering();
-        StringBuilder builder = new StringBuilder("SeLion configuration :{");
+        StringBuilder builder = new StringBuilder("SeLion configuration: {");
+        boolean isFirst = true;
         for (ConfigProperty configProperty : ConfigProperty.values()) {
-            builder.append(String.format("(%s , %s),", configProperty,
+            if (!isFirst) {
+                builder.append(", ");
+            }
+            builder.append(String.format("(%s: %s)", configProperty,
                     Config.getConfig().getString(configProperty.getName())));
+            isFirst = false;
         }
         builder.append("}\n");
         SeLionLogger.getLogger().info(builder.toString());
@@ -223,22 +225,6 @@ public final class Config {
      */
     public synchronized static void initConfig(Map<ConfigProperty, String> initialValues) {
         SeLionLogger.getLogger().entering(initialValues);
-        /*
-         * Internally, HtmlUnit uses Apache commons logging. Each class that uses logging in HtmlUnit creates a Logger
-         * by using the LogFactory, and the defaults it generates. So to modify the Logger that is created, we need to
-         * set this attribute "org.apache.commons.logging.Log" to the Logger we want it to use.
-         * 
-         * Note: this has to be the *first* thing done prior to any apache code getting a handle, so we're putting it in
-         * here because the next call is to XMLConfiguration (apache code).
-         */
-        // NoOpLog essentially disables logging of HtmlUnit
-
-        boolean permitClogging = Boolean.valueOf(System.getProperty("SELION_PERMIT_CLOGGING", "false")).booleanValue();
-
-        if (!permitClogging) {
-            LogFactory factory = LogFactory.getFactory();
-            factory.setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-        }
 
         // only do this if the global config is not already initialized.
         if (config == null) {
@@ -327,6 +313,7 @@ public final class Config {
      * @return <b>true</b> or <b>false</b>
      */
     public static boolean checkPropertyExists(String propertyName) {
+        checkArgument(propertyName != null, "Property name cannot be null");
         return Config.getConfig().containsKey(propertyName);
     }
 
@@ -349,7 +336,7 @@ public final class Config {
     /**
      * SeLion config properties
      */
-    public static enum ConfigProperty {
+    public enum ConfigProperty {
         // Settings specific to SeLion
         /**
          * Automatically take screen shots.<br>
@@ -674,7 +661,7 @@ public final class Config {
         private String defaultValue;
         private boolean isGlobalScopeOnly;
 
-        private ConfigProperty(String name, String defaultValue, boolean globalScopeOnly) {
+        ConfigProperty(String name, String defaultValue, boolean globalScopeOnly) {
             checkArgument(name != null, "Config property name can not be null.");
             checkArgument(defaultValue != null, "Config property default value cannot be null.");
             this.name = name;

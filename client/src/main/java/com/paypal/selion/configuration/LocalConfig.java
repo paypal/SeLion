@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -144,24 +144,23 @@ public class LocalConfig {
      * Prints the configuration values associated with the LocalConfig. Used for logging/debug.
      * 
      * @param testName
-     *            - The &lt;test&gt; to which this configuration pertains to.
+     *            The &lt;test&gt; to which this configuration pertains to.
      */
     public synchronized void printConfigValues(String testName) {
         if (localConfig.isEmpty()) {
             return;
         }
 
-        StringBuilder builder = new StringBuilder(String.format("Configuration for <%s> :{", testName));
+        StringBuilder builder = new StringBuilder(String.format("Configuration for <%s>: {", testName));
+        boolean isFirst = true;
+
         for (ConfigProperty configProperty : ConfigProperty.values()) {
-            String value = Config.getConfig().getString(configProperty.getName());
-            String msg = null;
-            if (localConfig.containsKey(configProperty.getName())) {
-                value = localConfig.getString(configProperty.getName());
+            if (!isFirst) {
+                builder.append(", ");
             }
-            if (value != null && !value.trim().isEmpty()) {
-                msg = String.format("(%s , %s),", configProperty, value);
-                builder.append(msg);
-            }
+            String value = getConfigProperty(configProperty);
+            builder.append(String.format("(%s: %s)", configProperty, value));
+            isFirst = false;
         }
         builder.append("}\n");
         SeLionLogger.getLogger().info(builder.toString());
@@ -190,7 +189,7 @@ public class LocalConfig {
     public synchronized boolean isLocalValuePresent(ConfigProperty configProperty) {
         checkArgument(configProperty != null, "Config property cannot be null");
         String value = localConfig.getString(configProperty.getName());
-        return (value != null ? true : false);
+        return value != null;
     }
 
     private boolean checkNotInGlobalScope(ConfigProperty configProperty) {
