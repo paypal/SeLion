@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -97,9 +97,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isCheckable() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isCheckable(webElement);
+        boolean result = driver.isCheckable(webElement);
         logger.exiting(result);
         return result;
     }
@@ -108,9 +107,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isChecked() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isChecked(webElement);
+        boolean result = driver.isChecked(webElement);
         logger.exiting(result);
         return result;
     }
@@ -119,9 +117,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isClickable() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isClickable(webElement);
+        boolean result = driver.isClickable(webElement);
         logger.exiting(result);
         return result;
     }
@@ -130,9 +127,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isEnabled() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isEnabled(webElement);
+        boolean result = driver.isEnabled(webElement);
         logger.exiting(result);
         return result;
     }
@@ -141,9 +137,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isFocusable() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isFocusable(webElement);
+        boolean result = driver.isFocusable(webElement);
         logger.exiting(result);
         return result;
     }
@@ -152,9 +147,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isFocused() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isFocused(webElement);
+        boolean result = driver.isFocused(webElement);
         logger.exiting(result);
         return result;
     }
@@ -163,9 +157,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isLongClickable() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isLongClickable(webElement);
+        boolean result = driver.isLongClickable(webElement);
         logger.exiting(result);
         return result;
     }
@@ -174,9 +167,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isScrollable() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isScrollable(webElement);
+        boolean result = driver.isScrollable(webElement);
         logger.exiting(result);
         return result;
     }
@@ -185,9 +177,8 @@ public class UiObject implements UserinterfaceObject {
     public boolean isSelected() {
         logger.entering();
         getBridgeDriver();
-        boolean result = false;
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        result = driver.isSelected(webElement);
+        boolean result = driver.isSelected(webElement);
         logger.exiting(result);
         return result;
     }
@@ -227,7 +218,6 @@ public class UiObject implements UserinterfaceObject {
         logger.entering(text);
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
-        driver.clearText(webElement);
         driver.setText(webElement, text);
         logger.exiting();
     }
@@ -302,7 +292,6 @@ public class UiObject implements UserinterfaceObject {
             }
             if (expect instanceof WebPage) {
                 WebDriverWaitUtils.waitUntilPageIsValidated((WebPage) expect);
-                continue;
             }
         }
         logger.exiting();
