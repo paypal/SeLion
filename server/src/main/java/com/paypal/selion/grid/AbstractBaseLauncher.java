@@ -217,6 +217,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
             if (commands.contains(TYPE_ARG) && commands.contains(InstanceType.SELION_SAUCE_HUB.getFriendlyName())) {
                 hubConfig = HUB_SAUCE_CONFIG_FILE;
                 InstallHelper.copyFileFromResources(HUB_SAUCE_CONFIG_FILE_RESOURCE, HUB_SAUCE_CONFIG_FILE);
+                InstallHelper.copyFileFromResources(NODE_SAUCE_CONFIG_FILE_RESOURCE, NODE_SAUCE_CONFIG_FILE);
                 InstallHelper.copyFileFromResources(SAUCE_CONFIG_FILE_RESOURCE, SAUCE_CONFIG_FILE);
             } else {
                 InstallHelper.copyFileFromResources(HUB_CONFIG_FILE_RESOURCE, HUB_CONFIG_FILE);

@@ -10,6 +10,7 @@
         </groups>
         <packages>
             <package name="com.paypal.selion.grid.*" />
+            <package name="com.paypal.selion.proxy.*" />
         </packages>
     </test>
 </suite>

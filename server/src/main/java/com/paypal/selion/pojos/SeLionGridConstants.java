@@ -105,6 +105,11 @@ public class SeLionGridConstants {
     public static final String HUB_SAUCE_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + "hubSauceConfig.json";
 
     /**
+     * Resource path to the default nodeSauceConfig.json file
+     */
+    public static final String NODE_SAUCE_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + "nodeSauceConfig.json";
+
+    /**
      * Installed/Extracted path to the hubConfig.json file
      */
     public static final String HUB_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
@@ -115,6 +120,12 @@ public class SeLionGridConstants {
      */
     public static final String HUB_SAUCE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "hubSauceConfig.json");
+
+    /**
+     * Installed/Extracted path to the nodeSauceConfig.json file
+     */
+    public static final String NODE_SAUCE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
+            + "nodeSauceConfig.json");
 
     /**
      * Resource path to the default sauceConfig.json file
