@@ -15,6 +15,7 @@
 
 package com.paypal.selion.grid.servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -22,6 +23,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.paypal.selion.pojos.SeLionGridConstants;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -32,7 +35,6 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
-import com.paypal.selion.proxy.SeLionSauceProxy;
 import com.paypal.selion.utils.ServletHelper;
 
 /**
@@ -82,22 +84,7 @@ public class SauceServlet extends RegistryBasedServlet {
 
             BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST",
                     registration.toExternalForm());
-            // TODO: Maybe we should consider putting in this registration request in a JSON file
-            // for ease of editing it, in-case something changes.
-            String json = "{\"class\":\"org.openqa.grid.common.RegistrationRequest\","
-                    + "\"capabilities\":["
-                    + "{\"platform\":\"ANY\",\"browserName\":\"firefox\",\"maxInstances\":20},"
-                    + "{\"platform\":\"ANY\",\"browserName\":\"internet explorer\",\"maxInstances\":20}"
-                    + "],"
-                    // TODO: We are assuming that port 5555 would always be available for us to use. But what
-                    // if that port is already hard wired to some other application thereby causing the node to never
-                    // be able to come up at all ? Perhaps parameterize this too ?
-                    + "\"configuration\":{\"port\":5555,\"register\":true," + "\"cleanUpCycle\":30000,"
-                    + "\"timeout\":120000," + "\"proxy\":\"" + SeLionSauceProxy.class.getCanonicalName() + "\","
-                    + "\"maxSession\":100,"
-                    + "\"hubHost\":\"localhost\",\"role\":\"wd\",\"registerCycle\":5000,\"hubPort\":" + port + ","
-                    + "\"url\":\"http://localhost:" + port + "\",\"remoteHost\":\"http://localhost:" + port + "\"}"
-                    + "}";
+            String json = FileUtils.readFileToString(new File(SeLionGridConstants.NODE_SAUCE_CONFIG_FILE));
             r.setEntity(new StringEntity(json));
             HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
             HttpClientFactory httpClientFactory = new HttpClientFactory();
@@ -106,7 +93,7 @@ public class SauceServlet extends RegistryBasedServlet {
             // TODO: Should we do something with the status code for e.g., check if it was "200". Maybe attempt a few
             // retries as well if the registration didnt go through ?
 
-            respMsg = "<p align='center'><b>Sauce node registration got failed. Please refer to the log file for failure details</b></p>";
+            respMsg = "<p align='center'><b>Sauce node registration failed. Please refer to the log file for failure details</b></p>";
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 respMsg = "<p align='center'><b>Sauce node registered successfully</b></p>";

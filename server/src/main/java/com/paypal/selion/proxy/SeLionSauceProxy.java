@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -47,13 +47,12 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionSauceProxy.class);
 
-    private final int maxTestCase;
+    private int maxTestCase = -1;
 
     private final Lock accessLock = new ReentrantLock();
 
     public SeLionSauceProxy(RegistrationRequest request, Registry registry) {
         super(request, registry);
-        maxTestCase = getMaxTestcase();
     }
 
     @Override
@@ -68,7 +67,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
 
-            if (getNumberOfTCRunning() <= maxTestCase) {
+            if (getNumberOfTCRunning() <= getMaxTestcase()) {
                 String username = (String) requestedCapability.get("sauceUserName");
                 String accessKey = (String) requestedCapability.get("sauceApiKey");
                 String tunnelId = (String) requestedCapability.get("parent-tunnel");
@@ -95,7 +94,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
     /**
      * Get the total number of test cases running in sauce labs for the primary account.
      * 
-     * @return number of test cases running
+     * @return number of test cases running or 0 on failure calling sauce labs
      */
     public int getNumberOfTCRunning() {
         try {
@@ -105,7 +104,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
         } catch (JsonSyntaxException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
-        return maxTestCase + 1;
+        return getMaxTestcase() + 1;
     }
 
     /**
@@ -128,17 +127,19 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
     /**
      * Get the maximum number of test case that can run in parallel for the primary account.
      * 
-     * @return maximum no of testcase
+     * @return maximum no of testcase or -1 on failure calling sauce labs
      */
     public int getMaxTestcase() {
-        try {
-            String result = getSauceLabsRestApi(SauceConfigReader.getInstance().getURL() + "/limits");
-            JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
-            return obj.get("concurrency").getAsInt();
-        } catch (JsonSyntaxException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        if (maxTestCase == -1) {
+            try {
+                String result = getSauceLabsRestApi(SauceConfigReader.getInstance().getURL() + "/limits");
+                JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+                maxTestCase = obj.get("concurrency").getAsInt();
+            } catch (JsonSyntaxException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
-        return 0;
+        return maxTestCase;
     }
 
     public URL getRemoteHost() {
@@ -156,35 +157,43 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
 
     private String getSauceLabsRestApi(String urlString) {
 
-        URL url;
         HttpURLConnection conn = null;
-        String result = "";
-        try {
-            url = new URL(urlString);
-            conn = (HttpURLConnection) url.openConnection();
+        StringBuilder result = new StringBuilder();
+        int numRetriesOnFailure = 0;
+        int sauceTimeOut = getSauceTimeout();
+        do {
+            try {
+                URL url = new URL(urlString);
+                conn = (HttpURLConnection) url.openConnection();
 
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", "Basic " + SauceConfigReader.getInstance().getAuthenticationKey());
-            if (conn.getResponseCode() != HttpStatus.SC_OK) {
-                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+                conn.setConnectTimeout(sauceTimeOut);
+                conn.setReadTimeout(sauceTimeOut);
+
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Authorization",
+                        "Basic " + SauceConfigReader.getInstance().getAuthenticationKey());
+                if (conn.getResponseCode() != HttpStatus.SC_OK) {
+                    throw new IOException("Failed: HTTP error code: " + conn.getResponseCode());
+                }
+
+                BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+                String input;
+                while ((input = br.readLine()) != null) {
+                    result.append(input);
+                }
+                br.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
+        } while (StringUtils.isEmpty(result.toString()) && numRetriesOnFailure++ < getSauceRetryCount());
 
-            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-            String output;
-
-            while ((output = br.readLine()) != null) {
-                result = result + output;
-            }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return result;
+        return result.toString();
     }
 
     public void teardown() {
@@ -195,5 +204,13 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
         // If the sauce server is down the grid is marking node as down. To avoid this it is overridden to always return
         // true.
         return true;
+    }
+
+    private int getSauceTimeout() {
+        return SauceConfigReader.getInstance().getSauceTimeout();
+    }
+
+    private int getSauceRetryCount() {
+        return SauceConfigReader.getInstance().getSauceRetry();
     }
 }

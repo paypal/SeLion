@@ -18,7 +18,6 @@ package com.paypal.selion.utils;
 import java.util.logging.Level;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
 
@@ -35,10 +34,22 @@ public class SauceConfigReader {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigReader.class);
     private static SauceConfigReader reader = new SauceConfigReader();
 
+    private static final String SAUCE_TIMEOUT = "sauceTimeout";
+    private static final String SAUCE_RETRY = "sauceRetries";
+
+    // Default of 10 seconds for connection & read
+    private static final int DEFAULT_TIMEOUT = 10 * 1000;
+    // Number of retries before giving up on sauce
+    private static final int DEFAULT_RETRY_COUNT = 2;
+
     private String authKey;
     private String sauceURL;
     private String url;
     private String userName;
+
+    // The connection & read timeout for sauce REST calls in milliseconds.
+    private int sauceTimeout = DEFAULT_TIMEOUT;
+    private int sauceRetry = DEFAULT_RETRY_COUNT;
 
     /**
      * @return - A {@link SauceConfigReader} object that can be used to retrieve values from the Configuration object as
@@ -68,6 +79,14 @@ public class SauceConfigReader {
 
             url = sauceURL + "/" + userName;
 
+            if (jsonObject.has(SAUCE_RETRY) && !jsonObject.get(SAUCE_RETRY).isJsonNull()) {
+                sauceRetry = jsonObject.get(SAUCE_RETRY).getAsInt();
+            }
+
+            if (jsonObject.has(SAUCE_TIMEOUT) && !jsonObject.get(SAUCE_TIMEOUT).isJsonNull()) {
+                sauceTimeout = jsonObject.get(SAUCE_TIMEOUT).getAsInt();
+            }
+
             LOGGER.info("Sauce Config loaded successfully");
 
         } catch (JsonSyntaxException e) {
@@ -78,14 +97,11 @@ public class SauceConfigReader {
     }
 
     private String getAttributeValue(JsonObject jsonObject, String key) {
+        String value = null;
         if (jsonObject.has(key) && !jsonObject.get(key).isJsonNull()) {
-            String value = jsonObject.get(key).getAsString();
-            if(StringUtils.isNotBlank(value)) {
-                return value;
-            }
+            value = jsonObject.get(key).getAsString();
         }
-        
-        throw new GridConfigurationException("Invalid property " + key + " in " + SeLionGridConstants.SAUCE_CONFIG_FILE);
+        return value;
     }
 
     /**
@@ -120,4 +136,17 @@ public class SauceConfigReader {
         return url;
     }
 
+    /**
+     * @return the timeout in milleseconds for sauce
+     */
+    public int getSauceTimeout() {
+        return sauceTimeout;
+    }
+
+    /**
+     * @return the number of retries with sauce
+     */
+    public int getSauceRetry() {
+        return sauceRetry;
+    }
 }
