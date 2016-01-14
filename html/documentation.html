@@ -144,12 +144,20 @@
     </li>
   </ul>
 </span>
+<a class="selion-open-chat-button">Chat</a>
 
 
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
+<script>
+  ((window.gitter = {}).chat = {}).options = {
+    room: 'paypal/SeLion',
+    activationElement: '.selion-open-chat-button'
+  };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 <script src="../js/jquery.min.js"></script>
 <script src="../js/docs.min.js"></script>
 <!-- SeLion specific JavaScript -- Requires jQuery -->
