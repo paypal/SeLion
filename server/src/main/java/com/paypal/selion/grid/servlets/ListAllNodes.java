@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -70,7 +70,8 @@ public class ListAllNodes extends RegistryBasedServlet {
      */
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean doStatusQuery = request.getParameter("pingNodes") != null;
-        if (request.getHeader("Accept").equalsIgnoreCase("application/json")) {
+        String acceptHeader = request.getHeader("Accept");
+        if (acceptHeader != null && acceptHeader.equalsIgnoreCase("application/json")) {
             ServletHelper.respondAsJsonWithHttpStatus(response, getProxyInfo(doStatusQuery), HttpServletResponse.SC_OK);
         } else {
             ServletHelper.respondAsHtmlUsingJsonAndTemplateWithHttpStatus(response, getProxyInfo(doStatusQuery),

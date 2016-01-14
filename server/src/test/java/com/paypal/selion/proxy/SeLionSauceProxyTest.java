@@ -25,7 +25,6 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import java.io.File;
