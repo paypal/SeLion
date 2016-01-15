@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -94,7 +94,7 @@ public enum GestureOptions {
 
     private String optionName;
 
-    private GestureOptions(String optionName) {
+    GestureOptions(String optionName) {
         this.optionName = optionName;
     }
 
@@ -205,7 +205,7 @@ public enum GestureOptions {
         @SuppressWarnings("unused")
         private final double y;
 
-        private Gson gson;
+        private final Gson gson;
 
         public TapOffset(double x, double y) {
             this.x = x;

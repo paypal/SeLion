@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -27,6 +27,6 @@ public interface UIAutomationSlider extends UIAutomationElement {
      *            The desired decimal value from 0 to 1, inclusive. A 0 value represents far left and a value of 1
      *            represents far right.
      */
-    public void dragToValue(double value);
+    void dragToValue(double value);
 
 }

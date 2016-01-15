@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -170,7 +170,7 @@ class MethodInfo {
      * This method generate the JSON string for the instance. GSON builder helps to build JSON string and it will
      * exclude the static and transient variable during generation.
      * 
-     * @return - JSON string
+     * @return JSON string
      */
     public String toJson() {
         logger.entering();

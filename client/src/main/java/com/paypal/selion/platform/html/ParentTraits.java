@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,7 +35,7 @@ public interface ParentTraits {
      * 
      * @param locator
      */
-    public RemoteWebElement locateChildElement(String locator);
+    RemoteWebElement locateChildElement(String locator);
 
     /**
      * Returns the {@link List} of WebElements {@link WebElement} denoted by the locator
@@ -43,12 +43,12 @@ public interface ParentTraits {
      * @param locator
      * 
      */
-    public List<WebElement> locateChildElements(String locator);
+    List<WebElement> locateChildElements(String locator);
 
     /**
      * Returns the current page {@link BasicPageImpl}
      * 
      */
-    public BasicPageImpl getCurrentPage();
+    BasicPageImpl getCurrentPage();
 
 }
