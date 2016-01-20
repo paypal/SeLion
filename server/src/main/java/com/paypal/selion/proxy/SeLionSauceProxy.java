@@ -101,7 +101,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
             String result = getSauceLabsRestApi(SauceConfigReader.getInstance().getURL() + "/activity");
             JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
             return obj.getAsJsonObject("totals").get("all").getAsInt();
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException | IllegalStateException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return getMaxTestcase() + 1;
@@ -135,7 +135,7 @@ public class SeLionSauceProxy extends DefaultRemoteProxy {
                 String result = getSauceLabsRestApi(SauceConfigReader.getInstance().getURL() + "/limits");
                 JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
                 maxTestCase = obj.get("concurrency").getAsInt();
-            } catch (JsonSyntaxException e) {
+            } catch (JsonSyntaxException | IllegalStateException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
