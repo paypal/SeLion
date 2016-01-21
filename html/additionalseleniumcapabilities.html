@@ -1,0 +1,30 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Specifying Additional Selenium Capabilities</h1>
+  <!-- Docs page layout Starts-->
+  <p class="lead">SeLion provides multiple ways to specify additional selenium capabilities.</p>
+
+  <h2 id="SeleniumCaps-AdditionalSeleniumCapabilitiesViaWebTestAnnotation">Via the Annotation</h2>
+  <p>Additional Selenium capabilities can be configured via the SeLion annotations WebTest and MobileTest. When you do this,
+    the additional capabilities provided are local to a single test. For example:</p>
+
+  <pre data-src="../sample-files/additionalseleniumcapabilitiesviawebtest-sample.java"></pre>
+
+  <h2 id="SeleniumCaps-AdditionalSeleniumCapabilitiesViaCapabilityBuilder">Via a Custom Capabilities Provider</h2>
+  <p>Additional Selenium capabilities can be configured via a custom capabilities provider. When you do this, the additional
+    capabilities are considered for the entire test suite and based on your needs, may or may-not be sent with a single test.
+    To create your own capabilities provider you need to build a java class which extends <code>DefaultCapabilitiesBuilder</code>
+    and override the method <code>getCapabilities</code>.
+    For example:</p>
+  <pre data-src="../sample-files/userdefinedcapabilities-sample.java"></pre>
+
+  <p>In the above example, the capability <code>capName</code> will be added for all tests.</p>
+  <p>Once you create your own custom capabilities provider, you need to tell SeLion to use it. This is accomplished via
+    configuration by specifying the system property or environment variable <code>SELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER</code>
+    or via the TestNG &lt;parameter&gt; <code>customCapabilities</code>. For example;</p>
+  <pre><code class="language-sh">mvn test -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER="com.mycompany.test.UserDefinedCapabilities"</code></pre>
+  <pre data-src="../sample-files/additionalcapabilities-sample1.xml"></pre></p>
+
+  <p>If more than one custom capabilities providers are required, please separate the fully qualified class names with commas.</p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>
