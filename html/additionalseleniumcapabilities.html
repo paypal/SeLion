@@ -1,0 +1,24 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Specifying Additional Selenium Capabilities</h1>
+  <!-- Docs page layout Starts-->
+  <p class="lead">SeLion provides multiple ways to specify additional selenium capabilities via WebTest annotation and custom capabilities provider.</p>
+
+  <h2 id="SeLionConfigParameters-AdditionalSeleniumCapabilitiesViaWebTestAnnotation">Additional Selenium Capabilities via WebTest Annotation</h2>
+  <p>Additional Selenium capabilities can be configured via WebTest annotation for each test. An example test method is as follows.</p>
+
+  <pre data-src="../sample-files/additionalseleniumcapabilitiesviawebtest-sample.java"></pre>
+
+  <h2 id="SeLionConfigParameters-AdditionalSeleniumCapabilitiesViaCapabilityBuilder">Additional Selenium Capabilities via Capability Builder</h2>
+  <p>Additional Selenium capabilities can be configured via Capabilities builder which is applicable for all the tests in the suite. Create an java class it
+    should be an sub-class of <code>DefaultCapabilitiesBuilder</code> and add your Selenium capabilities to the DesiredCapability in the class as follows.</p>
+
+  <pre data-src="../sample-files/userdefinedcapabilities-sample.java"></pre>
+
+  <p>In the above example capability capName will be added to the desired capabiltiy for all the tests. Your custom capabilities provider
+    should be defined in the <code>SELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER</code> configuration parameter as follows.</p>
+  <pre><code>mvn test -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER="com.mycompany.test.UserDefinedCapabilities"</code></pre></p>
+
+  <p>If more than one custom capabilities providers are required, please separate the fully qualified class names with commas.</p>
+</div>
+
+<script src="../js/prismjs-min.js"></script>
