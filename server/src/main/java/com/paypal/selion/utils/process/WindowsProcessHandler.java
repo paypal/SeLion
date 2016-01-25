@@ -42,12 +42,13 @@ public class WindowsProcessHandler extends AbstractProcessHandler implements Pro
         int ourPid = getCurrentProcessID();
 
         // Find all processes names that are our direct children using our PID as the parent pid using wmic.
-        // As well as iexplore process that are orphaned.
+        // As well as any iexplore or werfault processes that are orphans.
         // We want to kill only the direct child processes we have started. ("More +2" drops the csv header from output)
-        // Note that we plan to kill all child process descendants in killProcess (with /T)
-        String cmd = String.format("wmic process where (parentprocessid=%s or name=\"%s\") " +
+        // Note that we plan to kill all candidate descendants in killProcess (with /T)
+        String cmd = String.format("wmic process where (parentprocessid=%s or name=\"%s\" or name=\"%s\") " +
                         "get name,processid /format:csv | more +2",
-                String.valueOf(ourPid), ProcessNames.INTERNET_EXPLORER.getWindowsImageName());
+                String.valueOf(ourPid), ProcessNames.INTERNET_EXPLORER.getWindowsImageName(), ProcessNames.WERFAULT
+                        .getWindowsImageName());
         try {
             List<ProcessInfo> processToBeKilled = getProcessInfo(new String[] { "cmd.exe", "/C", cmd }, DELIMITER,
                     OSPlatform.WINDOWS);
