@@ -3,24 +3,24 @@
     "name": "selenium",
     "roles": [ "node", "hub", "standalone", "sauce" ],
     "any": {
-      "url": "https://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar",
-      "checksum": "b2784fc67c149d3c13c83d2108104689"
+      "url": "https://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar",
+      "checksum": "30aa6d207e530a3c25fc3c12ea968a8d"
     }
   },
   {
     "name": "chromedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://chromedriver.storage.googleapis.com/2.20/chromedriver_win32.zip",
-      "checksum": "028ee452b8e23890ec5ec6b0717fd295"
+      "url": "https://chromedriver.storage.googleapis.com/2.21/chromedriver_win32.zip",
+      "checksum": "8a93dc3ff02ef9bc3161dd4b20f87215"
     },
     "linux": {
-      "url": "https://chromedriver.storage.googleapis.com/2.20/chromedriver_linux64.zip",
-      "checksum": "245858cc984bd946df6a1e6719c8e6f5"
+      "url": "https://chromedriver.storage.googleapis.com/2.21/chromedriver_linux64.zip",
+      "checksum": "06e57f4c411e1135c6277d17ea8390fd"
     },
     "mac": {
-      "url": "https://chromedriver.storage.googleapis.com/2.20/chromedriver_mac32.zip",
-      "checksum": "749d4be0a317e92fd3aecaa022385439"
+      "url": "https://chromedriver.storage.googleapis.com/2.21/chromedriver_mac32.zip",
+      "checksum": "452d8c9cba353ba366d15fbeba013943"
     }
   },
   {
@@ -43,16 +43,16 @@
     "name": "iedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "http://selenium-release.storage.googleapis.com/2.48/IEDriverServer_Win32_2.48.0.zip",
-      "checksum": "f7b8b07393e31d05ab360a06f51b482a"
+      "url": "http://selenium-release.storage.googleapis.com/2.52/IEDriverServer_Win32_2.52.1.zip",
+      "checksum": "0fb199d71d991dfcf65a198051016d00"
     }
   },
   {
     "name": "edgedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://download.microsoft.com/download/1/4/1/14156DA0-D40F-460A-B14D-1B264CA081A5/MicrosoftWebDriver.msi",
-      "checksum": "32722bf59f09b937ea23915ea980c4b8"
+      "url": "https://download.microsoft.com/download/8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C/MicrosoftWebDriver.msi",
+      "checksum": "524f701858a4c4ac82e4b0e496ba971ac64a5662"
     }
   },
   {

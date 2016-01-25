@@ -215,7 +215,8 @@ final class FileDownloader {
             if (result.endsWith(".msi")) {
                 String extractedExeFile = FileExtractor.extractMsi(result);
                 files.add(extractedExeFile);
-            } else if (!result.endsWith(".jar") && !result.endsWith(".msi")) {
+            }
+            if (!result.endsWith(".jar") && !result.endsWith(".msi")) {
                 List<String> extractedFileList = FileExtractor.extractArchive(result);
                 files.addAll(extractedFileList);
             }

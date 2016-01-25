@@ -77,6 +77,12 @@
             </dependency>
 
             <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.2</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>4.5.1</version>
@@ -109,7 +115,7 @@
             <dependency>
                 <artifactId>guava</artifactId>
                 <groupId>com.google.guava</groupId>
-                <version>18.0</version>
+                <version>19.0</version>
             </dependency>
 
             <!-- TestNG -->
@@ -231,6 +237,10 @@
                     <exclusion>
                         <artifactId>httpclient</artifactId>
                         <groupId>org.apache.httpcomponents</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -363,6 +373,10 @@
                         <groupId>commons-lang</groupId>
                         <artifactId>commons-lang</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -392,6 +406,10 @@
                     <exclusion>
                         <artifactId>junit</artifactId>
                         <groupId>junit</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
