@@ -49,7 +49,7 @@ public class PasswordChangeServlet extends HttpServlet {
     public static final String NEW_PASSWORD_1 = "newPassword1";
 
     /**
-     * Form parameter for the new password (seconde entry)
+     * Form parameter for the new password (second entry)
      */
     public static final String NEW_PASSWORD_2 = "newPassword2";
 

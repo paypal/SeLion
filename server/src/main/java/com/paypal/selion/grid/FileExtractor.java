@@ -60,18 +60,13 @@ final class FileExtractor {
      */
     static List<String> getExecutableNames() {
         List<String> executableNames = new ArrayList<String>();
-        switch (Platform.getCurrent()) {
-        case WINDOWS: {
+        if (Platform.getCurrent().is(Platform.WINDOWS)) {
             Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getWindowsImageName(),
                     ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName(),
                     ProcessNames.EDGEDRIVER.getWindowsImageName());
-            break;
-        }
-        default: {
+        } else {
             Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getUnixImageName(),
                     ProcessNames.CHROMEDRIVER.getUnixImageName());
-            break;
-        }
         }
         return executableNames;
     }
