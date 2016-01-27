@@ -14,6 +14,10 @@
     }, {
         "browserName": "internet explorer",
         "maxInstances": 1
+    },
+    {
+        "browserName": "MicrosoftEdge",
+        "maxInstances": 1
     }],
     "configuration": {
         "servlets": "com.paypal.selion.node.servlets.LogServlet,com.paypal.selion.node.servlets.NodeAutoUpgradeServlet,com.paypal.selion.node.servlets.NodeForceRestartServlet",

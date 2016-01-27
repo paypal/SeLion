@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -113,6 +113,15 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
             Config.setConfigProperty(ConfigProperty.SELENIUM_IEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
                     + SeLionConstants.IE_DRIVER);
             list.add("iedriver");
+        }
+
+        // for MicrosoftWebDriver
+        if (SystemUtils.IS_OS_WINDOWS
+                && !checkForPresenceOf(ConfigProperty.SELENIUM_EDGEDRIVER_PATH,
+                        SeLionConstants.WEBDRIVER_EDGE_DRIVER_PROPERTY, SeLionConstants.EDGE_DRIVER)) {
+            Config.setConfigProperty(ConfigProperty.SELENIUM_EDGEDRIVER_PATH, SeLionConstants.SELION_HOME_DIR
+                    + SeLionConstants.EDGE_DRIVER);
+            list.add("edgedriver");
         }
 
         // for chromedriver

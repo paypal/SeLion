@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -51,6 +51,11 @@ public class SeLionConstants {
      * Executable name for IEDriver
      */
     public static final String IE_DRIVER = "IEDriverServer.exe";
+
+    /**
+     * Executable name for EdgeDriver
+     */
+    public static final String EDGE_DRIVER = "MicrosoftWebDriver.exe";
 
     /**
      * Platform specific executable name for chromedriver
