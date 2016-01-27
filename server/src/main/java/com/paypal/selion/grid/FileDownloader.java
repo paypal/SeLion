@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -49,7 +49,7 @@ final class FileDownloader {
     private static List<String> files = new ArrayList<String>();
     private static long lastModifiedTime;
     private static final List<String> SUPPORTED_TYPES = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR,
-            ArchiveStreamFactory.JAR, "bz2");
+            ArchiveStreamFactory.JAR, "bz2", "msi");
     private static final File DOWNLOAD_FILE = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
 
     private FileDownloader() {
@@ -212,7 +212,10 @@ final class FileDownloader {
                 LOGGER.warning("Error downloading the file " + url + ". Retrying....");
             }
             files.add(result);
-            if (!result.endsWith(".jar")) {
+            if (result.endsWith(".msi")) {
+                String extractedExeFile = FileExtractor.extractMsi(result);
+                files.add(extractedExeFile);
+            } else if (!result.endsWith(".jar") && !result.endsWith(".msi")) {
                 List<String> extractedFileList = FileExtractor.extractArchive(result);
                 files.addAll(extractedFileList);
             }
@@ -315,7 +318,7 @@ final class FileDownloader {
         String fileType = url.substring(url.lastIndexOf('.') + 1);
         if (!SUPPORTED_TYPES.contains(fileType)) {
             throw new UnsupportedOperationException("Unsupported file format: " + fileType
-                    + ". Supported file types are .zip,.tar and bz2");
+                    + ". Supported file types are .zip, .tar, .msi and bz2");
         }
     }
 
