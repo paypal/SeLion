@@ -3,24 +3,24 @@
     "name": "selenium",
     "roles": [ "node", "hub", "standalone", "sauce" ],
     "any": {
-      "url": "https://selenium-release.storage.googleapis.com/2.47/selenium-server-standalone-2.47.1.jar",
-      "checksum": "e6cb10b8f0f353c6ca4a8f62fb5cb472"
+      "url": "https://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar",
+      "checksum": "b2784fc67c149d3c13c83d2108104689"
     }
   },
   {
     "name": "chromedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://chromedriver.storage.googleapis.com/2.16/chromedriver_win32.zip",
-      "checksum": "3e1b4a91e12a9872a4ed83c9e61c122e"
+      "url": "https://chromedriver.storage.googleapis.com/2.20/chromedriver_win32.zip",
+      "checksum": "028ee452b8e23890ec5ec6b0717fd295"
     },
     "linux": {
-      "url": "https://chromedriver.storage.googleapis.com/2.16/chromedriver_linux64.zip",
-      "checksum": "fa8e1bc6f9ce474582876653604d675e"
+      "url": "https://chromedriver.storage.googleapis.com/2.20/chromedriver_linux64.zip",
+      "checksum": "245858cc984bd946df6a1e6719c8e6f5"
     },
     "mac": {
-      "url": "https://chromedriver.storage.googleapis.com/2.16/chromedriver_mac32.zip",
-      "checksum": "3ae88facdc6ad1b716820cc5f678a6c4"
+      "url": "https://chromedriver.storage.googleapis.com/2.20/chromedriver_mac32.zip",
+      "checksum": "749d4be0a317e92fd3aecaa022385439"
     }
   }
 ]
