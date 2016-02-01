@@ -16,6 +16,8 @@
 package com.paypal.selion.proxy;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServlet;
+
+import com.paypal.selion.grid.servlets.GridStatistics;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -40,20 +46,21 @@ import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.paypal.selion.SeLionBuildInfo;
-import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
-import com.paypal.selion.node.servlets.LogServlet;
-import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet;
 import com.paypal.selion.logging.SeLionGridLogger;
+import com.paypal.selion.node.servlets.LogServlet;
 import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
+import com.paypal.selion.node.servlets.NodeForceRestartServlet;
+import com.paypal.selion.pojos.BrowserInformationCache;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ConfigParser;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import com.paypal.test.utilities.logging.SimpleLoggerSettings;
-
-import javax.servlet.http.HttpServlet;
 
 /**
  * This is a customized {@link DefaultRemoteProxy} for SeLion. <br>
@@ -154,6 +161,13 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         }
         proxyLogger.info(info.toString());
 
+        // Enable the cache to store the browser information only when the
+        // "com.paypal.selion.grid.servlets.GridStatistics" is enabled - results in
+        // better memory management if the servlet is not loaded
+        if (isSupportedOnHub(GridStatistics.class)) {
+            updateBrowserCache(request);
+        }
+
         // detect presence of SeLion servlet capabilities on proxy
         canForceShutdown = isSupportedOnNode(NodeForceRestartServlet.class);
         canAutoUpgrade = isSupportedOnNode(NodeAutoUpgradeServlet.class);
@@ -164,6 +178,30 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         getConfig().put("nodeRecycleThreadWaitTimeout", getNodeRecycleThread().getThreadWaitTimeout());
     }
 
+    /**
+     * Determine if the hub supports the servlet in question by looking at the registry configuration.
+     * @param servlet
+     *            the {@link HttpServlet} to ping
+     * @return <code>true</code> or <code>false</code>
+     */
+    private boolean isSupportedOnHub(Class<? extends HttpServlet> servlet) {
+        LOGGER.entering();
+        final boolean response = getRegistry().getConfiguration().getServlets().contains(servlet.getCanonicalName());
+        LOGGER.exiting(response);
+        return response;
+    }
+
+    /**
+     * Determine if the remote proxy supports the servlet in question by sending a http request to the remote. The
+     * proxy configuration could also be used to make a similar decision. This approach allows the remote to use a
+     * servlet which implements the same functionality as the `servlet` expected but does not necessarily reside in the
+     * same namespace. This method expects the `servlet` to return HTTP 200 OK as an indication that the remote proxy
+     * supports the `servlet` in question.
+     *
+     * @param servlet
+     *            the {@link HttpServlet} to ping
+     * @return <code>true</code> or <code>false</code>
+     */
     private boolean isSupportedOnNode(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
 
@@ -194,6 +232,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
+        LOGGER.exiting(true);
         return true;
     }
 
@@ -273,7 +312,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      * @return whether the proxy has reached the max unique sessions
      */
     private boolean isMaxUniqueSessionsReached() {
-        if (!isEnabledMaxUniqueSessions()){
+        if (!isEnabledMaxUniqueSessions()) {
             return false;
         }
         return totalSessionsStarted >= getMaxSessionsAllowed();
@@ -316,8 +355,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     }
 
     private TestSession logSessionInfo() {
-        proxyLogger.fine("Was max sessions reached? " + (isMaxUniqueSessionsReached()) + " on node "
-                + getId());
+        proxyLogger.fine("Was max sessions reached? " + (isMaxUniqueSessionsReached()) + " on node " + getId());
         proxyLogger.fine("Was this a scheduled shutdown? " + (scheduledShutdown) + " on node " + getId());
         return null;
     }
@@ -335,6 +373,22 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
                 getNodeRecycleThread().join(2000); // Wait no longer than 2x the recycle thread's loop
             } catch (InterruptedException e) { // NOSONAR
                 // ignore
+            }
+        }
+    }
+
+    private void updateBrowserCache(RegistrationRequest request) throws MalformedURLException {
+        // Update the browser information cache. Used by GridStatics servlet
+        String urlString = request.getConfiguration().get("url").toString();
+        URL url = new URL(urlString);
+        for (DesiredCapabilities desiredCapabilities : request.getCapabilities()) {
+            Map<String, ?> capabilitiesMap = desiredCapabilities.asMap();
+            String browserName = capabilitiesMap.get(CapabilityType.BROWSER_NAME).toString();
+            String maxInstancesAsString = capabilitiesMap.get("maxInstances").toString();
+            if (StringUtils.isNotBlank(browserName) && StringUtils.isNotBlank(maxInstancesAsString)) {
+                int maxInstances = Integer.valueOf(maxInstancesAsString);
+                BrowserInformationCache cache = BrowserInformationCache.getInstance();
+                cache.updateBrowserInfo(url, browserName, maxInstances);
             }
         }
     }
