@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,7 +25,9 @@ public enum ProcessNames {
     CHROMEDRIVER("chromedriver.exe", "chromedriver"),
     IEDRIVER("iedriverserver.exe", "NOTAPPLICABLE"),
     PHANTOMJS("phantomjs.exe", "phantomjs"),
-    WERFAULT("werfault.exe", "NOTAPPLICABLE");
+    WERFAULT("werfault.exe", "NOTAPPLICABLE"),
+    MICROSOFTEDGE("MicrosoftEdge.exe", "NOTAPPLICABLE"),
+    EDGEDRIVER("MicrosoftWebDriver.exe", "NOTAPPLICABLE");
 
     private ProcessNames(String windowsImageName, String unixImageName) {
         this.windowsImageName = windowsImageName;

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -31,6 +31,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.Platform;
 
@@ -54,23 +55,22 @@ final class FileExtractor {
 
     /**
      * Utility method to return the executable names for the specified platform.
-     *
+     * 
      * @return {@link List} of {@link String} containing the executable file names.
      */
-    
+
     static List<String> getExecutableNames() {
         List<String> executableNames = new ArrayList<String>();
         switch (Platform.getCurrent()) {
-        case MAC:
-        case UNIX:
-        case LINUX: {
-            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getUnixImageName(),
-                    ProcessNames.CHROMEDRIVER.getUnixImageName());
+        case WINDOWS: {
+            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getWindowsImageName(),
+                    ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName(),
+                    ProcessNames.EDGEDRIVER.getWindowsImageName());
             break;
         }
         default: {
-            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getWindowsImageName(),
-                    ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName());
+            Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getUnixImageName(),
+                    ProcessNames.CHROMEDRIVER.getUnixImageName());
             break;
         }
         }
@@ -131,8 +131,8 @@ final class FileExtractor {
         ArchiveInputStream archiveStream = null;
 
         try {
-            archiveStream = new ArchiveStreamFactory().createArchiveInputStream(archiveStreamType,
-                    new FileInputStream(workingArchiveFile));
+            archiveStream = new ArchiveStreamFactory().createArchiveInputStream(archiveStreamType, new FileInputStream(
+                    workingArchiveFile));
             ArchiveEntry entry;
             while ((entry = archiveStream.getNextEntry()) != null) {
                 String fileNameInEntry = getFileNameFromPath(entry.getName());
@@ -173,5 +173,72 @@ final class FileExtractor {
 
         LOGGER.exiting(files.toString());
         return files;
+    }
+
+    /**
+     * Installs MicrosoftWebDriver.msi file as administrator in SELION_HOME_DIR and also deletes unwanted file and
+     * directory created by Msiexec.
+     *
+     * @param msiFile
+     * @return The path of installed MicrosoftWebDriver
+     */
+
+    static String extractMsi(String msiFile) {
+        Process process = null;
+        String exeFilePath = null;
+        boolean isMsiExtracted = true;
+        try {
+            process = Runtime.getRuntime().exec(
+                    new String[] { "msiexec", "/a", msiFile, "/qn", "TARGETDIR=" + SeLionConstants.SELION_HOME_DIR });
+            process.waitFor();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Could not find file " + msiFile, e);
+            isMsiExtracted = false;
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.SEVERE, "Exception waiting for msiexec to be finished", e);
+            isMsiExtracted = false;
+        } finally {
+            process.destroy();
+        }
+
+        if (isMsiExtracted) {
+            moveExeFileToSeLionHomeAndDeleteExtras();
+            exeFilePath = FileUtils.getFile(SeLionConstants.SELION_HOME_DIR + SeLionConstants.EDGE_DRIVER)
+                    .getAbsolutePath();
+        }
+
+        LOGGER.exiting(exeFilePath);
+        return exeFilePath;
+
+    }
+
+    static void moveExeFileToSeLionHomeAndDeleteExtras() {
+
+        File source = new File(SeLionConstants.SELION_HOME_DIR + File.separator + "Microsoft Web Driver"
+                + File.separator + SeLionConstants.EDGE_DRIVER);
+        File dest = new File(SeLionConstants.SELION_HOME_DIR);
+
+        try {
+            FileUtils.copyFileToDirectory(source, dest, true);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE,
+                    "Error while moving MicrosoftWebDriver.exe file  from '" + source.getAbsolutePath() + "' to  '"
+                            + dest.getAbsolutePath() + "'", e);
+        }
+
+        // Deleting "Microsoft Web Driver" directory after moving file from this folder to SELION_HOME_DIR
+        try {
+            FileUtils.deleteDirectory(new File(SeLionConstants.SELION_HOME_DIR + File.separator
+                    + "Microsoft Web Driver"));
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Exception while deleting 'Microsoft Web Driver' folder", e);
+        }
+
+        // Deleting extra "MicrosoftWebDriver.msi" file created by msiexec in SELION_HOME_DIR.
+        File extraMsiFileCreatedByMsiexec = new File(SeLionConstants.SELION_HOME_DIR + "MicrosoftWebDriver.msi");
+        if (extraMsiFileCreatedByMsiexec.exists()) {
+            FileUtils.deleteQuietly(extraMsiFileCreatedByMsiexec);
+        }
+
     }
 }
