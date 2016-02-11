@@ -23,6 +23,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.platform.grid.BrowserFlavors;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventFiringCommandExecutor;
@@ -84,7 +86,9 @@ public final class WebDriverFactory {
         logger.log(Level.FINE, "Spawning a browser with the following capabilities: "
                 + DriverFactoryHelper.showCapabilities(capability));
         driver = createDriverInstance(DriverFactoryHelper.getURL(), capability);
-        DriverFactoryHelper.printDebugInfoForUser(driver);
+        if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.PRINT_DEBUG_INFO))) {
+            DriverFactoryHelper.printDebugInfoForUser(driver);
+        }
         return driver;
     }
 

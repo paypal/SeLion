@@ -655,7 +655,13 @@ public final class Config {
          * The unit is milliseconds.<br>
          * Default is set to <b>20000</b> milliseconds.<br>
          */
-        SELENDROID_SERVER_START_TIMEOUT("serverStartTimeout", "20000", false);
+        SELENDROID_SERVER_START_TIMEOUT("serverStartTimeout", "20000", false),
+
+        /**
+         * To print debug info (about Browser/Selenium Version/Client OS) for user.<br>
+         * Default is set to <b>true</b>
+         */
+        PRINT_DEBUG_INFO("printDebugInfo", "true", true);
 
         private String name;
         private String defaultValue;
