@@ -86,7 +86,7 @@ public final class WebDriverFactory {
         logger.log(Level.FINE, "Spawning a browser with the following capabilities: "
                 + DriverFactoryHelper.showCapabilities(capability));
         driver = createDriverInstance(DriverFactoryHelper.getURL(), capability);
-        if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.PRINT_DEBUG_INFO))) {
+        if (Config.getBoolConfigProperty(ConfigProperty.PRINT_DEBUG_INFO)) {
             DriverFactoryHelper.printDebugInfoForUser(driver);
         }
         return driver;
