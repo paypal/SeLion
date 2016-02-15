@@ -1,7 +1,7 @@
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'
-    'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!---------------------------------------------------------------------------------------------------------------------
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -14,14 +14,14 @@
 |  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
 |  the specific language governing permissions and limitations under the License.                                     |
 ---------------------------------------------------------------------------------------------------------------------->
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Grid Management Console</title>
-  <link rel="stylesheet" type="text/css" href="/grid/resources/form/view.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all">
   <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/listAllNodes.css" media="all"/>
-  <script type="text/javascript" src="/grid/resources/form/view.js"></script>
-  <script type="text/javascript" src="/grid/resources/form/jquery.min.js"></script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/jquery.min.js"></script>
   <script type="text/javascript">
     var nodeJson = Object.freeze(%s);
   </script>
@@ -29,11 +29,12 @@
 </head>
 
 <body id="main_body">
-<img id="top" src="/grid/resources/form/top.png" alt="">
+<img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
+<img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top">
 
 <div id="form_container">
   <div id="main" style="margin: 20px 20px 0; padding:0 0 20px;">
-    <div class='form_description'>
+    <div class="form_description">
       <h2>SeLion Grid - Node Console</h2>
     </div>
     <noscript><p class="error">JavaScript required</p></noscript>
@@ -44,6 +45,6 @@
     </div>
   </div>
 </div>
-<img id="bottom" src="/grid/resources/form/bottom.png" alt="">
+<img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom">
 </body>
 </html>

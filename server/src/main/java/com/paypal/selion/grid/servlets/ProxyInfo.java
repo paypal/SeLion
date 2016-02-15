@@ -31,7 +31,7 @@ import com.paypal.selion.proxy.SeLionRemoteProxy;
 
 /**
  * Internal only. Used to create an immutable response object for the {@link ListAllNodes} servlet which gets serialized
- * application/json.
+ * to application/json.
  */
 @Immutable
 @SuppressWarnings("unused")

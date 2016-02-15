@@ -90,8 +90,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
         }
     }
 
-    @Override
-    public final void run() {
+    public void run() {
         LOGGER.entering();
         try {
             if (!isInitialized() && downloadList != null) {
@@ -118,7 +117,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
     /**
      * Shutdown the instance. Calls {@link SeLionGridLauncher#shutdown()} for the instance associated with this object.
      */
-    public final void shutdown() {
+    public void shutdown() {
         LOGGER.entering();
         if (launcher == null) {
             return;

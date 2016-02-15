@@ -85,7 +85,7 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
     }
 
     @Override
-    final void startProcess(boolean squelch) throws IOException {
+    void startProcess(boolean squelch) throws IOException {
         setCommandLine(createJavaCommandForChildProcess());
         super.startProcess(squelch);
     }

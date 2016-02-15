@@ -45,12 +45,12 @@ public final class IOSDriverJarSpawner extends MobileProcessLauncher {
         setType(InstanceType.IOS_DRIVER);
     }
 
-    public static final void main(String[] args) {
+    public static void main(String[] args) {
         new IOSDriverJarSpawner(args).run();
     }
 
     @Override
-    public final void run() {
+    public void run() {
         if (!SystemUtils.IS_OS_MAC_OSX) {
             throw new UnsupportedOperationException("ios-driver requires OS X");
         }
@@ -66,7 +66,7 @@ public final class IOSDriverJarSpawner extends MobileProcessLauncher {
     }
 
     @Override
-    final void startProcess(boolean squelch) throws IOException {
+    void startProcess(boolean squelch) throws IOException {
         setCommandLine(createJavaCommandForChildProcess());
         super.startProcess(squelch);
     }

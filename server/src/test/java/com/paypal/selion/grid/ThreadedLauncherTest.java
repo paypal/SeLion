@@ -26,13 +26,11 @@ import static org.testng.Assert.fail;
 public class ThreadedLauncherTest {
     private Thread thread;
     private RunnableLauncher launcher;
-    private String host;
-    private int port;
 
     @BeforeClass
     public void beforeClass() {
-        host = new NetworkUtils().getIpOfLoopBackIp4();
-        port = PortProber.findFreePort();
+        String host = new NetworkUtils().getIpOfLoopBackIp4();
+        int port = PortProber.findFreePort();
         launcher = new ThreadedLauncher(new String[] { "-host", host, "-port", String.valueOf(port) });
 
         thread = new Thread(launcher);

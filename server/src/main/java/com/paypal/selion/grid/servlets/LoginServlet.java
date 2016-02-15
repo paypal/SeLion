@@ -16,7 +16,6 @@
 package com.paypal.selion.grid.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +38,8 @@ import com.paypal.selion.utils.ServletHelper;
 public class LoginServlet extends RegistryBasedServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/loginServlet.html";
 
     /**
      * Request parameter to perform logout. Value must be 'true'.
@@ -76,35 +77,8 @@ public class LoginServlet extends RegistryBasedServlet {
             if (session != null) {
                 session.invalidate();
             }
-            PrintWriter writer = resp.getWriter();
-
-            writer.write("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>");
-            writer.write("<html xmlns='http://www.w3.org/1999/xhtml'>");
-            writer.write("<head>");
-            writer.write("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>");
-            writer.write("<title>Grid Management Console</title>");
-            writer.write("<link rel='stylesheet' type='text/css' href='/grid/resources/form/view.css' media='all' >");
-            writer.write("<script type='text/javascript' src='/grid/resources/form/view.js'></script>");
-            writer.write("</head>");
-            writer.write("<body id='main_body' >");
-
-            writer.write("<img id='top' src='/grid/resources/form/top.png' alt=''>");
-            writer.write("<div id='form_container'>");
-            writer.write("<div style=\"margin: 20px 20px 0; padding:0 0 20px;\">");
-
-            writer.write("<div class='form_description'>");
-            writer.write("<h2>Grid Management Console</h2>");
-            writer.write("<p>You are logged out</p>");
-            writer.write("</div>");
-            writer.write("<div id='footer'>");
-            writer.write("<a align='center' href='/grid/admin/LoginServlet'>Login</a><br>");
-            writer.write("<p>Created by the SeLion Project</p>");
-            writer.write("</div>");
-            writer.write("</div></div> <img id='bottom' src='/grid/resources/form/bottom.png' alt=''>");
-            // Facility to login again here must be provided
-            writer.write("</body>");
-            writer.write("</html>");
-
+            ServletHelper.respondAsHtmlUsingArgsAndTemplateWithHttpStatus(resp, RESOURCE_PAGE_FILE,
+                    HttpServletResponse.SC_OK, "Enter username and password");
         } else {
             process(req, resp);
         }
@@ -126,8 +100,8 @@ public class LoginServlet extends RegistryBasedServlet {
                 /*
                  * To display error message if invalid username or password is entered
                  */
-                ServletHelper.loginToGrid(resp.getWriter(),
-                        "<b>Invalid Credentials. Enter valid Username and Password</b>");
+                ServletHelper.respondAsHtmlUsingArgsAndTemplateWithHttpStatus(resp, RESOURCE_PAGE_FILE,
+                        HttpServletResponse.SC_OK, "<b>Invalid Credentials. Enter valid Username and Password</b>");
             } else {
 
                 /*
@@ -158,7 +132,8 @@ public class LoginServlet extends RegistryBasedServlet {
             if (session != null) {
                 session.invalidate();
             }
-            ServletHelper.loginToGrid(resp.getWriter(), "Enter username and password");
+            ServletHelper.respondAsHtmlUsingArgsAndTemplateWithHttpStatus(resp, RESOURCE_PAGE_FILE,
+                    HttpServletResponse.SC_OK, "Enter username and password");
         }
 
     }

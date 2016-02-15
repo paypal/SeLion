@@ -15,23 +15,22 @@
 
 package com.paypal.selion.grid.servlets;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Iterator;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
+import com.paypal.selion.proxy.SeLionRemoteProxy;
+import com.paypal.selion.utils.ServletHelper;
 import org.openqa.grid.internal.ProxySet;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
-import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.proxy.SeLionRemoteProxy;
-import com.paypal.selion.utils.ServletHelper;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This {@link RegistryBasedServlet} based servlet is responsible for sending restart requests to all the registered
@@ -45,6 +44,11 @@ import com.paypal.selion.utils.ServletHelper;
  * on exit(), the node will be shutdown but not restarted.
  */
 public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
+
+    /**
+     * Resource path to the grid auto upgrade html template file
+     */
+    public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/gridForceRestartDelegateServlet.html";
 
     private static final long serialVersionUID = 1L;
 
@@ -90,7 +94,6 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             response.sendRedirect(LoginServlet.class.getSimpleName());
             return;
         }
-        PrintWriter writer = response.getWriter();
 
         if (request.getParameter(FORM_ID) != null && request.getParameter(FORM_ID).equals("restart_nodes")) {
             boolean isForcedRestart = request.getParameter(SUBMIT).equals("Force Restart");
@@ -98,7 +101,7 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
             String nodes[] = request.getParameterValues(NODES);
 
             if (nodes == null || nodes.length == 0) {
-                ServletHelper.displayMessageOnRedirect(writer,
+                ServletHelper.respondAsHtmlWithMessage(response,
                         "Please select at least 1 node in order to perform restart.");
                 return;
             }
@@ -120,57 +123,26 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
                     LOGGER.warning("Node " + node + " does not support restart.");
                 }
             }
-            ServletHelper.displayMessageOnRedirect(writer, "Restart process initiated on all nodes.");
+            ServletHelper.respondAsHtmlWithMessage(response, "Restart process initiated on all nodes.");
         } else {
-            ServletHelper.displayHeader(writer);
-            writer.write("<div id='form_container'>");
-            writer.write("<form id='myForm' name='myForm' class='appnitro' method='post' action='"
-                    + GridForceRestartDelegateServlet.class.getSimpleName() + "' >");
-            writer.write("<div class='form_description'>");
-            writer.write("<h2>SeLion Grid - Node Restart</h2>");
-            writer.write("<p>Use this page to restart nodes</p>");
-            writer.write("</div>");
-            writer.write("<ul>");
-            writer.write("<li id='li_1' >");
-            writer.write("<label class='description' for='element_1'>List of nodes to restart </label>");
-
-            ProxySet proxies = this.getRegistry().getAllProxies();
-            Iterator<RemoteProxy> iterator = proxies.iterator();
-            boolean nodesPresent = false;
-            while (iterator.hasNext()) {
-                RemoteProxy proxy = iterator.next();
-                if (proxy == null) {
-                    continue;
-                }
-
-                if ((proxy instanceof SeLionRemoteProxy) && (((SeLionRemoteProxy) proxy).supportsForceShutdown())) {
-                    writer.write("<input name='nodes' class='element checkbox' type='checkbox' value='" + proxy.getId()
-                            + "' />");
-                    writer.write(((SeLionRemoteProxy) proxy).isScheduledForRecycle() ? "<label class='choice'>"
-                            + proxy.getId() + " (restart scheduled)</label>" : "<label class='choice'>" + proxy.getId()
-                            + "</label>");
-                    nodesPresent = true;
-                } else {
-                    LOGGER.warning("Node " + proxy.getId() + " does not support force restart.");
-                }
-            }
-
-            writer.write("</li>");
-            String defaultMsg = "<div style=\"padding-top: 20px\"><label class='choice'>No nodes are available to restart</label class='choice'></div>";
-            if (nodesPresent) {
-                defaultMsg = "<li class='buttons'><input type='hidden' name='form_id' value='restart_nodes' />"
-                        + "<input id='saveForm' class='button_text' type='submit' name='submit' value='Restart'/>"
-                        + "<input id='saveForm' class='button_text' type='submit' name='submit' value='Force Restart'/></li>";
-            }
-            writer.write(defaultMsg);
-            writer.write("</ul>");
-            writer.write("</form>");
-            ServletHelper.displayFooter(writer);
-            writer.write("</body>");
-            writer.write("</html>");
+            List<ProxyInfo> proxies = getProxyInfo();
+            ServletHelper.respondAsHtmlUsingJsonAndTemplateWithHttpStatus(response, proxies, RESOURCE_PAGE_FILE,
+                    HttpServletResponse.SC_OK);
         }
 
         LOGGER.exiting();
     }
 
+    private List<ProxyInfo> getProxyInfo() {
+        List<ProxyInfo> nodes = new ArrayList<>();
+        ProxySet proxies = this.getRegistry().getAllProxies();
+        Iterator<RemoteProxy> iterator = proxies.iterator();
+        while (iterator.hasNext()) {
+            RemoteProxy proxy = iterator.next();
+            if ((proxy instanceof SeLionRemoteProxy) && (((SeLionRemoteProxy) proxy).supportsForceShutdown())) {
+                nodes.add(new ProxyInfo(proxy, false));
+            }
+        }
+        return nodes;
+    }
 }

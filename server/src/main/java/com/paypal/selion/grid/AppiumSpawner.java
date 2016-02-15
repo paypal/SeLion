@@ -41,19 +41,19 @@ final class AppiumSpawner extends MobileProcessLauncher {
         setType(InstanceType.APPIUM);
     }
 
-    public static final void main(String[] args) {
+    public static void main(String[] args) {
         new AppiumSpawner(args).run();
     }
 
     @Override
-    public final void run() {
+    public void run() {
         defaultArgs = ConfigParser.parse().getJsonObject("appiumDefaultArgs",
                 new JsonParser().parse("{}").getAsJsonObject());
         super.run();
     }
 
     @Override
-    public final void startProcess(boolean squelch) throws IOException {
+    void startProcess(boolean squelch) throws IOException {
         setCommandLine(createCommandForChildProcess());
         super.startProcess(squelch);
     }

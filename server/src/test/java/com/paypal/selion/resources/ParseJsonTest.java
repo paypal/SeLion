@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.jsonTests;
+package com.paypal.selion.resources;
 
 import static org.testng.Assert.*;
 
@@ -33,6 +33,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 
+/**
+ * This test class simply ensures that all *.json files in src/main/resources can be parsed.
+ */
 public class ParseJsonTest {
 
     @Test

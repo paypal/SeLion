@@ -27,7 +27,6 @@ import com.paypal.selion.pojos.SeLionGridConstants;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
@@ -75,7 +74,7 @@ public class SauceServlet extends RegistryBasedServlet {
 
             String respMsg = "<p align='center'><b>Sauce node already registered</b></p>";
             if (count > 0) {
-                ServletHelper.displayMessageOnRedirect(resp.getWriter(), respMsg);
+                ServletHelper.respondAsHtmlWithMessage(resp, respMsg);
                 return;
             }
 
@@ -95,11 +94,11 @@ public class SauceServlet extends RegistryBasedServlet {
 
             respMsg = "<p align='center'><b>Sauce node registration failed. Please refer to the log file for failure details</b></p>";
 
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
                 respMsg = "<p align='center'><b>Sauce node registered successfully</b></p>";
             }
 
-            ServletHelper.displayMessageOnRedirect(resp.getWriter(), respMsg);
+            ServletHelper.respondAsHtmlWithMessage(resp, respMsg);
             count++;
         } catch (Exception e) {
             e.printStackTrace();

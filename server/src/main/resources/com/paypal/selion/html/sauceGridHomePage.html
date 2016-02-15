@@ -20,58 +20,20 @@
   <title>Grid Management Console</title>
   <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all">
   <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
-  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/jquery.min.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-      $(".javascript-enabled").removeAttr("class");
-    });
-  </script>
 </head>
 <body id="main_body">
 <img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
 <img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top">
-
 <div id="form_container">
-  <form id="main" class="appnitro" method="post" action="PasswordChangeServlet">
-    <div class="form_description">
-      <h2>SeLion Grid - Change Password</h2>
-      <p>%s</p>
-    </div>
-    <noscript><p class="error">JavaScript required</p></noscript>
-    <ul class="javascript-enabled">
-      <li id="li_1">
-        <label class="description" for="oldPassword">Old Password</label>
 
-        <div>
-          <input id="oldPassword" name="oldPassword" class="element text medium"
-                 type="password" maxlength="255" value=""/>
-        </div>
-      </li>
-      <li id="li_2">
-        <label class="description" for="newPassword1">New Password</label>
-
-        <div>
-          <input id="newPassword1" name="newPassword1" class="element text medium"
-                 type="password" maxlength="255" value=""/>
-        </div>
-      </li>
-      <li id="li_3">
-        <label class="description" for="newPassword2">New Password</label>
-
-        <div>
-          <input id="newPassword2" name="newPassword2" class="element text medium"
-                 type="password" maxlength="255" value=""/>
-        </div>
-      </li>
-      <li class="buttons">
-        <input type="hidden" name="form_id" value="login"/>
-        <input id="saveForm" class="button_text" type="submit" name="submit" value="Submit"/>
-      </li>
-    </ul>
-  </form>
+  <div class="form_description">
+    <h2>SauceGrid Management Console</h2>
+  </div>
+  <a href="/grid/resources/com/paypal/selion/html/updateSauceConfigPage.html">Update Sauce Configuration</a>
+  <br> <a href="/grid/admin/SauceServlet">Register Sauce Node</a>
+  <br> <a href="/grid/admin/PasswordChangeServlet">Change Password</a>
+  <br>
   <div id="footer">
-    <a href="/grid/admin/LoginServlet?form_id=login">Go To Home</a>
-    &nbsp;&nbsp;&nbsp;&nbsp;
     <a href="/grid/admin/LoginServlet?logout=true">Logout</a>
     <p>Created by the <a href="http://selion.io">SeLion</a> project</p>
   </div>

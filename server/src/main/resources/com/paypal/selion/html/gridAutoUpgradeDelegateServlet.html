@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!---------------------------------------------------------------------------------------------------------------------
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,42 +16,43 @@
 ---------------------------------------------------------------------------------------------------------------------->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Grid Management Console</title>
-  <link rel='stylesheet' type='text/css' href='/grid/resources/form/view.css' media='all' />
-  <script type='text/javascript' src='/grid/resources/form/view.js'></script>
-  <script type='text/javascript' src='/grid/resources/form/jquery.min.js'></script>
-  <script type='text/javascript' src='/grid/resources/com/paypal/selion/js/gridAutoUpgradeDelegateServlet.js'></script>
+  <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all" />
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/gridAutoUpgradeDelegateServlet.js"></script>
 </head>
-<body id='main_body'>
-<img id='top' src='/grid/resources/form/top.png' alt=''/>
+<body id="main_body">
+<img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
+<img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top"/>
 
-<div id='form_container'>
-  <form id='upgrade_form' class='appnitro' method='POST' action='%s'>
-    <div class='form_description'>
+<div id="form_container">
+  <form id="upgrade_form" class="appnitro" method="POST" action="GridAutoUpgradeDelegateServlet">
+    <div class="form_description">
       <h2>SeLion Grid - Update Nodes</h2>
       <p>Use this page to automatically update all nodes</p>
     </div>
     <noscript><p class="error">JavaScript required</p></noscript>
-    <ul class='javascript-enabled'>
-      <h3 align='center'>Update details below for the new artifacts</h3>
-      <li id='li'>
-        <label class='description' for='downloadJSON'>Download JSON Content</label>
+    <ul class="javascript-enabled">
+      <h3 align="center">Update details below for the new artifacts</h3>
+      <li id="li">
+        <label class="description" for="downloadJSON">Download JSON Content</label>
         <div>
-          <textarea id='downloadJSON' name='downloadJSON' rows='30' style='width: 580px;'>%s</textarea>
+          <textarea id="downloadJSON" name="downloadJSON" rows="30" style="width: 580px;">%s</textarea>
         </div>
       </li>
-      <li class='buttons'>
-        <input class='button_text' type='submit'/>
+      <li class="buttons">
+        <input class="button_text" type="submit"/>
       </li>
     </ul>
   </form>
-  <div id='footer'>
-    <a href='/grid/admin/LoginServlet?form_id=login'>Go To Home</a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href='/grid/admin/LoginServlet?logout=true'>Logout</a>
-    <p>Created by the <a href='http://selion.io'>SeLion</a> project</p>
+  <div id="footer">
+    <a href="/grid/admin/LoginServlet?form_id=login">Go To Home</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="/grid/admin/LoginServlet?logout=true">Logout</a>
+    <p>Created by the <a href="http://selion.io">SeLion</a> project</p>
   </div>
 </div>
-<img id='bottom' src='/grid/resources/form/bottom.png' alt=''/>
+<img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom"/>
 </body>
 </html>

@@ -16,51 +16,31 @@
 ---------------------------------------------------------------------------------------------------------------------->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Grid Management Console</title>
-  <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all"/>
   <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
-  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/jquery.min.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-      $(".javascript-enabled").removeAttr("class");
-    });
-  </script>
 </head>
 <body id="main_body">
 <img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
 <img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top">
-
 <div id="form_container">
-  <form id="main" class="appnitro" method="post" action="PasswordChangeServlet">
+  <form id="form_720145" class="appnitro" method="post" action="LoginServlet">
     <div class="form_description">
-      <h2>SeLion Grid - Change Password</h2>
+      <h2>Grid Login</h2>
       <p>%s</p>
     </div>
-    <noscript><p class="error">JavaScript required</p></noscript>
-    <ul class="javascript-enabled">
+    <ul>
       <li id="li_1">
-        <label class="description" for="oldPassword">Old Password</label>
-
+        <label class="description" for="userid">User</label>
         <div>
-          <input id="oldPassword" name="oldPassword" class="element text medium"
-                 type="password" maxlength="255" value=""/>
+          <input id="userid" name="userid" class="element text medium" type="text" maxlength="255" value=""/>
         </div>
       </li>
       <li id="li_2">
-        <label class="description" for="newPassword1">New Password</label>
-
+        <label class="description" for="password">Password </label>
         <div>
-          <input id="newPassword1" name="newPassword1" class="element text medium"
-                 type="password" maxlength="255" value=""/>
-        </div>
-      </li>
-      <li id="li_3">
-        <label class="description" for="newPassword2">New Password</label>
-
-        <div>
-          <input id="newPassword2" name="newPassword2" class="element text medium"
-                 type="password" maxlength="255" value=""/>
+          <input id="password" name="password" class="element text medium" type="password" maxlength="255" value=""/>
         </div>
       </li>
       <li class="buttons">
@@ -69,13 +49,8 @@
       </li>
     </ul>
   </form>
-  <div id="footer">
-    <a href="/grid/admin/LoginServlet?form_id=login">Go To Home</a>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="/grid/admin/LoginServlet?logout=true">Logout</a>
-    <p>Created by the <a href="http://selion.io">SeLion</a> project</p>
-  </div>
+  <div id="footer"><p>Created by the SeLion Project</p></div>
 </div>
-<img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom">
+<img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom"/>
 </body>
 </html>

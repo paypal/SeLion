@@ -17,7 +17,6 @@ package com.paypal.selion.grid.servlets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -62,7 +60,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     /**
      * Resource path to the sauce config html file
      */
-    public static final String RESOURCE_PAGE_FILE = "/pages/updateSauceConfigPage.html";
+    public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/updateSauceConfigPage.html";
 
     /**
      * Form parameter for sauce url
@@ -93,13 +91,11 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
             resp.sendRedirect(LoginServlet.class.getSimpleName());
             return;
         }
-        PrintWriter writer = resp.getWriter();
-        loadSauceConfigPage(writer);
+        loadSauceConfigPage(resp);
     }
 
-    private void loadSauceConfigPage(PrintWriter writer) throws IOException {
-        String finalHtml = IOUtils.toString(this.getClass().getResourceAsStream(RESOURCE_PAGE_FILE), "UTF-8");
-        writer.write(finalHtml);
+    private void loadSauceConfigPage( HttpServletResponse resp) throws IOException {
+        ServletHelper.respondAsHtmlUsingTemplate(resp, RESOURCE_PAGE_FILE);
     }
 
     @Override
@@ -136,6 +132,6 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
             SauceConfigReader.getInstance().loadConfig();
         }
 
-        ServletHelper.displayMessageOnRedirect(resp.getWriter(), msg);
+        ServletHelper.respondAsHtmlWithMessage(resp, msg);
     }
 }

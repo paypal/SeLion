@@ -49,7 +49,7 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
     }
 
     @Override
-    public final void run() {
+    public void run() {
         mainClass = ConfigParser.parse()
                 .getString("selendroidMainClass", "io.selendroid.standalone.SelendroidLauncher");
         defaultArgs = ConfigParser.parse().getJsonObject("selendroidDefaultArgs",
@@ -63,7 +63,7 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
     }
 
     @Override
-    final void startProcess(boolean squelch) throws IOException {
+    void startProcess(boolean squelch) throws IOException {
         setCommandLine(createJavaCommandForChildProcess());
         super.startProcess(squelch);
     }

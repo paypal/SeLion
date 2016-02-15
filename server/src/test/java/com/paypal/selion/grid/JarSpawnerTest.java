@@ -31,13 +31,11 @@ import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 public class JarSpawnerTest {
     private Thread thread;
     private RunnableLauncher spawner;
-    private String host;
-    private int port;
 
     @BeforeClass
     public void beforeClass() {
-        host = new NetworkUtils().getIpOfLoopBackIp4();
-        port = PortProber.findFreePort();
+        String host = new NetworkUtils().getIpOfLoopBackIp4();
+        int port = PortProber.findFreePort();
         spawner = new JarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
                 new ProcessLauncherOptionsImpl().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false));
 

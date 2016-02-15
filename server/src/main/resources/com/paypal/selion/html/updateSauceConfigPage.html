@@ -20,47 +20,37 @@
   <title>Grid Management Console</title>
   <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all">
   <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
-  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/jquery.min.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-      $(".javascript-enabled").removeAttr("class");
-    });
-  </script>
 </head>
 <body id="main_body">
 <img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
 <img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top">
-
 <div id="form_container">
-  <form id="main" class="appnitro" method="post" action="PasswordChangeServlet">
-    <div class="form_description">
-      <h2>SeLion Grid - Change Password</h2>
-      <p>%s</p>
-    </div>
-    <noscript><p class="error">JavaScript required</p></noscript>
-    <ul class="javascript-enabled">
-      <li id="li_1">
-        <label class="description" for="oldPassword">Old Password</label>
 
+  <form id="sauceGridConfig" class="appnitro" method="post" action="/grid/admin/SauceConfigChangeServlet"
+        onsubmit="return validate()">
+    <div class="form_description">
+      <h2>SauceGrid Configuration</h2>
+    </div>
+    <ul>
+      <li id="li_1">
+        <label class="description" for="sauceURL">Sauce URL *</label>
         <div>
-          <input id="oldPassword" name="oldPassword" class="element text medium"
-                 type="password" maxlength="255" value=""/>
+          <input id="sauceURL" name="sauceURL" class="element text medium" type="URL" maxlength="255"
+                 value="https://saucelabs.com/rest/v1"/>
         </div>
       </li>
       <li id="li_2">
-        <label class="description" for="newPassword1">New Password</label>
-
+        <label class="description" for="username">Username *</label>
         <div>
-          <input id="newPassword1" name="newPassword1" class="element text medium"
-                 type="password" maxlength="255" value=""/>
+          <input id="username" name="username" class="element text medium" type="username"
+                 maxlength="255" value=""/>
         </div>
       </li>
       <li id="li_3">
-        <label class="description" for="newPassword2">New Password</label>
-
+        <label class="description" for="accessKey">Access Key *</label>
         <div>
-          <input id="newPassword2" name="newPassword2" class="element text medium"
-                 type="password" maxlength="255" value=""/>
+          <input id="accessKey" name="accessKey" class="element text medium" type="Access Key"
+                 maxlength="255" value=""/>
         </div>
       </li>
       <li class="buttons">
@@ -70,12 +60,31 @@
     </ul>
   </form>
   <div id="footer">
-    <a href="/grid/admin/LoginServlet?form_id=login">Go To Home</a>
-    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="/grid/admin/LoginServlet?form_id=login">Go To Home</a>&nbsp;&nbsp;
     <a href="/grid/admin/LoginServlet?logout=true">Logout</a>
     <p>Created by the <a href="http://selion.io">SeLion</a> project</p>
   </div>
 </div>
 <img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom">
 </body>
+<script>
+  function validate() {
+    "use strict";
+    if (!(isValidField("sauceURL", "Sauce URL") && isValidField("username", "Username") &&
+        isValidField("accessKey", "Access Key"))) {
+      return false;
+    }
+    return true;
+  }
+
+  function isValidField(fieldId, name) {
+    "use strict";
+    var x = document.forms.sauceGridConfig[fieldId].value;
+    if (x === null || x === "") {
+      alert(name + " must be filled out");
+      return false;
+    }
+    return true;
+  }
+</script>
 </html>

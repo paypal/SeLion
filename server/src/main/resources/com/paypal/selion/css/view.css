@@ -1,5 +1,20 @@
+/*-------------------------------------------------------------------------------------------------------------------*\
+|  Copyright (C) 2016 PayPal                                                                                          |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+\*-------------------------------------------------------------------------------------------------------------------*/
+
 body {
-  background: #fffff;
+  background: #ffffff;
   font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
   font-size: small;
   margin: 8px 0 16px;
@@ -69,7 +84,7 @@ h1 a {
 }
 
 img {
-  behavior: url(../../../form/iepngfix.htc);
+  behavior: url(../../../../com/paypal/selion/image/iepngfix.htc);
   border: none;
 }
 
@@ -283,7 +298,7 @@ span.symbol {
 }
 
 input.text {
-  background: #ffffff url(../../../form/shadow.gif) repeat-x top;
+  background: #ffffff url(../../../../com/paypal/selion/image/shadow.gif) repeat-x top;
   border-bottom: 1px solid #ddd;
   border-left: 1px solid #c3c3c3;
   border-right: 1px solid #c3c3c3;
@@ -302,7 +317,7 @@ input.file {
 }
 
 textarea.textarea {
-  background: #ffffff url(../../../form/shadow.gif) repeat-x top;
+  background: #ffffff url(../../../../com/paypal/selion/image/shadow.gif) repeat-x top;
   border-bottom: 1px solid #ddd;
   border-left: 1px solid #c3c3c3;
   border-right: 1px solid #c3c3c3;
@@ -319,7 +334,7 @@ select.select {
   font-size: 100%;
   margin: 1px 0;
   padding: 1px 0 0;
-  background: #ffffff url(../../../form/shadow.gif) repeat-x top;
+  background: #ffffff url(../../../../com/paypal/selion/image/shadow.gif) repeat-x top;
   border-bottom: 1px solid #ddd;
   border-left: 1px solid #c3c3c3;
   border-right: 1px solid #c3c3c3;

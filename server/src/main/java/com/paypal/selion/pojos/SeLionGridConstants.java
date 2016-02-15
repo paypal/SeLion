@@ -44,7 +44,7 @@ public class SeLionGridConstants {
     /**
      * Path prefix to pages along with the Grid API endpoint
      */
-    private static final String GRID_PAGES_URL_PATH_PREFIX = "/grid/resources/pages/";
+    private static final String GRID_PAGES_URL_PATH_PREFIX = "/grid/resources/com/paypal/selion/html/";
 
     /**
      * Relative directory for config files
