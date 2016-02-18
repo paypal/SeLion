@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,22 +13,19 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.grid;
+package com.paypal.selion.node.servlets;
 
-import java.io.File;
+import org.springframework.mock.web.MockHttpServletResponse;
 
-import org.testng.annotations.BeforeSuite;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
-public class ConfigureSuiteTest {
-    @BeforeSuite(alwaysRun = true)
-    public void setUpBeforeSuite() {
-        // Should compute to "{selion-project-dir}/server/target/.selion"
-        System.setProperty("selionHome", new File(ConfigureSuiteTest.class.getResource("/").getPath())
-                .getAbsoluteFile().getParent() + "/.selion");
-        // Invoke a launcher with the '-type sauce -role hub' option, to ensure firstTimeSetup() is complete for the new
-        // selionHome.
-        ThreadedLauncher launcher = new ThreadedLauncher(new String[] { "-role", "hub", "-type", "sauce" });
-        launcher.run();
-        launcher.shutdown();
+public class BaseNodeServletTest {
+    protected void validateJsonResponse(MockHttpServletResponse response, int statusCode, String expectedResult)
+            throws Exception {
+        assertEquals(response.getContentType(), "application/json");
+        assertEquals(response.getStatus(), statusCode);
+        assertEquals(response.getCharacterEncoding(), "UTF-8");
+        assertTrue(response.getContentAsString().contains("\"result\":\"" + expectedResult + "\""));
     }
 }

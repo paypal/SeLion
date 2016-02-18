@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -34,12 +34,27 @@ import com.paypal.selion.utils.ServletHelper;
  */
 public class PasswordChangeServlet extends HttpServlet {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Resource path to the password change html template file
      */
     public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/passwordChangeServlet.html";
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * Form parameter for the old password
+     */
+    public static final String OLD_PASSWORD = "oldPassword";
+
+    /**
+     * Form parameter for the new password (first entry)
+     */
+    public static final String NEW_PASSWORD_1 = "newPassword1";
+
+    /**
+     * Form parameter for the new password (seconde entry)
+     */
+    public static final String NEW_PASSWORD_2 = "newPassword2";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -57,18 +72,17 @@ public class PasswordChangeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
-
-        String userid = (String) req.getSession().getAttribute("userId");
-        String oldPassword = req.getParameter("oldPassword");
-        String newPassword1 = req.getParameter("newPassword1");
-        String newPassword2 = req.getParameter("newPassword2");
+        // TODO Do not allow access to this servlet unless already logged in.
+        String userId = (String) req.getSession().getAttribute(LoginServlet.USER_ID);
+        String oldPassword = req.getParameter(OLD_PASSWORD);
+        String newPassword1 = req.getParameter(NEW_PASSWORD_1);
+        String newPassword2 = req.getParameter(NEW_PASSWORD_2);
 
         if (!newPassword1.contentEquals(newPassword2) || newPassword1 == null || newPassword2 == null) {
             errorPage(writer, "The new passwords do not match");
-        } else if (!AuthenticationHelper.authenticate(userid, oldPassword)) {
+        } else if (!AuthenticationHelper.authenticate(userId, oldPassword)) {
             errorPage(writer, "The old password did not match the one on record");
-
-        } else if (!AuthenticationHelper.changePassword(userid, newPassword1)) {
+        } else if (!AuthenticationHelper.changePassword(userId, newPassword1)) {
             errorPage(writer, "Something went wrong while changing the password.");
         } else {
             HttpSession session = req.getSession(false);

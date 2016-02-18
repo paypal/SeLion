@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -38,6 +38,28 @@ import com.paypal.selion.utils.ServletHelper;
  */
 public class LoginServlet extends RegistryBasedServlet {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Request parameter to perform logout. Value must be 'true'.
+     */
+    public static final String LOGOUT = "logout";
+
+    /**
+     * Request parameter to perform login. Value must be 'login'.
+     */
+    public static final String FORM_ID = "form_id";
+
+    /**
+     * Request parameter that carries the userid
+     */
+    public static final String USER_ID = "userid";
+
+    /**
+     * Request parameter that carries the password
+     */
+    public static final String PASSWORD = "password";
+
     public LoginServlet(Registry registry) {
         super(registry);
     }
@@ -46,11 +68,9 @@ public class LoginServlet extends RegistryBasedServlet {
         this(null);
     }
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("logout") != null && req.getParameter("logout").equals("true")) {
+        if (req.getParameter(LOGOUT) != null && req.getParameter(LOGOUT).equals("true")) {
 
             HttpSession session = req.getSession();
             if (session != null) {
@@ -90,24 +110,19 @@ public class LoginServlet extends RegistryBasedServlet {
         }
     }
 
-    /**
-     * @param req
-     * @param resp
-     * @throws IOException
-     */
     private void process(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (req.getParameter("form_id") != null && req.getParameter("form_id").equals("login")) {
-            String userid = req.getParameter("userid");
-            String password = req.getParameter("password");
+        if (req.getParameter(FORM_ID) != null && req.getParameter(FORM_ID).equals("login")) {
+            String userId = req.getParameter(USER_ID);
+            String password = req.getParameter(PASSWORD);
             // For already created session , if the session has username and the password then use the same to
             // authenticate user else get back to the parameters from the request
             HttpSession currentSession = req.getSession(false);
             if (currentSession != null) {
-                userid = (String) currentSession.getAttribute("userId");
-                password = (String) currentSession.getAttribute("password");
+                userId = (String) currentSession.getAttribute(USER_ID);
+                password = (String) currentSession.getAttribute(PASSWORD);
             }
 
-            if (!AuthenticationHelper.authenticate(userid, password)) {
+            if (!AuthenticationHelper.authenticate(userId, password)) {
                 /*
                  * To display error message if invalid username or password is entered
                  */
@@ -121,8 +136,8 @@ public class LoginServlet extends RegistryBasedServlet {
                  * session
                  */
                 req.getSession(true);
-                req.getSession().setAttribute("userId", userid);
-                req.getSession().setAttribute("password", password);
+                req.getSession().setAttribute(USER_ID, userId);
+                req.getSession().setAttribute(PASSWORD, password);
 
                 String page = SeLionGridConstants.GRID_HOME_PAGE_URL;
                 CapabilityMatcher matcher = getRegistry().getCapabilityMatcher();
@@ -152,6 +167,5 @@ public class LoginServlet extends RegistryBasedServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         process(request, response);
-
     }
 }

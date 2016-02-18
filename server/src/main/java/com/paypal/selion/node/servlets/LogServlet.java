@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -37,36 +37,32 @@ import com.paypal.selion.utils.FileBackedStringBuffer;
  * This is simple servlet which basically display the logs of specified node connected to the grid. This servlet would
  * have to be injected into the Node. This class will get logs files from Logs folder in the Current directory of the
  * node machine.
- * 
  */
 public class LogServlet extends HttpServlet {
 
-	private static final String PREFIX = "selion-grid-node";
-	private static final String EXTENSION = ".log";
+    private static final long serialVersionUID = -445566L;
+    private static final String PREFIX = "selion-grid-node";
+    private static final String EXTENSION = ".log";
+    private File logsDirectory;
 
     /**
      * This class filter the .log files from the current directory
      */
     public class LogFilesFilter implements FilenameFilter {
-
         @Override
         public boolean accept(File dir, String name) {
             return name.startsWith(PREFIX) && name.endsWith(EXTENSION);
         }
-
     }
-
-    private static final long serialVersionUID = -445566L;
-    private File logsDirectory;
 
     /**
      * This method helps to display More log information of the node machine.
-     * 
+     *
      * @param fileName
-     *            - It is log file name available in node machine current directory Logs folder, it is used to identify
+     *            It is log file name available in node machine current directory Logs folder, it is used to identify
      *            the current file to display in the web page.
      * @param url
-     *            - It is node machine url (ex: http://10.232.88.10:5555)
+     *            It is node machine url (ex: http://10.232.88.10:5555)
      * @return String vlaue to add Form in html page
      * @throws IOException
      */
@@ -79,6 +75,7 @@ public class LogServlet extends HttpServlet {
             return "";
         }
 
+        // TODO put this html code in a template
         buffer.append("<form name ='myform' action=").append(url).append(" method= 'post'>");
         buffer.append("<input type='hidden'").append(" name ='fileName'").append(" value ='")
                 .append(logFileName.getName()).append("'>");
@@ -100,7 +97,8 @@ public class LogServlet extends HttpServlet {
 
     }
 
-    private void dumpStringToStream(FileBackedStringBuffer buffer, ServletOutputStream outputStream) throws IOException {
+    private void dumpStringToStream(FileBackedStringBuffer buffer, ServletOutputStream outputStream)
+            throws IOException {
         InputStream in = new ByteArrayInputStream(buffer.toString().getBytes("UTF-8"));
         try {
             ByteStreams.copy(in, outputStream);
@@ -108,12 +106,11 @@ public class LogServlet extends HttpServlet {
             in.close();
             outputStream.flush();
         }
-
     }
 
     /**
      * This method get the Logs file directory
-     * 
+     *
      * @return A {@link File} that represents the location where the logs can be found.
      */
     private File getLogsDirectory() {
@@ -131,27 +128,27 @@ public class LogServlet extends HttpServlet {
 
     /**
      * Check whether the Logs directory exist or not in the current directory.
-     * 
+     *
      * @return a {@link boolean}
      */
     private boolean isLogsDirectoryEmpty() {
         return (getLogsDirectory().listFiles(new LogFilesFilter()).length == 0);
-
     }
 
     /**
      * This method display the log file content
-     * 
+     *
      * @param request
-     *            - HttpServletRequest
+     *            HttpServletRequest
      * @param response
-     *            - HttpServletResponse
+     *            HttpServletResponse
      * @param fileName
-     *            - To display the log file content in the web page.
+     *            To display the log file content in the web page.
      * @throws IOException
      */
     protected void process(HttpServletRequest request, HttpServletResponse response, String fileName)
             throws IOException {
+        // TODO put this html code in a template
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(200);
@@ -177,10 +174,10 @@ public class LogServlet extends HttpServlet {
 
     /**
      * This method read the content of the file and append into FileBackedStringBuffer
-     * 
+     *
      * @param fileName
-     *            - Read the content of the log file
-     * @return a {@link buffer} buffer string to display in web page
+     *            Read the content of the log file
+     * @return a {@link FileBackedStringBuffer} to display in web page
      * @throws IOException
      */
     private String renderLogFileContents(String fileName) throws IOException {
@@ -205,7 +202,7 @@ public class LogServlet extends HttpServlet {
 
     /**
      * Get the log files from the directory
-     * 
+     *
      * @param index
      * @return A {@link File} that represent the file to read from current directory.
      */
@@ -224,10 +221,10 @@ public class LogServlet extends HttpServlet {
 
     /**
      * This method return index of the file name (example selion-grid-1.log)
-     * 
+     *
      * @param fileName
-     *            -log file name
-     * @return an {@link index} index value of the file
+     *            log file name
+     * @return an index value of the file
      */
     private int retrieveIndexValueFromFileName(String fileName) {
         int index = 0;

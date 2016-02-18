@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -41,8 +41,8 @@ import com.paypal.selion.utils.SauceConfigReader;
 import com.paypal.selion.utils.ServletHelper;
 
 /**
- * This {@link RegistryBasedServlet} based servlet update the Sauce Configuration json file based on the input provided
- * via POST operation and re-load the SauceConfigReader properties. For GET request it will return the
+ * This {@link RegistryBasedServlet} based servlet updates the Sauce Configuration json file based on the input provided
+ * via POST operation and re-loads the SauceConfigReader properties. For GET request it will return the
  * updateSauceConfigPage.html content. URL of the Servlet :
  * <code>http://{hub-host}:{hub-port}/grid/admin/SauceConfigChangeServlet</code>. <br>
  * <br>
@@ -50,14 +50,34 @@ import com.paypal.selion.utils.ServletHelper;
  */
 public class SauceConfigChangeServlet extends RegistryBasedServlet {
 
+    private static final long serialVersionUID = 1L;
+
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigChangeServlet.class);
+
+    /**
+     * sauceConfig.json key used to hold the base64 encoded sauce authentication key
+     */
+    private static final String AUTHENTICATION_KEY = "authenticationKey";
+
     /**
      * Resource path to the sauce config html file
      */
     public static final String RESOURCE_PAGE_FILE = "/pages/updateSauceConfigPage.html";
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * Form parameter for sauce url
+     */
+    public static final String SAUCE_URL = "sauceURL";
 
-    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigChangeServlet.class);
+    /**
+     * Form parameter for the sauce username
+     */
+    public static final String USERNAME = "username";
+
+    /**
+     * Form parameter for the sauce access key
+     */
+    public static final String ACCESS_KEY = "accessKey";
 
     public SauceConfigChangeServlet(Registry registry) {
         super(registry);
@@ -92,8 +112,8 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
         }
 
         String msg = "<p align='center'><b>Sauce configuration updated successfully</b></p>";
-        String sauceURL = req.getParameter("sauceURL");
-        String key = req.getParameter("username") + ":" + req.getParameter("accessKey");
+        String sauceURL = req.getParameter(SAUCE_URL);
+        String key = req.getParameter(USERNAME) + ":" + req.getParameter(ACCESS_KEY);
         String authKey = new String(Base64.encodeBase64(key.getBytes()));
 
         Path path = Paths.get(SeLionGridConstants.SAUCE_CONFIG_FILE);
@@ -101,8 +121,8 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
 
         try (BufferedWriter bw = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("authenticationKey", authKey);
-            jsonObject.addProperty("sauceURL", sauceURL);
+            jsonObject.addProperty(AUTHENTICATION_KEY, authKey);
+            jsonObject.addProperty(SAUCE_URL, sauceURL);
             bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject));
             LOGGER.info("Sauce config file updated");
             isUpdateSuccess = true;

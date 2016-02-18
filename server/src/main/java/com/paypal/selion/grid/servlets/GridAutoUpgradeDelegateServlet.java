@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -61,15 +61,24 @@ import com.paypal.selion.utils.ServletHelper;
  */
 public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
 
+    private static final long serialVersionUID = 1L;
+
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridAutoUpgradeDelegateServlet.class);
+
     /**
      * Resource path to the grid auto upgrade html template file
      */
     public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/gridAutoUpgradeDelegateServlet.html";
 
-    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridAutoUpgradeDelegateServlet.class);
-    private static final String IDS = "ids";
+    /**
+     * Request parameter which may contain the list of nodes which fail to upgrade
+     */
+    public static final String IDS = "ids";
+
+    /**
+     * Request parameter which contains the new download.json to apply
+     */
     public static final String PARAM_JSON = "downloadJSON";
-    private static final long serialVersionUID = 1L;
 
     public GridAutoUpgradeDelegateServlet() {
         this(null);

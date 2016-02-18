@@ -40,6 +40,11 @@ public class ListAllNodes extends RegistryBasedServlet {
 
     public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/listAllNodes.html";
 
+    /**
+     * Query parameter to use which instructs this servlet to ping the nodes for status.
+     */
+    public static final String PING_NODES = "pingNodes";
+
     public ListAllNodes() {
         this(null);
     }
@@ -69,7 +74,7 @@ public class ListAllNodes extends RegistryBasedServlet {
      * @throws IOException
      */
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        boolean doStatusQuery = request.getParameter("pingNodes") != null;
+        boolean doStatusQuery = request.getParameter(PING_NODES) != null;
         String acceptHeader = request.getHeader("Accept");
         if (acceptHeader != null && acceptHeader.equalsIgnoreCase("application/json")) {
             ServletHelper.respondAsJsonWithHttpStatus(response, getProxyInfo(doStatusQuery), HttpServletResponse.SC_OK);

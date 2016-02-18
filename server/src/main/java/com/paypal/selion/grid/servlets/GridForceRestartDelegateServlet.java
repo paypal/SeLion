@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -50,6 +50,21 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridForceRestartDelegateServlet.class);
 
+    /**
+     * Request parameter used to perform the restart. Value must be 'restart_nodes'.
+     */
+    public static final String FORM_ID = "form_id";
+
+    /**
+     * Request parameter used to indicate restart type. Forced or Graceful.
+     */
+    public static final String SUBMIT = "submit";
+
+    /**
+     * Request parameter which contains nodes to restart.
+     */
+    public static final String NODES = "nodes";
+
     public GridForceRestartDelegateServlet() {
         this(null);
     }
@@ -77,10 +92,10 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
         }
         PrintWriter writer = response.getWriter();
 
-        if (request.getParameter("form_id") != null && request.getParameter("form_id").equals("restart_nodes")) {
-            boolean isForcedRestart = request.getParameter("submit").equals("Force Restart");
+        if (request.getParameter(FORM_ID) != null && request.getParameter(FORM_ID).equals("restart_nodes")) {
+            boolean isForcedRestart = request.getParameter(SUBMIT).equals("Force Restart");
 
-            String nodes[] = request.getParameterValues("nodes");
+            String nodes[] = request.getParameterValues(NODES);
 
             if (nodes == null || nodes.length == 0) {
                 ServletHelper.displayMessageOnRedirect(writer,

@@ -91,7 +91,7 @@ public class SauceServlet extends RegistryBasedServlet {
             HttpClient client = httpClientFactory.getHttpClient();
             HttpResponse response = client.execute(host, r);
             // TODO: Should we do something with the status code for e.g., check if it was "200". Maybe attempt a few
-            // retries as well if the registration didnt go through ?
+            // retries as well if the registration didn't go through ?
 
             respMsg = "<p align='center'><b>Sauce node registration failed. Please refer to the log file for failure details</b></p>";
 
