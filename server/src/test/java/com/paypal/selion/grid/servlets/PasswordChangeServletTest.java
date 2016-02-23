@@ -38,7 +38,7 @@ public class PasswordChangeServletTest extends BaseGridRegistyServletTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(request, response);
-        validateResultingPage(response, "SeLion Grid - Change Password",
+        validateHtmlResponseContent(response, "SeLion Grid - Change Password",
                 "Fill out the form to change the management console password");
     }
 
@@ -52,7 +52,7 @@ public class PasswordChangeServletTest extends BaseGridRegistyServletTest {
         request.addParameter(PasswordChangeServlet.NEW_PASSWORD_2, "admin");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
-        validateResultingPage(response, "Grid Management Console", "Password changed");
+        validateHtmlResponseContent(response, "Grid Management Console", "Password changed");
 
     }
 
@@ -66,7 +66,8 @@ public class PasswordChangeServletTest extends BaseGridRegistyServletTest {
         request.addParameter(PasswordChangeServlet.NEW_PASSWORD_2, "admin");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
-        validateResultingPage(response, "Grid Management Console", "The old password did not match the one on record");
+        validateHtmlResponseContent(response, "Grid Management Console",
+                "The old password did not match the one on record");
     }
 
     @Test
@@ -79,18 +80,17 @@ public class PasswordChangeServletTest extends BaseGridRegistyServletTest {
         request.addParameter(PasswordChangeServlet.NEW_PASSWORD_2, "password");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
-        validateResultingPage(response, "Grid Management Console", "The new passwords do not match");
+        validateHtmlResponseContent(response, "Grid Management Console", "The new passwords do not match");
     }
 
     @Test
-    // TODO servlet should require a logged in session -- making validations for this test change.
-    public void testDoPostNoSessionFailure() throws Exception {
+    public void testDoPostNoSessionRedirect() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter(PasswordChangeServlet.OLD_PASSWORD, "admin");
         request.addParameter(PasswordChangeServlet.NEW_PASSWORD_1, "admin");
         request.addParameter(PasswordChangeServlet.NEW_PASSWORD_2, "admin");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
-        validateResultingPage(response, "Grid Management Console", "The old password did not match the one on record");
+        validateRedirectedToLoginServlet(response);
     }
 }

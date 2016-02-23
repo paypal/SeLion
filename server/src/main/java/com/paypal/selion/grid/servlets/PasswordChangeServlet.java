@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 
 /**
@@ -63,18 +64,23 @@ public class PasswordChangeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO Do not allow access to this servlet unless already logged in.
-        String userId = (String) req.getSession().getAttribute(LoginServlet.USER_ID);
+
+        // Redirecting to login page if session is not found
+        if (req.getSession(false) == null) {
+            resp.sendRedirect(LoginServlet.class.getSimpleName());
+            return;
+        }
+
+        String userId = (String) req.getSession(false).getAttribute(LoginServlet.USER_ID);
         String oldPassword = req.getParameter(OLD_PASSWORD);
         String newPassword1 = req.getParameter(NEW_PASSWORD_1);
         String newPassword2 = req.getParameter(NEW_PASSWORD_2);
 
         if (!newPassword1.contentEquals(newPassword2) || newPassword1 == null || newPassword2 == null) {
             loadPage(resp, "<b>The new passwords do not match</b>");
-        } else if (!AuthenticationHelper.authenticate(userid, oldPassword)) {
+        } else if (!AuthenticationHelper.authenticate(userId, oldPassword)) {
             loadPage(resp, "<b>The old password did not match the one on record</b>");
-
-        } else if (!AuthenticationHelper.changePassword(userid, newPassword1)) {
+        } else if (!AuthenticationHelper.changePassword(userId, newPassword1)) {
             loadPage(resp, "<b>Something went wrong while changing the password.</b>");
         } else {
             HttpSession session = req.getSession(false);

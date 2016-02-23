@@ -68,7 +68,7 @@ public class SauceServletTest extends BaseGridRegistyServletTest {
         request.getSession(true);
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(request, response);
-        validateResultingPage(response, "Grid Management Console", "Sauce node registered successfully");
+        validateHtmlResponseContent(response, "Grid Management Console", "Sauce node registered successfully");
     }
 
     /*
@@ -80,6 +80,6 @@ public class SauceServletTest extends BaseGridRegistyServletTest {
         request.getSession(true);
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
-        validateResultingPage(response, "Grid Management Console", "Sauce node already registered");
+        validateHtmlResponseContent(response, "Grid Management Console", "Sauce node already registered");
     }
 }

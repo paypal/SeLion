@@ -21,21 +21,26 @@
   <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all">
   <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
 </head>
+
 <body id="main_body">
 <img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
 <img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top">
 <div id="form_container">
+  <div style="margin: 20px 20px 0; padding:0 0 20px;">
+    <div class="form_description">
+      <h2>SeLion Sauce Grid Management Console</h2>
+      <p>Console actions</p>
+    </div>
 
-  <div class="form_description">
-    <h2>SauceGrid Management Console</h2>
-  </div>
-  <a href="/grid/resources/com/paypal/selion/html/updateSauceConfigPage.html">Update Sauce Configuration</a>
-  <br> <a href="/grid/admin/SauceServlet">Register Sauce Node</a>
-  <br> <a href="/grid/admin/PasswordChangeServlet">Change Password</a>
-  <br>
-  <div id="footer">
-    <a href="/grid/admin/LoginServlet?logout=true">Logout</a>
-    <p>Created by the <a href="http://selion.io">SeLion</a> project</p>
+    <a href="/grid/resources/com/paypal/selion/html/updateSauceConfigPage.html">Update Sauce Configuration</a><br>
+    <a href="/grid/admin/SauceServlet">Register Sauce Node</a><br>
+    <a href="/grid/admin/PasswordChangeServlet">Change Password</a>
+
+    <br>
+    <div id="footer">
+      <a href="/grid/admin/LoginServlet?logout=true">Logout</a>
+      <p>Created by the <a href="http://selion.io">SeLion</a> project</p>
+    </div>
   </div>
 </div>
 <img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom">

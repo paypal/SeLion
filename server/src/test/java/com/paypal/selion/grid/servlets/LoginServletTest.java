@@ -50,7 +50,7 @@ public class LoginServletTest extends BaseGridRegistyServletTest {
     }
 
     private void validateForNewLoginPage(MockHttpServletResponse response) throws Exception {
-        validateResultingPage(response, "Grid Login", "Enter username and password");
+        validateHtmlResponseContent(response, "Grid Login", "Enter username and password");
     }
 
     /*
@@ -106,10 +106,10 @@ public class LoginServletTest extends BaseGridRegistyServletTest {
     public void testGetForLogout() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.getSession(true);
-        request.addParameter("logout", "true");
+        request.addParameter(LoginServlet.LOGOUT, "true");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(request, response);
-        validateResultingPage(response, "Grid Management Console", "You are logged out");
+        validateForNewLoginPage(response);
         // session should be invalidated
         assertNull(request.getSession(false));
     }
@@ -124,7 +124,7 @@ public class LoginServletTest extends BaseGridRegistyServletTest {
 
     private void validateLoginFailure(MockHttpServletRequest request, MockHttpServletResponse response)
             throws Exception {
-        validateResultingPage(response, "Grid Login", "Invalid Credentials");
+        validateHtmlResponseContent(response, "Grid Login", "Invalid Credentials");
         // a new session should still be active
         assertNotNull(request.getSession(false));
     }

@@ -34,11 +34,9 @@ public class LogServletTest {
     }
 
     private void validateResultingPage(MockHttpServletResponse response, String... contains) throws Exception {
-        // TODO servlet should set the content type
-        // assertEquals(response.getContentType(), "text/html");
+        assertEquals(response.getContentType(), "text/html");
         assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
-        // TODO servlet should encode as UTF-8
-        // assertEquals(response.getCharacterEncoding(), "UTF-8");
+        assertEquals(response.getCharacterEncoding(), "UTF-8");
         for (String contain : contains) {
             assertTrue(response.getContentAsString().contains((contain)));
         }

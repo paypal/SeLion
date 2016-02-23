@@ -59,11 +59,12 @@ public class GridForceRestartDelegateServletTest extends BaseGridRegistyServletT
         request.addParameter(GridForceRestartDelegateServlet.SUBMIT, "restart");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
-        validateResultingPage(response, "Restart process initiated on all nodes.");
+        validateHtmlResponseContent(response, "Restart process initiated on all nodes.");
     }
 
     private void validateDefaultHtmlResponse(MockHttpServletResponse response) throws Exception {
-        validateResultingPage(response, "SeLion Grid - Node Restart", "No nodes are available to restart");
+        // The resulting json array should be empty and we should be on the node restart page
+        validateHtmlResponseContent(response, "SeLion Grid - Node Restart", "Object.freeze([]);");
     }
 
     @Test

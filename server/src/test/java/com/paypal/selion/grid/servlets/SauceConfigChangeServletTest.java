@@ -67,7 +67,7 @@ public class SauceConfigChangeServletTest extends BaseGridRegistyServletTest {
         request.getSession(true);
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(request, response);
-        validateResultingPage(response, "SauceGrid Configuration", "Sauce URL");
+        validateHtmlResponseContent(response, "SauceGrid Configuration", "Sauce URL");
     }
 
     /*
@@ -82,7 +82,7 @@ public class SauceConfigChangeServletTest extends BaseGridRegistyServletTest {
         request.addParameter(SauceConfigChangeServlet.USERNAME, "sauce-super-user");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
-        validateResultingPage(response, "Grid Management Console", "Sauce configuration updated successfully");
+        validateHtmlResponseContent(response, "Grid Management Console", "Sauce configuration updated successfully");
 
         assertEquals(SauceConfigReader.getInstance().getSauceURL(), "http://sauce-url");
         assertEquals(SauceConfigReader.getInstance().getUserName(), "sauce-super-user");

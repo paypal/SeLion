@@ -107,21 +107,6 @@ public class BaseGridRegistyServletTest {
         assertEquals(response.getHeaders("Location").get(0), LoginServlet.class.getSimpleName());
     }
 
-    /**
-     * @deprecated use validateHtmlResponseContent(MockHttpServletResponse response, String... contains) for servlets
-     *             which properly set the content-type and character encoding as utf-8
-     */
-    @Deprecated
-    // TODO Fix any servlet which is depending on this test validation.
-    // TODO servlet should set the content type
-    // TODO servlet should set character encoding as utf-8
-    public void validateResultingPage(MockHttpServletResponse response, String... contains) throws Exception {
-        assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
-        for (String contain : contains) {
-            assertTrue(response.getContentAsString().contains((contain)));
-        }
-    }
-
     public void validateHtmlResponseContent(MockHttpServletResponse response, String... contains) throws Exception {
         assertEquals(response.getContentType(), "text/html");
         assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
