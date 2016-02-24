@@ -105,6 +105,10 @@ Run the SeLion Grid as an Appium node (beta feature)
 ```
 java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar com.paypal.selion.grid.AppiumSpawner
 ```
+Run the SeLion Grid as a Sauce labs proxy
+```
+java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar -role hub -type sauce
+```
 
 Contact
 -------
