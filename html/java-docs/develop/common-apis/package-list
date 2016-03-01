@@ -1,0 +1,7 @@
+com.paypal.selion
+com.paypal.selion.configuration
+com.paypal.selion.logger
+com.paypal.selion.platform.utilities
+com.paypal.selion.platform.web
+com.paypal.selion.reports.runtime
+com.paypal.test.utilities.logging
