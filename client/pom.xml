@@ -112,8 +112,8 @@
         </dependency>
 
         <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>htmlunit-driver</artifactId>
         </dependency>
 
         <dependency>
