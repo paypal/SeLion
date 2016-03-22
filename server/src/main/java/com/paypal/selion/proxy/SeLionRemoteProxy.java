@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -56,16 +56,42 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
 import javax.servlet.http.HttpServlet;
 
 /**
- * This is a customized {@link DefaultRemoteProxy} for SeLion. This proxy when injected into the Grid, starts counting
- * unique test sessions. After "n" test sessions, the proxy unhooks the node gracefully from the grid and self
- * terminates gracefully. The number of unique sessions is controlled via a json config file : "SeLionConfig.json". A
- * typical entry in this file looks like:
+ * This is a customized {@link DefaultRemoteProxy} for SeLion. <br>
+ * <br>
+ * This proxy, when utilized can: <br>
+ * <ul>
+ * <li>Count unique test sessions. After "n" test sessions, the proxy disconnects from the grid and issues a requests to
+ * {@link NodeForceRestartServlet}. The number of unique sessions is controlled via the json config file
+ * <code>SeLionConfig.json</code> with the setting <code>uniqueSessionCount</code>.<br>
+ * <br>
+ * For example:
  * 
  * <pre>
  *  "uniqueSessionCount": 25
  * </pre>
  * 
- * Here UniqueSessionCount represents the max. number of tests that the node will run before recycling itself.
+ * Here the value 25 indicates that the proxy will stop accepting new connections after 25 unique sessions and trigger a
+ * graceful shutdown (see below). A value of <=0 indicates that this feature is disabled.</li>
+ * 
+ * <li>Request remote proxy to shutdown either forcefully or gracefully -- issues a request to
+ * {@link NodeForceRestartServlet}. In the case of a graceful restart, the proxy respects a wait timeout for any
+ * sessions in progress to complete. This is controlled via the json config file <code>SeLionConfig.json</code> with the
+ * setting <code>nodeRecycleThreadWaitTimeout</code>.<br>
+ * <br>
+ * For example:
+ * 
+ * <pre>
+ *  "nodeRecycleThreadWaitTimeout": 300
+ * </pre>
+ * 
+ * Here the value 300 is in seconds -- the proxy will wait this amount of time before forcing a shutdown action. A value
+ * of 0 indicates that the proxy will wait indefinitely.</li>
+ * 
+ * <li>Request remote proxy to auto upgrade -- issues a request to {@link NodeAutoUpgradeServlet}.</li>
+ * 
+ * <li>Determine whether the remote proxy supports {@link NodeAutoUpgradeServlet}, {@link NodeForceRestartServlet}, and
+ * {@link LogServlet}</li>
+ * </ul>
  */
 public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
@@ -119,8 +145,13 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         info.append("New proxy instantiated for the machine ").append(machine);
         proxyLogger.info(info.toString());
         info = new StringBuffer();
-        info.append("SeLionRemoteProxy will attempt to recycle the node [");
-        info.append(machine).append("] after ").append(getMaxSessionsAllowed()).append(" unique sessions");
+        if (isEnabledMaxUniqueSessions()) {
+            info.append("SeLionRemoteProxy will attempt to recycle the node [");
+            info.append(machine).append("] after ").append(getMaxSessionsAllowed()).append(" unique sessions");
+        } else {
+            info.append("SeLionRemoteProxy will not attempt to recycle the node [");
+            info.append(machine).append("] based on unique session counting.");
+        }
         proxyLogger.info(info.toString());
 
         // detect presence of SeLion servlet capabilities on proxy
@@ -140,7 +171,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
                 .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
         CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-        String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(), 
+        String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(),
                 servlet.getSimpleName());
 
         try {
@@ -238,12 +269,22 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         return true;
     }
 
+    /**
+     * @return whether the proxy has reached the max unique sessions
+     */
+    private boolean isMaxUniqueSessionsReached() {
+        if (!isEnabledMaxUniqueSessions()){
+            return false;
+        }
+        return totalSessionsStarted >= getMaxSessionsAllowed();
+    }
+
     @Override
     public TestSession getNewSession(Map<String, Object> requestedCapability) {
         LOGGER.entering();
 
         // verification should be before lock to avoid unnecessarily acquiring lock
-        if (totalSessionsStarted >= getMaxSessionsAllowed() || scheduledShutdown) {
+        if (isMaxUniqueSessionsReached() || scheduledShutdown) {
             LOGGER.exiting(null);
             return logSessionInfo();
         }
@@ -253,7 +294,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
             // As per double-checked locking pattern need to have check once again
             // to avoid spawning additional session then maxSessionAllowed
-            if (totalSessionsStarted >= getMaxSessionsAllowed() || scheduledShutdown) {
+            if (isMaxUniqueSessionsReached() || scheduledShutdown) {
                 LOGGER.exiting(null);
                 return logSessionInfo();
             }
@@ -262,7 +303,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             if (session != null) {
                 // count ONLY if the session was a valid one
                 totalSessionsStarted++;
-                if (totalSessionsStarted >= getMaxSessionsAllowed()) {
+                if (isMaxUniqueSessionsReached()) {
                     startNodeRecycleThread();
                 }
                 proxyLogger.fine("Beginning session #" + totalSessionsStarted + " (" + session.toString() + ")");
@@ -275,7 +316,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     }
 
     private TestSession logSessionInfo() {
-        proxyLogger.fine("Was max sessions reached? " + (totalSessionsStarted >= getMaxSessionsAllowed()) + " on node "
+        proxyLogger.fine("Was max sessions reached? " + (isMaxUniqueSessionsReached()) + " on node "
                 + getId());
         proxyLogger.fine("Was this a scheduled shutdown? " + (scheduledShutdown) + " on node " + getId());
         return null;
@@ -502,4 +543,12 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     public boolean supportsViewLogs() {
         return canViewLogs;
     }
+
+    /**
+     * @return whether the proxy is enabled to limit the number of unique sessions before triggering a graceful shutdown
+     */
+    private boolean isEnabledMaxUniqueSessions() {
+        return (getMaxSessionsAllowed() > 0);
+    }
+
 }
