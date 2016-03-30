@@ -68,7 +68,7 @@ public class SauceLabsHelper {
             logger.exiting();
             return;
         }
-        Reporter.log(String.format("<b>SauceLabs Job URL available <a href='%s' target='_blank'>here</a></b>", url));
+        Reporter.log(String.format("<b>Sauce Labs job URL available <a href='%s' target='_blank'>here</a></b>", url));
         logger.exiting();
     }
 
