@@ -16,11 +16,12 @@
 package com.paypal.selion.proxy;
 
 import com.paypal.selion.pojos.SeLionGridConstants;
+
 import org.apache.commons.io.FileUtils;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.testng.annotations.AfterClass;
@@ -45,7 +46,7 @@ public class SeLionSauceProxyTest {
         String[] args = new String[] {
                 "-role", "hub", "-type", "sauce",
                 "-host", "localhost",
-                "-servlets", "com.paypal.selion.grid.servlets.LoginServlet,com.paypal.selion.grid.servlets.SauceServlet",
+                "-servlets", "com.paypal.selion.grid.servlets.LoginServlet,com.paypal.selion.grid.servlets.SauceServlet"
         };
         GridHubConfiguration ghc = GridHubConfiguration.build(args);
         hub = new Hub(ghc);
@@ -63,7 +64,7 @@ public class SeLionSauceProxyTest {
 
     @Test(dependsOnMethods = "testSauceProxyConfig")
     public void testSauceProxy() throws Exception {
-        RemoteProxy p = DefaultRemoteProxy.getNewInstance(req, hub.getRegistry());
+        RemoteProxy p = BaseRemoteProxy.getNewInstance(req, hub.getRegistry());
         assertTrue(p instanceof SeLionSauceProxy);
         assertTrue(p.getStatus() != null);
     }

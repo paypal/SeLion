@@ -2,29 +2,16 @@
     "class": "org.openqa.grid.common.RegistrationRequest",
     "capabilities": [{
         "platform": "ANY",
-        "browserName": "firefox",
-        "maxInstances": 20
-    }, {
-        "platform": "ANY",
-        "browserName": "chrome",
-        "maxInstances": 20
-    }, {
-        "platform": "ANY",
-        "browserName": "internet explorer",
-        "maxInstances": 20
+        "browserName": "saucelabs",
+        "maxInstances": 1
     }],
     "configuration": {
-        "port": 5555,
-        "register": true,
         "cleanUpCycle": 30000,
         "timeout": 120000,
         "proxy": "com.paypal.selion.proxy.SeLionSauceProxy",
-        "maxSession": 100,
-        "hubHost": "localhost",
+        "maxSession": 1,
         "role": "wd",
-        "registerCycle": 5000,
-        "hubPort": 4444,
         "url": "http://localhost:4444",
-        "remoteHost": "http://localhost:4444"
+        "remoteHost": "http://ondemand.saucelabs.com:80"
     }
 }

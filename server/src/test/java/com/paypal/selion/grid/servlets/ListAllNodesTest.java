@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 public class ListAllNodesTest extends BaseGridRegistyServletTest {
     private static ListAllNodes servlet;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void beforeClass() {
         initRegistry();
         // Initialize the servlet under test

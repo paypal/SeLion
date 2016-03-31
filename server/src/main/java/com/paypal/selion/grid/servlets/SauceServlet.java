@@ -15,21 +15,32 @@
 
 package com.paypal.selion.grid.servlets;
 
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
-import org.apache.commons.io.FileUtils;
+import com.paypal.selion.proxy.SeLionSauceProxy;
+import com.paypal.selion.utils.SauceLabsRestApi;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
@@ -37,17 +48,26 @@ import org.openqa.selenium.remote.internal.HttpClientFactory;
 import com.paypal.selion.utils.ServletHelper;
 
 /**
- * This {@link RegistryBasedServlet} based servlet automatically takes care of spinning off a virtual node when it gets
- * initialized. It also gives the end user an opportunity to re-spawn the same virtual node again explicitly by doing a
- * GET/POST against the URL : <code>http://{hub-host}:{hub-port}/grid/admin/SauceServlet</code>.
+ * This {@link RegistryBasedServlet} based servlet takes care of spinning up or tearing down a virtual sauce node.<br>
  * <br>
- * <br>
- * This requires the hub to also have {@link LoginServlet} available. 
+ * This servlet requires the hub to also have {@link LoginServlet} available.
  */
 public class SauceServlet extends RegistryBasedServlet {
 
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceServlet.class);
     private static final long serialVersionUID = 9187677490975386050L;
-    private static int count;
+
+    /**
+     * The proxy id that will be used to register to the hub
+     */
+    public static final String PROXY_ID = "http://ondemand.saucelabs.com:80";
+
+    /**
+     * Request parameter that trigger a proxy shutdown action
+     */
+    public static final String SHUTDOWN_PARAM = "shutdown";
+
+    private boolean registered;
 
     public SauceServlet(Registry registry) {
         super(registry);
@@ -57,10 +77,47 @@ public class SauceServlet extends RegistryBasedServlet {
         this(null);
     }
 
-    /**
+    private String formatForHtmlTemplate(String message) {
+        return String.format("<p align='center'><b>%s</b></p>", message);
+    }
+
+    @Override
+    protected Registry getRegistry() {
+        // ensure the Registry returned reflects the hub state.
+        final Registry localRegistry = super.getRegistry();
+        final Registry hubRegistry = localRegistry.getHub().getRegistry();
+        // yes, we only care if they are the same object reference.
+        return (localRegistry.equals(hubRegistry)) ? localRegistry : hubRegistry;
+    }
+
+    /*
+     * Disconnects the virtual node from the hub
+     */
+    private synchronized void disconnectVirtualSauceNodeFromGrid(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        // Redirecting to login page if session is not found
+        if (req.getSession(false) == null) {
+            resp.sendRedirect(LoginServlet.class.getSimpleName());
+            return;
+        }
+
+        String msg = "There is no sauce node running.";
+        final SeLionSauceProxy proxy = (SeLionSauceProxy) getRegistry().getProxyById(PROXY_ID);
+        if (proxy != null) {
+            proxy.teardown();
+            getRegistry().removeIfPresent(proxy);
+            msg = "Sauce node shutdown successfully.";
+        }
+
+        registered = false;
+        LOGGER.info(msg);
+        ServletHelper.respondAsHtmlWithMessage(resp, formatForHtmlTemplate(msg));
+    }
+
+    /*
      * A helper method that takes care of registering a virtual node to the hub.
      */
-    public void registerVirtualSauceNodeToGrid(HttpServletRequest req, HttpServletResponse resp)
+    private synchronized void registerVirtualSauceNodeToGrid(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
         // Redirecting to login page if session is not found
@@ -69,50 +126,96 @@ public class SauceServlet extends RegistryBasedServlet {
             return;
         }
 
-        URL registration;
+        String respMsg = "Sauce node already registered.";
+        if (registered) {
+            ServletHelper.respondAsHtmlWithMessage(resp, formatForHtmlTemplate(respMsg));
+            LOGGER.info(respMsg);
+            return;
+        }
+
+        HttpClientFactory httpClientFactory = new HttpClientFactory();
+        respMsg = "Sauce node registration failed. Please refer to the log file for failure details.";
         try {
+            final int port = getRegistry().getHub().getPort();
+            final URL registration = new URL("http://localhost:" + port + "/grid/register");
 
-            String respMsg = "<p align='center'><b>Sauce node already registered</b></p>";
-            if (count > 0) {
-                ServletHelper.respondAsHtmlWithMessage(resp, respMsg);
-                return;
-            }
-
-            int port = getRegistry().getHub().getPort();
-            registration = new URL("http://localhost:" + port + "/grid/register");
-
-            BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST",
+            BasicHttpEntityEnclosingRequest request = new BasicHttpEntityEnclosingRequest("POST",
                     registration.toExternalForm());
-            String json = FileUtils.readFileToString(new File(SeLionGridConstants.NODE_SAUCE_CONFIG_FILE));
-            r.setEntity(new StringEntity(json));
+            request.setEntity(new StringEntity(getRegistrationRequestEntity()));
             HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
-            HttpClientFactory httpClientFactory = new HttpClientFactory();
             HttpClient client = httpClientFactory.getHttpClient();
-            HttpResponse response = client.execute(host, r);
-            // TODO: Should we do something with the status code for e.g., check if it was "200". Maybe attempt a few
-            // retries as well if the registration didn't go through ?
-
-            respMsg = "<p align='center'><b>Sauce node registration failed. Please refer to the log file for failure details</b></p>";
+            HttpResponse response = client.execute(host, request);
 
             if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
-                respMsg = "<p align='center'><b>Sauce node registered successfully</b></p>";
+                respMsg = "Sauce node registered successfully.";
+                registered = true;
             }
-
-            ServletHelper.respondAsHtmlWithMessage(resp, respMsg);
-            count++;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | GridConfigurationException e) { // We catch the GridConfigurationException here to fail
+                                                               // gracefully
+            // TODO Consider retrying on failure
+            LOGGER.log(Level.WARNING, "Unable to register sauce node: ", e);
+        } finally {
+            httpClientFactory.close();
         }
+        LOGGER.info(respMsg);
+        ServletHelper.respondAsHtmlWithMessage(resp, formatForHtmlTemplate(respMsg));
+    }
+
+    /*
+     * Update the registration request entity
+     */
+    private String getRegistrationRequestEntity() throws FileNotFoundException {
+        // update the registration request with the max concurrent sessions/vms
+        final JsonReader reader = new JsonReader(new FileReader(SeLionGridConstants.NODE_SAUCE_CONFIG_FILE));
+        final JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
+
+        // get the max concurrent vm's allowed for the account from sauce labs
+        final SauceLabsRestApi restApi;
+        try {
+            restApi = new SauceLabsRestApi();
+        } catch (GridConfigurationException e) {
+            throw e;
+        }
+
+        final int maxConcurrent = restApi.getMaxConcurrency();
+        if (maxConcurrent != -1) {
+            // update max sessions
+            if (json.has("configuration")) {
+                json.getAsJsonObject("configuration").addProperty(RegistrationRequest.MAX_SESSION, maxConcurrent);
+            }
+            // update all browser max instances for all "browser" types
+            if (json.has("capabilities")) {
+                for (JsonElement jsonElement : json.get("capabilities").getAsJsonArray()) {
+                    jsonElement.getAsJsonObject().addProperty(RegistrationRequest.MAX_INSTANCES, maxConcurrent);
+                }
+            }
+        }
+
+        // ensure the remoteHost / proxy id is set to http://ondemand.saucelabs.com:80
+        if (json.has("configuration")) {
+            json.getAsJsonObject("configuration").addProperty(RegistrationRequest.REMOTE_HOST, PROXY_ID);
+        }
+
+        return json.toString();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (request.getParameter(SHUTDOWN_PARAM) != null) {
+            disconnectVirtualSauceNodeFromGrid(request, response);
+            return;
+        }
         registerVirtualSauceNodeToGrid(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        registerVirtualSauceNodeToGrid(req, resp);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        if (request.getParameter(SHUTDOWN_PARAM) != null) {
+            disconnectVirtualSauceNodeFromGrid(request, response);
+            return;
+        }
+        registerVirtualSauceNodeToGrid(request, response);
     }
 
 }

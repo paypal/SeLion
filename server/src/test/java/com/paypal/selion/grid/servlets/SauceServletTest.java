@@ -21,15 +21,20 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.fail;
 
 public class SauceServletTest extends BaseGridRegistyServletTest {
     private static SauceServlet servlet;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void beforeClass() {
         initRegistry();
         try {
+            if (registry == null) {
+                fail("registry can not be null for SauceServletTest");
+            }
             hub.start();
         } catch (Exception e) {
             fail("Unable to start a hub for SauceServletTest", e);
@@ -38,7 +43,7 @@ public class SauceServletTest extends BaseGridRegistyServletTest {
         servlet = new SauceServlet(registry);
     }
 
-    @AfterClass
+    @AfterClass(alwaysRun = true)
     public void afterClass() throws Exception {
         hub.stop();
     }
@@ -69,10 +74,17 @@ public class SauceServletTest extends BaseGridRegistyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(request, response);
         validateHtmlResponseContent(response, "Grid Management Console", "Sauce node registered successfully");
+        assertSame(hub.getRegistry(), servlet.getRegistry(), "hub and servlet do not point to the same registry");
+        int tries = 0;
+        do {
+            Thread.sleep(1000); // Give the hub a second to complete registration of the new virtual node
+            tries += 1;
+        } while ((hub.getRegistry().getAllProxies().size() < 1) && (tries < 10));
+        assertNotNull(hub.getRegistry().getProxyById(SauceServlet.PROXY_ID), "getProxyById returned null");
     }
 
     /*
-     * Verify via HTTP POST we can only start on Sauce node
+     * Verify via HTTP POST we can only start one Sauce node
      */
     @Test(dependsOnMethods = { "testDoGet" })
     public void testDoPost() throws Exception {
@@ -81,5 +93,33 @@ public class SauceServletTest extends BaseGridRegistyServletTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
         validateHtmlResponseContent(response, "Grid Management Console", "Sauce node already registered");
+        assertSame(hub.getRegistry(), servlet.getRegistry(), "hub and servlet do not point to the same registry");
+        assertNotNull(hub.getRegistry().getProxyById(SauceServlet.PROXY_ID), "getProxyById returned null");
+    }
+
+    /*
+     * Verify via HTTP GET that we can stop a Sauce proxy
+     */
+    @Test(dependsOnMethods = { "testDoPost" })
+    public void testDoGetForShutdown() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.getSession(true);
+        request.addParameter(SauceServlet.SHUTDOWN_PARAM, "");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.doGet(request, response);
+        validateHtmlResponseContent(response, "Grid Management Console", "Sauce node shutdown successfully");
+    }
+
+    /*
+     * Verify via HTTP POST that we get no sauce running when requesting shutdown
+     */
+    @Test(dependsOnMethods = { "testDoGetForShutdown" })
+    public void testDoPostForShutdown() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.getSession(true);
+        request.addParameter(SauceServlet.SHUTDOWN_PARAM, "");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.doPost(request, response);
+        validateHtmlResponseContent(response, "Grid Management Console", "There is no sauce node running");
     }
 }

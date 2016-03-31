@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
 public class PasswordChangeServletTest extends BaseGridRegistyServletTest {
     private static PasswordChangeServlet servlet;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void beforeClass() {
         servlet = new PasswordChangeServlet();
     }

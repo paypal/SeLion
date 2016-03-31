@@ -1,6 +1,7 @@
 {
     "servlets": [
         "com.paypal.selion.grid.servlets.LoginServlet",
+        "com.paypal.selion.grid.servlets.ListAllNodes",
         "com.paypal.selion.grid.servlets.SauceServlet",
         "com.paypal.selion.grid.servlets.PasswordChangeServlet",
         "com.paypal.selion.grid.servlets.SauceConfigChangeServlet"

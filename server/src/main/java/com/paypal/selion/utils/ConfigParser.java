@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -39,7 +39,7 @@ import com.paypal.selion.pojos.SeLionGridConstants;
  */
 public final class ConfigParser {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ConfigParser.class);
-    private static ConfigParser parser = new ConfigParser();
+    private static final ConfigParser parser = new ConfigParser();
     private static JsonObject configuration;
     private static String configFile;
 
@@ -47,7 +47,7 @@ public final class ConfigParser {
      * @return A {@link ConfigParser} object that can be used to retrieve values from the Configuration object as
      *         represented by the JSON file passed via the JVM argument <b>SeLionConfig</b>
      */
-    public static ConfigParser parse() {
+    public static synchronized ConfigParser parse() {
         LOGGER.entering();
         if (configuration == null) {
             try {
@@ -56,6 +56,7 @@ public final class ConfigParser {
                 throw new ConfigParserException(e);
             }
         }
+
         LOGGER.exiting(parser.toString());
         return parser;
     }
@@ -66,7 +67,7 @@ public final class ConfigParser {
      * @param file
      *            the SeLion Grid config file to use
      */
-    public static ConfigParser setConfigFile(String file) {
+    public static synchronized ConfigParser setConfigFile(String file) {
         LOGGER.entering(file);
         if (configuration == null) {
             configFile = file;
@@ -196,7 +197,7 @@ public final class ConfigParser {
     }
 
     private ConfigParser() {
-        //Intentionally left blank
+        // Intentionally left blank
     }
 
     private static void readConfigFileContents() throws IOException {
