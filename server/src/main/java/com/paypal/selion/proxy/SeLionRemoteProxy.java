@@ -41,6 +41,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.RemoteUnregisterException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
@@ -147,16 +148,19 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         proxyLogger = SimpleLogger.getLogger(loggerSettings);
 
         // Log initialization info
+        final int port = getRemoteHost().getPort();
+
         StringBuffer info = new StringBuffer();
-        info.append("New proxy instantiated for the machine ").append(machine);
+        info.append("New proxy instantiated for the node ").append(machine).append(":").append(port);
         proxyLogger.info(info.toString());
         info = new StringBuffer();
         if (isEnabledMaxUniqueSessions()) {
-            info.append("SeLionRemoteProxy will attempt to recycle the node [");
-            info.append(machine).append("] after ").append(getMaxSessionsAllowed()).append(" unique sessions");
+            info.append("SeLionRemoteProxy will attempt to recycle the node ");
+            info.append(machine).append(":").append(port).append(" after ").append(getMaxSessionsAllowed())
+                .append(" unique sessions");
         } else {
-            info.append("SeLionRemoteProxy will not attempt to recycle the node [");
-            info.append(machine).append("] based on unique session counting.");
+            info.append("SeLionRemoteProxy will not attempt to recycle the node ");
+            info.append(machine).append(":").append(port).append(" based on unique session counting.");
         }
         proxyLogger.info(info.toString());
 
@@ -422,6 +426,9 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
         // verify the servlet is supported on the node
         if (!canForceShutdown) {
+            // allow this proxy to keep going
+            disableMaxSessions();
+            scheduledShutdown = false;
             LOGGER.exiting();
             return;
         }
@@ -444,20 +451,33 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         HttpResponse response = sendToNodeServlet(NodeForceRestartServlet.class, nvps);
         if (response == null) {
             proxyLogger.warning("Node " + getId() + " failed to shutdown and returned a null response.");
-            LOGGER.exiting(false);
+            // stop the polling thread, mark this proxy as down, force this proxy to re-register
+            teardown("it failed to shutdown and must re-register");
+            LOGGER.exiting();
             return;
         }
 
         final int responseStatusCode = response.getStatusLine().getStatusCode();
         if (responseStatusCode != HttpStatus.SC_OK) {
-            proxyLogger.info("Node " + getId() + " did not shutdown and returned HTTP " + responseStatusCode);
-            LOGGER.exiting(false);
+            proxyLogger.warning("Node " + getId() + " did not shutdown and returned HTTP " + responseStatusCode);
+            // stop the polling thread, mark this proxy as down, force this proxy to re-register
+            teardown("it failed to shutdown and must re-register");
+            LOGGER.exiting();
             return;
         }
+
+        // stop the polling thread, mark this proxy as down
+        teardown("it is shutdown");
 
         proxyLogger.info("Node " + getId() + " shutdown successfully.");
 
         LOGGER.exiting();
+    }
+
+    private void teardown(String reason) {
+        addNewEvent(new RemoteUnregisterException(String.format("Unregistering node %s because %s.",
+                getId(), reason)));
+        teardown();
     }
 
     /**
@@ -536,6 +556,14 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private NodeRecycleThread getNodeRecycleThread() {
         return nodeRecycleThread;
+    }
+
+    /**
+     * disables the max session count for this node.
+     */
+    private void disableMaxSessions() {
+        proxyLogger.warning("Disabling max unique sessions for Node " + getId());
+        getConfig().put("uniqueSessionCount", -1);
     }
 
     /**
