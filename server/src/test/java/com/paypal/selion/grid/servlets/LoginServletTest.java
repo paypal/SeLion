@@ -43,7 +43,7 @@ import static org.testng.Assert.*;
 public class LoginServletTest extends BaseGridRegistyServletTest {
     private static LoginServlet servlet;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void beforeClass() {
         initRegistry();
         servlet = new LoginServlet(registry);

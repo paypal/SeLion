@@ -33,24 +33,34 @@
     </div>
     <ul>
       <li id="li_1">
-        <label class="description" for="sauceURL">Sauce URL *</label>
+        <label class="description" for="sauceURL">Sauce URL</label>
         <div>
-          <input id="sauceURL" name="sauceURL" class="element text medium" type="URL" maxlength="255"
+          <input id="sauceURL" name="sauceURL" class="element text medium" maxlength="255"
                  value="https://saucelabs.com/rest/v1"/>
         </div>
       </li>
       <li id="li_2">
-        <label class="description" for="username">Username *</label>
+        <label class="description" for="username">Username</label>
         <div>
-          <input id="username" name="username" class="element text medium" type="username"
-                 maxlength="255" value=""/>
+          <input id="username" name="username" class="element text medium" maxlength="255" value=""/>
         </div>
       </li>
       <li id="li_3">
         <label class="description" for="accessKey">Access Key *</label>
         <div>
-          <input id="accessKey" name="accessKey" class="element text medium" type="Access Key"
-                 maxlength="255" value=""/>
+          <input id="accessKey" name="accessKey" class="element text medium" maxlength="255" value=""/>
+        </div>
+      </li>
+      <li id="li_4">
+        <label class="description" for="retry">API Number of Retries</label>
+        <div>
+          <input id="retry" name="retry" class="element text medium" maxlength="255" value=""/>
+        </div>
+      </li>
+      <li id="li_5">
+        <label class="description" for="timeout">API Timeout (milliseconds)</label>
+        <div>
+          <input id="timeout" name="timeout" class="element text medium" maxlength="255" value=""/>
         </div>
       </li>
       <li class="buttons">

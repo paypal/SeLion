@@ -17,25 +17,29 @@ package com.paypal.selion.utils;
 
 import java.util.logging.Level;
 
+import net.jcip.annotations.ThreadSafe;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
  * A configuration utility that is internally used by SeLion to parse sauce configuration json file.
  */
-public class SauceConfigReader {
+@ThreadSafe
+public final class SauceConfigReader {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigReader.class);
-    private static SauceConfigReader reader = new SauceConfigReader();
 
-    private static final String SAUCE_TIMEOUT = "sauceTimeout";
-    private static final String SAUCE_RETRY = "sauceRetries";
+    public static final String AUTHENTICATION_KEY = "authenticationKey";
+    public static final String SAUCE_URL = "sauceURL";
+    public static final String SAUCE_TIMEOUT = "sauceTimeout";
+    public static final String SAUCE_RETRY = "sauceRetries";
 
     // Default of 10 seconds for connection & read
     private static final int DEFAULT_TIMEOUT = 10 * 1000;
@@ -51,30 +55,80 @@ public class SauceConfigReader {
     private int sauceTimeout = DEFAULT_TIMEOUT;
     private int sauceRetry = DEFAULT_RETRY_COUNT;
 
+    private static final class SauceConfigReaderHolder {
+        private static final SauceConfigReader INSTANCE = new SauceConfigReader();
+        private static volatile boolean dirty = true;
+
+        private static synchronized void invalidate() {
+            dirty = true;
+        }
+
+        private static synchronized boolean isDirty() {
+            return dirty;
+        }
+
+        private static synchronized void reload() {
+            if (!dirty) {
+                return;
+            }
+            INSTANCE.loadConfig();
+            dirty = false;
+        }
+
+        private static SauceConfigReader getSauceConfigReader() {
+            return INSTANCE;
+        }
+    }
+
     /**
-     * @return - A {@link SauceConfigReader} object that can be used to retrieve values from the Configuration object as
-     *         represented by the JSON file
+     * @return a {@link SauceConfigReader} object that can be used to retrieve values from the Configuration object as
+     *         represented by the JSON file. Throws a {@link GridConfigurationException} on instance load error.
      */
     public static SauceConfigReader getInstance() {
-        return reader;
+        if (SauceConfigReaderHolder.isDirty()) {
+            SauceConfigReaderHolder.reload();
+        }
+        return SauceConfigReaderHolder.getSauceConfigReader();
     }
 
     private SauceConfigReader() {
-        loadConfig();
+        // intentionally left blank and hidden
+    }
+
+    /**
+     * Invalidates the current Sauce config and causes it to reload from disk at next {@link #getInstance()} call
+     */
+    public void invalidate() {
+        SauceConfigReaderHolder.invalidate();
     }
 
     /**
      * Load the all the properties from JSON file(sauceConfig.json)
      */
-    public void loadConfig() {
+    private void loadConfig() {
         try {
             JsonObject jsonObject = JSONConfigurationUtils.loadJSON(SeLionGridConstants.SAUCE_CONFIG_FILE);
 
-            authKey = getAttributeValue(jsonObject, "authenticationKey");
+            authKey = getAttributeValue(jsonObject, AUTHENTICATION_KEY);
+            if (StringUtils.isBlank(authKey)) {
+                final String error = "Invalid authenticationKey specified";
+                LOGGER.log(Level.SEVERE, error);
+                throw new GridConfigurationException(error); // caught below
+            }
 
-            sauceURL = getAttributeValue(jsonObject, "sauceURL");
+            sauceURL = getAttributeValue(jsonObject, SAUCE_URL);
+            if (StringUtils.isBlank(sauceURL)) {
+                final String error = "Invalid sauceURL specified";
+                LOGGER.log(Level.SEVERE, error);
+                throw new GridConfigurationException(error); // caught below
+            }
 
-            String decodedKey = new String(Base64.decodeBase64(authKey));
+            final String decodedKey = new String(Base64.decodeBase64(authKey));
+            if (!StringUtils.contains(decodedKey, ":")) {
+                final String error = "Decoded key error. Invalid authenticationKey specified";
+                LOGGER.log(Level.SEVERE, error);
+                throw new GridConfigurationException(error); // caught below
+            }
             userName = decodedKey.substring(0, decodedKey.indexOf(":"));
 
             url = sauceURL + "/" + userName;
@@ -89,8 +143,8 @@ public class SauceConfigReader {
 
             LOGGER.info("Sauce Config loaded successfully");
 
-        } catch (JsonSyntaxException e) {
-            String error = "Error with the JSON of the Sauce Config : " + e.getMessage();
+        } catch (RuntimeException e) { // NOSONAR
+            final String error = "Error parsing sauceConfig.json: " + e.getMessage();
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             throw new GridConfigurationException(error, e);
         }
@@ -108,7 +162,7 @@ public class SauceConfigReader {
      * @return the access key associated with the saucelabs account
      */
     public String getAuthenticationKey() {
-        LOGGER.info("authKey: " + authKey);
+        LOGGER.fine("authKey: " + authKey);
         return authKey;
     }
 
@@ -116,7 +170,7 @@ public class SauceConfigReader {
      * @return the sauceURL specified in the configuration file
      */
     public String getSauceURL() {
-        LOGGER.info("sauceURL: " + sauceURL);
+        LOGGER.fine("sauceURL: " + sauceURL);
         return sauceURL;
     }
 
@@ -124,7 +178,7 @@ public class SauceConfigReader {
      * @return the sauce labs user name
      */
     public String getUserName() {
-        LOGGER.info("userName: " + userName);
+        LOGGER.fine("userName: " + userName);
         return userName;
     }
 
@@ -132,7 +186,7 @@ public class SauceConfigReader {
      * @return the fully qualified sauce url
      */
     public String getURL() {
-        LOGGER.info("url: " + url);
+        LOGGER.fine("url: " + url);
         return url;
     }
 
@@ -140,6 +194,7 @@ public class SauceConfigReader {
      * @return the timeout in milleseconds for sauce
      */
     public int getSauceTimeout() {
+        LOGGER.fine("sauceTimeout: " + sauceTimeout);
         return sauceTimeout;
     }
 
@@ -147,6 +202,7 @@ public class SauceConfigReader {
      * @return the number of retries with sauce
      */
     public int getSauceRetry() {
+        LOGGER.fine("sauceRetry: " + sauceRetry);
         return sauceRetry;
     }
 }

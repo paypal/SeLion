@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 public class GridForceRestartDelegateServletTest extends BaseGridRegistyServletTest {
     private static GridForceRestartDelegateServlet servlet;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void beforeClass() {
         initRegistry();
         // Initialize the servlet under test

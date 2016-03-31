@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -53,11 +54,6 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceConfigChangeServlet.class);
 
     /**
-     * sauceConfig.json key used to hold the base64 encoded sauce authentication key
-     */
-    private static final String AUTHENTICATION_KEY = "authenticationKey";
-
-    /**
      * Resource path to the sauce config html file
      */
     public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/updateSauceConfigPage.html";
@@ -65,17 +61,27 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     /**
      * Form parameter for sauce url
      */
-    public static final String SAUCE_URL = "sauceURL";
+    public static final String SAUCE_URL_PARAM = "sauceURL";
 
     /**
      * Form parameter for the sauce username
      */
-    public static final String USERNAME = "username";
+    public static final String USERNAME_PARAM = "username";
+
+    /**
+     * Form parameter for retry count on errors communicating with sauce api
+     */
+    public static final String SAUCE_RETRY_PARAM = "retry";
+
+    /**
+     * Form parameter for timeout when communicating with sauce api
+     */
+    public static final String SAUCE_TIMEOUT_PARAM = "timeout";
 
     /**
      * Form parameter for the sauce access key
      */
-    public static final String ACCESS_KEY = "accessKey";
+    public static final String ACCESS_KEY_PARAM = "accessKey";
 
     public SauceConfigChangeServlet(Registry registry) {
         super(registry);
@@ -94,7 +100,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
         loadSauceConfigPage(resp);
     }
 
-    private void loadSauceConfigPage( HttpServletResponse resp) throws IOException {
+    private void loadSauceConfigPage(HttpServletResponse resp) throws IOException {
         ServletHelper.respondAsHtmlUsingTemplate(resp, RESOURCE_PAGE_FILE);
     }
 
@@ -107,18 +113,26 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
             return;
         }
 
-        String msg = "<p align='center'><b>Sauce configuration updated successfully</b></p>";
-        String sauceURL = req.getParameter(SAUCE_URL);
-        String key = req.getParameter(USERNAME) + ":" + req.getParameter(ACCESS_KEY);
-        String authKey = new String(Base64.encodeBase64(key.getBytes()));
+        String msg = "<p align='center'><b>Sauce configuration updated successfully. Will take affect at next node (re)start.</b></p>";
+        final String sauceURL = req.getParameter(SAUCE_URL_PARAM);
+        final String key = req.getParameter(USERNAME_PARAM) + ":" + req.getParameter(ACCESS_KEY_PARAM);
+        final String authKey = new String(Base64.encodeBase64(key.getBytes()));
+        final String sauceRetry = req.getParameter(SAUCE_RETRY_PARAM);
+        final String sauceTimeout = req.getParameter(SAUCE_TIMEOUT_PARAM);
 
-        Path path = Paths.get(SeLionGridConstants.SAUCE_CONFIG_FILE);
+        final Path path = Paths.get(SeLionGridConstants.SAUCE_CONFIG_FILE);
         boolean isUpdateSuccess = false;
 
         try (BufferedWriter bw = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(AUTHENTICATION_KEY, authKey);
-            jsonObject.addProperty(SAUCE_URL, sauceURL);
+            jsonObject.addProperty(SauceConfigReader.AUTHENTICATION_KEY, authKey);
+            jsonObject.addProperty(SauceConfigReader.SAUCE_URL, sauceURL);
+            if (StringUtils.isNotBlank(sauceRetry)) {
+                jsonObject.addProperty(SauceConfigReader.SAUCE_RETRY, sauceRetry);
+            }
+            if (StringUtils.isNotBlank(sauceTimeout)) {
+                jsonObject.addProperty(SauceConfigReader.SAUCE_TIMEOUT, sauceTimeout);
+            }
             bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject));
             LOGGER.info("Sauce config file updated");
             isUpdateSuccess = true;
@@ -129,7 +143,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
 
         if (isUpdateSuccess) {
             // Load configuration once again because its updated just now
-            SauceConfigReader.getInstance().loadConfig();
+            SauceConfigReader.getInstance().invalidate();
         }
 
         ServletHelper.respondAsHtmlWithMessage(resp, msg);

@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 public class GridAutoUpgradeDelegateServletTest extends BaseGridRegistyServletTest {
     private static GridAutoUpgradeDelegateServlet servlet;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void beforeClass() {
         initRegistry();
         // Initialize the servlet under test

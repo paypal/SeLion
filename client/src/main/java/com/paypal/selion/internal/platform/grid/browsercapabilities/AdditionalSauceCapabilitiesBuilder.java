@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -99,10 +99,12 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         String sauceApiKey = Config.getConfigProperty(ConfigProperty.SAUCELAB_API_KEY);
         String tunnelUserId = Config.getConfigProperty(ConfigProperty.SAUCELAB_TUNNEL_USER_ID);
 
-        if (sauceUserName != null && sauceApiKey != null) {
+        if (StringUtils.isNotBlank(sauceUserName) && StringUtils.isNotBlank(sauceApiKey)) {
             caps.setCapability(USER_NAME, sauceUserName);
             caps.setCapability(ACCESS_KEY, sauceApiKey);
-            caps.setCapability(PARENT_TUNNEL, tunnelUserId);
+            if (StringUtils.isNotBlank(tunnelUserId)) {
+                caps.setCapability(PARENT_TUNNEL, tunnelUserId);
+            }
         }
         logger.exiting(caps);
         return caps;

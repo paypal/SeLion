@@ -24,12 +24,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
@@ -97,8 +97,8 @@ public class BaseGridRegistyServletTest {
         RegistrationRequest registrationRequest = new RegistrationRequest();
         registrationRequest.setConfiguration(configuration);
 
-        // Add a DefaultRemoteProxy to the registry
-        RemoteProxy remoteProxy = new DefaultRemoteProxy(registrationRequest, registry);
+        // Add a BaseRemoteProxy to the registry
+        RemoteProxy remoteProxy = new BaseRemoteProxy(registrationRequest, registry);
         registry.add(remoteProxy);
     }
 

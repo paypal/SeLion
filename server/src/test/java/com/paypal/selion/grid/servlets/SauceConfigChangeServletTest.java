@@ -29,7 +29,7 @@ import static org.testng.Assert.assertTrue;
 public class SauceConfigChangeServletTest extends BaseGridRegistyServletTest {
     private static SauceConfigChangeServlet servlet;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void beforeClass() {
         initRegistry();
         // Initialize the servlet under test
@@ -77,9 +77,11 @@ public class SauceConfigChangeServletTest extends BaseGridRegistyServletTest {
     public void testDoPostForSuccess() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.getSession(true);
-        request.addParameter(SauceConfigChangeServlet.SAUCE_URL, "http://sauce-url");
-        request.addParameter(SauceConfigChangeServlet.ACCESS_KEY, "access-key");
-        request.addParameter(SauceConfigChangeServlet.USERNAME, "sauce-super-user");
+        request.addParameter(SauceConfigChangeServlet.SAUCE_URL_PARAM, "http://sauce-url");
+        request.addParameter(SauceConfigChangeServlet.ACCESS_KEY_PARAM, "access-key");
+        request.addParameter(SauceConfigChangeServlet.USERNAME_PARAM, "sauce-super-user");
+        request.addParameter(SauceConfigChangeServlet.SAUCE_RETRY_PARAM, "1");
+        request.addParameter(SauceConfigChangeServlet.SAUCE_TIMEOUT_PARAM, "1000");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
         validateHtmlResponseContent(response, "Grid Management Console", "Sauce configuration updated successfully");
@@ -87,5 +89,7 @@ public class SauceConfigChangeServletTest extends BaseGridRegistyServletTest {
         assertEquals(SauceConfigReader.getInstance().getSauceURL(), "http://sauce-url");
         assertEquals(SauceConfigReader.getInstance().getUserName(), "sauce-super-user");
         assertTrue(StringUtils.isNotBlank(SauceConfigReader.getInstance().getAuthenticationKey()));
+        assertEquals(SauceConfigReader.getInstance().getSauceRetry(), 1);
+        assertEquals(SauceConfigReader.getInstance().getSauceTimeout(), 1000);
     }
 }
