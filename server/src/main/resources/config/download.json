@@ -27,16 +27,16 @@
     "name": "phantomjs",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-windows.zip",
-      "checksum": "4531bd64df101a689ac7ac7f3e11bb7e77af8eff"
+      "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-windows.zip",
+      "checksum": "4104470d43ddf2a195e8869deef0aa69"
     },
     "linux": {
-      "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2",
-      "checksum": "4ea7aa79e45fbc487a63ef4788a18ef7"
+      "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2",
+      "checksum": "1c947d57fce2f21ce0b43fe2ed7cd361"
     },
     "mac": {
-      "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-macosx.zip",
-      "checksum": "fb850d56c033dd6e1142953904f62614"
+      "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-macosx.zip",
+      "checksum": "b0c038bd139b9ecaad8fd321070c1651"
     }
   },
   {
