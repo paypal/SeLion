@@ -387,6 +387,8 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         logger.entering();
         processAlerts(Grid.getWebTestSession().getBrowser());
 
+        dispatcher.beforeScreenshot(this);
+        
         String title = "Default Title";
         try {
             title = Grid.driver().getTitle();
@@ -399,6 +401,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         } else {
             SeLionReporter.log(title, false, logPages);
         }
+        
+        dispatcher.afterScreenshot(this);
+        
         logger.exiting();
     }
 
