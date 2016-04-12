@@ -36,6 +36,22 @@ public class ElementListenerTestImpl implements ElementEventListener {
         
         page.getLogLabel().setProperty("data-after-click", "true");
     }
+    
+    @Override
+    public void beforeScreenshot(Clickable target) {
+        AbstractElement element = (AbstractElement) target;
+        TestPage page = (TestPage) element.getParent().getCurrentPage();
+        
+        page.getLogLabel().setProperty("data-before-screenshot", "true");
+    }
+
+    @Override
+    public void afterScreenshot(Clickable target) {
+        AbstractElement element = (AbstractElement) target;
+        TestPage page = (TestPage) element.getParent().getCurrentPage();
+        
+        page.getLogLabel().setProperty("data-after-screenshot", "true");
+    }
 
     @Override
     public void beforeType(Typeable target, String value) {
