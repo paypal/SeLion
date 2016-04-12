@@ -30,6 +30,16 @@ public abstract class AbstractElementEventListener implements ElementEventListen
     public void afterClick(Clickable target, Object... expected) {
         //NOSONAR
     }
+    
+    @Override
+    public void beforeScreenshot(Clickable target) {
+        //NOSONAR
+    }
+
+    @Override
+    public void afterScreenshot(Clickable target) {
+        //NOSONAR
+    }
 
     @Override
     public void beforeType(Typeable target, String value) {
@@ -150,4 +160,6 @@ public abstract class AbstractElementEventListener implements ElementEventListen
     public void afterHover(Hoverable target, Object... expected) {
         //NOSONAR
     }
+    
+    
 }

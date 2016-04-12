@@ -55,6 +55,26 @@ public interface ElementEventListener {
     void afterClick(Clickable target, Object... expected);
     
     /**
+     * This event gets triggered before we take a screenshot when clicking a element. The following objects trigger this event,
+     * {@link Button}, {@link CheckBox}, {@link DatePicker}, {@link Form}, {@link Image}, {@link Label}, {@link Link},
+     * {@link RadioButton}, {@link SelectList}, {@link Table}, {@link TextField}
+     * 
+     * @param target Instance of the element that triggered this event and implements {@link Clickable}
+     * @param expected The expected objects that were passed to the click method
+     */
+    void beforeScreenshot(Clickable target);
+    
+    /**
+     * This event gets triggered before we take a screenshot when clicking a element. The following objects trigger this event,
+     * {@link Button}, {@link CheckBox}, {@link DatePicker}, {@link Form}, {@link Image}, {@link Label}, {@link Link},
+     * {@link RadioButton}, {@link SelectList}, {@link Table}, {@link TextField}
+     * 
+     * @param target Instance of the element that triggered this event and implements {@link Clickable}
+     * @param expected The expected objects that were passed to the click method
+     */
+    void afterScreenshot(Clickable target);
+    
+    /**
      * This event gets triggered before we start typing in an element. The following objects trigger this event,
      * {@link TextField}
      * 
@@ -263,4 +283,5 @@ public interface ElementEventListener {
      * @param expected The expected objects that were passed to the hover method
      */
     void afterHover(Hoverable target, Object... expected);
+
 }
