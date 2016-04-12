@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -388,7 +388,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         processAlerts(Grid.getWebTestSession().getBrowser());
 
         dispatcher.beforeScreenshot(this);
-        
+
         String title = "Default Title";
         try {
             title = Grid.driver().getTitle();
@@ -401,9 +401,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         } else {
             SeLionReporter.log(title, false, logPages);
         }
-        
+
         dispatcher.afterScreenshot(this);
-        
+
         logger.exiting();
     }
 
@@ -419,7 +419,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
             logger.exiting();
             return;
         } catch (NoAlertPresentException exception) {
-            // Gobble the exception and do nothing with it. No alert was triggered. So it is safe to proceed with taking 
+            // Gobble the exception and do nothing with it. No alert was triggered. So it is safe to proceed with taking
             // screenshots.
         }
 
@@ -588,7 +588,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
             WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
             wait.ignoring(NoSuchElementException.class);
             wait.ignoring(ExpectOneOfException.class);
-            
+
             ExpectedCondition<?> matchedCondition = wait.until(new Function<WebDriver, ExpectedCondition<?>>() {
 
                 // find the first condition that matches and return it
@@ -606,15 +606,15 @@ public abstract class AbstractElement implements Clickable, Hoverable {
                                 }
                             } else if (value != null) {
                                 return condition;
-                            }  
-                        } catch(WebDriverException e) {
+                            }
+                        } catch (WebDriverException e) {
                             sb.append("\n\tObject " + i + ":\n");
                             sb.append("\t" + ExceptionUtils.getRootCauseMessage(e).split("\n")[0] + "\n");
                             sb.append("\t\t" + StringUtils.substringBetween(ExceptionUtils.getStackTrace(e), "\n"));
                         }
                         i++;
                     }
-                    
+
                     throw new ExpectOneOfException(sb.toString());
                 }
             });
