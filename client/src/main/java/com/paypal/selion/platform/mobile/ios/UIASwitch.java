@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,15 +15,15 @@
 
 package com.paypal.selion.platform.mobile.ios;
 
-import org.openqa.selenium.WebElement;
-
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.mobile.elements.MobileSwitch;
 import com.paypal.test.utilities.logging.SimpleLogger;
+import org.openqa.selenium.WebElement;
 
 /**
  * <code>UIASwitch</code> class allows access to, and control of, switch elements in your app.
  */
-public class UIASwitch extends UIAElement implements UIAutomationSwitch {
+public class UIASwitch extends UIAElement implements UIAutomationSwitch, MobileSwitch {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 

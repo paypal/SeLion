@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -28,27 +28,27 @@ import com.paypal.selion.plugins.GUIObjectDetails;
 public class IOSSeLionElementList extends AbstractSeLionElementList {
     public static final String UIAUTOMATION_ELEMENT_CLASS = "com.paypal.selion.platform.mobile.ios";
 
-    public static IOSSeLionElementList UIAButton =
+    public static final IOSSeLionElementList UIAButton =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAButton", true);
-    public static IOSSeLionElementList UIAAlert =
+    public static final IOSSeLionElementList UIAAlert =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAAlert", true);
-    public static IOSSeLionElementList UIANavigationBar =
+    public static final IOSSeLionElementList UIANavigationBar =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIANavigationBar", true);
-    public static IOSSeLionElementList UIAPicker =
+    public static final IOSSeLionElementList UIAPicker =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAPicker", true);
-    public static IOSSeLionElementList UIASlider =
+    public static final IOSSeLionElementList UIASlider =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASlider", true);
-    public static IOSSeLionElementList UIAStaticText =
+    public static final IOSSeLionElementList UIAStaticText =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAStaticText", true);
-    public static IOSSeLionElementList UIASwitch =
+    public static final IOSSeLionElementList UIASwitch =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIASwitch", true);
-    public static IOSSeLionElementList UIATableView =
+    public static final IOSSeLionElementList UIATableView =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATableView", true);
-    public static IOSSeLionElementList UIATextField =
+    public static final IOSSeLionElementList UIATextField =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIATextField", true);
-    public static IOSSeLionElementList UIAElement =
+    public static final IOSSeLionElementList UIAElement =
             new IOSSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UIAElement", true);
-    public static IOSSeLionElementList BASE_CLASS =
+    public static final IOSSeLionElementList BASE_CLASS =
             new IOSSeLionElementList(null, "baseClass", false);
 
     private static IOSSeLionElementList[] values = { UIAButton, UIAAlert, UIANavigationBar, UIAPicker, UIASlider,

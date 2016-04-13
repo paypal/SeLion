@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -31,9 +31,10 @@ public class AppiumAndroidButtonShortClickTest {
 
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
     private static final String DEVICE_NAME = "android:19";
-    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private static final String SHORT_PRESS_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button";
-    private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/short_press_button_output";
+    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/btnNext";
+    private static final String SHORT_PRESS_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tapBtnSingleTap";
+    private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tapTxtSingleTap";
+    private static final String CLICKED_TEXT = "Tap Count: 1";
 
     UiButton menuButton;
     UiButton shortPressButton;
@@ -53,7 +54,7 @@ public class AppiumAndroidButtonShortClickTest {
         menuButton.click(shortPressButton);
         shortPressButton.click(textView);
         String output = textView.getText();
-        Assert.assertEquals(output.contains("short press"), true, "Button center click not working properly");
+        Assert.assertEquals(output.contains(CLICKED_TEXT), true, "Button center click not working properly");
     }
 
     @Test
@@ -64,7 +65,7 @@ public class AppiumAndroidButtonShortClickTest {
         WebDriverWaitUtils.waitUntilElementIsVisible(SHORT_PRESS_BUTTON_LOCATOR);
         shortPressButton.clickTopLeft(textView);
         String output = textView.getText();
-        Assert.assertEquals(output.contains("short press"), true, "Button top left click not working properly");
+        Assert.assertEquals(output.contains(CLICKED_TEXT), true, "Button top left click not working properly");
     }
 
     @Test
@@ -74,6 +75,6 @@ public class AppiumAndroidButtonShortClickTest {
         menuButton.click(shortPressButton);
         shortPressButton.clickBottomRight(textView);
         String output = textView.getText();
-        Assert.assertEquals(output.contains("short press"), true, "Button bottom right click not working properly");
+        Assert.assertEquals(output.contains(CLICKED_TEXT), true, "Button bottom right click not working properly");
     }
 }

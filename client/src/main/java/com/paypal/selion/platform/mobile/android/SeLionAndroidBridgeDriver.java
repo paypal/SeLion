@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -230,4 +230,17 @@ public interface SeLionAndroidBridgeDriver {
      */
     void swipeDown(WebElement webElement);
 
+    /**
+     * preform a swipe action on the device
+     * 
+     * @param startx
+     *            x of start point
+     * @param starty
+     *            y of start point
+     * @param endx
+     *            x of end point
+     * @param endy
+     *            y of end point
+     */
+    void swipe(int startx, int starty, int endx, int endy);
 }

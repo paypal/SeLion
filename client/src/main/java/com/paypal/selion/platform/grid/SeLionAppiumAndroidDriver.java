@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -248,5 +248,10 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
         webElement.clear();
         webElement.sendKeys(text);
         logger.exiting();
+    }
+
+    @Override
+    public void swipe(int startx, int starty, int endx, int endy) {
+        super.swipe(startx, starty, endx, endy,OPERATION_DURATION_MILLI_SECONDS );
     }
 }

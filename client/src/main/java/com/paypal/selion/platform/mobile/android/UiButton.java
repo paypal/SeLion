@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,10 +15,12 @@
 
 package com.paypal.selion.platform.mobile.android;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
+
 /**
  * <code>UiButton</code> represents a Button widget for Android UI automation framework.
  */
-public class UiButton extends UiObject {
+public class UiButton extends UiObject implements MobileButton {
 
     public UiButton(String locator) {
         super(locator);

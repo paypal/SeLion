@@ -24,16 +24,23 @@ import com.paypal.selion.plugins.GUIObjectDetails;
 public class AndroidSeLionElementList extends AbstractSeLionElementList {
     public static final String UIAUTOMATION_ELEMENT_CLASS = "com.paypal.selion.platform.mobile.android";
 
-    public static AndroidSeLionElementList UiButton =
+    public static final AndroidSeLionElementList UiButton =
             new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiButton", true);
-    public static AndroidSeLionElementList UiTextView =
+    public static final AndroidSeLionElementList UiList =
+            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiList", true);
+    public static final AndroidSeLionElementList UiSlider =
+            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiSlider", true);
+    public static final AndroidSeLionElementList UiSwitch =
+            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiSwitch", true);
+    public static final AndroidSeLionElementList UiTextView =
             new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiTextView", true);
-    public static AndroidSeLionElementList UiObject =
+    public static final AndroidSeLionElementList UiObject =
             new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiObject", true);
-    public static AndroidSeLionElementList BASE_CLASS =
+    public static final AndroidSeLionElementList BASE_CLASS =
             new AndroidSeLionElementList(null, "baseClass", false);
 
-    private static AndroidSeLionElementList[] values = { UiButton, UiTextView, UiObject, BASE_CLASS };
+    private static AndroidSeLionElementList[] values = { UiButton, UiList, UiSlider, UiSwitch, UiTextView, UiObject,
+            BASE_CLASS };
 
     protected AndroidSeLionElementList(String elementPackage, String element, boolean uiElement) {
         super(elementPackage, element, uiElement);
@@ -49,8 +56,8 @@ public class AndroidSeLionElementList extends AbstractSeLionElementList {
     public static void registerElement(String element) {
         List<AndroidSeLionElementList> temp = new ArrayList<AndroidSeLionElementList>(Arrays.asList(values));
 
-        temp.add(0, new AndroidSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element),
-                        true));
+        temp.add(0, new AndroidSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), 
+                 true));
 
         values = temp.toArray(new AndroidSeLionElementList[temp.size()]);
     }
@@ -65,6 +72,15 @@ public class AndroidSeLionElementList extends AbstractSeLionElementList {
      */
     public static AndroidSeLionElementList findMatch(String rawType) {
         return (AndroidSeLionElementList) findMatch(values, rawType);
+    }
+
+    /**
+     * @param element
+     *            The element that needs to be searched.
+     * @return <code>true</code> if the element was found in the set of elements provided.
+     */
+    public static boolean isExactMatch(String element) {
+        return isExactMatch(values, element);
     }
 
     /**

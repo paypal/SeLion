@@ -1,35 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Page Objects Demo Application</string>
-    <string name="page_objects_text_view_value">Page Objects Demo</string>
-    <string name="action_button_default_value">Tap</string>
-    <string name="single_tap_button_name">Short Press</string>
-    <string name="single_tap_button_output_value"></string>
-    <string name="double_tap_button_name">Long Press</string>
-    <string name="double_tap_button_output_value"></string>
-    <string name="double_touch_button_name">Two Finger Tap</string>
-    <string name="double_touch_button_output_value"></string>
-    <string name="android_checkbox_text">Android</string>
-    <string name="ios_checkbox_text">iOS</string>
-    <string name="checkbox_textview_output"></string>
-    <string name="seekBar_textview_output"></string>
-    <string name="title_activity_scroll">ScrollActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="textview1_value">Cell 1</string>
-    <string name="textview2_value">Cell 2</string>
-    <string name="textview3_value">Cell 3</string>
-    <string name="textview4_value">Cell 4</string>
-    <string name="textview5_value">Cell 5</string>
-    <string name="textview6_value">Cell 6</string>
-    <string name="textview7_value">Cell 7</string>
-    <string name="textview8_value">Cell 8</string>
-    <string name="textview9_value">Cell 9</string>
-    <string name="textview10_value">Cell 10</string>
-    <string name="textview11_value">Cell 11</string>
-    <string name="textview12_value">Cell 12</string>
-    <string name="textview13_value">Cell 13</string>
-    <string name="textview14_value">Cell 14</string>
-
+    <string name="sampleText">PageObjects Demo</string>
+    <string name="sample_header">Sample</string>
+    <string name="tap_header">Tap</string>
+    <string name="touch_header">Touch</string>
+    <string name="tap_multi_tap">Multi Tap</string>
+    <string name="tap_single_tap">Single Tap</string>
+    <string name="state_header">State</string>
+    <string name="touch_btn_text">Two Finger Button</string>
+    <string name="table_header">Table</string>
+    <string name="picker_header">Picker</string>
+    <string name="picker_no_support">Android does not support Picker</string>
+    <string name="tap_long_tap">Long Tap</string>
 </resources>
