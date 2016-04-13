@@ -230,4 +230,12 @@ public interface SeLionAndroidBridgeDriver {
      */
     void swipeDown(WebElement webElement);
 
+    /**
+     * preform a swipe action on the device
+     * @param startx x of start point
+     * @param starty y of start point
+     * @param endx x of end point
+     * @param endy y of end point
+     */
+    void swipe(int startx, int starty, int endx, int endy);
 }

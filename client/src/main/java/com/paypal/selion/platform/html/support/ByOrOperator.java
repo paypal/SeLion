@@ -16,6 +16,7 @@
 package com.paypal.selion.platform.html.support;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -35,6 +36,10 @@ public class ByOrOperator extends By {
     public ByOrOperator(List<By> bys) {
         super();
         this.bys = bys;
+    }
+
+    public ByOrOperator(By... bys) {
+        this(Arrays.asList(bys));
     }
 
     @Override

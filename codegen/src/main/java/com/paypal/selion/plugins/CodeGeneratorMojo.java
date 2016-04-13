@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -23,17 +23,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.paypal.selion.elements.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-
-import com.paypal.selion.elements.AndroidSeLionElementList;
-import com.paypal.selion.elements.HtmlElementUtils;
-import com.paypal.selion.elements.HtmlSeLionElementList;
-import com.paypal.selion.elements.IOSSeLionElementList;
 
 /**
  * Goal used to generate SeLion Page Object code from the data file.
@@ -93,6 +89,13 @@ public class CodeGeneratorMojo extends AbstractMojo {
     private List<String> androidCustomElements;
 
     /**
+     * List of "mobile" custom elements to be included during code generation.
+     *
+     * @parameter expression="${selion-code-generator.mobileCustomElements}"
+     */
+    private List<String> mobileCustomElements;
+
+    /**
      * Represents the location for the code generator plug-in to create a <code>SeLionPageDetails.txt</code> text file. \
      * This text file will contain the file path of every resource file processed.
      * 
@@ -111,8 +114,11 @@ public class CodeGeneratorMojo extends AbstractMojo {
     public void setAndroidCustomElements(String[] elements) {
         androidCustomElements = Arrays.asList(elements);
     }
-    
-    
+
+    public void setMobileCustomElements(String[] elements) {
+        this.mobileCustomElements = Arrays.asList(elements);
+    }
+
     public void setExcludeDomains(String[] excludes) {
         excludeDomains = Arrays.asList(excludes);
     }
@@ -207,8 +213,18 @@ public class CodeGeneratorMojo extends AbstractMojo {
             //There are no elements declared for android hence proceeding ahead to register the elements
             AndroidSeLionElementList.registerElement(androidElement);
         }
-        
-        
+
+        for(String mobileElement : mobileCustomElements) {
+            String elementName = HtmlElementUtils.getClass(mobileElement);
+            if(MobileSeLionElementList.isExactMatch(elementName)) {
+                logger.info("The custom " + elementName + " that will be registered as a valid element is overwriting an existing SeLion element.");
+            } else {
+                logger.info("The custom " + elementName + " will be registered as a valid element.");
+            }
+
+            MobileSeLionElementList.registerElement(mobileElement);
+        }
+
         for (File dataFile : allDataFiles) {
             try {
                 String folder = pathToFolder(dataFile);
@@ -270,7 +286,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
     }
 
     private String relativePath(String folder) {
-        String[] dirs = new String(basePackage + "." + folder).split("\\Q.\\E");
+        String[] dirs = (basePackage + "." + folder).split("\\Q.\\E");
         String relativePath = "";
         for (String eachDir : dirs) {
             relativePath = relativePath + File.separator + eachDir;
@@ -310,7 +326,7 @@ public class CodeGeneratorMojo extends AbstractMojo {
      * @return List<File>
      */
     private List<File> loadFiles(File workingDir) {
-        List<File> dataFile = new ArrayList<File>();
+        List<File> dataFile = new ArrayList<>();
         if (workingDir.exists()) {
             File[] files = workingDir.listFiles();
             for (File eachFile : files) {

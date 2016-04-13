@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,15 +15,15 @@
 
 package com.paypal.selion.platform.mobile.ios;
 
-import org.openqa.selenium.WebElement;
-
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.test.utilities.logging.SimpleLogger;
+import org.openqa.selenium.WebElement;
 
 /**
  * <code>UIATextField</code> class allows access to, and control of, text field elements in your app.
  */
-public class UIATextField extends UIAElement implements UIAutomationTextField {
+public class UIATextField extends UIAElement implements UIAutomationTextField, MobileTextField {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -32,12 +32,42 @@ public class UIATextField extends UIAElement implements UIAutomationTextField {
     }
 
     @Override
-    public void setValue(CharSequence... keysToSend) {
-        logger.entering((Object[]) keysToSend);
+    public void clearText() {
+        logger.entering();
+        WebElement webElement = findElement(getLocator());
+        webElement.clear();
+        logger.exiting();
+    }
+
+    @Override
+    public void sendKeys(String keys) {
+        logger.entering(keys);
         WebElement webElement = findElement(getLocator());
         webElement.click();
-        webElement.sendKeys(keysToSend);
+        webElement.sendKeys(keys);
         logger.exiting();
+    }
+
+    @Override
+    public void setText(String text) {
+        logger.entering(text);
+        WebElement webElement = findElement(getLocator());
+        webElement.clear();
+        webElement.click();
+        webElement.sendKeys(text);
+        logger.exiting();
+
+    }
+
+    @Override
+    public void setValue(CharSequence... keysToSend) {
+        if (keysToSend != null) {
+            StringBuilder sb = new StringBuilder();
+            for (CharSequence charSequence : keysToSend) {
+                sb.append(charSequence);
+            }
+            sendKeys(sb.toString());
+        }
     }
 
 }

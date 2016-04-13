@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,115 +15,59 @@
 
 package com.paypal.selion.pageobjectsdemoapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-/**
- * <code>TapDemoActivity</code> contains logic for button press and text view functionality testing.
- */
-public class TapDemoActivity extends ActionBarActivity {
+import java.util.Date;
 
-    private GestureDetector shortPressGestureDetector;
-
-    private GestureDetector longPressGestureDetector;
-
-    private Button shortPressButton;
-
-    private Button longPressButton;
-
-    private TextView shortPressTextView;
-
-    private TextView longPressTextView;
+public class TapDemoActivity extends Activity {
+    private static final long MULTI_TAP_TIME_OUT = 500;
+    private int multiTapCount = 0;
+    private long lastMultiTapClicked = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tap_demo);
-        shortPressGestureDetector = new GestureDetector(this, new ShortPressGestureListener());
-        longPressGestureDetector = new GestureDetector(this, new LongPressGestureListener());
-        shortPressButton = (Button) findViewById(R.id.short_press_button);
-        longPressButton = (Button) findViewById(R.id.long_press_button);
-        shortPressTextView = (TextView) findViewById(R.id.short_press_button_output);
-        longPressTextView = (TextView) findViewById(R.id.long_press_button_output);
-        setupSingleTapButton();
-        setupDoubleTapButton();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        shortPressTextView.setText("");
-        longPressTextView.setText("");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.page_objects_home, menu);
-        invalidateOptionsMenu();
-        menu.findItem(R.id.action_button).setTitle("Touch");
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_button) {
-            Intent intent = new Intent(this, TouchDemoActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupSingleTapButton() {
-        shortPressButton.setOnTouchListener(new View.OnTouchListener() {
+        findViewById(R.id.tapBtnLongTap).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return shortPressGestureDetector.onTouchEvent(event);
+            public boolean onLongClick(View v) {
+                ((TextView)findViewById(R.id.tapTxtLongTap)).setText("Long Clicked");
+                return true;
             }
         });
     }
 
-    private void setupDoubleTapButton() {
-        longPressButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return longPressGestureDetector.onTouchEvent(event);
-            }
-        });
+    public void gotoPrevious(View view) {
+        startActivity(new Intent(this, PageObjectsHomeActivity.class));
+        finish();
     }
 
-    public class LongPressGestureListener extends GestureDetector.SimpleOnGestureListener {
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            longPressTextView.setText("x= " + e.getRawX() + ",y= " + e.getRawY() + ", long press");
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            Log.i("TapDemoActivity", "Double tap fired");
-            return true;
-        }
-
+    public void gotoNext(View view) {
+        startActivity(new Intent(this, TouchDemoActivity.class));
+        finish();
     }
 
-    public class ShortPressGestureListener extends GestureDetector.SimpleOnGestureListener {
+    public void SingleTapClicked(View view) {
+        TextView textView = (TextView) findViewById(R.id.tapTxtSingleTap);
+        textView.setText("Tap Count: 1");
+    }
 
-        @Override
-        public boolean onDown(MotionEvent e) {
-            shortPressTextView.setText("x= " + e.getRawX() + ",y= " + e.getRawY() + ", short press");
-            return true;
+    public void multiTapClicked(View view) {
+        long now = new Date().getTime();
+        if (now > lastMultiTapClicked + MULTI_TAP_TIME_OUT) {
+            multiTapCount = 0;
         }
-
+        lastMultiTapClicked = now;
+        multiTapCount ++;
+        TextView textView = (TextView) findViewById(R.id.tapTxtMultiTap);
+        if (multiTapCount > 1) {
+            textView.setText("Tap Count: " + multiTapCount);
+        } else {
+            textView.setText("");
+        }
     }
 }

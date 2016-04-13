@@ -493,6 +493,16 @@ public final class Config {
         MOBILE_APP_LOCALE("mobileAppLocale", "en_US", false),
 
         /**
+         * This parameter represents device.
+         */
+        MOBILE_DEVICE("mobileDevice", "", false),
+
+        /**
+         * This parameter represents the device type.
+         */
+        MOBILE_DEVICE_TYPE("mobileDeviceType", "", false),
+
+        /**
          * Use this parameter to provide SeLion with a custom element listener that implements
          * {@link ElementEventListener}. SeLion will invoke the custom implementation when the relevant events happen.
          * If more than one custom listeners is needed, please separate the fully qualified class names with commas.
@@ -530,6 +540,12 @@ public final class Config {
          * Default is set to <b>US</b>
          */
         SITE_LOCALE("siteLocale", "US", false),
+
+        /**
+         * mobile platform test suite is designed for (IOS or ANDROID)<br>
+         * Default is set to <b>UNDEFINED</b>
+         */
+        MOBILE_PLATFORM("mobilePlatform", "UNDEFINED", false),
 
         /**
          * Browser specified by user.<br>

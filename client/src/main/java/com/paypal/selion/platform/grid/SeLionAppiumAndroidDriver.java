@@ -249,4 +249,9 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
         webElement.sendKeys(text);
         logger.exiting();
     }
+
+    @Override
+    public void swipe(int startx, int starty, int endx, int endy) {
+        super.swipe(startx, starty, endx, endy,OPERATION_DURATION_MILLI_SECONDS );
+    }
 }

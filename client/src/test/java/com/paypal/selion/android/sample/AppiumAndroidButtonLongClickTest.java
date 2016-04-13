@@ -31,9 +31,10 @@ public class AppiumAndroidButtonLongClickTest {
 
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
     private static final String DEVICE_NAME = "android:19";
-    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private static final String LONG_PRESS_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/long_press_button";
-    private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/long_press_button_output";
+    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/btnNext";
+    private static final String LONG_PRESS_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tapBtnLongTap";
+    private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tapTxtLongTap";
+    private static final String LONG_PRESS_TEXT = "Long Clicked";
 
     private UiButton menuButton;
     private UiButton longPressButton;
@@ -61,7 +62,7 @@ public class AppiumAndroidButtonLongClickTest {
         menuButton.click(longPressButton);
         longPressButton.longClick(textView);
         String output = textView.getText();
-        Assert.assertEquals(output.contains("long press"), true, "Button center click not working properly");
+        Assert.assertEquals(output.contains(LONG_PRESS_TEXT), true, "Button center click not working properly");
     }
 
     @Test(enabled = true)
@@ -71,7 +72,7 @@ public class AppiumAndroidButtonLongClickTest {
         menuButton.click(longPressButton);
         longPressButton.longClickTopLeft(textView);
         String output = textView.getText();
-        Assert.assertEquals(output.contains("long press"), true, "Button top left click not working properly");
+        Assert.assertEquals(output.contains(LONG_PRESS_TEXT), true, "Button top left click not working properly");
     }
 
     @Test(enabled = true)
@@ -82,6 +83,6 @@ public class AppiumAndroidButtonLongClickTest {
         WebDriverWaitUtils.waitUntilElementIsVisible(LONG_PRESS_BUTTON_LOCATOR);
         longPressButton.longClickBottomRight(textView);
         String output = textView.getText();
-        Assert.assertEquals(output.contains("long press"), true, "Button bottom right click not working properly");
+        Assert.assertEquals(output.contains(LONG_PRESS_TEXT), true, "Button bottom right click not working properly");
     }
 }

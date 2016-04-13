@@ -15,22 +15,23 @@
 
 package com.paypal.selion.platform.mobile.android;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.mobile.elements.MobileElement;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.WebPage;
 import com.paypal.selion.platform.html.support.HtmlElementUtils;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.test.utilities.logging.SimpleLogger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * <code>UiObject</code> implements {@link UserinterfaceObject} and forms the base class of all Android UI automation
  * elements.
  */
-public class UiObject implements UserinterfaceObject {
+public class UiObject implements UserinterfaceObject, MobileElement {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -57,7 +58,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.click(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
     }
 
@@ -67,7 +68,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.clickBottomRight(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
 
     }
@@ -78,7 +79,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.clickTopLeft(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
 
     }
@@ -189,7 +190,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.longClick(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
     }
 
@@ -199,7 +200,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.longClickBottomRight(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
     }
 
@@ -209,7 +210,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.longClickTopLeft(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
     }
 
@@ -228,7 +229,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeLeft(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
     }
 
@@ -238,7 +239,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeRight(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
 
     }
@@ -249,7 +250,7 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeUp(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
     }
 
@@ -259,13 +260,33 @@ public class UiObject implements UserinterfaceObject {
         getBridgeDriver();
         WebElement webElement = driver.findElement(HtmlElementUtils.resolveByType(locator));
         driver.swipeDown(webElement);
-            waitFor(expected);
+        waitFor(expected);
         logger.exiting();
+    }
+
+    @Override
+    public WebElement findElement(String locator) {
+        logger.entering(locator);
+        By by = HtmlElementUtils.resolveByType(locator);
+        getBridgeDriver();
+        WebElement webElement = driver.findElement(by);
+        logger.exiting(webElement);
+        return webElement;
+    }
+
+    @Override
+    public void tap(Object... expected) {
+        click(expected);
+    }
+
+    @Override
+    public String getValue() {
+        return getText();
     }
 
     /**
      * Returns the locator.
-     * 
+     *
      * @return Locator of this {@link UiObject}
      */
     public String getLocator() {
@@ -296,8 +317,8 @@ public class UiObject implements UserinterfaceObject {
         }
         logger.exiting();
     }
-    
-    private SeLionAndroidBridgeDriver getBridgeDriver(){
+
+    protected SeLionAndroidBridgeDriver getBridgeDriver(){
         driver = SeLionAndroidBridgeDriver.class.cast(Grid.driver());
         return driver;
     }

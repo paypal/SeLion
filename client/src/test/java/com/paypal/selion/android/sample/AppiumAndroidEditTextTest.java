@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,12 +15,13 @@
 
 package com.paypal.selion.android.sample;
 
+import com.paypal.selion.platform.mobile.android.UiTextView;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiButton;
 import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
@@ -31,32 +32,44 @@ public class AppiumAndroidEditTextTest {
     
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
     private static final String DEVICE_NAME = "android:19";
-    private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private static final String TEXT_FIELD_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/edit_text";
+    private static final String TEXT_FIELD_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/sampleTxbEditable";
 
-    private UiButton menuButton;
     private UiObject textField;
-    
+
     @BeforeClass
     public void initElements(){
-        menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
         textField = new UiObject(TEXT_FIELD_LOCATOR);
     }
     
     @Test
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
+    public void testMobileTextField() {
+        MobileTextField mobileTextField = new UiTextView(TEXT_FIELD_LOCATOR);
+        WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
+        mobileTextField.setText("Selion");
+        Assert.assertEquals(mobileTextField.getValue(), "Selion", "Set edit text value does not match");
+        mobileTextField.clearText();
+        Assert.assertEquals(mobileTextField.getValue(), "", "Set edit text value does not match");
+        mobileTextField.sendKeys("Selion");
+        Assert.assertEquals(mobileTextField.getValue(), "Selion", "Set edit text value does not match");
+        mobileTextField.setText("123");
+        Assert.assertEquals(mobileTextField.getValue(), "123", "Set edit text value does not match");
+        mobileTextField.sendKeys("456");
+        Assert.assertEquals(mobileTextField.getValue(), "123456", "Set edit text value does not match");
+    }
+
+    @Test
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testSetText() {
-        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
-        menuButton.click(textField);
+        WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
         textField.setText("SeLion");
         Assert.assertEquals(textField.getText(), "SeLion", "Set edit text value does not match");
     }
-    
+
     @Test
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testSetClearText() {
-        WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
-        menuButton.click(textField);
+        WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
         textField.setText("SeLion");
         Assert.assertEquals(textField.getText(), "SeLion", "Set value of edit-text does not match");
         textField.clearText();
