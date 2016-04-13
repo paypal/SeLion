@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
 import com.paypal.selion.platform.web.GUIElement;
 import com.paypal.selion.platform.web.HtmlContainerElement;
@@ -63,9 +64,18 @@ class YamlV2Reader extends AbstractYamlReader {
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, String> getGuiMap(String locale) {
-        logger.entering(locale);
+        return getGuiMap(locale, WebDriverPlatform.UNDEFINED);
+    }
 
-        Map<String, String> instanceMap = new HashMap<String, String>();
+    @Override
+    public Map<String, String> getGuiMap(String locale, WebDriverPlatform platform) {
+        if (platform.equals(WebDriverPlatform.UNDEFINED)) {
+            logger.entering(locale);
+        } else {
+            logger.entering(platform, locale);
+        }
+
+        Map<String, String> instanceMap = new HashMap<>();
         List<Object> allObj = getAllObjects();
 
         for (Object temp : allObj) {
@@ -75,7 +85,13 @@ class YamlV2Reader extends AbstractYamlReader {
                         + "the Yaml file. Ignoring the Null document.");
                 continue;
             }
-            String value = map.get(locale);
+            String value = map.get(platform + "--" + locale);
+            if (value == null) {
+                value = map.get(locale);
+            }
+            if (value == null) {
+                value = map.get(platform + "--" + getDefaultLocale());
+            }
             if (value == null) {
                 value = map.get(getDefaultLocale());
             }
@@ -100,7 +116,7 @@ class YamlV2Reader extends AbstractYamlReader {
     public Map<String, String> getGuiMapForContainer(String containerKey, String locale) {
         logger.entering(new Object[] { containerKey, locale });
 
-        Map<String, String> instanceMap = new HashMap<String, String>();
+        Map<String, String> instanceMap = new HashMap<>();
         List<Object> allObj = getAllObjects();
 
         for (Object temp : allObj) {
@@ -153,13 +169,13 @@ class YamlV2Reader extends AbstractYamlReader {
         try (InputStream input = resource.getInputStream()) {
             Page page = PageFactory.getPage(input);
 
-            Map<Object, Object> map = new HashMap<Object, Object>();
+            Map<Object, Object> map = new HashMap<>();
             map.put(KEY, "baseClass");
             map.put("Value", page.getBaseClass());
 
             appendObject(map);
 
-            map = new HashMap<Object, Object>();
+            map = new HashMap<>();
             map.put(KEY, "pageTitle");
             for (Entry<String, String> eachPage : page.getAllPageTitles().entrySet()) {
                 map.put(eachPage.getKey(), eachPage.getValue());
@@ -168,17 +184,23 @@ class YamlV2Reader extends AbstractYamlReader {
             appendObject(map);
 
             for (Entry<String, GUIElement> eachElement : page.getElements().entrySet()) {
-                map = new HashMap<Object, Object>();
+                map = new HashMap<>();
                 map.put(KEY, eachElement.getKey());
+                for (Entry<String, String> eachLocale : eachElement.getValue().getAndroid().entrySet()) {
+                    map.put("ANDROID--" + eachLocale.getKey(), eachLocale.getValue());
+                }
+                for (Entry<String, String> eachLocale : eachElement.getValue().getIos().entrySet()) {
+                    map.put("IOS--" + eachLocale.getKey(), eachLocale.getValue());
+                }
                 for (Entry<String, String> eachLocale : eachElement.getValue().getLocators().entrySet()) {
                     map.put(eachLocale.getKey(), eachLocale.getValue());
                 }
 
                 Map<String, HtmlContainerElement> containerElements = eachElement.getValue().getContainerElements();
                 if (eachElement.getKey().endsWith(CONTAINER) && !containerElements.isEmpty()) {
-                    Map<String, Map<String, String>> containerMap = new HashMap<String, Map<String, String>>();
+                    Map<String, Map<String, String>> containerMap = new HashMap<>();
                     for (Entry<String, HtmlContainerElement> eachContainerElement : containerElements.entrySet()) {
-                        Map<String, String> localeMap = new HashMap<String, String>(eachContainerElement.getValue()
+                        Map<String, String> localeMap = new HashMap<>(eachContainerElement.getValue()
                                 .getLocators());
                         containerMap.put(eachContainerElement.getKey(), localeMap);
                     }

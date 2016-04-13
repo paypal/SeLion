@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -149,6 +149,15 @@ public class MobileTestSession extends AbstractTestSession {
             appLanguage = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE);
         }
 
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE))) {
+            String device = getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE);
+            setDeviceParameters(device);
+        }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE_TYPE))) {
+            deviceType = getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE_TYPE);
+        }
+
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
             if (StringUtils.isNotBlank(deviceTestAnnotation.appName())) {
@@ -162,12 +171,7 @@ public class MobileTestSession extends AbstractTestSession {
                 this.appLocale = deviceTestAnnotation.locale();
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.device())) {
-                this.device = deviceTestAnnotation.device();
-                String[] devices = StringUtils.split(this.device, ":");
-                if (StringUtils.contains(device, ":")) {
-                    this.platformVersion = devices[1];
-                    this.device = devices[0];
-                }
+                setDeviceParameters(deviceTestAnnotation.device());
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.deviceSerial())) {
                 this.deviceSerial = deviceTestAnnotation.deviceSerial();
@@ -227,13 +231,22 @@ public class MobileTestSession extends AbstractTestSession {
         logger.exiting();
     }
 
+    private void setDeviceParameters(String device) {
+        this.device = device;
+        String[] devices = StringUtils.split(this.device, ":");
+        if (StringUtils.contains(this.device, ":")) {
+            this.platformVersion = devices[1];
+            this.device = devices[0];
+        }
+    }
+
     private String getSelionHubStorageUrl(String selionHubAppPath) {
         String COLON = ":";
         String SLASH = "/";
         String appPathTokens[] = StringUtils.split(selionHubAppPath, ":");
         String hostName = Config.getConfigProperty(ConfigProperty.SELENIUM_HOST);
         int port = Integer.parseInt(Config.getConfigProperty(ConfigProperty.SELENIUM_PORT));
-        StringBuffer url = new StringBuffer("http://");
+        StringBuilder url = new StringBuilder("http://");
         url.append(hostName);
         url.append(COLON);
         url.append(port);

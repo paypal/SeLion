@@ -1,0 +1,41 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+defaultLocale: "US"
+platform: "mobile"
+elements:
+  preButton:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/btnPre"
+  topTextField:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAStaticText[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/txtCurrect"
+  nextButton:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[3]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/btnNext"
+  sliderTextField:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIAScrollView[1]/UIATextField[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/stateTextSlider"
+  seekbarSlider:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIAScrollView[1]/UIASlider[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/stateSeekBar"
+  switchTextField:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIAScrollView[1]/UIATextField[2]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/stateTxtSwitch"
+  stateSwitch:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIAScrollView[1]/UIASwitch[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/stateSwitch"
+pageTitle:
+  US: "page_object"

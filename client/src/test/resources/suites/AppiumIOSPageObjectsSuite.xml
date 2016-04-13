@@ -8,12 +8,13 @@
 
     <test verbose="2" name="appium-ios-page-objects-test" annotations="JDK">
         <classes>
-            <class name="com.paypal.selion.ios.sample.AppiumIOSLabelAndNavigationTest"></class>
-            <class name="com.paypal.selion.ios.sample.AppiumIOSButtonTapTest"></class>
-            <class name="com.paypal.selion.ios.sample.AppiumIOSButtonTouchTest"></class>
-            <class name="com.paypal.selion.ios.sample.AppiumIOSSliderSwitchTest"></class>
-            <class name="com.paypal.selion.ios.sample.AppiumIOSTableAlertTest"></class>
-            <class name="com.paypal.selion.ios.sample.AppiumIOSPickerTest"></class>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSLabelAndNavigationTest"/>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSButtonTapTest"/>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSButtonTouchTest"/>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSSliderSwitchTest"/>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSTextFieldTest"/>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSTableAlertTest"/>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSPickerTest"/>
         </classes>
     </test>
 
