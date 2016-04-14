@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -29,7 +29,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.AfterClass;
@@ -59,10 +58,11 @@ public class AbstractElementTest {
         assertEquals(e.size(), 1);
     }
 
-    // TODO need to analyze if this is a valid test
-    @Test(enabled = false, expectedExceptions = { SessionNotFoundException.class }, groups = { "unit" })
+    @Test(groups = { "functional" })
+    @WebTest
     public void testIsElementPresent() {
-        TextField txtField = new TextField("foo");
+        Grid.open(TestServerUtils.getTestEditableURL());
+        TextField txtField = new TextField("does-not-exist");
         assertFalse(txtField.isElementPresent());
     }
 
@@ -81,7 +81,6 @@ public class AbstractElementTest {
         Grid.open("about:blank");
         SampleTestPage testPage = new SampleTestPage();
         testPage.getPersonalLink().click();
-
     }
 
     // This test takes care of validating the noSuchElement thrown via a page

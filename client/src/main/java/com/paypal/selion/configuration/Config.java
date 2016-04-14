@@ -514,6 +514,11 @@ public final class Config {
         SAUCELAB_TUNNEL_USER_ID("sauceTunnelUserId", "", true),
 
         /**
+         * This parameter is used to pass SauceLabs tunnel identifier
+         */
+        SAUCELAB_TUNNEL_ID("sauceTunnelId", "", true),
+
+        /**
          * Directory with page asset files to read info about GUI controls from.<br>
          * Default is set to <b>GUIData</b> in resources
          */

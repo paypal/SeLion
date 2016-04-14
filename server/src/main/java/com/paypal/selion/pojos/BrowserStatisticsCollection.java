@@ -127,7 +127,9 @@ public class BrowserStatisticsCollection {
         }
 
         private class Statistics {
+            @SuppressWarnings("unused")
             int waitingRequests;
+            @SuppressWarnings("unused")
             int maxBrowserInstances;
 
             void setMaxBrowserInstances(int maxBrowserInstances) {
