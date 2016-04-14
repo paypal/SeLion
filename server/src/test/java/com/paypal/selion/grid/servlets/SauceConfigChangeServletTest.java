@@ -67,7 +67,7 @@ public class SauceConfigChangeServletTest extends BaseGridRegistyServletTest {
         request.getSession(true);
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(request, response);
-        validateHtmlResponseContent(response, "SauceGrid Configuration", "Sauce URL");
+        validateHtmlResponseContent(response, "SeLion Grid - Sauce Proxy Configuration", "Sauce URL");
     }
 
     /*
@@ -80,16 +80,24 @@ public class SauceConfigChangeServletTest extends BaseGridRegistyServletTest {
         request.addParameter(SauceConfigChangeServlet.SAUCE_URL_PARAM, "http://sauce-url");
         request.addParameter(SauceConfigChangeServlet.ACCESS_KEY_PARAM, "access-key");
         request.addParameter(SauceConfigChangeServlet.USERNAME_PARAM, "sauce-super-user");
-        request.addParameter(SauceConfigChangeServlet.SAUCE_RETRY_PARAM, "1");
-        request.addParameter(SauceConfigChangeServlet.SAUCE_TIMEOUT_PARAM, "1000");
+        request.addParameter(SauceConfigChangeServlet.RETRY_PARAM, "1");
+        request.addParameter(SauceConfigChangeServlet.TIMEOUT_PARAM, "1000");
+        request.addParameter(SauceConfigChangeServlet.PARENT_TUNNEL_PARAM, "my-parent-tunnel");
+        request.addParameter(SauceConfigChangeServlet.TUNNEL_IDENTIFIER_PARAM, "tunnel-100");
+        request.addParameter(SauceConfigChangeServlet.REQUIRE_USER_CREDENTIALS_PARAM, "on");
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
         validateHtmlResponseContent(response, "Grid Management Console", "Sauce configuration updated successfully");
 
-        assertEquals(SauceConfigReader.getInstance().getSauceURL(), "http://sauce-url");
-        assertEquals(SauceConfigReader.getInstance().getUserName(), "sauce-super-user");
-        assertTrue(StringUtils.isNotBlank(SauceConfigReader.getInstance().getAuthenticationKey()));
-        assertEquals(SauceConfigReader.getInstance().getSauceRetry(), 1);
-        assertEquals(SauceConfigReader.getInstance().getSauceTimeout(), 1000);
+        SauceConfigReader reader = SauceConfigReader.getInstance();
+        assertEquals(reader.getSauceURL(), "http://sauce-url");
+        assertEquals(reader.getUserName(), "sauce-super-user");
+        assertTrue(StringUtils.isNotBlank(reader.getAuthenticationKey()));
+        assertEquals(reader.getSauceRetry(), 1);
+        assertEquals(reader.getSauceTimeout(), 1000);
+        assertEquals(reader.getDefaultParentTunnel(), "my-parent-tunnel");
+        assertEquals(reader.getDefaultTunnelIdentifier(), "tunnel-100");
+        assertTrue(reader.isRequireUserCredentials());
+
     }
 }

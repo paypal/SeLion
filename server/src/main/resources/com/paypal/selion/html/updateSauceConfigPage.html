@@ -20,47 +20,70 @@
   <title>Grid Management Console</title>
   <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all">
   <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/jquery.min.js"></script>
+  <script type="text/javascript">
+    var sauceConfigJson = Object.freeze(%s);
+  </script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/updateSauceConfigPage.js"></script>
 </head>
 <body id="main_body">
 <img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
 <img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top">
 <div id="form_container">
-
-  <form id="sauceGridConfig" class="appnitro" method="post" action="/grid/admin/SauceConfigChangeServlet"
-        onsubmit="return validate()">
+  <form id="sauceGridConfigForm" class="appnitro" method="post" action="/grid/admin/SauceConfigChangeServlet">
     <div class="form_description">
-      <h2>SauceGrid Configuration</h2>
+      <h2>SeLion Grid - Sauce Proxy Configuration</h2>
+      <p>Fill out the form to change the sauce proxy configuration</p>
     </div>
-    <ul>
+    <noscript><p class="error">JavaScript required</p></noscript>
+
+    <ul class="javascript-enabled">
       <li id="li_1">
         <label class="description" for="sauceURL">Sauce URL</label>
         <div>
-          <input id="sauceURL" name="sauceURL" class="element text medium" maxlength="255"
-                 value="https://saucelabs.com/rest/v1"/>
+          <input id="sauceURL" name="sauceURL" class="element text medium" maxlength="255"/>
         </div>
       </li>
       <li id="li_2">
         <label class="description" for="username">Username</label>
         <div>
-          <input id="username" name="username" class="element text medium" maxlength="255" value=""/>
+          <input id="username" name="username" class="element text medium" maxlength="255"/>
         </div>
       </li>
       <li id="li_3">
-        <label class="description" for="accessKey">Access Key *</label>
+        <label class="description" for="accessKey">Access Key</label>
         <div>
-          <input id="accessKey" name="accessKey" class="element text medium" maxlength="255" value=""/>
+          <input id="accessKey" name="accessKey" class="element text medium" maxlength="255"/>
         </div>
       </li>
       <li id="li_4">
-        <label class="description" for="retry">API Number of Retries</label>
+        <label class="description" for="tunnelIdentifier">Tunnel Identifier</label>
         <div>
-          <input id="retry" name="retry" class="element text medium" maxlength="255" value=""/>
+          <input id="tunnelIdentifier" name="tunnelIdentifier" class="element text medium" maxlength="255"/>
         </div>
       </li>
       <li id="li_5">
+        <label class="description" for="parentTunnel">Default Parent Tunnel</label>
+        <div>
+          <input id="parentTunnel" name="parentTunnel" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_6">
+        <label class="description" for="retry">API Number of Retries</label>
+        <div>
+          <input id="retry" name="retry" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_7">
         <label class="description" for="timeout">API Timeout (milliseconds)</label>
         <div>
-          <input id="timeout" name="timeout" class="element text medium" maxlength="255" value=""/>
+          <input id="timeout" name="timeout" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_8">
+        <label class="description" for="requireUserCredentials">Require User Credentials</label>
+        <div>
+          <input id="requireUserCredentials" type="checkbox" name="requireUserCredentials" class="element"/>
         </div>
       </li>
       <li class="buttons">
@@ -77,24 +100,4 @@
 </div>
 <img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom">
 </body>
-<script>
-  function validate() {
-    "use strict";
-    if (!(isValidField("sauceURL", "Sauce URL") && isValidField("username", "Username") &&
-        isValidField("accessKey", "Access Key"))) {
-      return false;
-    }
-    return true;
-  }
-
-  function isValidField(fieldId, name) {
-    "use strict";
-    var x = document.forms.sauceGridConfig[fieldId].value;
-    if (x === null || x === "") {
-      alert(name + " must be filled out");
-      return false;
-    }
-    return true;
-  }
-</script>
 </html>

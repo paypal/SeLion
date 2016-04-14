@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -309,6 +309,12 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     }
 
     private void warnUserOfTestFailures(ITestResult testResult) {
+        // don't bother if we don't have a session
+        if (!Grid.getTestSession().isStarted()) {
+            return;
+        }
+
+        // don't bother if we don't have a web or mobile test session
         if (!(Grid.getTestSession() instanceof MobileTestSession) &&
                 !(Grid.getTestSession() instanceof WebTestSession)) {
             return;

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,18 +18,19 @@ package com.paypal.selion.grid.matchers;
 import java.util.Map;
 
 import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+
+import com.paypal.selion.proxy.SeLionSauceProxy;
 
 /**
- * This is a {@link CapabilityMatcher} based extension of {@link DefaultCapabilityMatcher} that nullifies the 
- * capabilities of the internal {@link DefaultCapabilityMatcher} which resides in the Grid.
- * This is essentially done to ensure that all of the {@link CapabilityMatcher} capabilities are delegated
- * to the one that dwells in the Sauce Labs cloud.
+ * Used in conjunction with a grid that has a {@link SeLionSauceProxy} connected. <br>
+ * <br>
+ * A simple {@link CapabilityMatcher} which delegates matches against node capabilities to the Sauce Labs cloud when
+ * {@link SeLionSauceProxy} forwards the session.
  * 
  */
-public class SeLionSauceCapabilityMatcher extends DefaultCapabilityMatcher {
-    @Override
-    public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
+public class SeLionSauceCapabilityMatcher implements CapabilityMatcher {
+    public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapabilities) {
+        // nothing to check.. delegate everything to sauce labs cloud
         return true;
     }
 }

@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -71,17 +72,32 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     /**
      * Form parameter for retry count on errors communicating with sauce api
      */
-    public static final String SAUCE_RETRY_PARAM = "retry";
+    public static final String RETRY_PARAM = "retry";
 
     /**
      * Form parameter for timeout when communicating with sauce api
      */
-    public static final String SAUCE_TIMEOUT_PARAM = "timeout";
+    public static final String TIMEOUT_PARAM = "timeout";
 
     /**
      * Form parameter for the sauce access key
      */
     public static final String ACCESS_KEY_PARAM = "accessKey";
+
+    /**
+     * Form parameter for the sauce parent tunnel
+     */
+    public static final String PARENT_TUNNEL_PARAM = "parentTunnel";
+
+    /**
+     * Form parameter for the sauce tunnel identifier
+     */
+    public static final String TUNNEL_IDENTIFIER_PARAM = "tunnelIdentifier";
+
+    /**
+     * Form parameter for require user supplied sauce credentials
+     */
+    public static final String REQUIRE_USER_CREDENTIALS_PARAM = "requireUserCredentials";
 
     public SauceConfigChangeServlet(Registry registry) {
         super(registry);
@@ -101,7 +117,9 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
     }
 
     private void loadSauceConfigPage(HttpServletResponse resp) throws IOException {
-        ServletHelper.respondAsHtmlUsingTemplate(resp, RESOURCE_PAGE_FILE);
+        ServletHelper.respondAsHtmlUsingJsonAndTemplateWithHttpStatus(resp,
+                JSONConfigurationUtils.loadJSON(SeLionGridConstants.SAUCE_CONFIG_FILE), RESOURCE_PAGE_FILE,
+                HttpServletResponse.SC_OK);
     }
 
     @Override
@@ -113,31 +131,35 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
             return;
         }
 
-        String msg = "<p align='center'><b>Sauce configuration updated successfully. Will take affect at next node (re)start.</b></p>";
+        String msg = "<p align='center'><b>Sauce configuration updated successfully. "
+                + "Will take affect at next node (re)start.</b></p>";
         final String sauceURL = req.getParameter(SAUCE_URL_PARAM);
         final String key = req.getParameter(USERNAME_PARAM) + ":" + req.getParameter(ACCESS_KEY_PARAM);
         final String authKey = new String(Base64.encodeBase64(key.getBytes()));
-        final String sauceRetry = req.getParameter(SAUCE_RETRY_PARAM);
-        final String sauceTimeout = req.getParameter(SAUCE_TIMEOUT_PARAM);
+        final String sauceRetry = req.getParameter(RETRY_PARAM);
+        final String sauceTimeout = req.getParameter(TIMEOUT_PARAM);
+        final String parentTunnel = req.getParameter(PARENT_TUNNEL_PARAM);
+        final String tunnelId = req.getParameter(TUNNEL_IDENTIFIER_PARAM);
+        final boolean requireUserCredentials = req.getParameter(REQUIRE_USER_CREDENTIALS_PARAM) == null ? false : true;
 
         final Path path = Paths.get(SeLionGridConstants.SAUCE_CONFIG_FILE);
         boolean isUpdateSuccess = false;
 
         try (BufferedWriter bw = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(SauceConfigReader.AUTHENTICATION_KEY, authKey);
-            jsonObject.addProperty(SauceConfigReader.SAUCE_URL, sauceURL);
-            if (StringUtils.isNotBlank(sauceRetry)) {
-                jsonObject.addProperty(SauceConfigReader.SAUCE_RETRY, sauceRetry);
-            }
-            if (StringUtils.isNotBlank(sauceTimeout)) {
-                jsonObject.addProperty(SauceConfigReader.SAUCE_TIMEOUT, sauceTimeout);
-            }
+            addToJsonObject(jsonObject, SauceConfigReader.AUTHENTICATION_KEY, authKey);
+            addToJsonObject(jsonObject, SauceConfigReader.SAUCE_URL, sauceURL);
+            addToJsonObject(jsonObject, SauceConfigReader.SAUCE_RETRY, sauceRetry);
+            addToJsonObject(jsonObject, SauceConfigReader.SAUCE_TIMEOUT, sauceTimeout);
+            addToJsonObject(jsonObject, SauceConfigReader.PARENT_TUNNEL, parentTunnel);
+            addToJsonObject(jsonObject, SauceConfigReader.TUNNEL_IDENTIFIER, tunnelId);
+            addToJsonObject(jsonObject, SauceConfigReader.REQUIRE_USER_CREDENTIALS, requireUserCredentials);
             bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject));
             LOGGER.info("Sauce config file updated");
             isUpdateSuccess = true;
-        } catch (Exception e) {
-            msg = "<p align='center'><b>Sauce config file update failed. Please refer to the log file for the failure.</b></p>";
+        } catch (Exception e) { // NO SONAR
+            msg = "<p align='center'><b>Sauce config file update failed. "
+                    + "Please refer to the log file for the failure.</b></p>";
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
@@ -147,5 +169,14 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
         }
 
         ServletHelper.respondAsHtmlWithMessage(resp, msg);
+    }
+
+    private void addToJsonObject(JsonObject jsonObject, String key, Object value) {
+        if (value instanceof String && StringUtils.isNotBlank((String) value)) {
+            jsonObject.addProperty(key, (String) value);
+        }
+        if (value instanceof Boolean) {
+            jsonObject.addProperty(key, (Boolean) value);
+        }
     }
 }
