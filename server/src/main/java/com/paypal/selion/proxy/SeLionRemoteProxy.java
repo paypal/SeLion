@@ -58,7 +58,6 @@ import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
 import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.pojos.BrowserInformationCache;
 import com.paypal.selion.pojos.SeLionGridConstants;
-import com.paypal.selion.utils.ConfigParser;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import com.paypal.test.utilities.logging.SimpleLoggerSettings;
 
@@ -103,7 +102,7 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
 public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionRemoteProxy.class);
-    private static final int MAX_SESSION_ALLOWED = 50;
+    private static final int DEFAULT_MAX_SESSIONS_ALLOWED = 50;
     private static final int CONNECTION_TIMEOUT = 30000;
 
     private volatile boolean scheduledShutdown;
@@ -172,10 +171,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         canForceShutdown = isSupportedOnNode(NodeForceRestartServlet.class);
         canAutoUpgrade = isSupportedOnNode(NodeAutoUpgradeServlet.class);
         canViewLogs = isSupportedOnNode(LogServlet.class);
-
-        // push these important values to the registered configuration object.
-        getConfig().put("uniqueSessionCount", getMaxSessionsAllowed());
-        getConfig().put("nodeRecycleThreadWaitTimeout", getNodeRecycleThread().getThreadWaitTimeout());
     }
 
     /**
@@ -514,7 +509,9 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         }
 
         int getThreadWaitTimeout() {
-            return ConfigParser.parse().getInt("nodeRecycleThreadWaitTimeout", DEFAULT_TIMEOUT);
+            final String key = "nodeRecycleThreadWaitTimeout";
+            Map<String, Object> configuration =  getConfig();
+            return configuration.containsKey(key) ? (int) configuration.get(key) : DEFAULT_TIMEOUT;
         }
 
         private boolean keepLooping(int expired, int timeout) {
@@ -546,7 +543,9 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      *         automatically spinning up a {@link NodeRecycleThread}
      */
     private int getMaxSessionsAllowed() {
-        return ConfigParser.parse().getInt("uniqueSessionCount", MAX_SESSION_ALLOWED);
+        final String key = "uniqueSessionCount";
+        Map<String, Object> configuration =  getConfig();
+        return configuration.containsKey(key) ? (int) configuration.get(key) : DEFAULT_MAX_SESSIONS_ALLOWED;
     }
 
     /**

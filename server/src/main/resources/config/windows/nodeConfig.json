@@ -29,6 +29,7 @@
         "port": 5555,
         "host": "ip",
         "register": true,
-        "hubPort": 4444
+        "hubPort": 4444,
+        "nodeRecycleThreadWaitTimeout": 300
     }
 }
