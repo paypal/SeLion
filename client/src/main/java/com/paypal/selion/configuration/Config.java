@@ -345,13 +345,14 @@ public final class Config {
 
         /**
          * Selenium host might be localhost or another location where a Selenium server is running. Used when
-         * {@link ConfigProperty#SELENIUM_RUN_LOCALLY} is <b>false</b><br>
+         * {@link ConfigProperty#SELENIUM_RUN_LOCALLY} is <b>false</b>.<br>
          * Default is set to <b>""</b>
          */
         SELENIUM_HOST("seleniumhost", "", true),
 
         /**
-         * Selenium port, any port where Selenium is running.<br>
+         * Selenium port, any port where Selenium is running. Used when {@link ConfigProperty#SELENIUM_RUN_LOCALLY}
+         * is <b>false</b.><br>
          * Default is set to <b>4444</b>
          */
         SELENIUM_PORT("seleniumport", "4444", true),

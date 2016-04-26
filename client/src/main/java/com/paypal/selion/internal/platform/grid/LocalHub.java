@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,6 +16,7 @@
 package com.paypal.selion.internal.platform.grid;
 
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -44,7 +45,12 @@ final class LocalHub extends AbstractBaseLocalServerComponent {
             instance = new LocalHub();
 
             instance.setHost(new NetworkUtils().getIpOfLoopBackIp4());
-            instance.setPort(Integer.parseInt(Config.getConfigProperty(ConfigProperty.SELENIUM_PORT)));
+
+            // Choose a random port for local hub.
+            int hubPort = PortProber.findFreePort();
+            instance.setPort(hubPort);
+            // Set ConfigProperty.SELENIUM_PORT so that the local nodes can register to it.
+            Config.setConfigProperty(ConfigProperty.SELENIUM_PORT, Integer.toString(hubPort));
 
             LauncherOptions launcherOptions = new LauncherOptionsImpl()
                     .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
@@ -75,4 +81,5 @@ final class LocalHub extends AbstractBaseLocalServerComponent {
         super.shutdown();
         LOGGER.exiting();
     }
+
 }
