@@ -33,8 +33,8 @@ public class AppiumAndroidScrollTest {
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
     private static final String DEVICE_NAME = "android:19";
     private static final String MESSGAE_BOX_LOCATOR = "android:id/message";
-    private static final String MENU_LOCATOR ="com.paypal.selion.pageobjectsdemoapp:id/action_button";
-    private static final String LIST_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/scroll_view";
+    private static final String MENU_LOCATOR ="com.paypal.selion.pageobjectsdemoapp:id/btnNext";
+    private static final String LIST_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tableListView";
     
     private UiButton menuButton;
     private UiObject scrollView;
@@ -50,20 +50,20 @@ public class AppiumAndroidScrollTest {
     @Test
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
     public void testSwipeActions() {
-        UiObject sampleCell = new UiObject("com.paypal.selion.pageobjectsdemoapp:id/TextView13");
+        UiObject sampleCell = new UiObject("android:id/text1");
         UiButton sampleButton = new UiButton("android:id/button1");
         WebDriverWaitUtils.waitUntilElementIsVisible(MENU_LOCATOR);
+        menuButton.click(MENU_LOCATOR);
         menuButton.click(MENU_LOCATOR);
         menuButton.click(MENU_LOCATOR);
         menuButton.click(scrollView);
         scrollView.swipeUp();
         sampleCell.click(sampleButton);
-        Assert.assertEquals("Cell 13", messageBox.getText());
+        Assert.assertNotEquals("You clicked :One", messageBox.getText());
         sampleButton.click();
         scrollView.swipeDown();
-        sampleCell = new UiObject("com.paypal.selion.pageobjectsdemoapp:id/TextView2");
         sampleCell.click(sampleButton);
-        Assert.assertEquals("Cell 2", messageBox.getText());
+        Assert.assertEquals("You clicked :One", messageBox.getText());
         sampleButton.click();
     }
 

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import org.apache.commons.lang.StringUtils;
 
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -44,6 +45,8 @@ public abstract class AbstractPage implements WebPage {
     // used to determine our locale (e.g. US, UK, DE, etc.)
     /** The site. */
     private String site;
+    /** The test platform. */
+    private WebDriverPlatform platform;
     /** The page title. */
     private String pageTitle;
 
@@ -54,10 +57,10 @@ public abstract class AbstractPage implements WebPage {
     private static final String UNKNOWN_PAGE_TITLE = "unknown-title";
 
     /** The elements that should be present on the Page **/
-    private final List<String> pageValidators = new ArrayList<String>();
+    private final List<String> pageValidators = new ArrayList<>();
 
     /** Map to store our GUI object map content for all Containers */
-    private final Map<String, Map<String, String>> objectContainerMap = new HashMap<String, Map<String, String>>();
+    private final Map<String, Map<String, String>> objectContainerMap = new HashMap<>();
 
     protected void setPageInitialized(boolean pageInitialized) {
         this.pageInitialized = pageInitialized;
@@ -81,8 +84,9 @@ public abstract class AbstractPage implements WebPage {
 
     protected AbstractPage() {
         pageTitle = UNKNOWN_PAGE_TITLE;
-        mapQueue = new LinkedList<String[]>();
+        mapQueue = new LinkedList<>();
         site = ConfigProperty.SITE_LOCALE.getDefaultValue();
+        platform = WebDriverPlatform.UNDEFINED;
         pageInitialized = false;
 
     }
@@ -95,6 +99,7 @@ public abstract class AbstractPage implements WebPage {
         if (session != null && StringUtils.isNotBlank(session.getXmlTestName())) {
             LocalConfig lc = ConfigManager.getConfig(session.getXmlTestName());
             site = lc.getConfigProperty(ConfigProperty.SITE_LOCALE);
+            platform = WebDriverPlatform.valueOf(lc.getConfigProperty(ConfigProperty.MOBILE_PLATFORM));
         }
     }
 
@@ -113,7 +118,7 @@ public abstract class AbstractPage implements WebPage {
             try {
 
                 GuiMapReader dataProvider = GuiMapReaderFactory.getInstance(pageDomain, pageClassName);
-                currentObjectMap = dataProvider.getGuiMap(site);
+                currentObjectMap = dataProvider.getGuiMap(site, platform);
 
                 pageTitle = currentObjectMap.get("pageTitle");
 
@@ -161,7 +166,7 @@ public abstract class AbstractPage implements WebPage {
             pageTitle = sourceMap.get("pageTitle");
         }
         if (objectMap == null) {
-            objectMap = new HashMap<String, String>();
+            objectMap = new HashMap<>();
         }
         objectMap.putAll(sourceMap);
 
@@ -171,6 +176,17 @@ public abstract class AbstractPage implements WebPage {
     public void initPage(String pageDomain, String pageClassName, String siteLocale) {
         initPage(pageDomain, pageClassName);
         site = siteLocale;
+    }
+
+    public void initPage(String pageDomain, String pageClassName, WebDriverPlatform platform) {
+        initPage(pageDomain, pageClassName);
+        this.platform = platform;
+    }
+
+    public void initPage(String pageDomain, String pageClassName, String siteLocale, WebDriverPlatform platform) {
+        initPage(pageDomain, pageClassName);
+        site = siteLocale;
+        this.platform = platform;
     }
 
     public boolean isInitialized() {
@@ -183,6 +199,10 @@ public abstract class AbstractPage implements WebPage {
 
     public String getSiteLocale() {
         return site;
+    }
+
+    public WebDriverPlatform getPlatform() {
+        return platform;
     }
 
     public void validatePage() {

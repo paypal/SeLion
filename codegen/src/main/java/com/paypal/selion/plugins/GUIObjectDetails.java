@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -20,12 +20,14 @@ import java.util.List;
 import com.paypal.selion.elements.AndroidSeLionElementList;
 import com.paypal.selion.elements.IOSSeLionElementList;
 import com.paypal.selion.elements.HtmlSeLionElementList;
+import com.paypal.selion.elements.MobileSeLionElementList;
 
 /**
  * A simple POJO class that represents information pertaining to a html object.
  * 
  */
 public class GUIObjectDetails {
+    private static final String DELIMITER = "#";
 
     private String memberType;
     private String memberName;
@@ -94,18 +96,18 @@ public class GUIObjectDetails {
         // Note: This part is reached only when there is a valid platform specified.So its safe to proceed without a
         // default case in switch
         switch (platform) {
-        case WEB: {
-            htmlObjectDetailsList = HtmlSeLionElementList.getGUIObjectList(keys);
-            break;
-        }
-        case IOS: {
-            htmlObjectDetailsList = IOSSeLionElementList.getGUIObjectList(keys);
-            break;
-        }
-        case ANDROID:{
-            htmlObjectDetailsList = AndroidSeLionElementList.getGUIObjectList(keys);
-            break;
-        }
+            case WEB:
+                htmlObjectDetailsList = HtmlSeLionElementList.getGUIObjectList(keys);
+                break;
+            case IOS:
+                htmlObjectDetailsList = IOSSeLionElementList.getGUIObjectList(keys);
+                break;
+            case ANDROID:
+                htmlObjectDetailsList = AndroidSeLionElementList.getGUIObjectList(keys);
+                break;
+            case MOBILE:
+                htmlObjectDetailsList = MobileSeLionElementList.getGUIObjectList(keys);
+                break;
         }
         return htmlObjectDetailsList;
     }
@@ -134,7 +136,6 @@ public class GUIObjectDetails {
      */
     public static void validateKeysInDataFile(List<String> keysToValidate, String dataFileName,
             TestPlatform currentPlatform) {
-        String DELIMITER = "#";
         for (String currentKey : keysToValidate) {
 
             // For case: Invalid element inside a container , the key inside a container is split using delimiter.
@@ -144,42 +145,53 @@ public class GUIObjectDetails {
                 // assigning the key to the current key to proceed with the validation
                 currentKey = keyInContainer[1];
             }
-
-            // Validations for WEB
-            if ((currentPlatform == TestPlatform.WEB)) {
-                /*
-                 * For Yaml V1 the non-html elements are added to the List of keys(EG: pageTitle) whereas for V2 it does
-                 * not. As a result, if a user specifies wrong name for pageTitle we first check it to be valid name and
-                 * then proceed with the usual check of validating if its a html element
-                 */
-                 // TODO: This is a hack to be removed when V1 is fully deprecated.
-                if (!(HtmlSeLionElementList.isValid(currentKey))) {
-                    throw new IllegalArgumentException(String.format(
-                            "Detected an invalid key [%s] in data file %s for Platform: WEB", currentKey, dataFileName));
-                }
-
-                if (currentKey.equals(HtmlSeLionElementList.PAGE_TITLE.stringify())) {
-                    continue;
-                }
-
-                if (!(HtmlSeLionElementList.isValidHtmlElement(currentKey))) {
-                    throw new IllegalArgumentException(String.format(
-                            "Detected an invalid key [%s] in data file %s for Platform: WEB", currentKey, dataFileName));
-                }
+            if (!validForWebPlatform(currentPlatform, currentKey) || !validForMobilePlatforms(currentPlatform, currentKey)) {
+                throw new IllegalArgumentException(String.format(
+                        "Detected an invalid key [%s] in data file %s for Platform %s", currentKey, dataFileName, currentPlatform.getPlatformName()));
             }
 
-            // Validations for IOS
-            if ((currentPlatform == TestPlatform.IOS && !(IOSSeLionElementList.isValidUIElement(currentKey)))) {
-                    throw new IllegalArgumentException(String.format(
-                            "Detected an invalid key [%s] in data file %s for Platform IOS", currentKey, dataFileName));
+
+        }
+    }
+
+    private static boolean validForWebPlatform(TestPlatform currentPlatform, String currentKey) {
+        // Validations for WEB
+        if ((currentPlatform == TestPlatform.WEB)) {
+            /*
+             * For Yaml V1 the non-html elements are added to the List of keys(EG: pageTitle) whereas for V2 it does
+             * not. As a result, if a user specifies wrong name for pageTitle we first check it to be valid name and
+             * then proceed with the usual check of validating if its a html element
+             */
+             // TODO: This is a hack to be removed when V1 is fully deprecated.
+            if (!(HtmlSeLionElementList.isValid(currentKey))) {
+                return false;
             }
-            
-            // Validations for Android - If a user provides an element that is not registered as custom element this
-            // validation takes care of it
-            if((currentPlatform == TestPlatform.ANDROID && !(AndroidSeLionElementList.isValidUIElement(currentKey)))) {
-                    throw new IllegalArgumentException(String.format(
-                            "Detected an invalid key [%s] in data file %s for Platform Android", currentKey, dataFileName));
+
+            if (currentKey.equals(HtmlSeLionElementList.PAGE_TITLE.stringify())) {
+                return true;
+            }
+
+            if (!(HtmlSeLionElementList.isValidHtmlElement(currentKey))) {
+                return false;
             }
         }
+        return true;
+    }
+
+    private static boolean validForMobilePlatforms(TestPlatform currentPlatform, String currentKey) {
+        // Validations for IOS
+        if ((currentPlatform == TestPlatform.IOS && !(IOSSeLionElementList.isValidUIElement(currentKey)))) {
+                return false;
+        }
+
+        // Validations for Android - If a user provides an element that is not registered as custom element this
+        // validation takes care of it
+        if((currentPlatform == TestPlatform.ANDROID && !(AndroidSeLionElementList.isValidUIElement(currentKey)))) {
+            return false;
+        }
+
+        // Validations for Mobile
+        return !(currentPlatform == TestPlatform.MOBILE && !(MobileSeLionElementList.isValidUIElement(currentKey)));
+
     }
 }

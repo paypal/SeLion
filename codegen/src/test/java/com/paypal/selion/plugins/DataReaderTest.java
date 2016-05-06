@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -29,6 +29,8 @@ import org.testng.annotations.Test;
 import com.paypal.selion.elements.HtmlSeLionElementList;
 
 public class DataReaderTest {
+    private static final String YAML_V2 = "src/test/resources/SampleV2YamlPage.yaml";
+    private static final String YAML_MOBILE = "src/test/resources/SampleMobilePage.yaml";
     class DummyMojo extends AbstractMojo {
         @Override
         public void execute() throws MojoExecutionException, MojoFailureException {
@@ -42,29 +44,36 @@ public class DataReaderTest {
     }
 
     @Test
-    public void getKeys_v1() throws Exception {
+    public void getKeysV1() throws Exception {
         DataReader r = new DataReader("src/test/resources/PayPalAbstractPage.yml");
         List<String> keys = r.getKeys();
         assertTrue(keys.contains("messageBoxConfirmationLabel"));
     }
 
     @Test
-    public void getKeys_v2() throws Exception {
-        DataReader r = new DataReader("src/test/resources/SampleV2YamlPage.yaml");
+    public void getKeysV2() throws Exception {
+        DataReader r = new DataReader(YAML_V2);
         List<String> keys = r.getKeys();
         assertTrue(keys.contains("requestAPICredentialsLink"));
     }
 
     @Test
-    public void getBaseClass_v2() throws Exception {
-        DataReader r = new DataReader("src/test/resources/SampleV2YamlPage.yaml");
+    public void getKeysMobile() throws Exception {
+        DataReader r = new DataReader(YAML_MOBILE);
+        List<String> keys = r.getKeys();
+        assertTrue(keys.contains("sampleTextField"));
+    }
+
+    @Test
+    public void getBaseClassV2() throws Exception {
+        DataReader r = new DataReader(YAML_V2);
         String baseClass = r.getBaseClassName();
         assertEquals(baseClass, "com.paypal.selion.testcomponents.BasicPageImpl");
     }
 
     @Test
     public void getHtmlObjectDetails() throws Exception {
-        DataReader r = new DataReader("src/test/resources/SampleV2YamlPage.yaml");
+        DataReader r = new DataReader(YAML_V2);
         List<String> keys = r.getKeys();
         List<GUIObjectDetails> objects = GUIObjectDetails.transformKeys(keys);
         GUIObjectDetails requestAPICredentialsLink = null;
@@ -74,7 +83,7 @@ public class DataReaderTest {
                 break;
             }
         }
-        assertEquals(requestAPICredentialsLink.getMemberType(), HtmlSeLionElementList.LINK.stringify());
+        assertEquals(requestAPICredentialsLink != null ? requestAPICredentialsLink.getMemberType() : null, HtmlSeLionElementList.LINK.stringify());
     }
 
 }

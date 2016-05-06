@@ -1,0 +1,26 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="7" verbose="1" name="AppiumIOSDriverTest Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="50" annotations="JDK">
+    <!-- SELENIUM CONFIGURATION -->
+    <parameter name="mobileNodeType" value="appium" />
+
+    <parameter name="appPath" value="http://localhost:8000/pageObject.app.zip"/>
+    <parameter name="mobilePlatform" value="IOS"/>
+    <parameter name="mobileDevice" value="iphone:9.1"/>
+    <parameter name="mobileDeviceType" value="iPhone 6"/>
+
+    <test verbose="2" name="mobile-appium-ios-test" annotations="JDK">
+        <groups>
+            <run>
+                <exclude name="android" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.mobile.sample.TestTapPage"/>
+            <class name="com.paypal.selion.mobile.sample.TestStatePage"/>
+            <class name="com.paypal.selion.mobile.sample.TestTablePage"/>
+        </classes>
+    </test>
+
+</suite>
+

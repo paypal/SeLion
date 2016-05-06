@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -296,6 +296,15 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
+    @Override
+    public void swipe(int startx, int starty, int endx, int endy) {
+        Point start = new Point(startx, starty);
+        Point end = new Point(endx, endy);
+        logger.entering(start, end);
+        performSwipeAction(start, end);
+        logger.exiting();
+    }
+
     private Point getElementCenter(WebElement webElement) {
         Point point = webElement.getLocation();
         Dimension dimension = webElement.getSize();
@@ -303,7 +312,7 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         int y = point.getY() + dimension.getHeight() / 2;
         return new Point(x, y);
     }
-    
+
     private Point getElementBottomRight(WebElement webElement) {
         Point point = webElement.getLocation();
         Dimension dimension = webElement.getSize();
@@ -311,7 +320,7 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         int y = point.getY() + dimension.getHeight() - 1;
         return new Point(x, y);
     }
-    
+
     private void performShortClickAction(Point point) {
         try {
             new TouchActions(this).down(point.getX(), point.getY()).perform();
@@ -321,7 +330,7 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
             throw new WebDriverException("InterruptedException occurred during shortClick", exe);
         }
     }
-    
+
     private void performLongClickAction(Point point) {
         try {
             new TouchActions(this).down(point.getX(), point.getY()).perform();
@@ -331,7 +340,7 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
             throw new WebDriverException("InterruptedException occurred during longClick", exe);
         }
     }
-    
+
     private void performSwipeAction(Point start, Point end) {
         new TouchActions(this).down(start.getX(), start.getY()).move(end.getX(), end.getY()).up(end.getX(), end.getY()).perform();
     }

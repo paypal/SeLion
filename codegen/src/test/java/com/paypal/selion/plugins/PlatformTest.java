@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -49,6 +49,13 @@ public class PlatformTest {
         // For IOS platform, the value must be specified
         TestPlatform currentPlatform = getPlatformToTest("src/test/resources/IOSInteractionPage.yaml");
         assertEquals(currentPlatform, TestPlatform.IOS);
+    }
+
+    @Test
+    public void testMobilePlatform() throws Exception {
+        // For IOS platform, the value must be specified
+        TestPlatform currentPlatform = getPlatformToTest("src/test/resources/SampleMobilePage.yaml");
+        assertEquals(currentPlatform, TestPlatform.MOBILE);
     }
 
     @Test(expectedExceptions = { CodeGeneratorException.class })

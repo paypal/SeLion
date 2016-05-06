@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,12 +17,12 @@ package com.paypal.selion.plugins;
 
 public enum TestPlatform {
 
-    IOS("ios", "MobileTemplate.vm"), WEB("web", "Class.vm"), ANDROID("android", "MobileTemplate.vm");
+    IOS("ios", "MobileTemplate.vm"), WEB("web", "Class.vm"), ANDROID("android", "MobileTemplate.vm"), MOBILE("mobile", "CommonMobileTemplate.vm");
 
     private String platformName;
     private String defFileName;
 
-    private TestPlatform(String platformName, String defFileName) {
+    TestPlatform(String platformName, String defFileName) {
         this.platformName = platformName;
         this.defFileName = defFileName;
     }

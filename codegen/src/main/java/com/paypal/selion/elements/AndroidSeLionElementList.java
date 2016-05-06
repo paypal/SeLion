@@ -26,6 +26,12 @@ public class AndroidSeLionElementList extends AbstractSeLionElementList {
 
     public static AndroidSeLionElementList UiButton =
             new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiButton", true);
+    public static AndroidSeLionElementList UiList =
+            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiList", true);
+    public static AndroidSeLionElementList UiSlider =
+            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiSlider", true);
+    public static AndroidSeLionElementList UiSwitch =
+            new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiSwitch", true);
     public static AndroidSeLionElementList UiTextView =
             new AndroidSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "UiTextView", true);
     public static AndroidSeLionElementList UiObject =
@@ -33,7 +39,7 @@ public class AndroidSeLionElementList extends AbstractSeLionElementList {
     public static AndroidSeLionElementList BASE_CLASS =
             new AndroidSeLionElementList(null, "baseClass", false);
 
-    private static AndroidSeLionElementList[] values = { UiButton, UiTextView, UiObject, BASE_CLASS };
+    private static AndroidSeLionElementList[] values = { UiButton, UiList, UiSlider, UiSwitch, UiTextView, UiObject, BASE_CLASS };
 
     protected AndroidSeLionElementList(String elementPackage, String element, boolean uiElement) {
         super(elementPackage, element, uiElement);

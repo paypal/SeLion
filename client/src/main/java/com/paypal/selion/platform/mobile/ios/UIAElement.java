@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,6 +17,7 @@ package com.paypal.selion.platform.mobile.ios;
 
 import java.util.EnumMap;
 
+import com.paypal.selion.platform.mobile.elements.MobileElement;
 import org.apache.commons.lang.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -35,7 +36,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * instrument for automating user interface testing of iOS apps. This interface defines more general methods that can be
  * used on any type of user interface elements.
  */
-public class UIAElement implements UIAutomationElement {
+public class UIAElement implements UIAutomationElement, MobileElement {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -158,21 +159,14 @@ public class UIAElement implements UIAutomationElement {
         for (Object expect : expected) {
             if (expect instanceof UIAElement) {
                 WebDriverWaitUtils.waitUntilElementIsPresent(UIAElement.class.cast(expect).getLocator());
-                continue;
-            }
-            if (expect instanceof String) {
+            } else if (expect instanceof String) {
                 WebDriverWaitUtils.waitUntilElementIsPresent(String.valueOf(expect));
-                continue;
-            }
-            if (expect instanceof ExpectedCondition<?>) {
+            } else if (expect instanceof ExpectedCondition<?>) {
                 long timeOutInSeconds = Grid.getExecutionTimeoutValue() / 1000;
                 WebDriverWait wait = new WebDriverWait(Grid.driver(), timeOutInSeconds);
                 wait.until(ExpectedCondition.class.cast(expect));
-                continue;
-            }
-            if (expect instanceof WebPage) {
+            } else if (expect instanceof WebPage) {
                 WebDriverWaitUtils.waitUntilPageIsValidated((WebPage) expect);
-                continue;
             }
         }
     }

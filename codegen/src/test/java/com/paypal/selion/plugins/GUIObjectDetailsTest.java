@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -57,6 +57,14 @@ public class GUIObjectDetailsTest {
     }
     
     @Test
+    public void validateMobileElements() throws Exception {
+        String dataFile = "src/test/resources/SampleMobilePage.yaml";
+        DataReader reader = new DataReader(dataFile);
+        TestPlatform currentPlatform = reader.platform();
+        GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
+    }
+
+    @Test
     public void validateCustomWebElements() throws Exception {
         String dataFile = "src/test/resources/CustomWebElementPage.yaml";
         
@@ -91,7 +99,7 @@ public class GUIObjectDetailsTest {
 
     @Test(expectedExceptions = { IllegalArgumentException.class })
     public void testInvalidSeLionElement() {
-        List<String> invalidKeyList = new ArrayList<String>();
+        List<String> invalidKeyList = new ArrayList<>();
         invalidKeyList.add("invalidButton1");
         GUIObjectDetails.validateKeysInDataFile(invalidKeyList, "DummyPage", TestPlatform.WEB);
     }
