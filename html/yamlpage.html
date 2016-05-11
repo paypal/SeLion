@@ -6,7 +6,7 @@
     We call these files <i>PageYAML</i> because when they are processed by <a href="#what-is-code-generator">SeLion's Code Generator</a>,
     a corresponding Page Object in the form of a Java class is created and added to your project source.</p>
 
-  <p>These files map to an individual web page and consist of:</p>
+  <p>These files map to an individual page(or screen) and consist of:</p>
   <ul>
     <li> The Java class from which the newly generated page should extend itself from.
     <li> The title of the page
@@ -22,43 +22,107 @@
 
   <h2>PageYAML Contents</h2>
 
-  <p>A PageYAML file that represents a web page is made up of the following parts:</p>
+  <p>A PageYAML file that represents a page(or screen) is made up of the following parts:</p>
   <ul>
-    <li><code>baseClass</code> - The value for this key represents the fully qualified package name of a class that will
+    <li><code>baseClass</code> - The value for this key represents the fully qualified name of a class that will
       serve as the base class to inherit attributes and/or capabilities from. If your page is new and is not
       customizing an existing page (for example, a login page which extends a header page), then you
       should specify the value <code>com.paypal.selion.testcomponents.BasicPageImpl</code> which
-      by default is the class within SeLion that provides all the basic operations that are required for any given web page.
+      by default is the class within SeLion that provides all the basic operations that are required for any given page.
     </li>
+    <li><code>platform</code> - The value for this key represents the platform the YAML is intended for.
+      By default, if nothing is specified it is taken as "web". available paltforms in Selion are:
+      <ul>
+        <li>For web pages(default value) it must be specified as "web".</li>
+        <li>For Apple devices it must be specified as "ios".</li>
+        <li>For Android devices it must be specified as "android".</li>
+        <li>For general mobile devices (both apple and android) it must be specified as "mobile".</li>
+      </ul>
+     </li>
     <li><code>pageTitle</code> - The value for this key is a set of key/value pairs where you define
       the different page titles that exist for the page. Titles can be specified for different locales.
     </li>
-    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent html elements on a page.
+    <li><code>elements</code> - The value for this key is a set of key/value pairs that represent elements in a page.
     </li>
-    <ul>
-      <li>The name to identify the locator/selector. This name is used in the generated class and maps to the element
-        specified by the locator/selector. Names for a locator/selector follow the pattern
+    <>
+      <li>A unique name for identifying a particular element and type in the page. This name would end up as the name of
+        the member variable of the generated class and maps to the element. Names for a locator/selector follow the pattern
         <strong><var>&lt;prefix&gt;</var>&lt;ElementType&gt;</strong>
-        where <strong>&lt;ElementType&gt;</strong> is one of the following;
-        <ul>
-          <li><i>Button</i> - Element behaves like or is a button</li>
-          <li><i>CheckBox</i> - Element behaves like or is a check box</li>
-          <li><i>DatePicker</i> - Element behaves like or is a date selection calendar control</li>
-          <li><i>Form</i> - Element behaves like or is a form</li>
-          <li><i>Image</i> - Element behaves like or is an image</li>
-          <li><i>Label</i> - Element is a text label</li>
-          <li><i>Link</i> - Element behaves like or is a link</li>
-          <li><i>RadioButton</i> - Element behaves like or is a radio button</li>
-          <li><i>List</i> - Element behaves like or is a select list</li>
-          <li><i>Table</i> - Element behaves like or is a table</li>
-          <li><i>TextField</i> - Element behaves like or is a text field</li>
-          <li><i>Container</i> - Element is an unbounded container for elements of other types</li>
-          <li>&lt;ACustomElementType&gt; - Element is a custom element</li>
+        where <strong>&lt;ElementType&gt;</strong> is one of the following based on the platform ;
+        <ul class="nav nav-tabs nav-justified">
+          <li class="active"><a data-toggle="tab" href="#platform-web">web</a></li>
+          <li><a data-toggle="tab" href="#platform-ios">ios</a></li>
+          <li><a data-toggle="tab" href="#platform-android">android</a></li>
+          <li><a data-toggle="tab" href="#platform-mobile">mobile</a></li>
         </ul>
+        <div class="tab-content table-bordered">
+          <div id="platform-web" class="tab-pane fade in active">
+            <dl class="dl-horizontal">
+              <dt>Button</dt><dd>Element behaves like or is a button</dd>
+              <dt>CheckBox</dt><dd>Element behaves like or is a check box</dd>
+              <dt>DatePicker</dt><dd>Element behaves like or is a date selection calendar control</dd>
+              <dt>Form</dt><dd>Element behaves like or is a form</dd>
+              <dt>Image</dt><dd>Element behaves like or is an image</dd>
+              <dt>Label</dt><dd>Element is a text label</dd>
+              <dt>Link</dt><dd>Element behaves like or is a link</dd>
+              <dt>RadioButton</dt><dd>Element behaves like or is a radio button</dd>
+              <dt>List</dt><dd>Element behaves like or is a select list</dd>
+              <dt>Table</dt><dd>Element behaves like or is a table</dd>
+              <dt>TextField</dt><dd>Element behaves like or is a text field</dd>
+              <dt>Container</dt><dd>Element is an unbounded container for elements of other types</dd>
+              <dt>&lt;ACustomElement&gt;</dt><dd>Element is a custom element</dd>
+            </dl>
+          </div>
+          <div id="platform-ios" class="tab-pane fade">
+            <dl class="dl-horizontal">
+              <dt>UIAElement</dt><dd>Element for basic UI element.</dd>
+              <dt>UIAButton</dt><dd>Element for Button UI element.</dd>
+              <dt>UIAAlert</dt><dd>Element for Alert UI element.</dd>
+              <dt>UIANavigationBar</dt><dd>Element for Navigation Bar UI element.</dd>
+              <dt>UIAPicker</dt><dd>Element for Picker UI element.</dd>
+              <dt>UIASlider</dt><dd>Element for Slider UI element.</dd>
+              <dt>UIAStaticText</dt><dd>Element for Static Text UI element.</dd>
+              <dt>UIATableView</dt><dd>Element for Table View UI element.</dd>
+              <dt>UIATextField</dt><dd>Element for Text Field UI element.</dd>
+            </dl>
+            <blockquote class="small">The list of supported IOS elements can be found
+              <a href="java-docs/1.0.0/client-apis/com/paypal/selion/platform/mobile/ios/package-summary.html"
+                 alt="List of supported ios elements">here</a>.
+            </blockquote>
+          </div>
+          <div id="platform-android" class="tab-pane fade">
+            <dl class="dl-horizontal">
+              <dt>UiObject</dt><dd>Element for basic UI element.</dd>
+              <dt>UiButton</dt><dd>Element for Button UI element.</dd>
+              <dt>UiTextView</dt><dd>Element for Text View UI element.</dd>
+            </dl>
+            <blockquote class="small">The list of supported Android elements can be found
+              <a href="java-docs/1.0.0/client-apis/com/paypal/selion/platform/mobile/android/package-summary.html"
+                 alt="List of supported android elements">here</a>.
+            </blockquote>
+          </div>
+          <div id="platform-mobile" class="tab-pane fade">
+            <dl class="dl-horizontal">
+              <dt>Element</dt><dd>Element for basic UI element.</dd>
+              <dt>Button</dt><dd>Element for Button UI element.</dd>
+              <dt>Image</dt><dd>Element for Image UI element.</dd>
+              <dt>Label</dt><dd>Element for Label UI element.</dd>
+              <dt>List</dt><dd>Element for List UI element.</dd>
+              <dt>Picker</dt><dd>Element for Picker UI element (does not support android).</dd>
+              <dt>Slider</dt><dd>Element for Slider UI element.</dd>
+              <dt>Switch</dt><dd>Element for Switch UI element.</dd>
+              <dt>TextField</dt><dd>Element for Text Field UI element.</dd>
+            </dl>
+            <blockquote class="small">List of supported mobile elements can be found
+            <a href="java-docs/1.0.0/client-apis/com/paypal/selion/platform/mobile/mobile/package-summary.html"
+               alt="List of supported mobile elements">here</a>.
+            </blockquote>
+          </div>
+        </div>
         <p><strong><var>&lt;prefix&gt;</var></strong> is a meaningful name that you give to the element.
           For example; <code>loginButton</code> - prefix: <i>login</i>, element type: <i>Button</i></p>
         <p>When selecting an element type (Button, CheckBox, etc), it is important to note there is not necessarily a
-          one-to-one mapping with HTML element types here. Rather, each element type includes a set of behaviors
+          one-to-one mapping with element types here. Rather, each element type includes a set of behaviors
           (properties and/or methods) which are suitable for the scenario they support. This means;
           <ul>
           <li>A <code>Label</code> can be used to map to any element with inner text. It exposes the method
@@ -69,7 +133,12 @@
           <li>And so on...</li>
           </ul></p>
       </li>
-      <li><code>locators:</code> - This key represents the set of values that map to the element name.</li>
+      <li>After the name and the type of element is defined, you need to set the locators for that particular element.
+        locators can be localized and they should be defined after key <code>locators:</code>.
+        This key represents the set of values that map to the element name.
+        <blockquote class="small">for mobile platform you can define <code>android:</code> and <code>ios:</code>
+          in addition to <code>locators:</code> to define platform specific locators</blockquote>
+      </li>
       <li><b>Localized locator</b> - Values for the locators/selectors which are comprised of a key/value pairs -- the
         locale the html element will exist in and the actual locator/selector to find the html element by.
         For example; <code>US: "//div[@id='apiOption1']/p[3]/a"</code>. This equates to -- For the US version of the page,
@@ -99,30 +168,92 @@
     </ul>
 
   <h2>An Example PageYAML File</h2>
-  <pre data-src="../sample-files/yamlpage-sample1.yaml" class="language-markup"></pre>
-  <p>Some important things to reiterate and note from this example:</p>
-  <ul>
-    <li>Notice how each element name conveys it's intended use. For example, if you consider the element named
-      <code>addOrEditAPIPermissionsLink</code> you can probably guess what this element will do -- it is an element that
-      represents a link/href on the page which will add or edit api permissions. As your PageYAML files increase it is
-      important to follow a standard naming convention such as this. Doing so can greatly improve maintainability.
-    </li>
-    <li>The keys <code>US</code>, <code>FR</code> represents the locales. This is how we create YAML pages for pages
-      that involve localization.
-    </li>
-    <li>For the element <code>addOrEditAPIPermissionsLink</code> the locator <code>//div[@id='apiOption1']/p[3]/a|id=apiOption1Href</code>
-      has a <b>|</b> (pipe symbol) in it. Pipe symbols are used in SeLion to signify an <b>OR</b> operator
-      which means that this particular link can either be found using the xpath <code>//div[@id='apiOption1']/p[3]/a</code>
-      <b>or</b> by the id <code>id=apiOption1Href</code>. The first element to satisfy the condition is returned.</li>
-    <li>The element <code>pageValidators</code> contains the list of elements that are supposed to be
-      validated when your test performs a <code>click(Object..)</code> (or) <code>clickAndExpectOneOf(Object..)</code>
-      operation on a page. So from our above example, SeLion checks if the element represented by
-      <code>grantAPIPermissionLink</code> is <code>visible</code> because we explicitly requested for that validation.
-      It would also check if the element represented by <code>viewAPISignatureLink</code> is <b>present</b> or not.
-    <li>We also have a special kind of an element called <code>headerContainer</code>. To read more about Container
-      elements please take a look at the section -- <a href="#containers">PageYAML and Container Elements</a>.
-    </li>
+  <ul class="nav nav-tabs nav-justified">
+    <li class="active"><a data-toggle="tab" href="#page-yaml-web">web</a></li>
+    <li><a data-toggle="tab" href="#page-yaml-ios">ios</a></li>
+    <li><a data-toggle="tab" href="#page-yaml-android">android</a></li>
+    <li><a data-toggle="tab" href="#page-yaml-mobile">mobile</a></li>
   </ul>
+  <div class="tab-content table-bordered">
+    <div id="page-yaml-web" class="tab-pane fade in active">
+      <pre data-src="../sample-files/yamlpage-sample1.yaml"></pre>
+      <ul>
+        <li>Notice how each element name conveys it's intended use. For example, if you consider the element named
+          <code>addOrEditAPIPermissionsLink</code> you can probably guess what this element will do -- it is an element that
+          represents a link/href on the page which will add or edit api permissions. As your PageYAML files increase it is
+          important to follow a standard naming convention such as this. Doing so can greatly improve maintainability.
+        </li>
+        <li>The keys <code>US</code>, <code>FR</code> represents the locales. This is how we create YAML pages for pages
+          that involve localization.
+        </li>
+        <li>For the element <code>addOrEditAPIPermissionsLink</code> the locator <code>//div[@id='apiOption1']/p[3]/a|id=apiOption1Href</code>
+          has a <b>|</b> (pipe symbol) in it. Pipe symbols are used in SeLion to signify an <b>OR</b> operator
+          which means that this particular link can either be found using the xpath <code>//div[@id='apiOption1']/p[3]/a</code>
+          <b>or</b> by the id <code>id=apiOption1Href</code>. The first element to satisfy the condition is returned.</li>
+        <li>The element <code>pageValidators</code> contains the list of elements that are supposed to be
+          validated when your test performs a <code>click(Object..)</code> (or) <code>clickAndExpectOneOf(Object..)</code>
+          operation on a page. So from our above example, SeLion checks if the element represented by
+          <code>grantAPIPermissionLink</code> is <code>visible</code> because we explicitly requested for that validation.
+          It would also check if the element represented by <code>viewAPISignatureLink</code> is <b>present</b> or not.
+        <li>We also have a special kind of an element called <code>headerContainer</code>. To read more about Container
+          elements please take a look at the section -- <a href="#containers">PageYAML and Container Elements</a>.
+        </li>
+      </ul>
+    </div>
+    <div id="page-yaml-ios" class="tab-pane fade">
+      <pre data-src="../sample-files/yamlpage-iosnativeapp.yaml"></pre>
+      <p>Some important things to reiterate from this example:</p>
+      <ul>
+        <li><code>baseClass</code> value for the IOS Native app automation must be
+          <code>com.paypal.selion.testcomponents.BasicPageImpl</code> or a class which extends it.
+        </li>
+        <li><code>platform</code> value must be specified as <strong>ios</strong>. This value is mandatory.
+          Otherwise, <a href="#pageyaml">web</a> is assumed.
+        </li>
+        <li>The suffix of all the elements must be a valid element name as per the platform.
+          In the above YAML file a text area is represented using
+          <code>UIAStaticText</code> and the element name is given as <code>sampleUIAStaticText</code>
+          which is a valid one.</li>
+      </ul>
+    </div>
+    <div id="page-yaml-android" class="tab-pane fade">
+      <pre data-src="../sample-files/yamlpage-androidnativeapp.yaml"></pre>
+      <p>Some important things to reiterate from this example:</p>
+      <ul>
+        <li><code>baseClass</code> value for the Android Native app automation must be
+          <code>com.paypal.selion.testcomponents.BasicPageImpl</code> or a class which extends it.
+        </li>
+        <li><code>platform</code> value must be specified as <strong>android</strong>. This value is mandatory.
+          Otherwise, <a href="#pageyaml">web</a> is assumed.</li>
+        <li>The suffix of all the elements must be a valid element name as per the platform.
+          In the above YAML file a button is represented using
+          <code>UiObject</code> and the element name is given as <code>shortPressButtonUiObject</code>
+          which is a valid one.</li>
+      </ul>
+    </div>
+    <div id="page-yaml-mobile" class="tab-pane fade">
+      <pre data-src="../sample-files/yamlpage-mobilenativeapp.yaml"></pre>
+      <p>Some important things to reiterate from this example:</p>
+      <ul>
+        <li><code>baseClass</code> value for the mobile Native app automation must be
+          <code>com.paypal.selion.testcomponents.BasicPageImpl</code> or a class which extends it.
+        </li>
+        <li><code>platform</code> value must be specified as <strong>mobile</strong>. This value is mandatory.
+          Otherwise, <a href="#pageyaml">web</a> is assumed.
+        </li>
+        <li>The suffix of all the elements must be a valid element name as per the platform.
+          In the above YAML file a text field is represented using
+          <code>TextField</code> and the element name is given as <code>topTextField</code>
+          which is a valid one.</li>
+        <li>The locator of an element can be specified the same way as web elements.<br/>
+          Since android and ios selectors are almost always different, we need to set different locators fot them.
+          therefore we add ios and android to use instead of locators.
+          if you want to specify android locator use android instead of lcoator and if you want to specify ios locator use ios.
+          if platform specific locator is not set then locator defined in locators will be used</li>
+      </ul>
+    </div>
+  </div>
+  <p>Some important things to reiterate and note from this example:</p>
 
   <h2>How to use custom elements in your PageYAML</h2>
   <p>Please make sure that you register your custom elements as described in the

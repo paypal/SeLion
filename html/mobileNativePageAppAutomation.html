@@ -1,0 +1,62 @@
+<div class="selion-content-div">
+  <h1 class="page-header">Mobile App Automation from SeLion Generated Page Objects</h1>
+
+  <p class="lead">This section focuses on using SeLion generated page objects for interacting with a mobile specific 
+     application on any mobile platform. Make sure you understand the content from the section 
+     <a href="#mobile-native-page-yaml">SeLion PageYAML for Mobile Apps</a> first.
+  <ul>
+    <li> The first step in Automation with pageObjects is to create the yaml file.
+      The YAML file used by the below <code>@Test</code> method should be added to the path
+      <em>src/main/resources/GUIData/</em> with name <strong>NativeAppTestPage.yaml</strong>.
+      It should have the following content:
+      <ul class="nav nav-tabs nav-justified">
+        <li class="active"><a data-toggle="tab" href="#page-yaml-ios">ios</a></li>
+        <li><a data-toggle="tab" href="#page-yaml-android">android</a></li>
+        <li><a data-toggle="tab" href="#page-yaml-mobile">mobile</a></li>
+      </ul>
+      <div class="tab-content table-bordered">
+        <div id="page-yaml-ios" class="tab-pane fade in active">
+          <pre data-src="../sample-files/yamlpage-iosnativeapp.yaml"></pre>
+        </div>
+        <div id="page-yaml-android" class="tab-pane fade">
+          <pre data-src="../sample-files/yamlpage-androidnativeapp.yaml"></pre>
+        </div>
+        <div id="page-yaml-mobile" class="tab-pane fade">
+          <pre data-src="../sample-files/yamlpage-mobilenativeapp.yaml"></pre>
+        </div>
+      </div>
+    </li>
+    <li>First the <code>@Test</code> annotated method needs to also be annotated with <code>@MobileTest</code>.
+      This indicates to SeLion that the <code>@Test</code> code will be performed against a mobile device or emulator.</li>
+    <li>A typical test would look like this:
+      <ul class="nav nav-tabs nav-justified">
+        <li class="active"><a data-toggle="tab" href="#test-java-ios">ios</a></li>
+        <li><a data-toggle="tab" href="#test-java-android">android</a></li>
+        <li><a data-toggle="tab" href="#test-java-mobile">mobile</a></li>
+      </ul>
+      <div class="tab-content table-bordered">
+        <div id="test-java-ios" class="tab-pane fade in active">
+          <pre data-src="../sample-files/iosnativeapp-pageobject.java"></pre>
+        </div>
+        <div id="test-java-android" class="tab-pane fade">
+          <pre data-src="../sample-files/androidnativeapp-pageobject.java"></pre>
+        </div>
+        <div id="test-java-mobile" class="tab-pane fade">
+          <pre data-src="../sample-files/mobilenativeapp-pageobject.java"></pre>
+        </div>
+      </div>
+    </li>
+    <li>It is a good idea to config everything from the test suite instead of writing them directly in the code.
+    parameters that were defined in @MobileTest can be defined in test suite.
+    </li>
+    <li> a sample test suite for a mobile platform test looks like this:
+      <pre data-src="../sample-files/mobilenativeapp-testsuite.xml"></pre>
+      <blockquote class="small"><code>mobilePlatform</code> is special parameter for <code>mobile</code> platform, that defines this test suite should run on IOS or Android.</blockquote>
+    </li>
+  </ul>
+  <p> Refer to <a href="#getting-started-mobile">Getting started with mobile automation</a> for additional details including
+  available parameters.
+  
+</div>
+
+<script src="../js/prismjs-min.js"></script>

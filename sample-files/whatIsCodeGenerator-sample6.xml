@@ -27,5 +27,10 @@
         com.mycompany.android.CustomUiButton
       </androidCustomElement>
     </androidCustomElements>
+    <mobileCustomElements>
+      <mobileCustomElement>
+        com.mycompany.mobile.CustomButton
+      </mobileCustomElement>
+    </mobileCustomElements>
   </configuration>
 </plugin>
