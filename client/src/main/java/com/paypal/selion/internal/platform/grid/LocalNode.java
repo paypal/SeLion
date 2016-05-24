@@ -140,6 +140,14 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
             list.add("phantomjs");
         }
 
+        // for GeckoDriver
+        if (!checkForPresenceOf(ConfigProperty.SELENIUM_GECKODRIVER_PATH,
+                SeLionConstants.WEBDRIVER_GECKO_DRIVER_PROPERTY, SeLionConstants.GECKO_DRIVER)) {
+            Config.setConfigProperty(ConfigProperty.SELENIUM_GECKODRIVER_PATH, SeLionConstants.SELION_HOME_DIR
+                    + SeLionConstants.GECKO_DRIVER);
+            list.add("geckodriver");
+        }
+
         return list;
     }
 

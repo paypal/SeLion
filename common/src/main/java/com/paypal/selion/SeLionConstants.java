@@ -86,4 +86,15 @@ public class SeLionConstants {
      * Selenium system property for defining the location of edge driver.
      */
     public static final String WEBDRIVER_EDGE_DRIVER_PROPERTY = "webdriver.edge.driver";
+
+    /**
+     * Selenium system property for defining the location of Gecko/marionette driver
+     */
+    public static final String WEBDRIVER_GECKO_DRIVER_PROPERTY = "webdriver.gecko.driver";
+
+    /**
+     * Platform specific executable name for gecko/marionette driver
+     */
+    public static final String GECKO_DRIVER = SystemUtils.IS_OS_WINDOWS ? "geckodriver.exe" : "geckodriver";
+
 }

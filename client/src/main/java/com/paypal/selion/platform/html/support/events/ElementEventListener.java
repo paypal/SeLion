@@ -65,8 +65,6 @@ public interface ElementEventListener {
      * 
      * @param target
      *            Instance of the element that triggered this event and implements {@link Clickable}
-     * @param expected
-     *            The expected objects that were passed to the click method
      */
     void beforeScreenshot(Clickable target);
 
@@ -77,8 +75,6 @@ public interface ElementEventListener {
      * 
      * @param target
      *            Instance of the element that triggered this event and implements {@link Clickable}
-     * @param expected
-     *            The expected objects that were passed to the click method
      */
     void afterScreenshot(Clickable target);
 

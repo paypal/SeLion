@@ -123,7 +123,7 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
         // include everything a typical process launcher would add for a java process
         args.addAll(Arrays.asList(super.getJavaSystemPropertiesArguments()));
 
-        // include the WebDriver binary paths for Chromedriver, IEDriver, and PhantomJs
+        // include the WebDriver binary paths for Chromedriver, IEDriver, and PhantomJs, GeckoDriver
         args.addAll(Arrays.asList(getWebDriverBinarySystemPropertiesArguments()));
 
         LOGGER.exiting(args.toString());
@@ -152,6 +152,11 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
                 args.add("-D" + SeLionConstants.WEBDRIVER_PHANTOMJS_DRIVER_PROPERTY + "="
                         + SeLionConstants.SELION_HOME_DIR + SeLionConstants.PHANTOMJS_DRIVER);
             }
+            if (System.getProperty(SeLionConstants.WEBDRIVER_GECKO_DRIVER_PROPERTY) == null) {
+                args.add("-D" + SeLionConstants.WEBDRIVER_GECKO_DRIVER_PROPERTY + "="
+                        + SeLionConstants.SELION_HOME_DIR + SeLionConstants.GECKO_DRIVER);
+            }
+
         }
         LOGGER.exiting(args.toString());
         return args.toArray(new String[args.size()]);

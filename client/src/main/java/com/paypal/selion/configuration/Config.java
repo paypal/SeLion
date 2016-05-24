@@ -404,6 +404,18 @@ public final class Config {
         SELENIUM_EDGEDRIVER_PATH("edgeDriverPath", "", true),
 
         /**
+         *  Flip this parameter to <code>true</code> to enable the use of Gecko/marionette driver (PKA wires) with
+         *  Firefox.  This is used for local as well as remote grid executions using Firefox browser.
+         */
+        SELENIUM_USE_GECKODRIVER("useGeckoDriver", "false", true),
+
+        /**
+         * The path to the Gecko/Marionette driver executable file on the local machine. This parameter is taken into
+         * consideration for local runs only with the Firefox browser.
+         */
+        SELENIUM_GECKODRIVER_PATH("geckoDriverPath", "", true),
+
+        /**
          * Use this parameter to set the user agent for firefox when working with Mobile version. This parameter should
          * be set in conjunction with the parameter {@link ConfigProperty#BROWSER}
          */

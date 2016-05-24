@@ -24,6 +24,22 @@
     }
   },
   {
+    "name": "geckodriver",
+    "roles": [ "node", "standalone" ],
+    "windows": {
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-win64.zip",
+      "checksum": "81c02ec7778e511cf393974e93de8f7988989039"
+    },
+    "linux": {
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-linux64.tar.gz",
+      "checksum": "918c5744ac2b013bd2a76560af2b8872a92850eb"
+    },
+    "mac": {
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-mac.tar.gz",
+      "checksum": "fe1373f5b8716939012199b67c60997318b3c201"
+    }
+  },
+  {
     "name": "phantomjs",
     "roles": [ "node", "standalone" ],
     "windows": {

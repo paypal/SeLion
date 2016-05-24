@@ -49,7 +49,7 @@ final class FileDownloader {
     private static List<String> files = new ArrayList<String>();
     private static long lastModifiedTime;
     private static final List<String> SUPPORTED_TYPES = Arrays.asList(ArchiveStreamFactory.ZIP, ArchiveStreamFactory.TAR,
-            ArchiveStreamFactory.JAR, "bz2", "msi");
+            ArchiveStreamFactory.JAR, "bz2", "msi", "gz");
     private static final File DOWNLOAD_FILE = new File(SeLionGridConstants.DOWNLOAD_JSON_FILE);
 
     private FileDownloader() {
