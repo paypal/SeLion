@@ -16,7 +16,7 @@
             </includes>
         </fileSet>
         <fileSet filtered="false" packaged="false">
-            <directory>src/test/resources/pageyaml/</directory>
+            <directory>src/test/resources/GUIData/</directory>
             <includes>
                 <include>**/*.yaml</include>
             </includes>

@@ -98,7 +98,7 @@
                 </executions>
                 <configuration>
                     <basePackage>${groupId}</basePackage>
-                    <baseFolder>pageyaml</baseFolder>
+                    <baseFolder>GUIData</baseFolder>
                 </configuration>
             </plugin>
             <plugin>
