@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -104,7 +104,7 @@ public class HtmlElementUtils {
         // findElement() findElements() always returns a list
         // irrespective of whether an element was found or not
         if (webElementsFound.isEmpty()) {
-            throw new NoSuchElementException(generateUnsupportedLocatorMsg(locator));
+            throw new NoSuchElementException("Cannot locate any element using [" + locatorBy + "]");
         }
         logger.exiting(webElementsFound);
         return webElementsFound;
@@ -130,7 +130,7 @@ public class HtmlElementUtils {
         // findElement() findElements() always returns a list
         // irrespective of whether an element was found or not
         if (webElementsFound.isEmpty()) {
-            throw new NoSuchElementException(generateUnsupportedLocatorMsg(locator));
+            throw new NoSuchElementException("Cannot locate any element using [" + locator + "]");
         }
         logger.exiting(webElementsFound);
         return webElementsFound;
@@ -225,11 +225,6 @@ public class HtmlElementUtils {
         }
         logger.exiting(valueToReturn);
         return valueToReturn;
-    }
-
-    private static String generateUnsupportedLocatorMsg(String locator) {
-        return "Unsupported locator {" + locator
-                + "}. Locator has to be either a name, id, link text, xpath, or css selector.";
     }
 
     /**
