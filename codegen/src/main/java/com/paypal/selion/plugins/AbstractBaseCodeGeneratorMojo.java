@@ -15,10 +15,7 @@
 
 package com.paypal.selion.plugins;
 
-import com.paypal.selion.elements.AndroidSeLionElementList;
-import com.paypal.selion.elements.HtmlElementUtils;
-import com.paypal.selion.elements.HtmlSeLionElementList;
-import com.paypal.selion.elements.IOSSeLionElementList;
+import com.paypal.selion.elements.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -66,6 +63,12 @@ abstract class AbstractBaseCodeGeneratorMojo extends AbstractMojo {
      */
     @Parameter(property = "htmlCustomElements")
     protected List<String> htmlCustomElements;
+
+    /**
+     * List of "mobile" custom elements to be included during code generation.
+     */
+    @Parameter(property = "mobileCustomElements")
+    protected List<String> mobileCustomElements;
 
     /**
      * List of "ios" custom elements to be included during code generation.
@@ -161,8 +164,27 @@ abstract class AbstractBaseCodeGeneratorMojo extends AbstractMojo {
         }
 
         for (String androidElement : androidCustomElements) {
-            // There are no elements declared for android hence proceeding ahead to register the elements
+            String elementName = HtmlElementUtils.getClass(androidElement);
+            if (AndroidSeLionElementList.isExactMatch(elementName)) {
+                logger.info("The custom " + elementName
+                        + " that will be registered as a valid element is overwriting an existing SeLion element.");
+            } else {
+                logger.info("The custom " + elementName + " will be registered as a valid element.");
+            }
+
             AndroidSeLionElementList.registerElement(androidElement);
+        }
+
+        for(String mobileElement : mobileCustomElements) {
+            String elementName = HtmlElementUtils.getClass(mobileElement);
+            if(MobileSeLionElementList.isExactMatch(elementName)) {
+                logger.info("The custom " + elementName
+                        + " that will be registered as a valid element is overwriting an existing SeLion element.");
+            } else {
+                logger.info("The custom " + elementName + " will be registered as a valid element.");
+            }
+
+            MobileSeLionElementList.registerElement(mobileElement);
         }
 
         for (File dataFile : allDataFiles) {
@@ -237,7 +259,7 @@ abstract class AbstractBaseCodeGeneratorMojo extends AbstractMojo {
     }
 
     private String relativePath(String folder) {
-        String[] dirs = new String(basePackage + "." + folder).split("\\Q.\\E");
+        String[] dirs = (basePackage + "." + folder).split("\\Q.\\E");
         String relativePath = "";
         for (String eachDir : dirs) {
             relativePath = relativePath + File.separator + eachDir;
@@ -277,7 +299,7 @@ abstract class AbstractBaseCodeGeneratorMojo extends AbstractMojo {
      * @return List<File>
      */
     private List<File> loadFiles(File workingDir) {
-        List<File> dataFile = new ArrayList<File>();
+        List<File> dataFile = new ArrayList<>();
         if (workingDir.exists()) {
             File[] files = workingDir.listFiles();
             for (File eachFile : files) {

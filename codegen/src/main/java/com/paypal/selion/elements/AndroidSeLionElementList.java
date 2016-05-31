@@ -75,6 +75,15 @@ public class AndroidSeLionElementList extends AbstractSeLionElementList {
 
     /**
      * @param element
+     *            The element that needs to be searched.
+     * @return <code>true</code> if the element was found in the set of elements provided.
+     */
+    public static boolean isExactMatch(String element) {
+        return isExactMatch(values, element);
+    }
+
+    /**
+     * @param element
      *            The element that needs to be tested for being a valid {@link AndroidSeLionElementList} and whose
      *            {@link AndroidSeLionElementList#isUIElement()} returns true.
      * @return <code>true</code> if there was a match and <code>false</code> otherwise.
