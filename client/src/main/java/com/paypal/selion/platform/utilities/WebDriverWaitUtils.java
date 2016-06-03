@@ -117,7 +117,7 @@ public final class WebDriverWaitUtils {
     }
 
     /**
-     * Waits until element element is present on the DOM of a page. This does not necessarily mean that the element is
+     * Waits until element is present on the DOM of a page. This does not necessarily mean that the element is
      * visible.
      * 
      * @param element
@@ -128,7 +128,7 @@ public final class WebDriverWaitUtils {
     }
 
     /**
-     * Waits until element element is present on the DOM of a page. This does not necessarily mean that the element is
+     * Waits until element is present on the DOM of a page. This does not necessarily mean that the element is
      * visible.
      *
      * @param elementLocator
