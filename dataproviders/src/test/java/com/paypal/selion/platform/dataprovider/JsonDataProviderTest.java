@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -14,10 +14,6 @@
 \*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.platform.dataprovider;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,6 +30,8 @@ import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter
 import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
 import com.paypal.selion.platform.dataprovider.impl.InputStreamResource;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.USER;
+
+import static org.testng.Assert.*;
 
 public class JsonDataProviderTest {
     private static String jsonPojoArrayDataFile = "src/test/resources/PojoArrayData.json";
@@ -158,6 +156,9 @@ public class JsonDataProviderTest {
                 assertTrue(userData.getPhoneNumber().equals("1111111111"));
                 assertTrue(userData.getAreaCode()[1].getAreaCode().equals("area8"));
                 break;
+            }
+            default: {
+                fail("Unexpected condition.");
             }
             }
         }

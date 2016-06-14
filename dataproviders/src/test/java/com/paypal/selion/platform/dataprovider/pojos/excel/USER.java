@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -102,10 +102,6 @@ public class USER {
         return preintTest;
     }
 
-    public boolean getIsBooleanGood() {
-        return isbooleanGood;
-    }
-
     public double getDoubleTest() {
         return doubleTest;
     }
@@ -185,27 +181,23 @@ public class USER {
         this.preintTest = i;
     }
 
-    public void setIsbooleanGood(boolean b) {
+    public void setBooleanGood(boolean b) {
         this.isbooleanGood = b;
-
     }
 
     public void setDoubleTest(double d) {
         this.doubleTest = d;
-
     }
 
     public void setLongTest(long l) {
         this.longTest = l;
-
     }
 
     public void setFloatTest(float f) {
         this.floatTest = f;
-
     }
 
-    public boolean getIsbooleanGood() {
+    public boolean isBooleanGood() {
         return isbooleanGood;
     }
 }

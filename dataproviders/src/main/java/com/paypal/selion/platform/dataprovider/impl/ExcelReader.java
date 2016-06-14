@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -51,7 +51,7 @@ class ExcelReader {
      * Use this constructor when a file that is available in the classpath is to be read by the ExcelDataProvider for
      * supporting Data Driven Tests.
      * 
-     * @param fileStream
+     * @param resource
      *            the stream of the excel file to be read.
      * @throws IOException
      *             If the file cannot be located, or cannot read by the method.
