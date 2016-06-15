@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -499,5 +499,14 @@ public class ExcelDataProviderTest {
         Row singleRow = rows.get(3);
         assertTrue(singleRow.getCell(1).getStringCellValue().equals("binh"));
         assertTrue(singleRow.getCell(2).getStringCellValue().equals("abc124"));
+    }
+
+    @Test(groups = "unit")
+    public void testSheetOrderMismatchWithPOJO() throws IOException {
+        Object[][] rowData =  dataSource.getDataByIndex("1");
+        USER user = (USER) rowData[0][0] ;
+        assertEquals(user.getBank().getName(), "Well fargo");
+        assertEquals(user.getBank().getAddress().getStreet(), "12 Pico st");
+        assertEquals(user.getBank().getType(), "savings");
     }
 }

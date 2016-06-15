@@ -179,6 +179,29 @@ class ExcelReader {
         logger.exiting(rowData);
         return rowData;
     }
+    
+    /**
+     * Fetches the header row contents of the excel sheet. The first row in the excel sheet is considered to be the
+     * header row
+     * 
+     * @param sheetName
+     *            The excel sheet name where header data is to be fetched
+     * @param size
+     *            The number of columns to read, including empty and blank columns.
+     * @return the header row data
+     */
+    public List<String> getHeaderRowContents(String sheetName, int size) {
+        logger.entering(new Object[]{sheetName, size});
+        Sheet sheet = fetchSheet(sheetName);
+
+        int actualExcelRow = 0;
+        Row row = sheet.getRow(actualExcelRow);
+
+        List<String> rowData = getRowContents(row, size);
+
+        logger.exiting(rowData);
+        return rowData;
+    }
 
     /**
      * Return the row contents of the specified row in a list of string format.

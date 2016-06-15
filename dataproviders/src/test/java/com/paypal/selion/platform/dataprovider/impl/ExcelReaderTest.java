@@ -124,4 +124,13 @@ public class ExcelReaderTest {
         int index = excelReader.getRowIndex("Sheet1", "#1");
         assertEquals(index, -1);
     }
+
+    @Test(groups = "unit")
+    public void testGetHeaderRow() {
+        Field[] fields = USER.class.getDeclaredFields();
+        List<String> headerRowList = excelReader.getHeaderRowContents(USER.class.getSimpleName(), fields.length);
+        assertNotNull(headerRowList);
+        assertTrue(("[name, PASSWORD, accountnumber, amount, areaCode, bank, phoneNumber, preintTest, isbooleanGood,"
+                + " doubleTest, longTest, floattest, byteTest]").equals(headerRowList.toString()));
+    }
 }
