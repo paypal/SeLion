@@ -435,7 +435,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     protected void validatePresenceOfAlert() {
         String browser = Grid.getWebTestSession().getBrowser();
-        logger.info(browser);
+        logger.finest("Validating presence of alert with browser " + browser);
         if (doesNotHandleAlerts(browser)) {
             logger.info(ALERTS_ARE_NOT_SUPPORTED_ERR_MSG);
             return;
