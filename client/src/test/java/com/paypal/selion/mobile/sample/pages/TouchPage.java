@@ -13,133 +13,134 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.mobile.sample.mobile;
+package com.paypal.selion.mobile.sample.pages;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.mobile.MobileImplementationFinder;
-import com.paypal.selion.platform.mobile.elements.MobileElement;
 import com.paypal.selion.platform.mobile.elements.MobileButton;
-import com.paypal.selion.platform.mobile.elements.MobileList;
 import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.selion.testcomponents.BasicPageImpl;
 
-public class TablePage extends BasicPageImpl {
+public class TouchPage extends BasicPageImpl {
 
     private MobileButton nextButton;
-    private MobileList tableList;
-    private MobileElement alertElement;
+    private MobileButton touchButton;
+    private MobileTextField touchTextField;
     private MobileTextField topTextField;
     private MobileButton preButton;
 
-    private static String CLASS_NAME = "TablePage";
+    private static String CLASS_NAME = "TouchPage";
     private static String PAGE_DOMAIN = "paypal/mobile";
 
-
     /**
-     * Creates a new TablePage object
+     * Creates a new TouchPage object
      */
-    public TablePage() {
+    public TouchPage() {
         super.initPage(PAGE_DOMAIN, CLASS_NAME);
     }
-    
+
     /**
-     * Creates a new TablePage object
+     * Creates a new TouchPage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
      */
-    public TablePage(String siteLocale) {
+    public TouchPage(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
     }
 
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param platform The Platform for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
-    public TablePage(WebDriverPlatform platform) {
+    public TouchPage(WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, platform);
     }
 
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
-     * @param platform   The Platform for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
-    public TablePage(String siteLocale, WebDriverPlatform platform) {
+    public TouchPage(String siteLocale, WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale, platform);
     }
 
-    public TablePage getPage() {
+    public TouchPage getPage() {
         return this;
     }
 
-
     /**
-     * Used to get nextButton in the page TablePage
+     * Used to get nextButton in the page TouchPage
      *
      * @return nextButton
      */
     public MobileButton getNextButton() {
         MobileButton element = this.nextButton;
         if (element == null) {
-            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("nextButton"));
+            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, getObjectMap()
+                    .get("nextButton"));
         }
         return this.nextButton;
     }
 
-
     /**
-     * Used to get tableList in the page TablePage
+     * Used to get touchButton in the page TouchPage
      *
-     * @return tableList
+     * @return touchButton
      */
-    public MobileList getTableList() {
-        MobileList element = this.tableList;
+    public MobileButton getTouchButton() {
+        MobileButton element = this.touchButton;
         if (element == null) {
-            this.tableList = MobileImplementationFinder.instantiate(getPlatform(), MobileList .class, getObjectMap().get("tableList"));
+            this.touchButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, getObjectMap()
+                    .get("touchButton"));
         }
-        return this.tableList;
+        return this.touchButton;
     }
 
-
     /**
-     * Used to get alertElement in the page TablePage
+     * Used to get touchTextField in the page TouchPage
      *
-     * @return alertElement
+     * @return touchTextField
      */
-    public MobileElement getAlertElement() {
-        MobileElement element = this.alertElement;
+    public MobileTextField getTouchTextField() {
+        MobileTextField element = this.touchTextField;
         if (element == null) {
-            this.alertElement = MobileImplementationFinder.instantiate(getPlatform(), MobileElement .class, getObjectMap().get("alertElement"));
+            this.touchTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("touchTextField"));
         }
-        return this.alertElement;
+        return this.touchTextField;
     }
 
-
     /**
-     * Used to get topTextField in the page TablePage
+     * Used to get topTextField in the page TouchPage
      *
      * @return topTextField
      */
     public MobileTextField getTopTextField() {
         MobileTextField element = this.topTextField;
         if (element == null) {
-            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("topTextField"));
+            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("topTextField"));
         }
         return this.topTextField;
     }
 
-
     /**
-     * Used to get preButton in the page TablePage
+     * Used to get preButton in the page TouchPage
      *
      * @return preButton
      */
     public MobileButton getPreButton() {
         MobileButton element = this.preButton;
         if (element == null) {
-            this.preButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("preButton"));
+            this.preButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, getObjectMap()
+                    .get("preButton"));
         }
         return this.preButton;
     }

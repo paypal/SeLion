@@ -31,6 +31,7 @@ import com.paypal.selion.elements.HtmlSeLionElementList;
 public class DataReaderTest {
     private static final String YAML_V2 = "src/test/resources/SampleV2YamlPage.yaml";
     private static final String YAML_MOBILE = "src/test/resources/SampleMobilePage.yaml";
+
     class DummyMojo extends AbstractMojo {
         @Override
         public void execute() throws MojoExecutionException, MojoFailureException {
@@ -83,7 +84,8 @@ public class DataReaderTest {
                 break;
             }
         }
-        assertEquals(requestAPICredentialsLink != null ? requestAPICredentialsLink.getMemberType() : null, HtmlSeLionElementList.LINK.stringify());
+        assertEquals(requestAPICredentialsLink != null ? requestAPICredentialsLink.getMemberType() : null,
+                HtmlSeLionElementList.LINK.stringify());
     }
 
 }

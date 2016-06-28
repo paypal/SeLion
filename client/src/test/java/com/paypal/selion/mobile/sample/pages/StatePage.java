@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.mobile.sample.mobile;
+package com.paypal.selion.mobile.sample.pages;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.mobile.MobileImplementationFinder;
@@ -36,18 +36,18 @@ public class StatePage extends BasicPageImpl {
     private static String CLASS_NAME = "StatePage";
     private static String PAGE_DOMAIN = "paypal/mobile";
 
-
     /**
      * Creates a new StatePage object
      */
     public StatePage() {
         super.initPage(PAGE_DOMAIN, CLASS_NAME);
     }
-    
+
     /**
      * Creates a new StatePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
      */
     public StatePage(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
@@ -56,7 +56,8 @@ public class StatePage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param platform The Platform for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public StatePage(WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, platform);
@@ -65,8 +66,10 @@ public class StatePage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
-     * @param platform   The Platform for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public StatePage(String siteLocale, WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale, platform);
@@ -76,7 +79,6 @@ public class StatePage extends BasicPageImpl {
         return this;
     }
 
-
     /**
      * Used to get nextButton in the page StatePage
      *
@@ -85,11 +87,11 @@ public class StatePage extends BasicPageImpl {
     public MobileButton getNextButton() {
         MobileButton element = this.nextButton;
         if (element == null) {
-            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("nextButton"));
+            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, getObjectMap()
+                    .get("nextButton"));
         }
         return this.nextButton;
     }
-
 
     /**
      * Used to get seekbarSlider in the page StatePage
@@ -99,11 +101,11 @@ public class StatePage extends BasicPageImpl {
     public MobileSlider getSeekbarSlider() {
         MobileSlider element = this.seekbarSlider;
         if (element == null) {
-            this.seekbarSlider = MobileImplementationFinder.instantiate(getPlatform(), MobileSlider .class, getObjectMap().get("seekbarSlider"));
+            this.seekbarSlider = MobileImplementationFinder.instantiate(getPlatform(), MobileSlider.class,
+                    getObjectMap().get("seekbarSlider"));
         }
         return this.seekbarSlider;
     }
-
 
     /**
      * Used to get topTextField in the page StatePage
@@ -113,11 +115,11 @@ public class StatePage extends BasicPageImpl {
     public MobileTextField getTopTextField() {
         MobileTextField element = this.topTextField;
         if (element == null) {
-            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("topTextField"));
+            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("topTextField"));
         }
         return this.topTextField;
     }
-
 
     /**
      * Used to get preButton in the page StatePage
@@ -127,11 +129,11 @@ public class StatePage extends BasicPageImpl {
     public MobileButton getPreButton() {
         MobileButton element = this.preButton;
         if (element == null) {
-            this.preButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("preButton"));
+            this.preButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, getObjectMap()
+                    .get("preButton"));
         }
         return this.preButton;
     }
-
 
     /**
      * Used to get switchTextField in the page StatePage
@@ -141,11 +143,11 @@ public class StatePage extends BasicPageImpl {
     public MobileTextField getSwitchTextField() {
         MobileTextField element = this.switchTextField;
         if (element == null) {
-            this.switchTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("switchTextField"));
+            this.switchTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("switchTextField"));
         }
         return this.switchTextField;
     }
-
 
     /**
      * Used to get stateSwitch in the page StatePage
@@ -155,11 +157,11 @@ public class StatePage extends BasicPageImpl {
     public MobileSwitch getStateSwitch() {
         MobileSwitch element = this.stateSwitch;
         if (element == null) {
-            this.stateSwitch = MobileImplementationFinder.instantiate(getPlatform(), MobileSwitch .class, getObjectMap().get("stateSwitch"));
+            this.stateSwitch = MobileImplementationFinder.instantiate(getPlatform(), MobileSwitch.class, getObjectMap()
+                    .get("stateSwitch"));
         }
         return this.stateSwitch;
     }
-
 
     /**
      * Used to get sliderTextField in the page StatePage
@@ -169,7 +171,8 @@ public class StatePage extends BasicPageImpl {
     public MobileTextField getSliderTextField() {
         MobileTextField element = this.sliderTextField;
         if (element == null) {
-            this.sliderTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("sliderTextField"));
+            this.sliderTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("sliderTextField"));
         }
         return this.sliderTextField;
     }

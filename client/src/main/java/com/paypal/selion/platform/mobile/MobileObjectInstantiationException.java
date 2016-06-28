@@ -17,6 +17,8 @@ package com.paypal.selion.platform.mobile;
 
 public class MobileObjectInstantiationException extends RuntimeException {
 
+    private static final long serialVersionUID = -8721008345311351866L;
+
     public MobileObjectInstantiationException(String message) {
         super(message);
     }

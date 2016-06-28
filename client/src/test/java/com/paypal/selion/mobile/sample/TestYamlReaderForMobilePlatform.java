@@ -63,5 +63,4 @@ public class TestYamlReaderForMobilePlatform {
         Assert.assertEquals(pageAndroidCH.getSampleElement().getLocator(), null);
     }
 
-
 }

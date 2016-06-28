@@ -22,11 +22,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * this class find correct implementation for mobile interfaces and create a new instance for it or throw exception.
- * it will try to find class in follow locations:
- * 1) if class is not an interfaces, it will use class itself
- * 2) if class is annotated with <code>Implementor</code> it reads info from it.
- * 3) if none of the above, it will throw exception
+ * This class finds correct implementation for mobile interfaces and create a new instance for it or throw exception. It
+ * will try to find class in follow locations: 
+ * 1. if class is not an interfaces, it will use class itself 
+ * 2. if class is annotated with <code>Implementor</code> it reads info from it. 
+ * 3. if none of the above, it will throw exception
  */
 @SuppressWarnings("unchecked")
 public class MobileImplementationFinder {
@@ -38,26 +38,30 @@ public class MobileImplementationFinder {
             final Class<T> mobileElementClass = find(tClass, platform);
             final Constructor<T> constructor = mobileElementClass.getConstructor(String.class);
             return constructor.newInstance(locator);
-        } catch (ClassCastException | ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new MobileObjectInstantiationException(String.format("Problem instantiating class %s for platform %s", tClass.getName(), platform), e);
+        } catch (ClassCastException | ClassNotFoundException | InstantiationException | IllegalAccessException
+                | NoSuchMethodException | InvocationTargetException e) {
+            throw new MobileObjectInstantiationException(String.format(
+                    "Problem instantiating class %s for platform %s", tClass.getName(), platform), e);
         }
     }
 
-    private static <T extends MobileElement> Class<T> find(Class<T> aClass, WebDriverPlatform platform) throws ClassNotFoundException {
+    private static <T extends MobileElement> Class<T> find(Class<T> aClass, WebDriverPlatform platform)
+            throws ClassNotFoundException {
         if (!aClass.isInterface()) {
             return aClass;
         }
         Implementor implementor = aClass.getAnnotation(Implementor.class);
         if (implementor == null) {
-            throw new MobileObjectInstantiationException(String.format("Interface {%s} does not implements @Implementor", aClass.getName()));
+            throw new MobileObjectInstantiationException(String.format(
+                    "Interface {%s} does not implements @Implementor", aClass.getName()));
         }
         switch (platform) {
-            case IOS:
-                return (Class<T>) implementor.ios();
-            case ANDROID:
-                return (Class<T>) implementor.android();
-            default:
-                throw new MobileObjectInstantiationException("unSupported Platform");
+        case IOS:
+            return (Class<T>) implementor.ios();
+        case ANDROID:
+            return (Class<T>) implementor.android();
+        default:
+            throw new MobileObjectInstantiationException("unSupported Platform");
         }
     }
 }

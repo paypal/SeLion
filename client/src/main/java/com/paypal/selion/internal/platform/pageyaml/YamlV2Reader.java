@@ -61,12 +61,12 @@ class YamlV2Reader extends AbstractYamlReader {
      * @param locale
      *            Signifies the language or site language to read.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, String> getGuiMap(String locale) {
         return getGuiMap(locale, WebDriverPlatform.UNDEFINED);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Map<String, String> getGuiMap(String locale, WebDriverPlatform platform) {
         if (platform.equals(WebDriverPlatform.UNDEFINED)) {

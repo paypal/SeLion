@@ -4,7 +4,7 @@
     <!-- SELENIUM CONFIGURATION -->
     <parameter name="mobileNodeType" value="appium" />
 
-    <parameter name="mobilePlatform" value="ANDROID"/>
+    <parameter name="mobilePlatform" value="android"/>
     <parameter name="appPath" value="src/test/resources/apps/PageObjectsDemoApp.apk"/>
     <parameter name="mobileDevice" value="android:19"/>
     <parameter name="mobileDeviceType" value="ANDROID"/>

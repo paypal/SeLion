@@ -17,17 +17,14 @@ package com.paypal.selion.mobile.sample;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
-import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.mobile.sample.mobile.SamplePage;
-import com.paypal.selion.mobile.sample.mobile.TapPage;
+import com.paypal.selion.mobile.sample.pages.SamplePage;
+import com.paypal.selion.mobile.sample.pages.TapPage;
 import com.paypal.selion.platform.mobile.ios.UIAButton;
-import com.paypal.test.utilities.logging.SimpleLogger;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class TestTapPage {
-    private final SimpleLogger logger = SeLionLogger.getLogger();
-
     @Test
     @MobileTest
     public void testSingleTap() throws Exception {
@@ -47,7 +44,7 @@ public class TestTapPage {
             multiTapButton.doubleTap();
             Assert.assertEquals(tapPage.getMultiTapTextField().getValue(), "Tap Count: 2");
         } else {
-            logger.warning("paltform " + tapPage.getPlatform().name() + " does not support double tap.");
+            Assert.fail("paltform " + tapPage.getPlatform().name() + " does not support double tap.");
         }
 
     }

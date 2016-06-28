@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.mobile.sample.mobile;
+package com.paypal.selion.mobile.sample.pages;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.mobile.MobileImplementationFinder;
@@ -34,18 +34,18 @@ public class TapPage extends BasicPageImpl {
     private static String CLASS_NAME = "TapPage";
     private static String PAGE_DOMAIN = "paypal/mobile";
 
-
     /**
      * Creates a new TapPage object
      */
     public TapPage() {
         super.initPage(PAGE_DOMAIN, CLASS_NAME);
     }
-    
+
     /**
      * Creates a new TapPage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
      */
     public TapPage(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
@@ -54,7 +54,8 @@ public class TapPage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param platform The Platform for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public TapPage(WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, platform);
@@ -63,8 +64,10 @@ public class TapPage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
-     * @param platform   The Platform for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public TapPage(String siteLocale, WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale, platform);
@@ -74,7 +77,6 @@ public class TapPage extends BasicPageImpl {
         return this;
     }
 
-
     /**
      * Used to get nextButton in the page TapPage
      *
@@ -83,11 +85,11 @@ public class TapPage extends BasicPageImpl {
     public MobileButton getNextButton() {
         MobileButton element = this.nextButton;
         if (element == null) {
-            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("nextButton"));
+            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, 
+                    getObjectMap().get("nextButton"));
         }
         return this.nextButton;
     }
-
 
     /**
      * Used to get topTextField in the page TapPage
@@ -97,11 +99,11 @@ public class TapPage extends BasicPageImpl {
     public MobileTextField getTopTextField() {
         MobileTextField element = this.topTextField;
         if (element == null) {
-            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("topTextField"));
+            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("topTextField"));
         }
         return this.topTextField;
     }
-
 
     /**
      * Used to get singleTapButton in the page TapPage
@@ -111,11 +113,11 @@ public class TapPage extends BasicPageImpl {
     public MobileButton getSingleTapButton() {
         MobileButton element = this.singleTapButton;
         if (element == null) {
-            this.singleTapButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("singleTapButton"));
+            this.singleTapButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class,
+                    getObjectMap().get("singleTapButton"));
         }
         return this.singleTapButton;
     }
-
 
     /**
      * Used to get multiTapButton in the page TapPage
@@ -125,11 +127,11 @@ public class TapPage extends BasicPageImpl {
     public MobileButton getMultiTapButton() {
         MobileButton element = this.multiTapButton;
         if (element == null) {
-            this.multiTapButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("multiTapButton"));
+            this.multiTapButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class,
+                    getObjectMap().get("multiTapButton"));
         }
         return this.multiTapButton;
     }
-
 
     /**
      * Used to get singleTapTextField in the page TapPage
@@ -139,11 +141,11 @@ public class TapPage extends BasicPageImpl {
     public MobileTextField getSingleTapTextField() {
         MobileTextField element = this.singleTapTextField;
         if (element == null) {
-            this.singleTapTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("singleTapTextField"));
+            this.singleTapTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("singleTapTextField"));
         }
         return this.singleTapTextField;
     }
-
 
     /**
      * Used to get preButton in the page TapPage
@@ -153,11 +155,11 @@ public class TapPage extends BasicPageImpl {
     public MobileButton getPreButton() {
         MobileButton element = this.preButton;
         if (element == null) {
-            this.preButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("preButton"));
+            this.preButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, 
+                    getObjectMap().get("preButton"));
         }
         return this.preButton;
     }
-
 
     /**
      * Used to get multiTapTextField in the page TapPage
@@ -167,7 +169,8 @@ public class TapPage extends BasicPageImpl {
     public MobileTextField getMultiTapTextField() {
         MobileTextField element = this.multiTapTextField;
         if (element == null) {
-            this.multiTapTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("multiTapTextField"));
+            this.multiTapTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("multiTapTextField"));
         }
         return this.multiTapTextField;
     }

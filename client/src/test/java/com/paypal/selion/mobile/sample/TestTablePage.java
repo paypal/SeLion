@@ -17,9 +17,10 @@ package com.paypal.selion.mobile.sample;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
-import com.paypal.selion.mobile.sample.mobile.*;
+import com.paypal.selion.mobile.sample.pages.*;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
 import com.paypal.selion.platform.mobile.android.UiList;
+
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -36,7 +37,8 @@ public class TestTablePage {
     }
 
     @MobileTest
-    @Test(groups = "android", expectedExceptions = UIOperationFailedException.class, expectedExceptionsMessageRegExp = ".*scrollToCellAtIndex\\(\\) method is not supported in Android platform.*")
+    @Test(groups = "android", expectedExceptions = UIOperationFailedException.class,
+            expectedExceptionsMessageRegExp = ".*scrollToCellAtIndex\\(\\) method is not supported in Android platform.*")
     public void testScrollElementAndroid() throws Exception {
         TablePage tablePage = initializePages();
         ((UiList) tablePage.getTableList()).setChildBy(By.id("android:id/text1"));
@@ -52,7 +54,8 @@ public class TestTablePage {
     }
 
     @MobileTest
-    @Test(groups = "android", expectedExceptions = UIOperationFailedException.class, expectedExceptionsMessageRegExp = ".*for Android list, cast list to UiList and set the childBy.*")
+    @Test(groups = "android", expectedExceptions = UIOperationFailedException.class,
+            expectedExceptionsMessageRegExp = ".*for Android list, cast list to UiList and set the childBy.*")
     public void testChildByNotDefined() throws Exception {
         TablePage tablePage = initializePages();
         tablePage.getTableList().clickCellAtIndex(0);

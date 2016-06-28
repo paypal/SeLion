@@ -17,7 +17,22 @@ package com.paypal.selion.plugins;
 
 public enum TestPlatform {
 
-    IOS("ios", "MobileTemplate.vm"), WEB("web", "Class.vm"), ANDROID("android", "MobileTemplate.vm"), MOBILE("mobile", "CommonMobileTemplate.vm");
+    /**
+     * Maps to the iOS velocity template
+     */
+    IOS("ios", "MobileTemplate.vm"),
+    /**
+     * Maps to the Web velocity template
+     */
+    WEB("web", "Class.vm"),
+    /**
+     * Maps to the Android velocity template
+     */
+    ANDROID("android", "MobileTemplate.vm"),
+    /**
+     * Maps to the common mobile velocity template
+     */
+    MOBILE("mobile", "CommonMobileTemplate.vm");
 
     private String platformName;
     private String defFileName;

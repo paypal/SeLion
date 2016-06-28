@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.mobile.sample.mobile;
+package com.paypal.selion.mobile.sample.pages;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.mobile.MobileImplementationFinder;
@@ -30,18 +30,18 @@ public class SamplePage extends BasicPageImpl {
     private static String CLASS_NAME = "SamplePage";
     private static String PAGE_DOMAIN = "paypal/mobile";
 
-
     /**
      * Creates a new SamplePage object
      */
     public SamplePage() {
         super.initPage(PAGE_DOMAIN, CLASS_NAME);
     }
-    
+
     /**
      * Creates a new SamplePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
      */
     public SamplePage(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
@@ -50,7 +50,8 @@ public class SamplePage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param platform The Platform for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public SamplePage(WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, platform);
@@ -59,8 +60,10 @@ public class SamplePage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
-     * @param platform   The Platform for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public SamplePage(String siteLocale, WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale, platform);
@@ -70,7 +73,6 @@ public class SamplePage extends BasicPageImpl {
         return this;
     }
 
-
     /**
      * Used to get nextButton in the page SamplePage
      *
@@ -79,11 +81,11 @@ public class SamplePage extends BasicPageImpl {
     public MobileButton getNextButton() {
         MobileButton element = this.nextButton;
         if (element == null) {
-            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton .class, getObjectMap().get("nextButton"));
+            this.nextButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, getObjectMap()
+                    .get("nextButton"));
         }
         return this.nextButton;
     }
-
 
     /**
      * Used to get topTextField in the page SamplePage
@@ -93,11 +95,11 @@ public class SamplePage extends BasicPageImpl {
     public MobileTextField getTopTextField() {
         MobileTextField element = this.topTextField;
         if (element == null) {
-            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("topTextField"));
+            this.topTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("topTextField"));
         }
         return this.topTextField;
     }
-
 
     /**
      * Used to get mainTextField in the page SamplePage
@@ -107,7 +109,8 @@ public class SamplePage extends BasicPageImpl {
     public MobileTextField getMainTextField() {
         MobileTextField element = this.mainTextField;
         if (element == null) {
-            this.mainTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField .class, getObjectMap().get("mainTextField"));
+            this.mainTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("mainTextField"));
         }
         return this.mainTextField;
     }

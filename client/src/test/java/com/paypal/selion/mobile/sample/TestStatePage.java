@@ -16,10 +16,11 @@
 package com.paypal.selion.mobile.sample;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.mobile.sample.mobile.SamplePage;
-import com.paypal.selion.mobile.sample.mobile.StatePage;
-import com.paypal.selion.mobile.sample.mobile.TapPage;
-import com.paypal.selion.mobile.sample.mobile.TouchPage;
+import com.paypal.selion.mobile.sample.pages.SamplePage;
+import com.paypal.selion.mobile.sample.pages.StatePage;
+import com.paypal.selion.mobile.sample.pages.TapPage;
+import com.paypal.selion.mobile.sample.pages.TouchPage;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

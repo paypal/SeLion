@@ -542,10 +542,10 @@ public final class Config {
         SITE_LOCALE("siteLocale", "US", false),
 
         /**
-         * mobile platform test suite is designed for (IOS or ANDROID)<br>
-         * Default is set to <b>UNDEFINED</b>
+         * mobile platform test suite is designed for (iOS or Android)<br>
+         * Default is set to <b>undefined</b>
          */
-        MOBILE_PLATFORM("mobilePlatform", "UNDEFINED", false),
+        MOBILE_PLATFORM("mobilePlatform", "undefined", false),
 
         /**
          * Browser specified by user.<br>
