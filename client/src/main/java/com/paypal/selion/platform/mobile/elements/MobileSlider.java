@@ -23,7 +23,7 @@ import com.paypal.selion.platform.mobile.ios.UIASlider;
  * <code>MobileSlider</code> interface allows access to, and control of, text field elements in your app.
  */
 @Implementor(ios = UIASlider.class, android = UiSlider.class)
-public interface MobileSlider extends MobileElement{
+public interface MobileSlider extends MobileElement {
 
     /**
      * Drags the slider to the specified value.

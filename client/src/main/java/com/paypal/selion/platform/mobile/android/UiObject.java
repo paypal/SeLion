@@ -318,7 +318,7 @@ public class UiObject implements UserinterfaceObject, MobileElement {
         logger.exiting();
     }
 
-    protected SeLionAndroidBridgeDriver getBridgeDriver(){
+    protected SeLionAndroidBridgeDriver getBridgeDriver() {
         driver = SeLionAndroidBridgeDriver.class.cast(Grid.driver());
         return driver;
     }

@@ -28,7 +28,8 @@ public class MobileImplementationFinderTest {
 
     @Test(groups = "unit")
     public void testInstantiateDirectClass() throws Exception {
-        final MobileElement button = MobileImplementationFinder.instantiate(WebDriverPlatform.UNDEFINED, UiButton.class, "//locator");
+        final MobileElement button = MobileImplementationFinder.instantiate(WebDriverPlatform.UNDEFINED,
+                UiButton.class, "//locator");
         Assert.assertEquals(button.getLocator(), "//locator", "locator is wrong");
         Assert.assertEquals(button.getClass(), UiButton.class, "wrong class associated");
     }

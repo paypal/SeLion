@@ -36,11 +36,13 @@ public class ScrollActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scroll_demo);
         ListView listView = (ListView) findViewById(R.id.tableListView);
-        String[] values = new String[]{"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "SevenTeen", "Eighteen", "Nineteen", "Twenty",
-                "Twenty One", "Twenty Two", "Twenty Three", "Twenty Four", "Twenty Five", "Twenty Six", "Twenty Seven", "Twenty Eight", "Twenty Nine", "Thirty",
-                "Thirty One", "Thirty Two", "Thirty Three", "Thirty Four", "Thirty Five", "Thirty Six", "Thirty Seven", "Thirty Eight", "Thirty Nine", "Forty",
-                "Forty One", "Forty Two", "Forty Three", "Forty Four", "Forty Five", "Forty Six", "Forty Seven", "Forty Eight", "Forty Nine"};
+        String[] values = new String[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+                "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",
+                "Twenty", "Twenty One", "Twenty Two", "Twenty Three", "Twenty Four", "Twenty Five", "Twenty Six",
+                "Twenty Seven", "Twenty Eight", "Twenty Nine", "Thirty", "Thirty One", "Thirty Two", "Thirty Three",
+                "Thirty Four", "Thirty Five", "Thirty Six", "Thirty Seven", "Thirty Eight", "Thirty Nine", "Forty",
+                "Forty One", "Forty Two", "Forty Three", "Forty Four", "Forty Five", "Forty Six", "Forty Seven",
+                "Forty Eight", "Forty Nine" };
         final ArrayList<String> list = new ArrayList<String>();
         Collections.addAll(list, values);
         final StableArrayAdapter adapter = new StableArrayAdapter(this,
@@ -49,7 +51,7 @@ public class ScrollActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
+                    int position, long id) {
                 final String item = (String) parent.getItemAtPosition(position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setTitle("Cell");
@@ -67,7 +69,7 @@ public class ScrollActivity extends Activity {
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
         public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
+                List<String> objects) {
             super(context, textViewResourceId, objects);
             for (int i = 0; i < objects.size(); ++i) {
                 mIdMap.put(objects.get(i), i);

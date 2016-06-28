@@ -17,6 +17,8 @@ package com.paypal.selion.mobile.sample;
 
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
+import com.paypal.selion.mobile.sample.pages.SampleMobilePage;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

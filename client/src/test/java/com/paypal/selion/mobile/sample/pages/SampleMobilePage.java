@@ -13,7 +13,7 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.mobile.sample;
+package com.paypal.selion.mobile.sample.pages;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.mobile.MobileImplementationFinder;
@@ -31,7 +31,6 @@ public class SampleMobilePage extends BasicPageImpl {
     private static String CLASS_NAME = "SampleMobilePage";
     private static String PAGE_DOMAIN = "paypal";
 
-
     /**
      * Creates a new SampleMobilePage object
      */
@@ -42,7 +41,8 @@ public class SampleMobilePage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
      */
     public SampleMobilePage(String siteLocale) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale);
@@ -51,7 +51,8 @@ public class SampleMobilePage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param platform The Platform for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public SampleMobilePage(WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, platform);
@@ -60,8 +61,10 @@ public class SampleMobilePage extends BasicPageImpl {
     /**
      * Creates a new SampleMobilePage object
      *
-     * @param siteLocale The Country locale for the site you are accessing
-     * @param platform   The Platform for the site you are accessing
+     * @param siteLocale
+     *            The Country locale for the site you are accessing
+     * @param platform
+     *            The Platform for the site you are accessing
      */
     public SampleMobilePage(String siteLocale, WebDriverPlatform platform) {
         super.initPage(PAGE_DOMAIN, CLASS_NAME, siteLocale, platform);
@@ -71,7 +74,6 @@ public class SampleMobilePage extends BasicPageImpl {
         return this;
     }
 
-
     /**
      * Used to get sampleButton in the page SampleMobilePage
      *
@@ -80,11 +82,11 @@ public class SampleMobilePage extends BasicPageImpl {
     public MobileButton getSampleButton() {
         MobileButton element = this.sampleButton;
         if (element == null) {
-            this.sampleButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class, getObjectMap().get("sampleButton"));
+            this.sampleButton = MobileImplementationFinder.instantiate(getPlatform(), MobileButton.class,
+                    getObjectMap().get("sampleButton"));
         }
         return this.sampleButton;
     }
-
 
     /**
      * Used to get sampleElement in the page SampleMobilePage
@@ -94,11 +96,11 @@ public class SampleMobilePage extends BasicPageImpl {
     public MobileElement getSampleElement() {
         MobileElement element = this.sampleElement;
         if (element == null) {
-            this.sampleElement = MobileImplementationFinder.instantiate(getPlatform(), MobileElement.class, getObjectMap().get("sampleElement"));
+            this.sampleElement = MobileImplementationFinder.instantiate(getPlatform(), MobileElement.class,
+                    getObjectMap().get("sampleElement"));
         }
         return this.sampleElement;
     }
-
 
     /**
      * Used to get sampleTextField in the page SampleMobilePage
@@ -108,7 +110,8 @@ public class SampleMobilePage extends BasicPageImpl {
     public MobileTextField getSampleTextField() {
         MobileTextField element = this.sampleTextField;
         if (element == null) {
-            this.sampleTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class, getObjectMap().get("sampleTextField"));
+            this.sampleTextField = MobileImplementationFinder.instantiate(getPlatform(), MobileTextField.class,
+                    getObjectMap().get("sampleTextField"));
         }
         return this.sampleTextField;
     }
