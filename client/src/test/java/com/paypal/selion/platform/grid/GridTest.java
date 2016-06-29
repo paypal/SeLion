@@ -37,7 +37,7 @@ public class GridTest {
     @WebTest
     @Test(groups = "functional")
     public void testGetNewTimeOut(ITestContext ctx) {
-        LocalConfig lc = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName());
+        LocalConfig lc = ConfigManager.getConfig();
         lc.setConfigProperty(ConfigProperty.EXECUTION_TIMEOUT, "20000");
         assertEquals(Grid.getExecutionTimeoutValue(), 20000l, "Verify the timeout value is correctly retrieved");
     }

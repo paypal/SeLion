@@ -24,6 +24,7 @@ import java.util.Map;
 import net.jcip.annotations.ThreadSafe;
 
 import org.apache.commons.configuration.BaseConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -95,6 +96,23 @@ public class LocalConfig {
                 }
                 baseConfig.setProperty(entry.getKey().getName(), entry.getValue());
             }
+        }
+    }
+
+    /**
+     * Constructs a new instance of this class from the specified initial values.
+     *
+     * @param initialValues
+     *            Map The initial MAP of ConfigProperty values used to create the local configuration.
+     */
+    public LocalConfig(Configuration config) {
+        this();
+
+        Iterator<String> it = config.getKeys();
+
+        while(it.hasNext()) {
+            String key = it.next();
+            baseConfig.setProperty(key, config.getProperty(key));
         }
     }
 

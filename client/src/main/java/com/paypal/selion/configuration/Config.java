@@ -151,7 +151,7 @@ public final class Config {
             }
         }
 
-        ConfigManager.addConfig(context.getCurrentXmlTest().getName(), new LocalConfig(initialValues));
+        ConfigManager.addConfig(new LocalConfig(initialValues));
         SeLionLogger.getLogger().exiting();
     }
 
@@ -253,6 +253,8 @@ public final class Config {
         if (runLocally) {
             xmlConfig.setProperty(ConfigProperty.SELENIUM_HOST.getName(), "localhost");
         }
+
+        ConfigManager.addConfig(new LocalConfig(xmlConfig));
 
         SeLionLogger.getLogger().exiting();
     }

@@ -44,7 +44,7 @@ public class LocalConfigTest {
         initLocalValues.put(ConfigProperty.SELENIUM_USERAGENT, localUserAgentValue);
         LocalConfig localConfig = new LocalConfig(initLocalValues);
         String testName = "test";
-        ConfigManager.addConfig(testName, localConfig);
+        ConfigManager.addConfig(localConfig);
         assertEquals(localConfig.getConfigProperty(ConfigProperty.SELENIUM_USERAGENT), localUserAgentValue,
                 "Hostname value not as expected");
         String userAgent = Config.getConfigProperty(ConfigProperty.SELENIUM_USERAGENT);
@@ -52,7 +52,7 @@ public class LocalConfigTest {
         assertTrue(!userAgent.equals(localUserAgentValue),
                 "hostname values in localConfig and selionConfig should not match");
         // cleanup
-        ConfigManager.removeConfig(testName);
+        ConfigManager.removeConfig();
     }
 
     @Test(groups = "unit")
@@ -70,14 +70,14 @@ public class LocalConfigTest {
 
     @Test(groups = { "parallelBrowserTest1" })
     public void testGetLocalConfigValues(ITestContext ctx) {
-        LocalConfig lc = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName());
+        LocalConfig lc = ConfigManager.getConfig();
         Map<String, String> values = lc.getLocalConfigValues();
         assertTrue(values.get("browser").equals("*chrome"));
     }
 
     @Test(groups = { "parallelBrowserTest1" })
     public void testgetLocalConfigValues(ITestContext ctx) throws Exception {
-        LocalConfig lc = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName());
+        LocalConfig lc = ConfigManager.getConfig();
         Map<String, String> localValues = lc.getLocalConfigValues();
         assertTrue(!localValues.isEmpty());
     }
@@ -85,22 +85,19 @@ public class LocalConfigTest {
     // Parallel=tests with different browsers. (See SeLionConfigTest-Parallel-Tests-Suite.xml)
     @Test(groups = "parallelBrowserTest1")
     public void testParallelLocalConfigChrome(ITestContext ctx) {
-        String name = ctx.getCurrentXmlTest().getName();
-        String default_browser = ConfigManager.getConfig(name).getConfigProperty(ConfigProperty.BROWSER);
+        String default_browser = ConfigManager.getConfig().getConfigProperty(ConfigProperty.BROWSER);
         assertEquals(default_browser, "*chrome", "Browser config value for this test is not chrome.");
     }
 
     @Test(groups = "parallelBrowserTest2")
     public void testParallelLocalConfigIE(ITestContext ctx) {
-        String name = ctx.getCurrentXmlTest().getName();
-        String default_browser = ConfigManager.getConfig(name).getConfigProperty(ConfigProperty.BROWSER);
+        String default_browser = ConfigManager.getConfig().getConfigProperty(ConfigProperty.BROWSER);
         assertEquals(default_browser, "*iexplore", "Browser config value for this test is not iexplore.");
     }
 
     @Test(groups = "parallelBrowserTest3")
     public void testParallelLocalConfigFireFox(ITestContext ctx) {
-        String name = ctx.getCurrentXmlTest().getName();
-        String default_browser = ConfigManager.getConfig(name).getConfigProperty(ConfigProperty.BROWSER);
+        String default_browser = ConfigManager.getConfig().getConfigProperty(ConfigProperty.BROWSER);
         assertEquals(default_browser, "*firefox", "Browser config value for this test is not firefox.");
     }
 

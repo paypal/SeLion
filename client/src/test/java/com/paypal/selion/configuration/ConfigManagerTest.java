@@ -35,13 +35,13 @@ public class ConfigManagerTest {
         assertNotNull(localConfig, "could not get the SeLion local config");
         // Set new values in local config
         localConfig.setConfigProperty(ConfigProperty.BROWSER, BrowserFlavors.OPERA.getBrowser());
-        ConfigManager.addConfig(TEST_CONFIG_NAME, localConfig);
+        ConfigManager.addConfig(localConfig);
     }
 
     @Test(groups = { "unit" }, dependsOnMethods = { "testAddConfig" })
     public void testGetConfig() {
         assertNotNull(localConfig, "Could not get the SeLion local config");
-        LocalConfig testConfig = ConfigManager.getConfig(TEST_CONFIG_NAME);
+        LocalConfig testConfig = ConfigManager.getConfig();
         assertNotNull(testConfig);
         String newBrowserValue = testConfig.getConfigProperty(ConfigProperty.BROWSER);
         assertTrue(newBrowserValue.equals(browserValue), "value from local config is not equal to the value set");
@@ -50,13 +50,13 @@ public class ConfigManagerTest {
 
     @Test(groups = { "unit" }, dependsOnMethods = { "testGetConfig", "testAddConfig" })
     public void testRemoveConfig() {
-        assertTrue(ConfigManager.removeConfig(TEST_CONFIG_NAME), "Remove config failed");
+        assertTrue(ConfigManager.removeConfig(), "Remove config failed");
     }
 
     @Test(groups = { "unit" }, dependsOnMethods = { "testAddConfig" })
     public void testGetConfigProperty(ITestContext ctx) {
         String name = ctx.getCurrentXmlTest().getName();
-        String browser = ConfigManager.getConfig(name).getConfigProperty(ConfigProperty.BROWSER);
+        String browser = ConfigManager.getConfig().getConfigProperty(ConfigProperty.BROWSER);
         assertNotNull(browser);
     }
 }

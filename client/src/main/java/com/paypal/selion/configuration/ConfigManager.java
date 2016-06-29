@@ -54,35 +54,31 @@ import com.paypal.selion.logger.SeLionLogger;
 public final class ConfigManager {
 
     // Map for each TestNG test name -> local SeLion config associated with <test>
-    private static Map<String, LocalConfig> configsMap = new ConcurrentHashMap<String, LocalConfig>();
+    private static Map<Thread, LocalConfig> configsMap = new ConcurrentHashMap<Thread, LocalConfig>();
 
     private ConfigManager() {
         // Utility class. So hide the constructor
     }
 
     /**
-     * Adds the local configuration {@link LocalConfig} associated with name. Over-rides any config with the same name.
+     * Adds the local configuration {@link LocalConfig} associated with thread. Over-rides any config with the same thread.
      * 
      * @param config
      *            The LocalConfig.
-     * @param name
-     *            The name to associate with local config.
      */
-    public static synchronized void addConfig(String name, LocalConfig config) {
-        SeLionLogger.getLogger().entering(new Object[] { name, config });
-        checkArgument(StringUtils.isNotBlank(name),
-                "A testname for which configuration is being added cannot be null (or) empty.");
+    public static synchronized void addConfig(LocalConfig config) {
+        SeLionLogger.getLogger().entering(new Object[] { config });
         checkArgument(config != null, "A configuration object cannot be null.");
-        if (configsMap.containsKey(name)) {
+        if (configsMap.containsKey(Thread.currentThread())) {
             String message = "Overwriting an already existing configuration";
             SeLionLogger.getLogger().warning(message);
         }
-        configsMap.put(name, config);
+        configsMap.put(Thread.currentThread(), config);
         SeLionLogger.getLogger().exiting();
     }
 
     /**
-     * Returns the local configuration {@link LocalConfig} associated the provided name. If no config with that name has
+     * Returns the local configuration {@link LocalConfig} associated the provided thread. If no config with that name has
      * been added an {@link IllegalArgumentException} is thrown.
      * 
      * <br>
@@ -92,52 +88,44 @@ public final class ConfigManager {
      * <b><i>Use this method for reading any "test-specific" configuration at any listener invocation.</b></i>
      * 
      * </pre>
-     * 
-     * @param name
-     *            The name to search for.
+     *
      * @return - A {@link LocalConfig} object that either represent's the configuration object that maps to the name
      *         given (or) a default Configuration object that apes the global configuration.
      */
-    public static synchronized LocalConfig getConfig(String name) {
-        SeLionLogger.getLogger().entering(name);
-        checkArgument(StringUtils.isNotBlank(name),
-                "The test name for which configuration is being retrieved cannot be null (or) empty.");
+    public static synchronized LocalConfig getConfig() {
+        SeLionLogger.getLogger().entering();
 
         // if no local config added? I.e reading from a TestNG listener (before AddConfig) or listeners disabled?
-        LocalConfig localConfiguration = configsMap.get(name);
+        LocalConfig localConfiguration = configsMap.get(Thread.currentThread());
+
+        //If LocalConfig is null create a new instance and set with Global Config.
         if (localConfiguration == null) {
-            throw new IllegalArgumentException(
-                    "A local configuration with specified name was not found. Please double check the <test> name and retry.");
+            localConfiguration = new LocalConfig(Config.getConfig());
+            ConfigManager.addConfig(localConfiguration);
         }
         SeLionLogger.getLogger().exiting(localConfiguration);
         return localConfiguration;
     }
 
     /**
-     * Remove the local configuration {@link LocalConfig} associated supplied name.
-     * 
-     * @param name
-     *            The name to remove
+     * Remove the local configuration {@link LocalConfig} associated supplied thread.
+     *
      * @return - <code>true</code> if the configuration was successfully removed.
      */
-    public static synchronized boolean removeConfig(String name) {
-        checkArgument(StringUtils.isNotBlank(name),
-                "The test name for which configuration is being retrieved cannot be null (or) empty.");
-        return configsMap.remove(name) != null ? true : false;
+    public static synchronized boolean removeConfig() {
+        return configsMap.remove(Thread.currentThread()) != null ? true : false;
     }
 
     /**
-     * A utility method that can dump the configuration for a given &lt;test&gt; identified with its name.
-     * 
-     * @param testName
-     *            - The name of the test as given in the suite xml file.
+     * A utility method that can dump the configuration for a given &lt;test&gt; identified with its thread.
+     *
      */
-    public static synchronized void printConfiguration(String testName) {
-        LocalConfig currentConfig = getConfig(testName);
-        currentConfig.printConfigValues(testName);
+    public static synchronized void printConfiguration() {
+        LocalConfig currentConfig = getConfig();
+        currentConfig.printConfigValues(Thread.currentThread().getName());
     }
 
-    public static synchronized boolean isTestConfigPresent(String testName) {
-        return configsMap.containsKey(testName);
+    public static synchronized boolean isTestConfigPresent() {
+        return configsMap.containsKey(Thread.currentThread());
     }
 }
