@@ -36,8 +36,8 @@ public class UiSlider extends UiObject implements MobileSlider {
     }
 
     /**
-     * it is not accurate and is best to used only for setting value to 0 or 1, otherwise the result is close to number
-     * @param value The desired decimal value from 0 to 1, inclusive. A 0 value represents far left and a value of 1
+     * it is not accurate and is best to used only for setting value to 0 or 1, otherwise the result is close to parameter
+     * @param value The desired decimal value from 0 to 1, inclusive. 0 represents far left and 1 represent far right.
      */
     @Override
     public void dragToValue(double value) {

@@ -28,10 +28,10 @@ public class TestTablePage {
 
     @MobileTest
     @Test
-    public void testTableClickAndroid() throws Exception {
+    public void testTableClick() throws Exception {
         TablePage tablePage = initializePages();
         if (tablePage.getPlatform().equals(WebDriverPlatform.ANDROID)) {
-            ((UiList) tablePage.getTableList()).setChildBy(By.id("android:id/text1"));
+            tablePage.getTableList().setChildBy(By.id("android:id/text1"));
         }
         tablePage.getTableList().clickCellAtIndex(1, tablePage.getAlertElement());
     }
@@ -41,7 +41,7 @@ public class TestTablePage {
             expectedExceptionsMessageRegExp = ".*scrollToCellAtIndex\\(\\) method is not supported in Android platform.*")
     public void testScrollElementAndroid() throws Exception {
         TablePage tablePage = initializePages();
-        ((UiList) tablePage.getTableList()).setChildBy(By.id("android:id/text1"));
+        tablePage.getTableList().setChildBy(By.id("android:id/text1"));
         tablePage.getTableList().scrollToCellAtIndex(15);
     }
 
