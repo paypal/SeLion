@@ -19,6 +19,7 @@ com.paypal.selion.platform.html.support
 com.paypal.selion.platform.html.support.events
 com.paypal.selion.platform.mobile
 com.paypal.selion.platform.mobile.android
+com.paypal.selion.platform.mobile.elements
 com.paypal.selion.platform.mobile.ios
 com.paypal.selion.platform.utilities
 com.paypal.selion.reports.runtime
