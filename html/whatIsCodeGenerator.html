@@ -1,15 +1,16 @@
 <div class="selion-content-div">
   <h1 class="page-header">Code Generator Maven Plugin</h1>
-  <p class="lead">SeLion's Code Generator Maven Plugin will auto-generate Java PageObject class files from <a href="#pageyaml">PageYAML</a>
-    during the Maven <code>generate-sources</code> phase.</p>
+  <p class="lead">SeLion's Code Generator Maven Plugin will auto-generate Java
+    <a href=http://martinfowler.com/bliki/PageObject.html>PageObject</a> class files from <a href="#pageyaml">PageYAML</a>
+    during the Maven <code>generate-sources</code> or <code>generate-test-sources</code>phase.</p>
   <h2 id="benefits">Benefits of Using the SeLion Code Generator Maven Plugin</h2>
   <p>
       If you have web pages that change frequently, this is your secret sauce to scaling your test efforts!
     </p>
   <p>
-      A <a href="#pageyaml">PageYAML</a> file contains all the information to interact with a page. A change in your
-      web page only requires a small change to YAML text.
-      In addition, the <a href="#pageyaml">PageYAML</a> file allows you to define different identifiers based on locale. </p>
+      A <a href="#pageyaml">PageYAML</a> file contains all the information to interact with a page (or mobile screen).
+       A change in your web page only requires a small change to YAML text. In addition, the
+        <a href="#pageyaml">PageYAML</a> file allows you to define different identifiers based on locale. </p>
   <p>
     Automating in different languages just got much easier!
   </p>
@@ -29,10 +30,14 @@
     </li>
     <li>Add the following into the <code>&lt;build&gt;&lt;plugins&gt;.....&lt;/plugins&gt;&lt;/build&gt;</code>
       section in pom.xml file
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample2.xml"></pre>
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample2a.xml"></pre>
+        <b>or</b> this section if using PageYaml as <b>test sources</b>
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample2b.xml"></pre>
     </li>
     <li>Add the build helper plugin as shown below. This tells Maven to add the generated code to your build path.
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample3.xml"></pre>
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample3a.xml"></pre>
+        <b>or</b> this section if using PageYaml as <b>test sources</b>
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample3b.xml"></pre>
     </li>
     <li>After adding this plugin, if you get the error <b>"Plugin execution not covered by lifecycle configuration"</b>,
       please refer to the section --
@@ -50,16 +55,17 @@
       java files will be placed in the package <samp>com.paypal.selion.testcomponents.mycompany</samp>. You can modify
       the <code>&lt;basePackage /&gt;</code> by adding a <code>&lt;configuration /&gt;</code>
       section to the SeLion Code Generator plugin definition of your project pom.xml.
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample4.xml" data-line="13-15" class="line-numbers"></pre>
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample4.xml" data-line="11-13" class="line-numbers"></pre>
     </li>
     <li><code>&lt;excludeDomains /&gt;</code> - This configuration parameter represents the list of domains to exclude.
-      Each domain is represented by a directory under <code>src/main/resources/GUIData</code>.
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample5.xml" data-line="15-18" class="line-numbers"></pre>
+      Each domain is represented by a directory under
+       <code>src/main/resources/GUIData</code> or <code>src/test/resources/GUIData</code>.
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample5.xml" data-line="13-16" class="line-numbers"></pre>
     </li>
     <li><code>&lt;htmlCustomElements /&gt;</code> - This configuration parameter represents the list of custom HTML elements
       that will be registered to the code generator. Each custom element should extend the class <code>AbstractElement</code> --
       make sure to <b>implement all constructors</b>.
-     </li>  
+     </li>
      <li><code>&lt;iosCustomElements /&gt;</code> - This configuration parameter represents the list of custom IOS elements
       that will be registered to the code generator. Each custom element should extend the class <code>IOSPage</code> --
       make sure to <b>implement all constructors</b>.
@@ -67,22 +73,23 @@
      <li><code>&lt;androidCustomElements /&gt;</code> - This configuration parameter represents the list of custom Android elements
       that will be registered to the code generator. Each custom element should extend the class <code>AndroidPage</code> --
       make sure to <b>implement all constructors</b>.
-     </li> 
+     </li>
      <li><code>&lt;mobileCustomElements /&gt;</code> - This configuration parameter represents the list of custom Mobile elements
       that will be registered to the code generator. Each custom element should extend the class <code>MobilePage</code> --
       make sure to <b>implement all constructors</b>.
-     </li> 
-      <pre data-src="../sample-files/whatIsCodeGenerator-sample6.xml" data-line="15-29" class="line-numbers"></pre>
+     </li>
+      <pre data-src="../sample-files/whatIsCodeGenerator-sample6.xml" data-line="13-32" class="line-numbers"></pre>
       HTML Custom Element sample;
       <pre data-src="../sample-files/whatIsCodeGenerator-sample7.java"></pre>
   </ul>
   <h2>Put the SeLion Code Generator in Action</h2>
   <ol>
     <li>First, create a <a href="#pageyaml">PageYAML</a> file that represents the actual page.</li>
-    <li>Once created, move the file into a directory under
-      <code>src/main/resources/GUIData</code></li>
+    <li>Once created, move the file into a directory under either
+      <code>src/main/resources/GUIData</code> <b>or</b> <code>src/test/resources/GUIData</code> </li>
     <li>If you prefer to use the Maven command prompt, simply run the
-      command <kbd>mvn clean generate-sources</kbd> from your project directory.</li>
+      command <kbd>mvn clean generate-sources</kbd> or <kbd>mvn clean generate-test-sources</kbd> (if using
+      <b>test resoures</b> for PageYaml) from your project directory.</li>
     <li>If you would like to do this from Eclipse, right click your project
       and choose <b>Maven > Update Project configuration</b>.</li>
   </ol>

@@ -4,11 +4,10 @@
   <version>1.0.0</version>
   <executions>
     <execution>
-         .
-         .
+      <phase>generate-test-sources</phase>
+      <goals>
+        <goal>generate</goal>
+      </goals>
     </execution>
   </executions>
-  <configuration>
-    <basePackage>com.mycompany</basePackage>
-  </configuration>
 </plugin>
