@@ -6,7 +6,7 @@
     <execution>
       <phase>generate-test-sources</phase>
       <goals>
-        <goal>generate</goal>
+        <goal>generate-test</goal>
       </goals>
     </execution>
   </executions>
