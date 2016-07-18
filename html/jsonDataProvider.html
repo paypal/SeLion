@@ -13,6 +13,13 @@
   <p>Let us look at a basic example to see how to use the SeLionDataProvider over JSON files.</p>
   <p>First create an JSON file similar to the following sample:</p>
   <pre data-src="../sample-files/jsonDataProviderSimple.json  " class="language-markup"></pre>
+  <p>
+    Lets say we want to pass an object of class <code>USER</code> to the <samp>Test</samp> method. For this,
+    <code>USER</code> has to be a JavaBean. As an example we have the following for <code>USER</code> class.
+    You will need to make corresponding JavaBeans for <code>AREA_CODE</code> and <code>BANK</code>.
+  </p>
+  <pre data-src="../sample-files/jsonDataProviderUserClass.java"></pre>
+  <p>Note that each variables of the object has corresponding public getters and setters.</p>
   <p>A typical <samp>DataProvider</samp> method will be as follows:</p>
   <pre data-src="../sample-files/jsonDataProviderSimple.java"></pre>
   <p>

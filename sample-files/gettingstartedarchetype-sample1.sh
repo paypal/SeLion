@@ -1,7 +1,7 @@
 mvn archetype:generate -B \
  -DartifactId=Sample \
- -Dversion=1.0.0 \
+ -Dversion=1.0.0-SNAPSHOT \
  -DgroupId=com.mycompany.myproject \
  -DarchetypeGroupId=com.paypal.selion \
  -DarchetypeArtifactId=SeLion-Archetype \
- -DarchetypeVersion=1.0.0
+ -DarchetypeVersion=1.1.0
