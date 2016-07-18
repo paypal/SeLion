@@ -4,6 +4,7 @@
     "password": 123456,
     "accountNumber": 999999999,
     "amount": 50000,
+    "size": 10
     "areaCode": [
       {"areaCode": "area1"},
       {"areaCode": "area2"}
@@ -15,14 +16,14 @@
         "street": "1234 Some St"
       }
     },
-    "phoneNumber": "4444444444",
-    "preintTest": 10
+    "phoneNumber": "4444444444"
   },
   {
     "name": "Person2",
     "password": 123457,
     "accountNumber": 123456789,
     "amount": 80000,
+    "size": 20,
     "areaCode": [
       {"areaCode": "area3"},
       {"areaCode": "area4"}
@@ -34,7 +35,6 @@
         "street": "1234 no such St"
       }
     },
-    "phoneNumber": "3333333333",
-    "preintTest": 100
+    "phoneNumber": "3333333333"
   }
 ]
