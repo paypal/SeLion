@@ -11,12 +11,12 @@
   </p>
   <ol>
     <li>Dependency Downloader - Download Selenium dependencies -- the jars, various drivers, etc at startup.</li>
-    <li>Auto Upgrade Nodes – Upgrade the Selenium, IE Driver, Chrome Driver,
+    <li>Auto Upgrade Nodes - Upgrade the Selenium, IE Driver, Chrome Driver,
         PhantomJS binary in each node without impacting existing test case execution.</li>
-    <li>Force Restart Node – Forcibly restart the node without logging in to the physical node.</li>
-    <li>Auto Restart Node – Recycles the node after a pre-defined number of unique sessions are finished to avoid unexpected
+    <li>Force Restart Node - Forcibly restart the node without logging in to the physical node.</li>
+    <li>Auto Restart Node - Recycles the node after a pre-defined number of unique sessions are finished to avoid unexpected
       issues.</li>
-    <li>View Node Logs – Grid provides the ability to view all the registered node log files.</li>
+    <li>View Node Logs - Grid provides the ability to view all the registered node log files.</li>
     <li>Transfer Servlet aka "SeLion Hub Storage" - Upload and download zip files to the Hub for use with tests.</li>
   </ol>
 
@@ -97,18 +97,6 @@
 
   <p>A browser window will open on the machine where your node is running.</p>
 
-  <h2>Grid Management Console</h2>
-  <p>
-      If you have a large grid, managing the nodes can become tedious. The Enhanced Grid management console
-      allows you to force restart and auto upgrade nodes. Navigate to the management console
-      via the url <kbd>http://localhost:4444/grid/admin/LoginServlet</kbd> to manage
-      the nodes. Default username and password is <kbd>admin</kbd>. Once logged in, you will see this page.
-  </p>
-
-  <div class="container">
-    <img src="../images/grid-management-console.jpg" alt="View of the SeLion Grid Management Console">
-  </div>
-
   <h2 id="selion-config">SeLion Grid Configuration File</h2>
   <p>
     The SeLion Grid config JSON file allows you to configure the additional components in SeLion Grid. Once you start a
@@ -118,23 +106,45 @@
   <ol>
     <li><code>restartCycle</code> - Restart cycle will check at the specified interval and restart the server if it is down.
       Units in milliseconds.</li>
-    <li><code>uniqueSessionCount</code> – Number of unique sessions before automatically recycling the node. <i>Default: 50</i></li>
-    <li><code>customProcessHandler</code> – Process handler will be used to identify and kill the child processes spawned
+    <li><code>uniqueSessionCount</code> - Number of unique sessions before automatically recycling the node. <i>Default: 50</i></li>
+    <li><code>customProcessHandler</code> - Process handler will be used to identify and kill the child processes spawned
       by a node. This handler should implement the interface <code>com.paypal.selion.utils.process.ProcessHandler</code></li>
-    <li><code>artifactMaxFileSize</code> – Maximum file size allowed for any artifact uploaded to the SeLion Grid hub
+    <li><code>artifactMaxFileSize</code> - Maximum file size allowed for any artifact uploaded to the SeLion Grid hub
       storage. Units in bytes.</li>
-    <li><code>artifactExpiryInMilliSec</code> – Artifact will be removed from hub storage after the expiration time.</li>
-    <li><code>managedArtifact</code> – ManagedArtifact represents a basic artifact successfully saved to SeLion Grid
+    <li><code>artifactExpiryInMilliSec</code> - Artifact will be removed from hub storage after the expiration time.</li>
+    <li><code>managedArtifact</code> - ManagedArtifact represents a basic artifact successfully saved to SeLion Grid
       by an HTTP POST method call. It should implement the interface
       <code>com.paypal.selion.grid.servlets.transfer.ManagedArtifact</code></li>
-    <li><code>managedArtifactBaseDir</code> – ManagedArtifactBaseDir represents the directory under <code>$SELION_HOME</code>, 
+    <li><code>managedArtifactBaseDir</code> - ManagedArtifactBaseDir represents the directory under <code>$SELION_HOME</code>, 
       where the artifact is saved. This configuration can be overridden by using JVM argument 
       <code>-DmanagedArtifactBaseDir=&lt;baseDirectory&gt;</code>. The default directory is <code>$SELION_HOME/repository</code>.</li>
   </ol>
   <h2>Sample SeLionConfig.json File</h2>
   <pre data-src="../sample-files/SeLionConfig.json" class="language-markup"></pre>
 
-  <h2 id="download-json-importance">SeLion Grid Dependency Downloader</h2>
+  <h2>Grid Management Console</h2>
+  <p>
+      If you have a large grid, managing the nodes can become tedious. The Enhanced Grid management console
+      allows you access to various servlets that can perform actions such as force restarting, auto upgrade nodes, etc. 
+      Navigate to the management console via the url <kbd>http://localhost:4444/grid/admin/LoginServlet</kbd> to access
+      these servlets. Default username and password is <kbd>admin</kbd>. Once logged in, you will see this page.
+  </p>
+
+  <div class="container">
+    <img src="../images/grid-management-console.jpg" alt="View of the SeLion Grid Management Console">
+  </div>
+
+  <h3 id="restart nodes">Restarting Nodes Manually</h3>
+  <p>
+    SeLion node processes are automatically restarted after the the number of
+    <code>uniqueSessionCount</code>
+    sessions occur. If you would like to manually force restarting a node, click <u>Force Restart Nodes</u>.
+  </p>
+  <div class="container">
+    <img src="../images/node-restart.jpg" alt="View of the Restart Node page">
+  </div>
+  
+  <h3 id="download-json-importance">SeLion Grid Dependency Downloader</h3>
   <p>
     When you host a grid or spawn a node, SeLion Grid will download the artifacts specified in the file
     <code>$SELION_HOME/config/download.json</code>. Artifact details in this file include the name, platform, url,
@@ -147,8 +157,34 @@
     The nodes then receive the information, clean any old artifacts, downloading the new artifacts, and come back online.
     Note: For this capability to work, the hub and every node which you want to upgrade must be running the SeLion Enhanced Grid.
   </p>
-  <h2>Sample download.json file</h2>
+  <h4>Sample download.json file</h4>
   <pre data-src="../sample-files/download.json" class="language-markup"></pre>
-
+  
+  <h3 id="selionNodeConsole">Node Console</h3>
+  <p>
+    You can click on <u>View Node Logs</u> or directly access the url
+    <kbd>http://localhost:4444/grid/admin/ListAllNodes</kbd>.
+    This servlet lets you view statistics on all of your nodes in a quick fashion. Some of the information here is
+    already presented in selenium's console view. The advantages of this servlet is the load time is very fast. You can
+    see the uptime for the various nodes, the number of sessions that have ran on a node since the last auto restart,
+    etc.
+  </p>
+  <div class="container">
+    <img src="../images/node-console.jpg" alt="View of the Node Console page">
+  </div>
+  
+  <h3 id="selionGridStatistics">Browser Statistics</h3>
+  <p>
+    The GridStatistics servlet displays the current load on the Grid per browser, i.e., the number of requests waiting
+    on the queue for a browser and the maximum instances of that browser. The servlet responds only to client using
+    accept header for all media types and accept header of type application/json. This is useful if your grid has more
+    load than what your nodes can handle. You can programmatically hit this and check for browsers that have sessions
+    waiting in queue.<br>
+    <br>
+    Sample request:<br>
+    curl -s -X GET http://localhost:4444/grid/admin/GridStatistics<br>
+    Sample response:<br>
+    <pre data-src="../sample-files/gridstatisticsresponse.json" class="language-markup"></pre>
+  </p>
 </div>
 <script src="../js/prismjs-min.js"></script>

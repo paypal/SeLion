@@ -1,0 +1,23 @@
+[
+  {
+    "browserName": "chrome",
+    "statistics": {
+      "waitingRequests": 2,
+      "maxBrowserInstances": 10
+    }
+  },
+  {
+    "browserName": "firefox",
+    "statistics": {
+      "waitingRequests": 3,
+      "maxBrowserInstances": 15
+    }
+  },
+  {
+    "browserName": "internet explorer",
+    "statistics": {
+      "waitingRequests": 0,
+      "maxBrowserInstances": 1
+    }
+  }
+]
