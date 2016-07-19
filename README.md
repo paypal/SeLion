@@ -31,7 +31,7 @@ Project documentation including prerequisites, compilation, usage, and more is a
 Create a new project using the SeLion maven archetype
 ```
 mvn archetype:generate -B -DartifactId=Sample -Dversion=1.0.0 -DgroupId=com.mycompany.myproject \
- -DarchetypeGroupId=com.paypal.selion -DarchetypeArtifactId=SeLion-Archetype -DarchetypeVersion=1.0.0
+ -DarchetypeGroupId=com.paypal.selion -DarchetypeArtifactId=SeLion-Archetype -DarchetypeVersion=1.1.0
 ```
 
 Client module (includes SeLion DataProviders)
@@ -39,7 +39,7 @@ Client module (includes SeLion DataProviders)
 <dependency>
     <groupId>com.paypal.selion</groupId>
     <artifactId>SeLion</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -48,7 +48,7 @@ SeLion-DataProviders only
 <dependency>
   <groupId>com.paypal.selion</groupId>
   <artifactId>SeLion-DataProviders</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency
 ```
 
@@ -57,7 +57,7 @@ SeLion Grid enhancements -- Required for local run support with the Client modul
 <dependency>
   <groupId>com.paypal.selion</groupId>
   <artifactId>SeLion-Grid</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency
 ```
 
@@ -66,7 +66,7 @@ SeLion Code Generator Maven plugin -- Adds "page object" code generation
 <plugin>
     <groupId>com.paypal.selion</groupId>
     <artifactId>SeLion-Code-Generator</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <executions>
         <execution>
             <phase>generate-sources</phase>
@@ -83,31 +83,31 @@ SeLion Code Generator Maven plugin -- Adds "page object" code generation
 
 Run the SeLion Grid as a standalone selenium server
 ```
-java -jar SeLion-Grid-1.0.0-jar-with-dependencies.jar
+java -jar SeLion-Grid-1.1.0-jar-with-dependencies.jar
 ```
 Run the SeLion Grid as a selenium hub
 ```
-java -jar SeLion-Grid-1.0.0-jar-with-dependencies.jar -role hub
+java -jar SeLion-Grid-1.1.0-jar-with-dependencies.jar -role hub
 ```
 Run the SeLion Grid as a selenium web node
 ```
-java -jar SeLion-Grid-1.0.0-jar-with-dependencies.jar -role node
+java -jar SeLion-Grid-1.1.0-jar-with-dependencies.jar -role node
 ```
 Run the SeLion Grid as a Selendroid node (beta feature)
 ```
-java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar com.paypal.selion.grid.SelendroidJarSpawner
+java -cp SeLion-Grid-1.1.0-jar-with-dependencies.jar com.paypal.selion.grid.SelendroidJarSpawner
 ```
 Run the SeLion Grid as an ios-driver node (beta feature)
 ```
-java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar com.paypal.selion.grid.IOSDriverJarSpawner
+java -cp SeLion-Grid-1.1.0-jar-with-dependencies.jar com.paypal.selion.grid.IOSDriverJarSpawner
 ```
 Run the SeLion Grid as an Appium node (beta feature)
 ```
-java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar com.paypal.selion.grid.AppiumSpawner
+java -cp SeLion-Grid-1.1.0-jar-with-dependencies.jar com.paypal.selion.grid.AppiumSpawner
 ```
 Run the SeLion Grid as a Sauce labs proxy
 ```
-java -cp SeLion-Grid-1.0.0-jar-with-dependencies.jar -role hub -type sauce
+java -cp SeLion-Grid-1.1.0-jar-with-dependencies.jar -role hub -type sauce
 ```
 
 Contact
@@ -149,11 +149,11 @@ Projects we depend on that need contributors
 
 Current version
 ---------------
-[1.0.0](http://search.maven.org/#search%7Cga%7C1%7Cselion)
+[1.1.0](http://search.maven.org/#search%7Cga%7C1%7Cselion)
 
 Development version
 -------------------
-1.1.0-SNAPSHOT
+1.2.0-SNAPSHOT
 
 License
 -----------
