@@ -1,7 +1,7 @@
 <plugin>
   <groupId>com.paypal.selion</groupId>
   <artifactId>SeLion-Code-Generator</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <executions>
     <execution>
       <phase>generate-test-sources</phase>
