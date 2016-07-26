@@ -94,7 +94,6 @@ public abstract class DefaultCapabilitiesBuilder {
      * @return - A string that represents the configuration property.
      */
     public String getLocalConfigProperty(ConfigProperty configProperty) {
-        String testName = Grid.getTestSession().getXmlTestName();
-        return ConfigManager.getConfig(testName).getConfigProperty(configProperty);
+        return ConfigManager.getConfig().getConfigProperty(configProperty);
     }
 }

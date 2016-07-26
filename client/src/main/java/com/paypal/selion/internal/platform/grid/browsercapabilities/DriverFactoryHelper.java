@@ -73,7 +73,7 @@ final class DriverFactoryHelper {
             } else {
                 // Only for a firefox profile we are resorting to displaying the profile name alone
                 // instead of the actual string since it can pollute our logs.
-                capabilitiesAsString.append(ConfigManager.getConfig(Grid.getTestSession().getXmlTestName())
+                capabilitiesAsString.append(ConfigManager.getConfig()
                         .getConfigProperty(ConfigProperty.SELENIUM_FIREFOX_PROFILE));
             }
             capabilitiesAsString.append(",");

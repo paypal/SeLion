@@ -79,7 +79,7 @@ public final class Grid {
      */
     public static long getExecutionTimeoutValue() {
         logger.entering();
-        String stringTimeOut = ConfigManager.getConfig(getTestSession().getXmlTestName()).getConfigProperty(
+        String stringTimeOut = ConfigManager.getConfig().getConfigProperty(
                 ConfigProperty.EXECUTION_TIMEOUT);
         long returnValue = Long.parseLong(stringTimeOut.trim());
         logger.exiting(returnValue);

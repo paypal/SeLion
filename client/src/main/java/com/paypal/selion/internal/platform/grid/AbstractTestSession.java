@@ -267,7 +267,7 @@ public abstract class AbstractTestSession {
     }
 
     final String getLocalConfigProperty(ConfigProperty property) {
-        return ConfigManager.getConfig(this.xmlTestName).getConfigProperty(property);
+        return ConfigManager.getConfig().getConfigProperty(property);
     }
 
     /**

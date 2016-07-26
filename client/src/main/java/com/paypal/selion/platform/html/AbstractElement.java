@@ -360,7 +360,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     }
 
     protected String getWaitTime() {
-        return ConfigManager.getConfig(Grid.getTestSession().getXmlTestName()).getConfigProperty(
+        return ConfigManager.getConfig().getConfigProperty(
                 ConfigProperty.EXECUTION_TIMEOUT);
     }
 

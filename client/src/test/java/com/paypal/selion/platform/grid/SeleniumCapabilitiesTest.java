@@ -38,7 +38,7 @@ public class SeleniumCapabilitiesTest {
     @WebTest()
     public void testDefaultBrowser1(ITestContext ctx) {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
-        String browser = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName())
+        String browser = ConfigManager.getConfig()
                 .getConfigProperty(ConfigProperty.BROWSER).replace("*", "");
         assertTrue(userAgent.toLowerCase().contains(browser));
     }
@@ -47,7 +47,7 @@ public class SeleniumCapabilitiesTest {
     @WebTest(browser = "")
     public void testDefaultBrowser2(ITestContext ctx) {
         String userAgent = (String) Grid.driver().executeScript("return navigator.userAgent", "");
-        String browser = ConfigManager.getConfig(ctx.getCurrentXmlTest().getName())
+        String browser = ConfigManager.getConfig()
                 .getConfigProperty(ConfigProperty.BROWSER).replace("*", "");
         assertTrue(userAgent.toLowerCase().contains(browser));
     }

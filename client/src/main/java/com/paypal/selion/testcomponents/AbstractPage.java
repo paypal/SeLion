@@ -96,8 +96,8 @@ public abstract class AbstractPage implements WebPage {
         mapQueue.add(new String[] { pageDomain, pageClassName });
         AbstractTestSession session = Grid.getTestSession();
 
-        if (session != null && StringUtils.isNotBlank(session.getXmlTestName())) {
-            LocalConfig lc = ConfigManager.getConfig(session.getXmlTestName());
+        if (session != null) {
+            LocalConfig lc = ConfigManager.getConfig();
             site = lc.getConfigProperty(ConfigProperty.SITE_LOCALE);
             platform = WebDriverPlatform.valueOf(lc.getConfigProperty(ConfigProperty.MOBILE_PLATFORM).toUpperCase());
         }

@@ -434,7 +434,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         // does away with all the inherent setbacks that are associated with TestNG listeners orders.
         invokeInitializersBasedOnPriority(context);
 
-        ConfigManager.printConfiguration(testName);
+        ConfigManager.printConfiguration();
 
         ISuite suite = context.getSuite();
 
