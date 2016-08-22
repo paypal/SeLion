@@ -11,7 +11,7 @@
 
 ISDEVELOP=false
 
-function check_branch () {
+check_branch() {
   for developBranch in develop develop-1.2.0
   do
     if [ "$TRAVIS_BRANCH" = "$developBranch" ]; then
