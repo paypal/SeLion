@@ -3,14 +3,30 @@
 # This script generates javadocs for develop branch, moves them into gh-pages branch,
 # and pushes the changes to the paypal/SeLion repository on github.
 #
-# Generally timestamp is changed in the javadoc files each time we generate 
-# the files from mvn javadoc:jar 
+# Generally timestamp is changed in the javadoc files each time we generate
+# the files from mvn javadoc:jar
 #
 # Commit is not performed if the changes are only related to timestamp.
 #########################################################################################
 
+ISDEVELOP=false
+
 ################################
-# update the global git config 
+# uverfiy that the
+# $TRAVIS_BRANCH is a develop
+# branch
+################################
+check_branch() {
+  for developBranch in develop develop-1.2.0
+  do
+    if [ "$TRAVIS_BRANCH" = "$developBranch" ]; then
+      ISDEVELOP=true
+    fi
+  done
+}
+
+################################
+# update the global git config
 # user.name and user.email
 ################################
 update_git_config() {
@@ -23,13 +39,13 @@ update_git_config() {
 # checkout the develop branch
 ###############################
 switch_to_develop() {
-    git checkout develop
-    # verify that we are on develop branch, otherwise exit with error code
+    git checkout $TRAVIS_BRANCH
+    # verify that we are on a develop branch, otherwise exit with error code
     output=$(git rev-parse --abbrev-ref HEAD)
-    if [ "$output" = "develop" ]; then
-        echo "On develop branch"
+    if [ "$output" = "$TRAVIS_BRANCH" ]; then
+        echo "On a develop branch"
     else
-        echo "Failed to switch to develop branch"
+        echo "Failed to switch to a develop branch"
         exit 1
     fi
 }
@@ -40,7 +56,7 @@ switch_to_develop() {
 switch_to_ghpages() {
     # add a writable remote that
     git remote add -t gh-pages writable https://${GH_TOKEN}@github.com/paypal/SeLion
-    # get all the tracking branches 
+    # get all the tracking branches
     git fetch -pq --all
     # checkout the gh-pages branch
     git checkout -q -b gh-pages -t writable/gh-pages
@@ -55,31 +71,31 @@ switch_to_ghpages() {
 }
 
 ##############################
-# replaces the current html 
+# replaces the current html
 # apidocs on the 'gh-pages'
-# branch with content from 
+# branch with content from
 # the maven build
 ##############################
 update_pages_from_output() {
     # empty the folders html/java-docs/develop/{artifact}
-    rm -rf html/java-docs/develop/server-apis/*
-    rm -rf html/java-docs/develop/client-apis/*
-    rm -rf html/java-docs/develop/codegen-apis/*
-    rm -rf html/java-docs/develop/dataproviders-apis/*
-    rm -rf html/java-docs/develop/common-apis/*
+    rm -rf html/java-docs/$TRAVIS_BRANCH/server-apis/*
+    rm -rf html/java-docs/$TRAVIS_BRANCH/client-apis/*
+    rm -rf html/java-docs/$TRAVIS_BRANCH/codegen-apis/*
+    rm -rf html/java-docs/$TRAVIS_BRANCH/dataproviders-apis/*
+    rm -rf html/java-docs/$TRAVIS_BRANCH/common-apis/*
 
     # copy the javadoc files to respective folders from develop branch into gh-pages branch
-    cp -R client/target/apidocs/* html/java-docs/develop/client-apis/
-    cp -R codegen/target/apidocs/* html/java-docs/develop/codegen-apis/
-    cp -R server/target/apidocs/* html/java-docs/develop/server-apis/
-    cp -R dataproviders/target/apidocs/* html/java-docs/develop/dataproviders-apis/
-    cp -R common/target/apidocs/* html/java-docs/develop/common-apis/
+    cp -R client/target/apidocs/* html/java-docs/$TRAVIS_BRANCH/client-apis/
+    cp -R codegen/target/apidocs/* html/java-docs/$TRAVIS_BRANCH/codegen-apis/
+    cp -R server/target/apidocs/* html/java-docs/$TRAVIS_BRANCH/server-apis/
+    cp -R dataproviders/target/apidocs/* html/java-docs/$TRAVIS_BRANCH/dataproviders-apis/
+    cp -R common/target/apidocs/* html/java-docs/$TRAVIS_BRANCH/common-apis/
 }
 
 ##############################
-# computes a diff of the 
-# pending 'gh-pages' branch 
-# and writes it to a 
+# computes a diff of the
+# pending 'gh-pages' branch
+# and writes it to a
 # changesDiff.txt file
 ##############################
 create_changes_diff() {
@@ -91,14 +107,15 @@ create_changes_diff() {
 
 
 # Generate the javadocs only if the following conditions are satisfied
-# 1. The build is for the project paypal/SeLion, not on the fork
+# 1. The build is for the project paypal/SeLion, not on a fork
 # 2. The project is built on oraclejdk7
 # 3. The build is not on a pull request
-# 4. The build is on the develop branch
-if [ "$TRAVIS_REPO_SLUG" = "paypal/SeLion" ] && [ "$TRAVIS_JDK_VERSION" = "oraclejdk7" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "develop" ]; then
+# 4. The build is on a develop branch
+check_branch
+if [ "$TRAVIS_REPO_SLUG" = "paypal/SeLion" ] && [ "$TRAVIS_JDK_VERSION" = "oraclejdk7" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$ISDEVELOP" = true ]; then
     echo "Publishing javadocs...\n"
 
-    # start on develop branch
+    # start on the develop branch
     switch_to_develop
 
     # generate javadocs for files from the develop branch
@@ -119,7 +136,7 @@ if [ "$TRAVIS_REPO_SLUG" = "paypal/SeLion" ] && [ "$TRAVIS_JDK_VERSION" = "oracl
         # set git user.email and user.name
         update_git_config
 
-        git add html/java-docs/develop/* -A
+        git add html/java-docs/$TRAVIS_BRANCH/* -A
         git commit -m "Update javadocs"
         git push -q writable gh-pages
         echo "Javadoc update complete for gh-pages branch."
