@@ -44,7 +44,7 @@
     </li>
     <li><code>elements</code> - The value for this key is a set of key/value pairs that represent elements in a page.
     </li>
-    <>
+    <ul>
       <li>A unique name for identifying a particular element and type in the page. This name would end up as the name of
         the member variable of the generated class and maps to the element. Names for a locator/selector follow the pattern
         <strong><var>&lt;prefix&gt;</var>&lt;ElementType&gt;</strong>
@@ -57,6 +57,7 @@
         </ul>
         <div class="tab-content table-bordered">
           <div id="platform-web" class="tab-pane fade in active">
+            <br/>
             <dl class="dl-horizontal">
               <dt>Button</dt><dd>Element behaves like or is a button</dd>
               <dt>CheckBox</dt><dd>Element behaves like or is a check box</dd>
@@ -74,6 +75,7 @@
             </dl>
           </div>
           <div id="platform-ios" class="tab-pane fade">
+            <br/>
             <dl class="dl-horizontal">
               <dt>UIAElement</dt><dd>Element for basic UI element.</dd>
               <dt>UIAButton</dt><dd>Element for Button UI element.</dd>
@@ -91,6 +93,7 @@
             </blockquote>
           </div>
           <div id="platform-android" class="tab-pane fade">
+            <br/>
             <dl class="dl-horizontal">
               <dt>UiObject</dt><dd>Element for basic UI element.</dd>
               <dt>UiButton</dt><dd>Element for Button UI element.</dd>
@@ -102,6 +105,7 @@
             </blockquote>
           </div>
           <div id="platform-mobile" class="tab-pane fade">
+            <br/>
             <dl class="dl-horizontal">
               <dt>Element</dt><dd>Element for basic UI element.</dd>
               <dt>Button</dt><dd>Element for Button UI element.</dd>
@@ -114,7 +118,7 @@
               <dt>TextField</dt><dd>Element for Text Field UI element.</dd>
             </dl>
             <blockquote class="small">List of supported mobile elements can be found
-            <a href="java-docs/1.1.0/client-apis/com/paypal/selion/platform/mobile/package-summary.html"
+            <a href="java-docs/1.1.0/client-apis/com/paypal/selion/platform/mobile/elements/package-summary.html"
                alt="List of supported mobile elements">here</a>.
             </blockquote>
           </div>
@@ -174,9 +178,10 @@
     <li><a data-toggle="tab" href="#page-yaml-android">android</a></li>
     <li><a data-toggle="tab" href="#page-yaml-mobile">mobile</a></li>
   </ul>
-  <div class="tab-content table-bordered">
+  <div class="tab-content">
     <div id="page-yaml-web" class="tab-pane fade in active">
       <pre data-src="../sample-files/yamlpage-sample1.yaml"></pre>
+      <p>Some important things to reiterate and note from this example:</p>
       <ul>
         <li>Notice how each element name conveys it's intended use. For example, if you consider the element named
           <code>addOrEditAPIPermissionsLink</code> you can probably guess what this element will do -- it is an element that
@@ -253,7 +258,6 @@
       </ul>
     </div>
   </div>
-  <p>Some important things to reiterate and note from this example:</p>
 
   <h2>How to use custom elements in your PageYAML</h2>
   <p>Please make sure that you register your custom elements as described in the
