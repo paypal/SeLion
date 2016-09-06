@@ -13,49 +13,31 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.node.servlets;
+package com.paypal.selion.grid;
 
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import com.beust.jcommander.ParametersDelegate;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
-import java.security.Permission;
+public class SeLionGridNodeConfiguration extends SeLionGridConfiguration {
+    @ParametersDelegate
+    private GridNodeConfiguration gnc = new GridNodeConfiguration();
 
-public class NodeServletsTest {
+    @ParametersDelegate
+    private ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
 
-    @BeforeTest
-    public void setup() {
-        System.setSecurityManager(new NoExitSecurityManager());
+    public GridNodeConfiguration getGridNodeConfiguration() {
+        return gnc;
     }
 
-    @AfterTest
-    public void tearDown() {
-        System.setSecurityManager(null);
+    public void setGridNodeConfiguration(GridNodeConfiguration gnc) {
+        this.gnc = gnc;
     }
 
-    // Various node servlet tests will cause a System.exit() which fouls up our test execution.
-    // So install a security mgr to prevent actual exit from jvm.
-    protected static class ExitException extends SecurityException {
-        private static final long serialVersionUID = 4720346323475334961L;
-        public final int status;
-        public ExitException(int status) {
-            super("There is no escape!");
-            this.status = status;
-        }
+    public ProcessLauncherConfiguration getProcessLauncherConfiguration() {
+        return plc;
     }
 
-    private static class NoExitSecurityManager extends SecurityManager {
-        @Override
-        public void checkPermission(Permission perm) {
-            // allow anything.
-        }
-        @Override
-        public void checkPermission(Permission perm, Object context) {
-            // allow anything.
-        }
-        @Override
-        public void checkExit(int status) {
-            super.checkExit(status);
-            throw new ExitException(status);
-        }
+    protected void mergeCustom() {
+        super.mergeCustom(gnc);
     }
 }

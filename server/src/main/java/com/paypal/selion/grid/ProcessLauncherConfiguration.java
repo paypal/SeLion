@@ -13,49 +13,23 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.node.servlets;
+package com.paypal.selion.grid;
 
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import com.beust.jcommander.Parameter;
+import com.paypal.selion.pojos.SeLionGridConstants;
 
-import java.security.Permission;
+public class ProcessLauncherConfiguration {
+    public static final String NO_CONTINUOUS_RESTART = "noContinuousRestart";
+    @Parameter(
+        names = "-" + NO_CONTINUOUS_RESTART,
+        description = "<Boolean> : Disables continuous restart of the SeLion grid sub-process"
+    )
+    public boolean noContinuousRestart;
 
-public class NodeServletsTest {
-
-    @BeforeTest
-    public void setup() {
-        System.setSecurityManager(new NoExitSecurityManager());
-    }
-
-    @AfterTest
-    public void tearDown() {
-        System.setSecurityManager(null);
-    }
-
-    // Various node servlet tests will cause a System.exit() which fouls up our test execution.
-    // So install a security mgr to prevent actual exit from jvm.
-    protected static class ExitException extends SecurityException {
-        private static final long serialVersionUID = 4720346323475334961L;
-        public final int status;
-        public ExitException(int status) {
-            super("There is no escape!");
-            this.status = status;
-        }
-    }
-
-    private static class NoExitSecurityManager extends SecurityManager {
-        @Override
-        public void checkPermission(Permission perm) {
-            // allow anything.
-        }
-        @Override
-        public void checkPermission(Permission perm, Object context) {
-            // allow anything.
-        }
-        @Override
-        public void checkExit(int status) {
-            super.checkExit(status);
-            throw new ExitException(status);
-        }
-    }
+    public static final String SELION_CONFIG = "selionConfig";
+    @Parameter(
+        names = "-" + SELION_CONFIG,
+        description = "<String> filename : A SeLion Grid configuration JSON file"
+    )
+    public String selionConfig = SeLionGridConstants.SELION_CONFIG_FILE;
 }

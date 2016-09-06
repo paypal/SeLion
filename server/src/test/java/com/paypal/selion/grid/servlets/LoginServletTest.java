@@ -21,9 +21,9 @@ import com.paypal.selion.pojos.SeLionGridConstants;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
-import org.openqa.selenium.net.PortProber;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeClass;
@@ -31,9 +31,6 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.testng.Assert.*;
 
@@ -234,19 +231,18 @@ public class LoginServletTest extends BaseGridRegistyServletTest {
     public void testProcessForSauceGridLogin() throws Exception {
         // Create a hubConfig with the Sauce capability matcher
         GridHubConfiguration hubConfig = new GridHubConfiguration();
-        hubConfig.setCapabilityMatcher(new SeLionSauceCapabilityMatcher());
+        hubConfig.capabilityMatcher = new SeLionSauceCapabilityMatcher();
 
         // Create a Selenium grid registry, using the new hubConfig
         Registry registry = Registry.newInstance(null, hubConfig);
 
         // Create a Selenium grid registration request
-        Map<String, Object> configuration = new HashMap<>();
-        configuration.put(RegistrationRequest.REMOTE_HOST,
-                String.format("http://%s:%s", ipAddress, PortProber.findFreePort()));
-        configuration.put(RegistrationRequest.ID, ipAddress);
+        GridNodeConfiguration nodeConfig = new GridNodeConfiguration();
+        nodeConfig.host = ipAddress;
+        nodeConfig.port = nodePort;
 
         RegistrationRequest registrationRequest = new RegistrationRequest();
-        registrationRequest.setConfiguration(configuration);
+        registrationRequest.setConfiguration(nodeConfig);
 
         // Add a DefaultRemoteProxy to the registry
         RemoteProxy remoteProxy = new DefaultRemoteProxy(registrationRequest, registry);

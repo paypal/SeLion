@@ -39,7 +39,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
@@ -56,6 +55,12 @@ public class SauceServlet extends RegistryBasedServlet {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceServlet.class);
     private static final long serialVersionUID = 9187677490975386050L;
+
+    private static final String REMOTE_HOST_CONFIG_PROPERTY = "remoteHost";
+    private static final String CAPABILITIES_KEY = "capabilities";
+    private static final String CONFIGURATION_KEY = "configuration";
+    private static final String MAX_SESSION_CONFIG_PROPERTY = "maxSession";
+    private static final String MAX_INSTANCES_CONFIG_PROPERTY = "maxInstances";
 
     /**
      * The proxy id that will be used to register to the hub
@@ -136,7 +141,7 @@ public class SauceServlet extends RegistryBasedServlet {
         HttpClientFactory httpClientFactory = new HttpClientFactory();
         respMsg = "Sauce node registration failed. Please refer to the log file for failure details.";
         try {
-            final int port = getRegistry().getHub().getPort();
+            final int port = getRegistry().getHub().getConfiguration().port;
             final URL registration = new URL("http://localhost:" + port + "/grid/register");
 
             BasicHttpEntityEnclosingRequest request = new BasicHttpEntityEnclosingRequest("POST",
@@ -180,20 +185,20 @@ public class SauceServlet extends RegistryBasedServlet {
         final int maxConcurrent = restApi.getMaxConcurrency();
         if (maxConcurrent != -1) {
             // update max sessions
-            if (json.has("configuration")) {
-                json.getAsJsonObject("configuration").addProperty(RegistrationRequest.MAX_SESSION, maxConcurrent);
+            if (json.has(CONFIGURATION_KEY)) {
+                json.getAsJsonObject(CONFIGURATION_KEY).addProperty(MAX_SESSION_CONFIG_PROPERTY, maxConcurrent);
             }
             // update all browser max instances for all "browser" types
-            if (json.has("capabilities")) {
-                for (JsonElement jsonElement : json.get("capabilities").getAsJsonArray()) {
-                    jsonElement.getAsJsonObject().addProperty(RegistrationRequest.MAX_INSTANCES, maxConcurrent);
+            if (json.has(CAPABILITIES_KEY)) {
+                for (JsonElement jsonElement : json.get(CAPABILITIES_KEY).getAsJsonArray()) {
+                    jsonElement.getAsJsonObject().addProperty(MAX_INSTANCES_CONFIG_PROPERTY, maxConcurrent);
                 }
             }
         }
 
         // ensure the remoteHost / proxy id is set to http://ondemand.saucelabs.com:80
-        if (json.has("configuration")) {
-            json.getAsJsonObject("configuration").addProperty(RegistrationRequest.REMOTE_HOST, PROXY_ID);
+        if (json.has(CONFIGURATION_KEY)) {
+            json.getAsJsonObject(CONFIGURATION_KEY).addProperty(REMOTE_HOST_CONFIG_PROPERTY, PROXY_ID);
         }
 
         return json.toString();

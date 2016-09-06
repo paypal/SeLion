@@ -21,24 +21,24 @@ import org.testng.annotations.BeforeSuite;
 
 public class ConfigureSuiteTest {
     @BeforeSuite(alwaysRun = true)
-    public void setUpBeforeSuite() {
+    public void setUpBeforeSuite() throws Exception {
         // Should compute to "{selion-project-dir}/server/target/.selion"
         System.setProperty("selionHome", new File(ConfigureSuiteTest.class.getResource("/").getPath())
                 .getAbsoluteFile().getParent() + "/.selion");
 
         ThreadedLauncher launcher;
 
-        // Invoke a launcher to ensure firstTimeSetup() is complete for the new selionHome.
+        // Init a launcher to ensure firstTimeSetup() is complete for the new selionHome.
         launcher = new ThreadedLauncher(new String[] { "-role", "hub" });
-        launcher.run();
-        launcher.shutdown();
-        // Invoke it to also ensure the node files are in place
+        // put the hub config files in place too
+        launcher.getProgramArguments();
+
+        // also ensure the node files are in place
         launcher = new ThreadedLauncher(new String[] { "-role", "node" });
-        launcher.run();
-        launcher.shutdown();
-        // Invoke it to also ensure the sauce proxy/hub files are in place
+        launcher.getProgramArguments();
+
+        // also ensure the sauce proxy/hub files are in place
         launcher = new ThreadedLauncher(new String[] { "-role", "hub", "-type", "sauce" });
-        launcher.run();
-        launcher.shutdown();
+        launcher.getProgramArguments();
     }
 }

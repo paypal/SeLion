@@ -151,9 +151,10 @@ Current version
 ---------------
 [1.1.0](http://search.maven.org/#search%7Cga%7C1%7Cselion)
 
-Development version
--------------------
-1.2.0-SNAPSHOT
+Development versions
+--------------------
+- 1.2.0-SNAPSHOT (Selenium 2.53.x based)
+- 2.0.0-SNAPSHOT (Selenium 3.x based)
 
 License
 -----------

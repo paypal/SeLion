@@ -13,49 +13,31 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.node.servlets;
+package com.paypal.selion.grid;
 
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import com.beust.jcommander.Parameter;
+import org.openqa.grid.internal.utils.configuration.GridConfiguration;
 
-import java.security.Permission;
+public class SeLionGridConfiguration {
+    public static final String NODE_RECYCLE_THREAD_WAIT_TIMEOUT = "nodeRecycleThreadWaitTimeout";
+    @Parameter(
+        names = "-" + NODE_RECYCLE_THREAD_WAIT_TIMEOUT,
+        description = "<Integer> in ms : How long to wait for incomplete sessions when the node is attempting to " +
+                "shutdown. Default : 0, wait forever"
+    )
+    public Integer nodeRecycleThreadWaitTimeout = 0;
 
-public class NodeServletsTest {
+    public static final String UNIQUE_SESSION_COUNT = "uniqueSessionCount";
+    @Parameter(
+        names = "-" + UNIQUE_SESSION_COUNT,
+        description = "<Integer> value : Number of unique sessions to allow before triggering a node shutdown. " +
+                " Default : 0, infinite"
+    )
+    public Integer uniqueSessionCount = 0;
 
-    @BeforeTest
-    public void setup() {
-        System.setSecurityManager(new NoExitSecurityManager());
-    }
-
-    @AfterTest
-    public void tearDown() {
-        System.setSecurityManager(null);
-    }
-
-    // Various node servlet tests will cause a System.exit() which fouls up our test execution.
-    // So install a security mgr to prevent actual exit from jvm.
-    protected static class ExitException extends SecurityException {
-        private static final long serialVersionUID = 4720346323475334961L;
-        public final int status;
-        public ExitException(int status) {
-            super("There is no escape!");
-            this.status = status;
-        }
-    }
-
-    private static class NoExitSecurityManager extends SecurityManager {
-        @Override
-        public void checkPermission(Permission perm) {
-            // allow anything.
-        }
-        @Override
-        public void checkPermission(Permission perm, Object context) {
-            // allow anything.
-        }
-        @Override
-        public void checkExit(int status) {
-            super.checkExit(status);
-            throw new ExitException(status);
-        }
+    // TODO "custom" GridConfiguration values are discouraged by Selenium. Find another path.
+    protected void mergeCustom(GridConfiguration gc) {
+        gc.custom.put(NODE_RECYCLE_THREAD_WAIT_TIMEOUT, String.valueOf(nodeRecycleThreadWaitTimeout));
+        gc.custom.put(UNIQUE_SESSION_COUNT, String.valueOf(uniqueSessionCount));
     }
 }

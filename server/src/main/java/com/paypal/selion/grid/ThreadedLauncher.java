@@ -27,7 +27,7 @@ import java.util.logging.Level;
 
 /**
  * A {@link RunnableLauncher} for SeLion Grid. This launcher will perform install operations and then call
- * {@link SeLionGridLauncher}. This launcher does not support continuous restarting of the instance. <br>
+ * {@link SeLionGridLauncherV3}. This launcher does not support continuous restarting of the instance. <br>
  * <br>
  * <strong>Important</strong>: selenium-server and it's dependencies MUST be included in the caller's CLASSPATH before
  * calling {@link #run()} on this object
@@ -35,7 +35,7 @@ import java.util.logging.Level;
 public final class ThreadedLauncher extends AbstractBaseLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(ThreadedLauncher.class);
-    private SeLionGridLauncher launcher;
+    private SeLionGridLauncherV3 launcher;
     private List<String> downloadList;
 
     /**
@@ -103,9 +103,9 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
             // Update the program arguments with any defaults
             String[] args = getProgramArguments();
 
-            LOGGER.fine("Invoking " + SeLionGridLauncher.class.getSimpleName() + " with arguments: "
+            LOGGER.fine("Invoking " + SeLionGridLauncherV3.class.getSimpleName() + " with arguments: "
                     + Arrays.asList(args).toString());
-            launcher = new SeLionGridLauncher();
+            launcher = new SeLionGridLauncherV3();
             launcher.boot(args);
         } catch (Exception e) { // NOSONAR
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -115,7 +115,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
     }
 
     /**
-     * Shutdown the instance. Calls {@link SeLionGridLauncher#shutdown()} for the instance associated with this object.
+     * Shutdown the instance. Calls {@link SeLionGridLauncherV3#shutdown()} for the instance associated with this object.
      */
     public void shutdown() {
         LOGGER.entering();
