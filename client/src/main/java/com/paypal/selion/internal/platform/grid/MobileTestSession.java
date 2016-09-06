@@ -40,6 +40,7 @@ public class MobileTestSession extends AbstractTestSession {
     private String appName;
     private final String appLocation;
     private String device = "iphone";
+    private static final String ANDROID = "android";
     private static final String IPHONE = "iphone";
     private static final String IPAD = "ipad";
     private String appLanguage;
@@ -221,8 +222,8 @@ public class MobileTestSession extends AbstractTestSession {
                 + "appPath or appName");
 
         checkArgument(isDeviceDefined(),
-                "The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
-                        + " 'android:17', 'android:18', etc.");
+                "The device should either be provided as 'device name:version' or 'device' or 'device:version'." +
+                        " like 'iphone', 'ipad', 'iphone:7.1', 'android', 'nexus 5:17', 'android:18', etc.");
 
         // appName can be passed via the annotation or as a config var. It may contain precision info.
         if (StringUtils.contains(this.appName, ":")) {
@@ -252,11 +253,27 @@ public class MobileTestSession extends AbstractTestSession {
     }
 
     private void setDeviceParameters(String device) {
-        this.device = device;
-        String[] devices = StringUtils.split(this.device, ":");
-        if (StringUtils.contains(this.device, ":")) {
+        String deviceName;
+        String[] devices = StringUtils.split(device, ":");
+        boolean mobileDeviceContainsbothNameAndVersion = devices.length > 1;
+        if (mobileDeviceContainsbothNameAndVersion) {
             this.platformVersion = devices[1];
-            this.device = devices[0];
+            deviceName = devices[0];
+        } else if (device.indexOf(':') == 0) {
+            this.platformVersion = devices[0];
+            deviceName = "";
+        } else {
+            deviceName = devices[0];
+        }
+        deviceName = deviceName.trim();
+        this.device =
+                deviceName.toLowerCase().startsWith(IPHONE) ? IPHONE :
+                        deviceName.toLowerCase().startsWith(IPAD) ? IPAD :
+                                StringUtils.isNotBlank(deviceName) ? ANDROID : "";
+        if (!deviceName.equalsIgnoreCase(ANDROID) &&
+                !deviceName.equalsIgnoreCase(IPHONE) &&
+                !deviceName.equalsIgnoreCase(IPAD)) {
+            this.deviceType = deviceName;
         }
     }
 

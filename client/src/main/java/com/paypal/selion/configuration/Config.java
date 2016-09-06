@@ -609,12 +609,6 @@ public final class Config {
         SITE_LOCALE("siteLocale", "US", false),
 
         /**
-         * mobile platform test suite is designed for (iOS or Android)<br>
-         * Default is set to <b>undefined</b>
-         */
-        MOBILE_PLATFORM("mobilePlatform", "undefined", false),
-
-        /**
          * Browser specified by user.<br>
          * Default is set to <b>firefox</b>
          */
