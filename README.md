@@ -149,11 +149,11 @@ Projects we depend on that need contributors
 
 Current version
 ---------------
-[1.2.0](http://search.maven.org/#search%7Cga%7C1%7Cselion)
+[1.2.0](http://search.maven.org/#search%7Cga%7C1%7Cselion) (Selenium 2.53.x based)
 
 Development version
 -------------------
-2.0.0-SNAPSHOT
+2.0.0-SNAPSHOT (Selenium 3.x based)
 
 License
 -----------

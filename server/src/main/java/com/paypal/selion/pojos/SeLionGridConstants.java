@@ -163,36 +163,43 @@ public class SeLionGridConstants {
     /**
      * Dash argument for specifying an alternative Selion Grid json config file
      */
+    @Deprecated
     public static final String SELION_CONFIG_ARG = "-selionConfig";
 
     /**
      * Dash argument for specifying an alternative Selenium hub json config file
      */
+    @Deprecated
     public static final String HUB_CONFIG_ARG = "-hubConfig";
 
     /**
      * Dash argument for specifying the SeLion Grid hub type &lt;sauce&gt;
      */
+    @Deprecated
     public static final String TYPE_ARG = "-type";
 
     /**
      * Dash argument for specifying the Selenium role &lt;hub|node&gt;
      */
+    @Deprecated
     public static final String ROLE_ARG = "-role";
 
     /**
      * Dash argument for specifying an alternative Selenium node json config file
      */
+    @Deprecated
     public static final String NODE_CONFIG_ARG = "-nodeConfig";
 
     /**
      * Dash argument for displaying the help text
      */
+    @Deprecated
     public static final String HELP_ARG = "-help";
 
     /**
      * Dash argument for disabling continuous restart nature of any {@link RunnableLauncher} which spawns a new process
      */
+    @Deprecated
     public static final String SELION_NOCONTINUOUS_ARG = "-noContinuousRestart";
 
     private SeLionGridConstants() {

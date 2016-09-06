@@ -3,8 +3,8 @@
     "name": "selenium",
     "roles": [ "node", "hub", "standalone", "sauce" ],
     "any": {
-      "url": "https://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar",
-      "checksum": "63a0b96eab18f8420b9bba2f0f5d380c"
+      "url": "https://selenium-release.storage.googleapis.com/3.0-beta3/selenium-server-standalone-3.0.0-beta3.jar",
+      "checksum": "5c97631ccb1f92eb9f682cd845611738"
     }
   },
   {
@@ -27,16 +27,16 @@
     "name": "geckodriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.10.0/geckodriver-v0.10.0-win64.zip",
-      "checksum": "51b955d3227f76e9fc2947409ef8cb65"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-win64.zip",
+      "checksum": "81c02ec7778e511cf393974e93de8f7988989039"
     },
     "linux": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.10.0/geckodriver-v0.10.0-linux64.tar.gz",
-      "checksum": "71cab5cc4aff41da6c28ffda04a22aa7"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-linux64.tar.gz",
+      "checksum": "918c5744ac2b013bd2a76560af2b8872a92850eb"
     },
     "mac": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.10.0/geckodriver-v0.10.0-macos.tar.gz",
-      "checksum": "94a8afc60c2e686b61f99077c7269e45"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-mac.tar.gz",
+      "checksum": "fe1373f5b8716939012199b67c60997318b3c201"
     }
   },
   {

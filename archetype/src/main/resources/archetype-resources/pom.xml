@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>false</skipTests>
         <suiteXmlFile>src/test/resources/SampleSuite.xml</suiteXmlFile>
-        <selion.version>1.2.0</selion.version>
+        <selion.version>2.0.0-SNAPSHOT</selion.version>
     </properties>
 
     <dependencyManagement>

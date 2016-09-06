@@ -5,17 +5,17 @@
 
     <groupId>com.paypal.selion</groupId>
     <artifactId>SeLion-Parent</artifactId>
-    <version>1.2.0</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>SeLion Parent POM</name>
     <description>The SeLion Parent POM</description>
     <url>http://selion.io</url>
 
     <properties>
-        <compileSource>1.7</compileSource>
+        <compileSource>1.8</compileSource>
         <skipTests>false</skipTests>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>2.53.1</selenium.version>
+        <selenium.version>3.0.0-beta3</selenium.version>
         <iosdriver.version>0.6.5</iosdriver.version>
         <selendroid.version>0.17.0</selendroid.version>
         <appium.version>4.1.2</appium.version>
@@ -198,7 +198,7 @@
                         <source>${compileSource}</source>
                         <overview>${basedir}/src/main/resources/overview.html</overview>
                         <links>
-                            <link>http://docs.oracle.com/javase/7/docs/api/</link>
+                            <link>http://docs.oracle.com/javase/8/docs/api/</link>
                         </links>
                         <additionalparam>${javadoc.opts}</additionalparam>
                     </configuration>
@@ -220,7 +220,6 @@
                         <includes>
                             <include>**/*Test*.java</include>
                         </includes>
-                        <argLine>-XX:MaxPermSize=128m -XX:-UseSplitVerifier</argLine>
                     </configuration>
                 </plugin>
 
@@ -243,10 +242,10 @@
                             <configuration>
                                 <rules>
                                     <requireMavenVersion>
-                                        <version>[3.0,)</version>
+                                        <version>[3.2,)</version>
                                     </requireMavenVersion>
                                     <requireJavaVersion>
-                                        <version>1.7</version>
+                                        <version>1.8</version>
                                     </requireJavaVersion>
                                     <requireReleaseDeps>
                                         <onlyWhenRelease>true</onlyWhenRelease>

@@ -21,7 +21,7 @@
 
     //iterate over each node and create node with checkbox
     $.each(nodeJson, function (index, node) {
-      var id = node.configuration.url;
+      var id = node.configuration.remoteHost;
       var displayId = node.isShuttingDown ? id + ' (restart scheduled)' : id;
       $('.description').after($('<label>').addClass('choice').append(displayId)).after($('<input/>')
         .addClass('element checkbox').attr('type', 'checkbox').val(id).attr('name', 'nodes'));

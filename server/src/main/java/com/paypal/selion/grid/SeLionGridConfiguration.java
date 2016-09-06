@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,43 +15,29 @@
 
 package com.paypal.selion.grid;
 
-import org.openqa.selenium.net.PortProber;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import com.beust.jcommander.Parameter;
+import org.openqa.grid.internal.utils.configuration.GridConfiguration;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.fail;
+public class SeLionGridConfiguration {
+    public static final String NODE_RECYCLE_THREAD_WAIT_TIMEOUT = "nodeRecycleThreadWaitTimeout";
+    @Parameter(
+        names = "-" + NODE_RECYCLE_THREAD_WAIT_TIMEOUT,
+        description = "<Integer> in ms : How long to wait for incomplete sessions when the node is attempting to " +
+                "shutdown. Default : 0, wait forever"
+    )
+    public Integer nodeRecycleThreadWaitTimeout = 0;
 
-public class ThreadedLauncherTest {
-    private Thread thread;
-    private RunnableLauncher launcher;
+    public static final String UNIQUE_SESSION_COUNT = "uniqueSessionCount";
+    @Parameter(
+        names = "-" + UNIQUE_SESSION_COUNT,
+        description = "<Integer> value : Number of unique sessions to allow before triggering a node shutdown. " +
+                " Default : 0, infinite"
+    )
+    public Integer uniqueSessionCount = 0;
 
-    @BeforeClass
-    public void beforeClass() {
-        int port = PortProber.findFreePort();
-        launcher = new ThreadedLauncher(new String[] { "-port", String.valueOf(port) });
-
-        thread = new Thread(launcher);
+    // TODO "custom" GridConfiguration values are discouraged by Selenium. Find another path.
+    protected void mergeCustom(GridConfiguration gc) {
+        gc.custom.put(NODE_RECYCLE_THREAD_WAIT_TIMEOUT, String.valueOf(nodeRecycleThreadWaitTimeout));
+        gc.custom.put(UNIQUE_SESSION_COUNT, String.valueOf(uniqueSessionCount));
     }
-
-    @Test
-    public void testStartServer() throws Exception {
-        thread.start();
-
-        // wait for it to start, max 120 seconds
-        int attempts = 0;
-        while (!launcher.isRunning() && (attempts < 12)) {
-            Thread.sleep(10000);
-            attempts += 1;
-        }
-
-        if (attempts == 12) {
-            fail("ThreadedLauncher did not start the server process");
-        }
-    }
-
-    @Test(dependsOnMethods = { "testStartServer" })
-    public void testShutDown() throws Exception {
-        launcher.shutdown();
-        assertFalse(launcher.isRunning());
-    }}
+}
