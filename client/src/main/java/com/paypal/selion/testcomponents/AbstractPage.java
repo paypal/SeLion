@@ -102,7 +102,9 @@ public abstract class AbstractPage implements WebPage {
         if (session != null && StringUtils.isNotBlank(session.getXmlTestName())) {
             LocalConfig lc = ConfigManager.getConfig(session.getXmlTestName());
             site = lc.getConfigProperty(ConfigProperty.SITE_LOCALE);
-            platform = WebDriverPlatform.valueOf(lc.getConfigProperty(ConfigProperty.MOBILE_PLATFORM).toUpperCase());
+            if (Grid.getMobileTestSession() != null) {
+                platform = Grid.getMobileTestSession().getPlatform();
+            }
         }
     }
 

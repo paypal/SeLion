@@ -6,18 +6,16 @@
     <parameter name="seleniumhost" value="localhost" />
     <parameter name="seleniumport" value="4723" />
 
-    <parameter name="mobileDevice" value="iphone:8.1" />
-    <parameter name="mobileDeviceType" value="iPhone Simulator" />
+    <parameter name="mobileDevice" value="iPhone Simulator:8.1" />
 
     <test verbose="2" name="mobile-appium-ios-test" annotations="JDK">
         <classes>
-            <class name="com.paypal.selion.ios.sample.AppiumIOSTest"></class>
+            <class name="com.paypal.selion.ios.sample.AppiumIOSTest"/>
         </classes>
     </test>
 
     <test verbose="2" name="mobile-common-appium-ios-test" annotations="JDK">
         <parameter name="appPath" value="src/test/resources/apps/PageObjects.app" />
-        <parameter name="mobilePlatform" value="iOS" />
 
         <groups>
             <run>
