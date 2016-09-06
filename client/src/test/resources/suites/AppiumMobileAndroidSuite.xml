@@ -6,19 +6,17 @@
     <parameter name="seleniumhost" value="localhost" />
     <parameter name="seleniumport" value="4723" />
 
-    <parameter name="mobileDevice" value="android:19" />
-    <parameter name="mobileDeviceType" value="Android Emulator" />
+    <parameter name="mobileDevice" value="Android Emulator:5.1" />
 
     <test verbose="2" name="mobile-appium-android-test" annotations="JDK">
         <classes>
-            <class name="com.paypal.selion.android.sample.AppiumAndroidBrowserTest"></class>
-            <class name="com.paypal.selion.android.sample.AppiumAndroidNativeAppTest"></class>
+            <class name="com.paypal.selion.android.sample.AppiumAndroidBrowserTest"/>
+            <class name="com.paypal.selion.android.sample.AppiumAndroidNativeAppTest"/>
         </classes>
     </test>
 
     <test verbose="2" name="mobile-common-appium-android-test" annotations="JDK">
         <parameter name="appPath" value="src/test/resources/apps/PageObjectsDemoApp.apk" />
-        <parameter name="mobilePlatform" value="android" />
 
         <groups>
             <run>
