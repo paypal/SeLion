@@ -19,7 +19,6 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.mobile.sample.pages.*;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
-import com.paypal.selion.platform.mobile.android.UiList;
 
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;

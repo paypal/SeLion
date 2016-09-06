@@ -24,6 +24,7 @@ import net.jcip.annotations.Immutable;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSlot;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.paypal.selion.node.servlets.LogServlet;
@@ -96,7 +97,7 @@ final class ProxyInfo {
     /**
      * @see RemoteProxy#getConfig()
      */
-    private Map<String, Object> configuration;
+    private GridNodeConfiguration configuration;
 
     /**
      * Calls {@link RemoteProxy#getStatus()} to determine if proxy is {@value #ONLINE} or {@value #OFFLINE}. Defaults to
