@@ -17,7 +17,6 @@ package com.paypal.selion.proxy;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -185,7 +184,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private boolean isSupportedOnHub(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
-        final boolean response = getRegistry().getConfiguration().getServlets().contains(servlet.getCanonicalName());
+        final boolean response = getRegistry().getConfiguration().servlets.contains(servlet.getCanonicalName());
         LOGGER.exiting(response);
         return response;
     }
@@ -204,10 +203,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private boolean isSupportedOnNode(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
                 .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
-        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
         String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(),
                 servlet.getSimpleName());
 
@@ -238,10 +237,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private HttpResponse sendToNodeServlet(Class<? extends HttpServlet> servlet, List<NameValuePair> nvps) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
                 .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
-        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
         String url = String.format("http://%s:%d/extra/%s", machine, this.getRemoteHost().getPort(),
                 servlet.getSimpleName());
 
@@ -378,8 +377,6 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private void updateBrowserCache(RegistrationRequest request) throws MalformedURLException {
         // Update the browser information cache. Used by GridStatics servlet
-        String urlString = request.getConfiguration().get("url").toString();
-        URL url = new URL(urlString);
         for (DesiredCapabilities desiredCapabilities : request.getCapabilities()) {
             Map<String, ?> capabilitiesMap = desiredCapabilities.asMap();
             String browserName = capabilitiesMap.get(CapabilityType.BROWSER_NAME).toString();
@@ -387,7 +384,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             if (StringUtils.isNotBlank(browserName) && StringUtils.isNotBlank(maxInstancesAsString)) {
                 int maxInstances = Integer.valueOf(maxInstancesAsString);
                 BrowserInformationCache cache = BrowserInformationCache.getInstance();
-                cache.updateBrowserInfo(url, browserName, maxInstances);
+                cache.updateBrowserInfo(getRemoteHost(), browserName, maxInstances);
             }
         }
     }
@@ -530,8 +527,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
         int getThreadWaitTimeout() {
             final String key = "nodeRecycleThreadWaitTimeout";
-            Map<String, Object> configuration =  getConfig();
-            return configuration.containsKey(key) ? (int) configuration.get(key) : DEFAULT_TIMEOUT;
+            return config.custom.containsKey(key) ? Integer.parseInt(config.custom.get(key)) : DEFAULT_TIMEOUT;
         }
 
         private boolean keepLooping(int expired, int timeout) {
@@ -563,7 +559,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private void disableMaxSessions() {
         proxyLogger.warning("Disabling max unique sessions for Node " + getId());
-        getConfig().put("uniqueSessionCount", -1);
+        config.custom.put("uniqueSessionCount", "-1");
     }
 
     /**
@@ -572,8 +568,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private int getMaxSessionsAllowed() {
         final String key = "uniqueSessionCount";
-        Map<String, Object> configuration =  getConfig();
-        return configuration.containsKey(key) ? (int) configuration.get(key) : DEFAULT_MAX_SESSIONS_ALLOWED;
+        return config.custom.containsKey(key) ? Integer.parseInt(config.custom.get(key)) : DEFAULT_MAX_SESSIONS_ALLOWED;
     }
 
     /**

@@ -18,9 +18,6 @@ package com.paypal.selion.grid.servlets;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.grid.common.RegistrationRequest;
@@ -29,7 +26,8 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
@@ -80,8 +78,9 @@ public class BaseGridRegistyServletTest {
 
         // Create a Selenium grid hub configuration
         GridHubConfiguration hubConfig = new GridHubConfiguration();
-        hubConfig.setPort(hubPort);
-        hubConfig.setCapabilityMatcher(matcher);
+
+        hubConfig.port = hubPort;
+        hubConfig.capabilityMatcher = matcher;
 
         // Create a Hub instance
         hub = new Hub(hubConfig);
@@ -90,12 +89,12 @@ public class BaseGridRegistyServletTest {
         registry = Registry.newInstance(hub, hubConfig);
 
         // Create a Selenium grid registration request
-        Map<String, Object> configuration = new HashMap<>();
-        configuration.put(RegistrationRequest.REMOTE_HOST, String.format("http://%s:%s", ipAddress, nodePort));
-        configuration.put(RegistrationRequest.ID, ipAddress);
+        GridNodeConfiguration nodeConfig = new GridNodeConfiguration();
+        nodeConfig.host = ipAddress;
+        nodeConfig.port = nodePort;
 
         RegistrationRequest registrationRequest = new RegistrationRequest();
-        registrationRequest.setConfiguration(configuration);
+        registrationRequest.setConfiguration(nodeConfig);
 
         // Add a BaseRemoteProxy to the registry
         RemoteProxy remoteProxy = new BaseRemoteProxy(registrationRequest, registry);

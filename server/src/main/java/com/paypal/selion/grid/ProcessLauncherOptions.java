@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,7 +16,6 @@
 package com.paypal.selion.grid;
 
 import com.paypal.selion.SeLionConstants;
-import com.paypal.selion.pojos.SeLionGridConstants;
 
 /**
  * {@link LauncherOptions} which apply to {@link RunnableLauncher}s which spawn a new process
@@ -76,7 +75,7 @@ public interface ProcessLauncherOptions extends LauncherOptions {
 
     /**
      * Enable/Disable continuous restart. Can also be disabled via the dash argument
-     * {@link SeLionGridConstants#SELION_NOCONTINUOUS_ARG}. Default: enabled.
+     * {@link ProcessLauncherConfiguration#NO_CONTINUOUS_RESTART}. Default: enabled.
      */
     <T extends ProcessLauncherOptions> T setContinuouslyRestart(boolean val);
 

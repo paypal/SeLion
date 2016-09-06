@@ -114,7 +114,7 @@ public class LoginServlet extends RegistryBasedServlet {
                 req.getSession().setAttribute(PASSWORD, password);
 
                 String page = SeLionGridConstants.GRID_HOME_PAGE_URL;
-                CapabilityMatcher matcher = getRegistry().getCapabilityMatcher();
+                CapabilityMatcher matcher = getRegistry().getConfiguration().capabilityMatcher;
                 if (matcher instanceof SeLionSauceCapabilityMatcher) {
                     page = SeLionGridConstants.SAUCE_GRID_HOMEPAGE_URL;
                 }

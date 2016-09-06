@@ -15,7 +15,6 @@
 
 package com.paypal.selion.grid;
 
-import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,9 +28,8 @@ public class ThreadedLauncherTest {
 
     @BeforeClass
     public void beforeClass() {
-        String host = new NetworkUtils().getIpOfLoopBackIp4();
         int port = PortProber.findFreePort();
-        launcher = new ThreadedLauncher(new String[] { "-host", host, "-port", String.valueOf(port) });
+        launcher = new ThreadedLauncher(new String[] { "-port", String.valueOf(port) });
 
         thread = new Thread(launcher);
     }

@@ -1,13 +1,17 @@
 {
-    "servlets": [
-        "com.paypal.selion.grid.servlets.LoginServlet",
-        "com.paypal.selion.grid.servlets.ListAllNodes",
-        "com.paypal.selion.grid.servlets.GridStatistics",
-        "com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet",
-        "com.paypal.selion.grid.servlets.GridForceRestartDelegateServlet",
-        "com.paypal.selion.grid.servlets.PasswordChangeServlet",
-        "com.paypal.selion.grid.servlets.TransferServlet"
-    ],
-    "browserTimeout": 180000,
-    "capabilityMatcher": "com.paypal.selion.grid.matchers.MobileCapabilityMatcher"
+  "servlets": [
+    "com.paypal.selion.grid.servlets.LoginServlet",
+    "com.paypal.selion.grid.servlets.ListAllNodes",
+    "com.paypal.selion.grid.servlets.GridStatistics",
+    "com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet",
+    "com.paypal.selion.grid.servlets.GridForceRestartDelegateServlet",
+    "com.paypal.selion.grid.servlets.PasswordChangeServlet",
+    "com.paypal.selion.grid.servlets.TransferServlet"
+  ],
+  "withoutServlets": [
+    "org.openqa.grid.web.servlet.LifecycleServlet",
+    "org.openqa.grid.web.servlet.Grid1HeartbeatServlet"
+  ],
+  "browserTimeout": 180000,
+  "capabilityMatcher": "com.paypal.selion.grid.matchers.MobileCapabilityMatcher"
 }

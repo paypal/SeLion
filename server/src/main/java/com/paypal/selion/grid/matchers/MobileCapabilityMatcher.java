@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,9 +18,7 @@ package com.paypal.selion.grid.matchers;
 import io.selendroid.common.SelendroidCapabilities;
 import io.selendroid.grid.SelendroidCapabilityMatcher;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,12 +31,10 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * {@link DefaultCapabilityMatcher}
  */
 public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
-    
     /**
      * Capability key to match against for mobile specific nodes.
      */
     private static final String MOBILE_NODE_TYPE = "mobileNodeType";
-    private final List<String> toConsider = new ArrayList<String>();
 
     public MobileCapabilityMatcher() {
         super();

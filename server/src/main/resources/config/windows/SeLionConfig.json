@@ -1,22 +1,22 @@
 {
-    "restartCycle": 60000,
-    "customProcessHandler": "com.paypal.selion.utils.process.WindowsProcessHandler",
-    "artifactMaxFileSize": 1073741824,
-    "artifactExpiryInMilliSec": 86400000,
-    "managedArtifact": "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact",
-    "managedArtifactBaseDir": "repository",
-    "selendroidDefaultArgs": {
-        "-logLevel": "WARNING",
-        "-deviceScreenshot": "",
-        "-keepEmulator": "",
-        "-deviceLog": false,
-        "-maxSession": 1,
-        "-proxy": "io.selendroid.grid.SelendroidSessionProxy",
-        "-port": 5557
-    },
-    "appiumDefaultArgs" : {
-        "--port": 5558,
-        "--log-timestamp": "",
-        "--log-level": "info"
-    }
+  "restartCycle": 60000,
+  "customProcessHandler": "com.paypal.selion.utils.process.WindowsProcessHandler",
+  "artifactMaxFileSize": 1073741824,
+  "artifactExpiryInMilliSec": 86400000,
+  "managedArtifact": "com.paypal.selion.grid.servlets.transfer.DefaultManagedArtifact",
+  "managedArtifactBaseDir": "repository",
+  "selendroidDefaultArgs": {
+    "-logLevel": "WARNING",
+    "-deviceScreenshot": "",
+    "-keepEmulator": "",
+    "-deviceLog": false,
+    "-maxSession": 1,
+    "-proxy": "io.selendroid.grid.SelendroidSessionProxy",
+    "-port": 5557
+  },
+  "appiumDefaultArgs" : {
+    "--port": 5558,
+    "--log-timestamp": "",
+    "--log-level": "info"
+  }
 }
