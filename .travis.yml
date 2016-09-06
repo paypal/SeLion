@@ -1,9 +1,7 @@
 language: java
 sudo: false
 jdk:
-  - oraclejdk7
   - oraclejdk8
-  - openjdk7
 script:
   - sh -e utilities/travis-run-ci-tests.sh
 after_success:
@@ -18,7 +16,7 @@ notifications:
     on_success: always
     on_failure: always
     use_notice: true
-  webhooks: 
+  webhooks:
     urls:
       - https://webhooks.gitter.im/e/a8fc34e427360ced7ebf
     on_success: change

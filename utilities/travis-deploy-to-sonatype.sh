@@ -5,7 +5,7 @@
 
 # Deploy only if the following conditions are satisfied
 # 1. The build is for the project paypal/SeLion, not on the fork
-# 2. The project is built on oraclejdk7
+# 2. The project is built on oraclejdk8
 # 3. The build is not on a pull request
 # 4. The build is on a develop branch
 
@@ -21,7 +21,7 @@ check_branch() {
 }
 
 check_branch
-if [ "$TRAVIS_REPO_SLUG" = "paypal/SeLion" ] && [ "$TRAVIS_JDK_VERSION" = "oraclejdk7" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$ISDEVELOP" = true ]; then
+if [ "$TRAVIS_REPO_SLUG" = "paypal/SeLion" ] && [ "$TRAVIS_JDK_VERSION" = "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$ISDEVELOP" = true ]; then
     echo "Deploying to Sonatype...\n"
     # checkout the TRAVIS_BRANCH branch
     git checkout $TRAVIS_BRANCH

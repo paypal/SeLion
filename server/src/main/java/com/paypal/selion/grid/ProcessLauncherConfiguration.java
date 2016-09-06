@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,43 +15,21 @@
 
 package com.paypal.selion.grid;
 
-import org.openqa.selenium.net.PortProber;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import com.beust.jcommander.Parameter;
+import com.paypal.selion.pojos.SeLionGridConstants;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.fail;
+public class ProcessLauncherConfiguration {
+    public static final String NO_CONTINUOUS_RESTART = "noContinuousRestart";
+    @Parameter(
+        names = "-" + NO_CONTINUOUS_RESTART,
+        description = "<Boolean> : Disables continuous restart of the SeLion grid sub-process"
+    )
+    public boolean noContinuousRestart;
 
-public class ThreadedLauncherTest {
-    private Thread thread;
-    private RunnableLauncher launcher;
-
-    @BeforeClass
-    public void beforeClass() {
-        int port = PortProber.findFreePort();
-        launcher = new ThreadedLauncher(new String[] { "-port", String.valueOf(port) });
-
-        thread = new Thread(launcher);
-    }
-
-    @Test
-    public void testStartServer() throws Exception {
-        thread.start();
-
-        // wait for it to start, max 120 seconds
-        int attempts = 0;
-        while (!launcher.isRunning() && (attempts < 12)) {
-            Thread.sleep(10000);
-            attempts += 1;
-        }
-
-        if (attempts == 12) {
-            fail("ThreadedLauncher did not start the server process");
-        }
-    }
-
-    @Test(dependsOnMethods = { "testStartServer" })
-    public void testShutDown() throws Exception {
-        launcher.shutdown();
-        assertFalse(launcher.isRunning());
-    }}
+    public static final String SELION_CONFIG = "selionConfig";
+    @Parameter(
+        names = "-" + SELION_CONFIG,
+        description = "<String> filename : A SeLion Grid configuration JSON file"
+    )
+    public String selionConfig = SeLionGridConstants.SELION_CONFIG_FILE;
+}

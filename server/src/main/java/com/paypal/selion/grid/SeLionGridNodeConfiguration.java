@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,43 +15,29 @@
 
 package com.paypal.selion.grid;
 
-import org.openqa.selenium.net.PortProber;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import com.beust.jcommander.ParametersDelegate;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.fail;
+public class SeLionGridNodeConfiguration extends SeLionGridConfiguration {
+    @ParametersDelegate
+    private GridNodeConfiguration gnc = new GridNodeConfiguration();
 
-public class ThreadedLauncherTest {
-    private Thread thread;
-    private RunnableLauncher launcher;
+    @ParametersDelegate
+    private ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
 
-    @BeforeClass
-    public void beforeClass() {
-        int port = PortProber.findFreePort();
-        launcher = new ThreadedLauncher(new String[] { "-port", String.valueOf(port) });
-
-        thread = new Thread(launcher);
+    public GridNodeConfiguration getGridNodeConfiguration() {
+        return gnc;
     }
 
-    @Test
-    public void testStartServer() throws Exception {
-        thread.start();
-
-        // wait for it to start, max 120 seconds
-        int attempts = 0;
-        while (!launcher.isRunning() && (attempts < 12)) {
-            Thread.sleep(10000);
-            attempts += 1;
-        }
-
-        if (attempts == 12) {
-            fail("ThreadedLauncher did not start the server process");
-        }
+    public void setGridNodeConfiguration(GridNodeConfiguration gnc) {
+        this.gnc = gnc;
     }
 
-    @Test(dependsOnMethods = { "testStartServer" })
-    public void testShutDown() throws Exception {
-        launcher.shutdown();
-        assertFalse(launcher.isRunning());
-    }}
+    public ProcessLauncherConfiguration getProcessLauncherConfiguration() {
+        return plc;
+    }
+
+    protected void mergeCustom() {
+        super.mergeCustom(gnc);
+    }
+}

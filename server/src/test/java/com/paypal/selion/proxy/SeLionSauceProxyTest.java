@@ -15,14 +15,16 @@
 
 package com.paypal.selion.proxy;
 
+import com.beust.jcommander.JCommander;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -37,19 +39,27 @@ public class SeLionSauceProxyTest {
 
     private HttpClientFactory httpClientFactory;
     private Hub hub;
+    private int port;
     private RegistrationRequest req;
     private File tempFile;
 
     @BeforeClass
     public void setup() throws Exception {
         httpClientFactory = new HttpClientFactory();
+        port = PortProber.findFreePort();
+
         String[] args = new String[] {
-                "-role", "hub", "-type", "sauce",
+                "-role", "hub",
                 "-host", "localhost",
-                "-servlets", "com.paypal.selion.grid.servlets.LoginServlet,com.paypal.selion.grid.servlets.SauceServlet"
+                "-port", String.valueOf(port),
+                "-servlet", "com.paypal.selion.grid.servlets.LoginServlet",
+                "-servlet", "com.paypal.selion.grid.servlets.SauceServlet"
         };
-        GridHubConfiguration ghc = GridHubConfiguration.build(args);
+        GridHubConfiguration ghc = new GridHubConfiguration();
+        new JCommander(ghc, args);
+
         hub = new Hub(ghc);
+        hub.start();
     }
 
     @Test()
