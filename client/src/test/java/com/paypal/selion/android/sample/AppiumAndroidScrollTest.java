@@ -31,7 +31,6 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 public class AppiumAndroidScrollTest {
 
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String DEVICE_NAME = "android:19";
     private static final String MESSGAE_BOX_LOCATOR = "android:id/message";
     private static final String MENU_LOCATOR ="com.paypal.selion.pageobjectsdemoapp:id/btnNext";
     private static final String LIST_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tableListView";
@@ -48,7 +47,7 @@ public class AppiumAndroidScrollTest {
     }
     
     @Test
-    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testSwipeActions() {
         UiObject sampleCell = new UiObject("android:id/text1");
         UiButton sampleButton = new UiButton("android:id/button1");

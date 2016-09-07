@@ -46,7 +46,7 @@ public class IOSDriverPickerTest {
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testPickerValues() throws InterruptedException {
         UIANavigationBar navigationBar = null;
@@ -61,7 +61,7 @@ public class IOSDriverPickerTest {
                 "Picker wheel values do not match");
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testSetPickerValue() throws InterruptedException {
         UIANavigationBar navigationBar = null;
@@ -77,7 +77,7 @@ public class IOSDriverPickerTest {
     }
 
     @Test(expectedExceptions = InvalidSelectorException.class)
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     public void testInvalidXPath() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {
@@ -90,7 +90,7 @@ public class IOSDriverPickerTest {
     }
 
     @Test(expectedExceptions = NoSuchElementException.class)
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     public void testInvalidPickerLocator() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {
@@ -103,7 +103,7 @@ public class IOSDriverPickerTest {
     }
 
     @Test(expectedExceptions = UIOperationFailedException.class)
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     public void testInvalidWheelAccess() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {

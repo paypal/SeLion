@@ -33,7 +33,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * A class for loading and representing the {@link MobileTest} annotation parameters. Also performs sanity checks.
- * 
+ *
  */
 public class MobileTestSession extends AbstractTestSession {
     private static SimpleLogger logger = SeLionLogger.getLogger();
@@ -49,6 +49,8 @@ public class MobileTestSession extends AbstractTestSession {
     private String platformVersion;
     private String appPath;
     private String appVersion;
+    private String androidAppMainActivity;
+    private String androidAppPackage;
 
     private WebDriverPlatform platform;
 
@@ -89,6 +91,14 @@ public class MobileTestSession extends AbstractTestSession {
 
     public String getAppPath() {
         return appPath;
+    }
+
+    public String getAndroidAppPackage() {
+        return androidAppPackage;
+    }
+
+    public String getAndroidAppMainActivity() {
+        return androidAppMainActivity;
     }
 
     public WebDriverPlatform getPlatform() {
@@ -158,6 +168,14 @@ public class MobileTestSession extends AbstractTestSession {
             deviceType = getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE_TYPE);
         }
 
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.ANDROID_APP_MAIN_ACTIVITY))) {
+            androidAppMainActivity = getLocalConfigProperty(ConfigProperty.ANDROID_APP_MAIN_ACTIVITY);
+        }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.ANDROID_APP_PACKAGE))) {
+            androidAppPackage = getLocalConfigProperty(ConfigProperty.ANDROID_APP_PACKAGE);
+        }
+
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
             if (StringUtils.isNotBlank(deviceTestAnnotation.appName())) {
@@ -186,7 +204,7 @@ public class MobileTestSession extends AbstractTestSession {
                 mobileNode = deviceTestAnnotation.mobileNodeType();
             }
             this.mobileNodeType = MobileNodeType.getMobileNodeType(mobileNode);
-            
+
             initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities(), method);
         }
 

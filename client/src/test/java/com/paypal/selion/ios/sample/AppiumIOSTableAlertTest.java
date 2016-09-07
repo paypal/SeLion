@@ -30,7 +30,7 @@ import com.paypal.selion.platform.mobile.ios.UIATableView;
 public class AppiumIOSTableAlertTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testTableAlertOfVisibleElement() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -53,7 +53,7 @@ public class AppiumIOSTableAlertTest {
     }
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testTableAlertOfNotVisibleElement() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 4; i++) {
@@ -70,7 +70,7 @@ public class AppiumIOSTableAlertTest {
     }
 
     @Test(expectedExceptions = UIOperationFailedException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testInvalideTableCellClick() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 4; i++) {
@@ -83,7 +83,7 @@ public class AppiumIOSTableAlertTest {
     }
 
     @Test(expectedExceptions = UIOperationFailedException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testInvalidAlertButtonClick() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 4; i++) {

@@ -44,7 +44,7 @@ public class IOSDriverSliderSwitchTest {
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testSliderDrag() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -64,7 +64,7 @@ public class IOSDriverSliderSwitchTest {
         Assert.assertEquals(sliderText.getValue(), "0.762712", "Slider value does not match");
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testSwitchStateChange() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
