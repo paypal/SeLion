@@ -31,7 +31,6 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 public class AppiumAndroidEditTextTest {
     
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String DEVICE_NAME = "android:19";
     private static final String TEXT_FIELD_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/sampleTxbEditable";
 
     private UiObject textField;
@@ -42,7 +41,7 @@ public class AppiumAndroidEditTextTest {
     }
     
     @Test
-    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testMobileTextField() {
         MobileTextField mobileTextField = new UiTextView(TEXT_FIELD_LOCATOR);
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
@@ -59,7 +58,7 @@ public class AppiumAndroidEditTextTest {
     }
 
     @Test
-    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testSetText() {
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
         textField.setText("SeLion");
@@ -67,7 +66,7 @@ public class AppiumAndroidEditTextTest {
     }
 
     @Test
-    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testSetClearText() {
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
         textField.setText("SeLion");

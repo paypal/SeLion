@@ -116,7 +116,7 @@ public final class Config {
      */
     public synchronized static void initConfig(ISuite suite) {
         SeLionLogger.getLogger().entering(suite);
-        Map<ConfigProperty, String> initialValues = new HashMap<ConfigProperty, String>();
+        Map<ConfigProperty, String> initialValues = new HashMap<>();
         for (ConfigProperty prop : ConfigProperty.values()) {
             String paramValue = suite.getParameter(prop.getName());
             // empty values may be valid for some properties
@@ -138,7 +138,7 @@ public final class Config {
      */
     public synchronized static void initConfig(ITestContext context) {
         SeLionLogger.getLogger().entering(context);
-        Map<ConfigProperty, String> initialValues = new HashMap<ConfigProperty, String>();
+        Map<ConfigProperty, String> initialValues = new HashMap<>();
         Map<String, String> testParams = context.getCurrentXmlTest().getLocalParameters();
         if (!testParams.isEmpty()) {
             for (ConfigProperty prop : ConfigProperty.values()) {
@@ -160,7 +160,7 @@ public final class Config {
      */
     public synchronized static void initConfig() {
         SeLionLogger.getLogger().entering();
-        Map<ConfigProperty, String> initialValues = new HashMap<ConfigProperty, String>();
+        Map<ConfigProperty, String> initialValues = new HashMap<>();
 
         initConfig(initialValues);
 
@@ -504,6 +504,16 @@ public final class Config {
          */
         MOBILE_APP_LOCALE("mobileAppLocale", "en_US", false),
 
+        /**
+         * This parameter represents the main activity of Android mobile appplication. By default it is always empty.
+         */
+        ANDROID_APP_MAIN_ACTIVITY("androidAppMainActivity", "", false),
+        
+        /**
+         * This parameter represents the package of Android mobile application. By default it is always empty.
+         */
+        ANDROID_APP_PACKAGE("androidAppPackage", "", false),
+        
         /**
          * This parameter represents device.
          */

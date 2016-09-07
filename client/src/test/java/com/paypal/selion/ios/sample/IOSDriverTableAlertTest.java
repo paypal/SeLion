@@ -43,7 +43,7 @@ public class IOSDriverTableAlertTest {
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testTableAlertOfVisibleElement() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -66,7 +66,7 @@ public class IOSDriverTableAlertTest {
         alert.clickCancelButton();
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testTableAlertOfNotVisibleElement() throws InterruptedException {
         UIANavigationBar navigationBar = null;
@@ -84,7 +84,7 @@ public class IOSDriverTableAlertTest {
     }
 
     @Test(expectedExceptions = UIOperationFailedException.class)
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     public void testInvalidAlertButtonClick() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 4; i++) {
@@ -100,7 +100,7 @@ public class IOSDriverTableAlertTest {
     }
 
     @Test(expectedExceptions = UIOperationFailedException.class)
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     public void testInvalideTableCellClick() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 4; i++) {

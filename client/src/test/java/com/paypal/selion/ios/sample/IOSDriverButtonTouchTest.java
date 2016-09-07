@@ -42,7 +42,7 @@ public class IOSDriverButtonTouchTest {
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testTwoFingerTap() throws InterruptedException {
         UIANavigationBar navigationBar = null;

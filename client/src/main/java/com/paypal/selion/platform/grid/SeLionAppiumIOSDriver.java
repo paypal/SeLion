@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,23 +19,19 @@ import io.appium.java_client.ios.IOSDriver;
 
 import java.net.URL;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.RemoteWebElement;
 
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.mobile.ios.GestureOptions;
 import com.paypal.selion.platform.mobile.ios.SeLionIOSBridgeDriver;
-import com.paypal.selion.platform.mobile.ios.GestureOptions.TapOptions;
 import com.paypal.selion.platform.mobile.ios.UIAElement;
 import com.paypal.test.utilities.logging.SimpleLogger;
+import io.appium.java_client.TouchAction;
+import org.openqa.selenium.Dimension;
 
 /**
  * <code>SeLionAppiumIOSDriver</code> provides facility to add custom {@link CommandExecutor} to {@link IOSDriver}. This
@@ -45,24 +41,20 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLionIOSBridgeDriver {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
-
-    private static final String SCROLLTO_SCRIPT = "mobile: scrollTo";
-
-    private static final String TAP_SCRIPT = "mobile: tap";
-
     private static final String ELEMENT = "element";
-
-    protected JavascriptExecutor javaScriptExecutor; // NOSONAR
+    private static final int TAP_DURATION = 100;
+    private static final int SWIPE_DURATION = 1500;
+    private static final int SWIPE_EDGE_OFFSET = 100;
+    private static final int DOUBLE_TAP_WAIT_TIME = 100;
+    private static final int MAX_SCROLL_COUNT = 9;
 
     public SeLionAppiumIOSDriver(URL url, Capabilities caps) {
         super(url, caps);
-        javaScriptExecutor = this;
     }
 
     public SeLionAppiumIOSDriver(CommandExecutor commandExecutor, Capabilities caps, URL url) {
         super(url, caps);
         setCommandExecutor(commandExecutor);
-        javaScriptExecutor = this;
     }
 
     @Override
@@ -76,56 +68,64 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
     @Override
     public void doubleTap(WebElement webElement) {
         logger.entering(webElement);
-        String elementId = ((RemoteWebElement) webElement).getId();
-        Map<String, String> optionsMap = createOptionsForDoubleTap(elementId, ONE_FINGER);
-        javaScriptExecutor.executeScript(TAP_SCRIPT, optionsMap);
+        new TouchAction(this)
+                .tap(webElement).release()
+                .waitAction(DOUBLE_TAP_WAIT_TIME)
+                .tap(webElement).release()
+                .perform();
         logger.exiting();
     }
 
     @Override
     public void scrollToVisible(WebElement webElement) {
         logger.entering(webElement);
-        String elementId = ((RemoteWebElement) webElement).getId();
-        Map<String, String> arguments = new HashMap<String, String>();
-        arguments.put(ELEMENT, elementId);
-        javaScriptExecutor.executeScript(SCROLLTO_SCRIPT, arguments);
+        Dimension dimension = manage().window().getSize();
+        int height = dimension.getHeight() - SWIPE_EDGE_OFFSET;
+        int startx = dimension.getWidth() / 2;
+        boolean found = false;
+        for (int i = 0; i < MAX_SCROLL_COUNT; i++) {
+            if (webElement.isDisplayed()) {
+                found = true;
+                break;
+            }
+            this.doSwipe(startx, height, startx, SWIPE_EDGE_OFFSET - height, SWIPE_DURATION);
+        }
+        if (!found && !webElement.isDisplayed()) {
+            // giving up scrolling for element to be displayed after MAX_SCROLL_COUNT reached.
+            throw new RuntimeException("element was not visible after scrolling");
+        }
         logger.exiting();
     }
 
     @Override
     public void tap(WebElement webElement) {
         logger.entering(webElement);
-        String elementId = ((RemoteWebElement) webElement).getId();
-        Map<String, String> optionsMap = createOptionsForSingleTap(elementId, ONE_FINGER);
-        javaScriptExecutor.executeScript(TAP_SCRIPT, optionsMap);
+        super.tap(1, webElement, TAP_DURATION);
         logger.exiting();
     }
 
+    @Deprecated
     @Override
     public void tapWithOptions(WebElement webElement, EnumMap<GestureOptions, String> gestureOptions) {
-        logger.entering(new Object[] { webElement, gestureOptions });
-        String elementId = ((RemoteWebElement) webElement).getId();
-        Map<String, String> optionsMap = new HashMap<>();
-        optionsMap.put(ELEMENT, elementId);
-        for (Entry<GestureOptions, String> entry : gestureOptions.entrySet()) {
-            optionsMap.put(entry.getKey().getOptionName(), entry.getValue());
-        }
-        javaScriptExecutor.executeScript(TAP_SCRIPT, optionsMap);
+        logger.entering(webElement, gestureOptions);
+        String s = gestureOptions.get(GestureOptions.TOUCH_COUNT);
+        int touchCount = s == null ? 1 : Integer.parseInt(s);
+        s = gestureOptions.get(GestureOptions.DURATION);
+        int duration = s == null ? TAP_DURATION : Integer.parseInt(s);
+        super.tap(touchCount, webElement, duration);
         logger.exiting();
     }
 
     @Override
     public void twoFingerTap(WebElement webElement) {
         logger.entering(webElement);
-        String elementId = ((RemoteWebElement) webElement).getId();
-        Map<String, String> optionsMap = createOptionsForSingleTap(elementId, TWO_FINGERS);
-        javaScriptExecutor.executeScript(TAP_SCRIPT, optionsMap);
+        super.tap(2, webElement, 1);
         logger.exiting();
     }
 
     @Override
     public void dragSliderToValue(WebElement webElement, double value) {
-        logger.entering(new Object[] { webElement, value });
+        logger.entering(webElement, value);
         String stringValue = String.valueOf(value);
         webElement.sendKeys(stringValue);
         logger.exiting();
@@ -133,7 +133,7 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
 
     @Override
     public void setPickerWheelValue(WebElement webElement, String value) {
-        logger.entering(new Object[] { webElement, value });
+        logger.entering(webElement, value);
         webElement.sendKeys(value);
         logger.exiting();
     }
@@ -160,25 +160,5 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
         String value = webElement.getAttribute("value");
         logger.exiting(value);
         return value;
-    }
-
-    private Map<String, String> createOptionsForSingleTap(String elementId, String fingers) {
-        TapOptions tapOptions = new TapOptions();
-        tapOptions.setOption(GestureOptions.TAP_COUNT, Integer.parseInt(SINGLE_TAP));
-        tapOptions.setOption(GestureOptions.TOUCH_COUNT, Integer.parseInt(fingers));
-        tapOptions.setOption(GestureOptions.DURATION, Integer.parseInt(TAP));
-        Map<String, String> optionsMap = tapOptions.asMap();
-        optionsMap.put(ELEMENT, elementId);
-        return optionsMap;
-    }
-
-    private Map<String, String> createOptionsForDoubleTap(String elementId, String fingers) {
-        TapOptions tapOptions = new TapOptions();
-        tapOptions.setOption(GestureOptions.TAP_COUNT, Integer.parseInt(DOUBLE_TAP));
-        tapOptions.setOption(GestureOptions.TOUCH_COUNT, Integer.parseInt(fingers));
-        tapOptions.setOption(GestureOptions.DURATION, Integer.parseInt(TAP));
-        Map<String, String> optionsMap = tapOptions.asMap();
-        optionsMap.put(ELEMENT, elementId);
-        return optionsMap;
     }
 }

@@ -34,7 +34,7 @@ import com.paypal.selion.platform.mobile.ios.UIAStaticText;
 public class AppiumIOSPickerTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testPickerValues() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {
@@ -49,7 +49,7 @@ public class AppiumIOSPickerTest {
     }
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testSetPickerValue() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {
@@ -64,7 +64,7 @@ public class AppiumIOSPickerTest {
     }
 
     @Test(expectedExceptions = WebDriverException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testInvalidXPath() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {
@@ -77,7 +77,7 @@ public class AppiumIOSPickerTest {
     }
 
     @Test(expectedExceptions = NoSuchElementException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testInvalidPickerLocator() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {
@@ -90,7 +90,7 @@ public class AppiumIOSPickerTest {
     }
 
     @Test(expectedExceptions = UIOperationFailedException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testInvalidWheelAccess() throws InterruptedException {
         UIANavigationBar navigationBar = null;
         for (int i = 0; i < 5; i++) {

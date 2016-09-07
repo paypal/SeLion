@@ -31,7 +31,7 @@ import com.paypal.selion.platform.mobile.ios.UIATextField;
 public class AppiumIOSButtonTapTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testSingleTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -44,7 +44,7 @@ public class AppiumIOSButtonTapTest {
     }
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testDoubleTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -58,7 +58,7 @@ public class AppiumIOSButtonTapTest {
     }
 
     @Test(expectedExceptions = WebDriverException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testInvalidXpath() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -69,7 +69,7 @@ public class AppiumIOSButtonTapTest {
     }
 
     @Test(expectedExceptions = NoSuchElementException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testInvalidLocator() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");

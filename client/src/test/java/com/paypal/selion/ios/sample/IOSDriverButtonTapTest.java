@@ -44,7 +44,7 @@ public class IOSDriverButtonTapTest {
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testSingleTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -57,7 +57,7 @@ public class IOSDriverButtonTapTest {
         Assert.assertEquals(singleTapResponseTextField.getValue(), "Tap Count: 1", "Single tap count does not match");
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testDoubleTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -72,7 +72,7 @@ public class IOSDriverButtonTapTest {
     }
 
     @Test(expectedExceptions = InvalidSelectorException.class)
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     public void testInvalidXpath() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -83,7 +83,7 @@ public class IOSDriverButtonTapTest {
     }
 
     @Test(expectedExceptions = NoSuchElementException.class)
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     public void testInvalidLocator() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");

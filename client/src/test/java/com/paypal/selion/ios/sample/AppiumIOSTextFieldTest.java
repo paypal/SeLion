@@ -31,7 +31,7 @@ public class AppiumIOSTextFieldTest {
     private static final String TEXT_FIELD_LOCATOR = "xpath=//UIAApplication[1]/UIAWindow[1]/UIATextField[2]";
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testMobileTextField() {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");

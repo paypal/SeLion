@@ -31,7 +31,7 @@ import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
 public class AppiumIOSButtonTouchTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
     public void testTwoFingerTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");

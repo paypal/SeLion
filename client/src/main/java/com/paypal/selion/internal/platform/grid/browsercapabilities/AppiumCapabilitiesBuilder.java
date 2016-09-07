@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -30,8 +30,10 @@ class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private static final String APPIUM_ANDROID_PLATFORM_TYPE = "ANDROID";
     private static final String APPIUM_IOS_PLATFORM_TYPE = "iOS";
     private static final String MOBILE_NODE_TYPE = "mobileNodeType";
-    private static final String APPIUM_LOCALE_TYPE = "locale";
-    private static final String APPIUM_LANGUAGE_TYPE = "language";
+    private static final String ANDROID_APP_MAIN_ACTIVITY = "appActivity";
+    private static final String ANDROID_APP_WAIT_ACTIVITY = "appWaitActivity";
+    private static final String ANDROID_APP_PACKAGE = "appPackage";
+    private static final String ANDROID_APP_WAIT_PACKAGE = "appWaitPackage";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
@@ -42,11 +44,20 @@ class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         if (StringUtils.isBlank(mobileSession.getAppName())) {
             capabilities.setCapability(MobileCapabilityType.APP, mobileSession.getAppPath());
         }
+        if (StringUtils.isNotBlank(mobileSession.getAndroidAppMainActivity())) {
+            capabilities.setCapability(ANDROID_APP_MAIN_ACTIVITY, mobileSession.getAndroidAppMainActivity());
+            capabilities.setCapability(ANDROID_APP_WAIT_ACTIVITY, mobileSession.getAndroidAppMainActivity());
+        }
+        if (StringUtils.isNotBlank(mobileSession.getAndroidAppPackage())) {
+            capabilities.setCapability(ANDROID_APP_PACKAGE, mobileSession.getAndroidAppPackage());
+            capabilities.setCapability(ANDROID_APP_WAIT_PACKAGE, mobileSession.getAndroidAppPackage());
+        }
+        
         capabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getAsString());
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, mobileSession.getDeviceType());
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, mobileSession.getPlatformVersion());
-        capabilities.setCapability(APPIUM_LOCALE_TYPE, mobileSession.getAppLocale());
-        capabilities.setCapability(APPIUM_LANGUAGE_TYPE, mobileSession.getAppLanguage());
+        capabilities.setCapability(MobileCapabilityType.LOCALE, mobileSession.getAppLocale());
+        capabilities.setCapability(MobileCapabilityType.LANGUAGE, mobileSession.getAppLanguage());
         if (mobileSession.getPlatform() == WebDriverPlatform.ANDROID) {
             capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, APPIUM_ANDROID_PLATFORM_TYPE);
         }
