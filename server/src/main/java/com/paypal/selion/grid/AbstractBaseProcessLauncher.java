@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -84,7 +84,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
         public int getProcessId() {
             if (SystemUtils.IS_OS_WINDOWS) {
-                //TODO implement me 
+                //TODO implement me
                 throw new IllegalStateException("Implementation missing.. No means to detect sub process pid on Windows");
             }
             try {
@@ -150,7 +150,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     /**
      * Set the command line to invoke
-     * 
+     *
      * @param commandLine
      *            a {@link CommandLine} to invoke
      */
@@ -160,7 +160,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     /**
      * Init with the supplied dash arguments and the default {@link ProcessLauncherOptions}
-     * 
+     *
      * @param args
      */
     void init(String[] args) {
@@ -169,7 +169,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     /**
      * Init with the supplied dash arguments and the supplied {@link ProcessLauncherOptions}
-     * 
+     *
      * @param args
      * @param options
      */
@@ -206,7 +206,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
             if (!isInitialized()) {
                 FileDownloader.checkForDownloads(getType(), getLauncherOptions()
                         .isFileDownloadCheckTimeStampOnInvocation(), getLauncherOptions()
-                        .isFileDownladCleanupOnInvocation());
+                        .isFileDownloadCleanupOnInvocation());
             }
 
             startProcess(false);
@@ -258,7 +258,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
                 addJVMShutDownHook();
                 FileDownloader.checkForDownloads(getType(), getLauncherOptions()
                         .isFileDownloadCheckTimeStampOnInvocation(), getLauncherOptions()
-                        .isFileDownladCleanupOnInvocation());
+                        .isFileDownloadCleanupOnInvocation());
                 setInitialized(true);
             }
 
@@ -413,7 +413,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
         if (getLauncherOptions().isIncludeJavaSystemProperties()) {
             for (String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
-                // add all system properties the user specified except 'java.util.loggin.config.file'
+                // add all system properties the user specified except 'java.util.logging.config.file'
                 if (jvmArg.startsWith("-D")) {
                     String propName = jvmArg.substring(2, jvmArg.indexOf("="));
                     if (!"java.util.logging.config.file".equalsIgnoreCase(propName)) {

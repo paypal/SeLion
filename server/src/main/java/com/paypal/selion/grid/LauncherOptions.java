@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -30,7 +30,7 @@ public interface LauncherOptions {
     /**
      * @return the configured state.
      */
-    boolean isFileDownladCleanupOnInvocation();
+    boolean isFileDownloadCleanupOnInvocation();
 
     /**
      * Enable/Disable download.json time stamp check. If enabled, subsequent calls to {@link FileDownloader} will
@@ -57,7 +57,7 @@ public interface LauncherOptions {
             return (T) this;
         }
 
-        public boolean isFileDownladCleanupOnInvocation() {
+        public boolean isFileDownloadCleanupOnInvocation() {
             return fileDownloadCleanupOnInvocation;
         }
 

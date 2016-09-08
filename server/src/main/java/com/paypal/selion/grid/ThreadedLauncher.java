@@ -41,7 +41,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
     /**
      * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
      * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
-     * 
+     *
      * @param args
      *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      */
@@ -52,7 +52,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
     /**
      * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
      * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
-     * 
+     *
      * @param args
      *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      * @param launcherOptions
@@ -65,7 +65,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
     /**
      * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
      * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
-     * 
+     *
      * @param args
      *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      * @param launcherOptions
@@ -81,7 +81,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
 
         this.downloadList = downloadList;
 
-        List<String> commands = new LinkedList<String>(Arrays.asList(args));
+        List<String> commands = new LinkedList<>(Arrays.asList(args));
         setCommands(commands);
 
         // setup the SeLion config if the user want to override the default
@@ -96,7 +96,7 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
             if (!isInitialized() && downloadList != null) {
                 FileDownloader.checkForDownloads(downloadList, getLauncherOptions()
                         .isFileDownloadCheckTimeStampOnInvocation(), getLauncherOptions()
-                        .isFileDownladCleanupOnInvocation());
+                        .isFileDownloadCleanupOnInvocation());
             }
             setInitialized(true);
 

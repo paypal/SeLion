@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -14,19 +14,6 @@
 \*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.grid;
-/*-------------------------------------------------------------------------------------------------------------------*\
-|                                                                                                                     |
-|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
-|  with the License.                                                                                                  |
-|                                                                                                                     |
-|  You may obtain a copy of the License at                                                                            |
-|                                                                                                                     |
-|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
-|                                                                                                                     |
-|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
-|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
-|  the specific language governing permissions and limitations under the License.                                     |
-\*-------------------------------------------------------------------------------------------------------------------*/
 
 import static com.paypal.selion.pojos.SeLionGridConstants.*;
 
@@ -41,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.annotations.Beta;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.paypal.selion.grid.ProcessLauncherOptions;
 import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
@@ -63,7 +49,7 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
         super();
         init(args, options);
     }
-    
+
     /**
      * Get program arguments to pass
      *
@@ -73,7 +59,7 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
     @Override
     String[] getProgramArguments() throws IOException {
         LOGGER.entering();
-        List<String> args = new LinkedList<String>(Arrays.asList(super.getProgramArguments()));
+        List<String> args = new LinkedList<>(Arrays.asList(super.getProgramArguments()));
 
         // add the defaults which we don't already have a value for
         for (Entry<String, JsonElement> entry : defaultArgs.entrySet()) {
@@ -88,7 +74,7 @@ class MobileProcessLauncher extends AbstractBaseProcessLauncher {
         }
 
         // filter out SeLion Grid specific args which do not apply
-        List<String> filteredArgs = new LinkedList<String>();
+        List<String> filteredArgs = new LinkedList<>();
         filteredArgs.add(SELION_CONFIG_ARG);
         filteredArgs.add(SELION_NOCONTINUOUS_ARG);
 

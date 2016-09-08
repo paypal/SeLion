@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -44,7 +44,7 @@ import com.paypal.selion.logging.SeLionGridLogger;
 abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AbstractBaseLauncher.class);
-    
+
     /*
      * Launcher options to consider.
      */
@@ -71,7 +71,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     /**
      * Set this launchers to initialized
-     * 
+     *
      * @param state
      *            the new state
      */
@@ -81,7 +81,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     /**
      * Set this launchers commands
-     * 
+     *
      * @param commands
      *            the launcher commands
      */
@@ -101,7 +101,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
      * {@link #setType(InstanceType)} this method attempt to determine the type by inspecting the {@link #commands}.
      * Inspection does not work for mobile instance types. Therefore, it is best to always call
      * {@link #setType(InstanceType)} beforehand.
-     * 
+     *
      * @return an {@link InstanceType}
      */
     final InstanceType getType() {
@@ -113,7 +113,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     /**
      * Set the {@link InstanceType} for this launcher.
-     * 
+     *
      * @param type
      *            the {@link InstanceType}
      */
@@ -124,7 +124,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     /**
      * Return the {@link InstanceType}. Defaults to {@link InstanceType#SELENIUM_STANDALONE}. Does not work or mobile
      * instance types.
-     * 
+     *
      * @param commands
      *            command line arguments passed from User
      * @return an {@link InstanceType}
@@ -153,7 +153,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
         InstanceType type = getType();
         // start with the commands we have
-        List<String> args = new LinkedList<String>(commands);
+        List<String> args = new LinkedList<>(commands);
 
         // add the default hub or node config arguments
         if (InstanceType.SELENIUM_NODE.equals(type)) {
@@ -164,8 +164,8 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
         }
         // else role is standalone
 
-        // pass the -selionConfig arg, if not a standalone
-        if ((!InstanceType.SELENIUM_STANDALONE.equals(type)) && (!commands.contains(SELION_CONFIG_ARG))) {
+        // pass the -selionConfig by default, when not already present.
+        if (!commands.contains(SELION_CONFIG_ARG)) {
             args.add(SELION_CONFIG_ARG);
             args.add(SELION_CONFIG_FILE);
         }
@@ -185,7 +185,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
         LOGGER.info("This instance is considered a SeLion Grid Node");
 
-        List<String> args = new LinkedList<String>();
+        List<String> args = new LinkedList<>();
 
         if (!commands.contains(NODE_CONFIG_ARG)) {
             args.add(NODE_CONFIG_ARG);
@@ -208,7 +208,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
         LOGGER.info("This instance is considered a SeLion Grid Hub");
 
-        List<String> args = new LinkedList<String>();
+        List<String> args = new LinkedList<>();
 
         if (!commands.contains(HUB_CONFIG_ARG)) {
             String hubConfig = HUB_CONFIG_FILE;
@@ -233,7 +233,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     /**
      * Get the host for the instance represented by this launcher
-     * 
+     *
      * @return the host information
      */
     String getHost() {
@@ -266,7 +266,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     /**
      * Get the port for the instance represented by this launcher
-     * 
+     *
      * @return the port information.
      */
     int getPort() {
@@ -292,7 +292,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
         }
 
         // last ditch effort
-        val = (type.equals(InstanceType.SELENIUM_NODE)) ? 5555 : 4444;
+        val = (val != -1) ? val : 4444;
         LOGGER.exiting(val);
         return val;
     }
@@ -322,25 +322,25 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     /**
      * Get the config file path for the instance represented by this launcher.
-     * 
+     *
      * @return the config file path or <code>null</code> if no config file was specified
      */
     private String getSeleniumConfigFilePath() {
         LOGGER.entering();
-        
+
         String result = null;
         InstanceType type = getType();
-        
+
         if (type.equals(InstanceType.SELENIUM_NODE)) {
             result = NODE_CONFIG_FILE;
-            if (commands.contains("-nodeConfig")) {
-                result = commands.get(commands.indexOf("-nodeConfig" + 1));
+            if (commands.contains(NODE_CONFIG_ARG)) {
+                result = commands.get(commands.indexOf(NODE_CONFIG_ARG) + 1);
             }
         }
         if (type.equals(InstanceType.SELENIUM_HUB)) {
             result = HUB_CONFIG_FILE;
-            if (commands.contains("-hubConfig")) {
-                result = commands.get(commands.indexOf("-hubConfig" + 1));
+            if (commands.contains(HUB_CONFIG_ARG)) {
+                result = commands.get(commands.indexOf(HUB_CONFIG_ARG) + 1);
             }
         }
         LOGGER.exiting(result);

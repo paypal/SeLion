@@ -25,9 +25,19 @@ public class ConfigureSuiteTest {
         // Should compute to "{selion-project-dir}/server/target/.selion"
         System.setProperty("selionHome", new File(ConfigureSuiteTest.class.getResource("/").getPath())
                 .getAbsoluteFile().getParent() + "/.selion");
-        // Invoke a launcher with the '-type sauce -role hub' option, to ensure firstTimeSetup() is complete for the new
-        // selionHome.
-        ThreadedLauncher launcher = new ThreadedLauncher(new String[] { "-role", "hub", "-type", "sauce" });
+
+        ThreadedLauncher launcher;
+
+        // Invoke a launcher to ensure firstTimeSetup() is complete for the new selionHome.
+        launcher = new ThreadedLauncher(new String[] { "-role", "hub" });
+        launcher.run();
+        launcher.shutdown();
+        // Invoke it to also ensure the node files are in place
+        launcher = new ThreadedLauncher(new String[] { "-role", "node" });
+        launcher.run();
+        launcher.shutdown();
+        // Invoke it to also ensure the sauce proxy/hub files are in place
+        launcher = new ThreadedLauncher(new String[] { "-role", "hub", "-type", "sauce" });
         launcher.run();
         launcher.shutdown();
     }
