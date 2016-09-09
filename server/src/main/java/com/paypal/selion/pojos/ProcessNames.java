@@ -27,7 +27,9 @@ public enum ProcessNames {
     PHANTOMJS("phantomjs.exe", "phantomjs"),
     WERFAULT("werfault.exe", "NOTAPPLICABLE"),
     MICROSOFTEDGE("MicrosoftEdge.exe", "NOTAPPLICABLE"),
-    EDGEDRIVER("MicrosoftWebDriver.exe", "NOTAPPLICABLE");
+    EDGEDRIVER("MicrosoftWebDriver.exe", "NOTAPPLICABLE"),
+    GECKODRIVER("geckodriver.exe", "geckodriver"),
+    ;
 
     private ProcessNames(String windowsImageName, String unixImageName) {
         this.windowsImageName = windowsImageName;

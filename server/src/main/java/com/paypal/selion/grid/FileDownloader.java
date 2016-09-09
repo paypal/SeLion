@@ -319,7 +319,7 @@ final class FileDownloader {
         String fileType = url.substring(url.lastIndexOf('.') + 1);
         if (!SUPPORTED_TYPES.contains(fileType)) {
             throw new UnsupportedOperationException("Unsupported file format: " + fileType
-                    + ". Supported file types are .zip, .tar, .msi and bz2");
+                    + ". Supported file types are " +  StringUtils.join(SUPPORTED_TYPES, ","));
         }
     }
 

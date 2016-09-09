@@ -31,6 +31,8 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.compressors.bzip2.BZip2Utils;
+import org.apache.commons.compress.compressors.gzip.GzipUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.Platform;
@@ -49,8 +51,7 @@ final class FileExtractor {
 
     static String getFileNameFromPath(String name) {
         String[] path = name.split("/");
-        String s = path[path.length - 1];
-        return s;
+        return path[path.length - 1];
     }
 
     /**
@@ -59,14 +60,14 @@ final class FileExtractor {
      * @return {@link List} of {@link String} containing the executable file names.
      */
     static List<String> getExecutableNames() {
-        List<String> executableNames = new ArrayList<String>();
+        List<String> executableNames = new ArrayList<>();
         if (Platform.getCurrent().is(Platform.WINDOWS)) {
             Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getWindowsImageName(),
                     ProcessNames.CHROMEDRIVER.getWindowsImageName(), ProcessNames.IEDRIVER.getWindowsImageName(),
-                    ProcessNames.EDGEDRIVER.getWindowsImageName());
+                    ProcessNames.EDGEDRIVER.getWindowsImageName(), ProcessNames.GECKODRIVER.getWindowsImageName());
         } else {
             Collections.addAll(executableNames, ProcessNames.PHANTOMJS.getUnixImageName(),
-                    ProcessNames.CHROMEDRIVER.getUnixImageName());
+                    ProcessNames.CHROMEDRIVER.getUnixImageName(), ProcessNames.GECKODRIVER.getUnixImageName());
         }
         return executableNames;
     }
@@ -80,12 +81,17 @@ final class FileExtractor {
         boolean isCompressedArchive = false;
         String compressName = null;
         String outputArchiveName = null;
-        List<String> files = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
 
-        if (archiveFile.endsWith(".bz2")) {
+        if (BZip2Utils.isCompressedFilename(archiveFile)) {
             isCompressedArchive = true;
             compressName = CompressorStreamFactory.BZIP2;
-            outputArchiveName = archiveFile.substring(0, archiveFile.lastIndexOf('.'));
+            outputArchiveName = BZip2Utils.getUncompressedFilename(archiveFile);
+            LOGGER.fine("Output archive name: " + outputArchiveName);
+        } else if (GzipUtils.isCompressedFilename(archiveFile)) {
+            isCompressedArchive = true;
+            compressName = CompressorStreamFactory.GZIP;
+            outputArchiveName = GzipUtils.getUncompressedFilename(archiveFile);
             LOGGER.fine("Output archive name: " + outputArchiveName);
         }
 
