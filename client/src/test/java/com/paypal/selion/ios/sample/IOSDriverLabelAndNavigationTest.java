@@ -43,14 +43,14 @@ public class IOSDriverLabelAndNavigationTest {
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testLabelValue() throws InterruptedException {
         UIAStaticText label = new UIAStaticText("xpath=//UIAApplication[1]/UIAWindow[1]/UIAStaticText[1]");
         Assert.assertEquals(label.getValue(), "Page Objects Demo", "Label value does not match");
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testNavigationBarName() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -58,7 +58,7 @@ public class IOSDriverLabelAndNavigationTest {
         Assert.assertEquals(navigationBar.getName(), "Sample", "Navigation bar name does not match");
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testNavigationRightClick() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -68,7 +68,7 @@ public class IOSDriverLabelAndNavigationTest {
         Assert.assertEquals(navigationBar.getName(), "Tap", "Navigation right button not functioning properly");
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test
     public void testNavigationLeftClick() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -79,7 +79,7 @@ public class IOSDriverLabelAndNavigationTest {
         Assert.assertEquals(navigationBar.getName(), "Sample", "Navigation left button not functioning properly");
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test(expectedExceptions = WebDriverException.class)
     public void testInvalidLeftClick() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
@@ -87,7 +87,7 @@ public class IOSDriverLabelAndNavigationTest {
         navigationBar.clickLeftButton();
     }
 
-    @MobileTest(appName = "PageObjects", device = "iphone:8.1", deviceType = "iPhone5s")
+    @MobileTest(appName = "PageObjects")
     @Test(expectedExceptions = UIOperationFailedException.class)
     public void testInvalidRightClick() throws InterruptedException {
         UIANavigationBar navigationBar = null;

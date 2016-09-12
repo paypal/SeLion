@@ -15,6 +15,7 @@
 
 package com.paypal.selion.android.sample;
 
+import com.paypal.selion.platform.mobile.android.UiSlider;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -31,7 +32,6 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 public class AppiumAndroidCheckBoxSeekBarTest {
 
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
-    private static final String DEVICE_NAME = "android:19";
     private static final String ACTION_BUTTON_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/btnNext";
     private static final String SEEK_BAR_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/stateSeekBar";
     private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/stateTextSlider";
@@ -40,7 +40,7 @@ public class AppiumAndroidCheckBoxSeekBarTest {
     private static final String VALUE_TEXTVIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/stateTxtSwitch";
 
     private UiButton menuButton;
-    private UiObject seekBar;
+    private UiSlider seekBar;
     private UiTextView seekBarTextView;
     private UiTextView checkBoxTextView;
     private UiObject checkBox;
@@ -48,14 +48,14 @@ public class AppiumAndroidCheckBoxSeekBarTest {
     @BeforeClass
     public void initElements() {
         menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
-        seekBar = new UiObject(SEEK_BAR_LOCATOR);
+        seekBar = new UiSlider(SEEK_BAR_LOCATOR);
         seekBarTextView = new UiTextView(TEXT_VIEW_LOCATOR);
         checkBox = new UiObject(CHECKBOX_LOCATOR);
         checkBoxTextView = new UiTextView(VALUE_TEXTVIEW_LOCATOR);
     }
 
-    @Test
-    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
+//    @Test
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testCheckBox() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(ACTION_BUTTON_LOCATOR);
@@ -69,7 +69,7 @@ public class AppiumAndroidCheckBoxSeekBarTest {
     }
 
     @Test
-    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH, device = DEVICE_NAME)
+    @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testSeekBar() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(ACTION_BUTTON_LOCATOR);
@@ -77,8 +77,8 @@ public class AppiumAndroidCheckBoxSeekBarTest {
         menuButton.click(seekBar);
         seekBar.swipeRight();
         Assert.assertEquals(seekBarTextView.getText(), "1.000000", "Seek Bar swipe right value does not match");
-        seekBar = new UiObject(SEEK_BAR_LOCATOR);
-        seekBar.swipeLeft();
+        seekBar = new UiSlider(SEEK_BAR_LOCATOR);
+        seekBar.dragToValue(0.0);
         Assert.assertEquals(seekBarTextView.getText(), "0.000000", "Seek Bar swipe right value does not match");
     }
 
