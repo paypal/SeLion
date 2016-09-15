@@ -19,7 +19,7 @@
         <iosdriver.version>0.6.5</iosdriver.version>
         <selendroid.version>0.17.0</selendroid.version>
         <appium.version>3.4.1</appium.version>
-        <testng.version>6.9.10</testng.version>
+        <testng.version>6.9.12</testng.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <htmlunit.version>2.20</htmlunit.version>
         <project.bom.version>${project.version}</project.bom.version>
@@ -59,6 +59,11 @@
             <id>sonatype-nexus-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
+        <repository>
+            <id>jcenter</id>
+            <name>bintray</name>
+            <url>http://jcenter.bintray.com</url>
+          </repository>
     </repositories>
 
     <distributionManagement>
