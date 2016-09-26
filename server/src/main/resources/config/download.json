@@ -3,8 +3,8 @@
     "name": "selenium",
     "roles": [ "node", "hub", "standalone", "sauce" ],
     "any": {
-      "url": "https://selenium-release.storage.googleapis.com/3.0-beta3/selenium-server-standalone-3.0.0-beta3.jar",
-      "checksum": "5c97631ccb1f92eb9f682cd845611738"
+      "url": "https://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.1.jar",
+      "checksum": "31a9b1af54c6b00cc6028370e3e00a91"
     }
   },
   {
@@ -27,16 +27,16 @@
     "name": "geckodriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-win64.zip",
-      "checksum": "81c02ec7778e511cf393974e93de8f7988989039"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-win64.zip",
+      "checksum": "c41ef7cbfa9a8039b0918073bbe56316fa906e83"
     },
     "linux": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-linux64.tar.gz",
-      "checksum": "918c5744ac2b013bd2a76560af2b8872a92850eb"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz",
+      "checksum": "a8bff7a660e5ca5b1a5e7b8040b32c8e551da5ef"
     },
     "mac": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.9.0/geckodriver-v0.9.0-mac.tar.gz",
-      "checksum": "fe1373f5b8716939012199b67c60997318b3c201"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-macos.tar.gz",
+      "checksum": "cec3a1bfd6717ec853058316a508e701b3fda57d"
     }
   },
   {
@@ -59,8 +59,8 @@
     "name": "iedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "http://selenium-release.storage.googleapis.com/2.53/IEDriverServer_Win32_2.53.0.zip",
-      "checksum": "63066830741d59ae6c74045a9f24291c"
+      "url": "http://selenium-release.storage.googleapis.com/3.0/IEDriverServer_Win32_3.0.0.zip",
+      "checksum": "4ba666e144f07869a0aa5f7a4c7a2091"
     }
   },
   {

@@ -23,6 +23,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
@@ -39,19 +40,17 @@ public class SeLionSauceProxyTest {
 
     private HttpClientFactory httpClientFactory;
     private Hub hub;
-    private int port;
     private RegistrationRequest req;
     private File tempFile;
 
     @BeforeClass
     public void setup() throws Exception {
         httpClientFactory = new HttpClientFactory();
-        port = PortProber.findFreePort();
 
         String[] args = new String[] {
                 "-role", "hub",
                 "-host", "localhost",
-                "-port", String.valueOf(port),
+                "-port", String.valueOf(PortProber.findFreePort()),
                 "-servlet", "com.paypal.selion.grid.servlets.LoginServlet",
                 "-servlet", "com.paypal.selion.grid.servlets.SauceServlet"
         };
@@ -62,14 +61,13 @@ public class SeLionSauceProxyTest {
         hub.start();
     }
 
-    @Test()
+    @Test
     public void testSauceProxyConfig() throws Exception {
         InputStream stream = this.getClass().getResourceAsStream(SeLionGridConstants.NODE_SAUCE_CONFIG_FILE_RESOURCE);
         tempFile = File.createTempFile("selion-test", null);
         FileUtils.copyInputStreamToFile(stream, tempFile);
-        req = new RegistrationRequest();
-        req.loadFromJSON(tempFile.toString());
-        assertTrue(req.getCapabilities().size() > 0);
+        req = new RegistrationRequest(GridNodeConfiguration.loadFromJSON(tempFile.toString()));
+        assertTrue(req.getConfiguration().capabilities.size() > 0);
     }
 
     @Test(dependsOnMethods = "testSauceProxyConfig")

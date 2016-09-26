@@ -241,8 +241,7 @@ public class LoginServletTest extends BaseGridRegistyServletTest {
         nodeConfig.host = ipAddress;
         nodeConfig.port = nodePort;
 
-        RegistrationRequest registrationRequest = new RegistrationRequest();
-        registrationRequest.setConfiguration(nodeConfig);
+        RegistrationRequest registrationRequest = new RegistrationRequest(nodeConfig);
 
         // Add a DefaultRemoteProxy to the registry
         RemoteProxy remoteProxy = new DefaultRemoteProxy(registrationRequest, registry);

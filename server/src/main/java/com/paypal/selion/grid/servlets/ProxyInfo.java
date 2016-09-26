@@ -54,7 +54,7 @@ final class ProxyInfo {
 
     /**
      * The url to view logs (via LogServlet) on the proxy. Defaults to {@value #NOT_AVAILABLE}
-     * 
+     *
      * @see SeLionRemoteProxy#supportsViewLogs()
      */
     private String logsLocation = NOT_AVAILABLE;
@@ -162,7 +162,7 @@ final class ProxyInfo {
 
     /**
      * Initializes proxy information from the supplied {@link RemoteProxy} object
-     * 
+     *
      * @param proxy
      *            the {@link RemoteProxy}
      * @param queryStatus
@@ -222,7 +222,7 @@ final class ProxyInfo {
     // SeLion specific features
     private void initSeLionRemoteProxySpecificValues(RemoteProxy proxy) {
         if (SeLionRemoteProxy.class.getCanonicalName().equals(
-                proxy.getOriginalRegistrationRequest().getRemoteProxyClass())) {
+                proxy.getOriginalRegistrationRequest().getConfiguration().proxy)) {
             SeLionRemoteProxy srp = (SeLionRemoteProxy) proxy;
 
             // figure out if the proxy is scheduled to shutdown

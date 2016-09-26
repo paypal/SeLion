@@ -1,4 +1,4 @@
 {
   "authenticationKey": "",
-  "sauceURL": "https://saucelabs.com/rest/v1/"
+  "sauceURL": "https://saucelabs.com/rest/v1"
 }

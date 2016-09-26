@@ -32,7 +32,6 @@ import com.paypal.selion.logging.SeLionGridLogger;
 public final class JarSpawner extends AbstractBaseProcessLauncher {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(JarSpawner.class);
-    private static final String SEPARATOR = "\n----------------------------------\n";
 
     public JarSpawner(String[] args) {
         this(args, null);
@@ -52,20 +51,9 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
      */
     void printUsageInfo() {
         StringBuilder usage = new StringBuilder();
-        usage.append(SEPARATOR);
-        usage.append("To use SeLion Grid");
-        usage.append(SEPARATOR);
-        usage.append("\n");
-        usage.append("Usage: java [system properties] -jar SeLion-Grid.jar [options] \n");
-        usage.append("\n");
-        usage.append("  Options:\n");
-        usage.append("    Any valid standalone or grid dash options. See above.\n");
-        usage.append("       E.g. '-role hub -port 2054' -- To start a hub on port 2054. \n");
-        usage.append("\n");
         usage.append("  System Properties: \n");
         usage.append("    -DselionHome=<folderPath>: \n");
-        usage.append("       Path of SeLion home directory. Defaults to \n");
-        usage.append("       <user.home>/.selion/ \n");
+        usage.append("       Path of SeLion home directory. Defaults to <user.home>/.selion/ \n");
         usage.append("    -D[property]=[value]: \n");
         usage.append("       Any other System Property you wish to pass to the JVM \n");
 
@@ -107,7 +95,7 @@ public final class JarSpawner extends AbstractBaseProcessLauncher {
     String[] getJavaSystemPropertiesArguments() throws IOException {
         LOGGER.entering();
         List<String> args = new LinkedList<>();
-        
+
         // include everything a typical process launcher would add for a java process
         args.addAll(Arrays.asList(super.getJavaSystemPropertiesArguments()));
 

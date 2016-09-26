@@ -16,20 +16,39 @@
 package com.paypal.selion.grid;
 
 import com.beust.jcommander.ParametersDelegate;
+
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 
+/**
+ * SeLion Grid "standalone" configuration which includes SeLion Grid {@link ProcessLauncherConfiguration} configuration,
+ * and Selenium {@link StandaloneConfiguration} configuration
+ */
 public class SeLionStandaloneConfiguration {
+    /**
+     * The Selenium {@link StandaloneConfiguration}
+     */
     @ParametersDelegate
-    private StandaloneConfiguration sc = new StandaloneConfiguration();
+    StandaloneConfiguration standaloneConfiguration = new StandaloneConfiguration();
 
+    /**
+     * The SeLion {@link ProcessLauncherConfiguration}
+     */
     @ParametersDelegate
-    private ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
+    ProcessLauncherConfiguration processLauncherConfiguration = new ProcessLauncherConfiguration();
 
     public StandaloneConfiguration getStandaloneConfiguration() {
-        return sc;
+        return standaloneConfiguration != null ? standaloneConfiguration : new StandaloneConfiguration();
+    }
+
+    public void setStandaloneConfiguration(StandaloneConfiguration standaloneConfiguration) {
+        this.standaloneConfiguration = standaloneConfiguration;
     }
 
     public ProcessLauncherConfiguration getProcessLauncherConfiguration() {
-        return plc;
+        return processLauncherConfiguration != null ? processLauncherConfiguration : new ProcessLauncherConfiguration();
+    }
+
+    public void setProcessLauncherConfiguration(ProcessLauncherConfiguration processLauncherConfiguration) {
+        this.processLauncherConfiguration = processLauncherConfiguration;
     }
 }

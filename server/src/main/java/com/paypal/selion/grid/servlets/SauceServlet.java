@@ -16,7 +16,6 @@
 package com.paypal.selion.grid.servlets;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -25,23 +24,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.proxy.SeLionSauceProxy;
 import com.paypal.selion.utils.SauceLabsRestApi;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import com.paypal.selion.utils.ServletHelper;
@@ -56,16 +55,15 @@ public class SauceServlet extends RegistryBasedServlet {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SauceServlet.class);
     private static final long serialVersionUID = 9187677490975386050L;
 
-    private static final String REMOTE_HOST_CONFIG_PROPERTY = "remoteHost";
-    private static final String CAPABILITIES_KEY = "capabilities";
-    private static final String CONFIGURATION_KEY = "configuration";
-    private static final String MAX_SESSION_CONFIG_PROPERTY = "maxSession";
     private static final String MAX_INSTANCES_CONFIG_PROPERTY = "maxInstances";
+    private static final String SAUCELABS_BROWSER_NAME = "saucelabs";
+    private static final String PROXY_HOST = "ondemand.saucelabs.com";
+    private static final int PROXY_PORT = 80;
 
     /**
      * The proxy id that will be used to register to the hub
      */
-    public static final String PROXY_ID = "http://ondemand.saucelabs.com:80";
+    public static final String PROXY_ID = "http://" + PROXY_HOST + ":" + PROXY_PORT;
 
     /**
      * Request parameter that trigger a proxy shutdown action
@@ -171,8 +169,8 @@ public class SauceServlet extends RegistryBasedServlet {
      */
     private String getRegistrationRequestEntity() throws FileNotFoundException {
         // update the registration request with the max concurrent sessions/vms
-        final JsonReader reader = new JsonReader(new FileReader(SeLionGridConstants.NODE_SAUCE_CONFIG_FILE));
-        final JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
+        final GridNodeConfiguration gnc =
+                GridNodeConfiguration.loadFromJSON(SeLionGridConstants.NODE_SAUCE_CONFIG_FILE);
 
         // get the max concurrent vm's allowed for the account from sauce labs
         final SauceLabsRestApi restApi;
@@ -185,23 +183,29 @@ public class SauceServlet extends RegistryBasedServlet {
         final int maxConcurrent = restApi.getMaxConcurrency();
         if (maxConcurrent != -1) {
             // update max sessions
-            if (json.has(CONFIGURATION_KEY)) {
-                json.getAsJsonObject(CONFIGURATION_KEY).addProperty(MAX_SESSION_CONFIG_PROPERTY, maxConcurrent);
-            }
-            // update all browser max instances for all "browser" types
-            if (json.has(CAPABILITIES_KEY)) {
-                for (JsonElement jsonElement : json.get(CAPABILITIES_KEY).getAsJsonArray()) {
-                    jsonElement.getAsJsonObject().addProperty(MAX_INSTANCES_CONFIG_PROPERTY, maxConcurrent);
+            gnc.maxSession = maxConcurrent;
+
+            // update browser max instances for all saucelabs "browser" types
+            for (DesiredCapabilities caps : gnc.capabilities) {
+                if (caps.getBrowserName().equals(SAUCELABS_BROWSER_NAME)) {
+                    caps.setCapability(MAX_INSTANCES_CONFIG_PROPERTY, maxConcurrent);
                 }
             }
         }
 
-        // ensure the remoteHost / proxy id is set to http://ondemand.saucelabs.com:80
-        if (json.has(CONFIGURATION_KEY)) {
-            json.getAsJsonObject(CONFIGURATION_KEY).addProperty(REMOTE_HOST_CONFIG_PROPERTY, PROXY_ID);
+        // ensure the proxy host, port, id is set for http://ondemand.saucelabs.com:80
+        if (StringUtils.isBlank(gnc.host)) {
+            gnc.host = PROXY_HOST;
+        }
+        if (StringUtils.isBlank(gnc.id)) {
+            gnc.id = PROXY_ID;
+        }
+        if (gnc.port == null || gnc.port < 0) {
+            gnc.port = PROXY_PORT;
         }
 
-        return json.toString();
+        return new RegistrationRequest(gnc, SeLionSauceProxy.class.getSimpleName(), 
+                "SeLion Grid Virtual Sauce Proxy").toJson().toString();
     }
 
     @Override

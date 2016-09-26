@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -165,6 +165,6 @@ public class BasicPageImplTest {
 
     private String getScript() throws IOException {
         File scriptFile = new File("src/test/resources/testdata/InsertHtmlElements.js");
-        return FileUtils.readFileToString(scriptFile);
+        return FileUtils.readFileToString(scriptFile, "UTF-8");
     }
 }

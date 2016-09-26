@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -27,7 +27,6 @@ import org.apache.commons.io.IOUtils;
 import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.grid.RunnableLauncher.InstanceType;
 import com.paypal.selion.logging.SeLionGridLogger;
-import com.paypal.selion.utils.ConfigParser;
 
 final class InstallHelper {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(InstallHelper.class);
@@ -53,7 +52,6 @@ final class InstallHelper {
             FileUtils.forceMkdir(new File(LOGS_DIR));
             copyFileFromResources(DOWNLOAD_JSON_FILE_RESOURCE, DOWNLOAD_JSON_FILE);
             copyFileFromResources(SELION_CONFIG_FILE_RESOURCE, SELION_CONFIG_FILE);
-            ConfigParser.setConfigFile(SELION_CONFIG_FILE);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to install required components. Please make sure you have write "
                     + "access to " + SeLionConstants.SELION_HOME_DIR + " or specify a different home directory with -DselionHome.", e);
@@ -105,7 +103,7 @@ final class InstallHelper {
                     "UTF-8");
             value = value.concat("\njava.util.logging.FileHandler.pattern=" + logPath + "selion-grid-" + type.getFriendlyName()
                     + "-%g.log");
-            FileUtils.writeStringToFile(new File(installedFile), value);
+            FileUtils.writeStringToFile(new File(installedFile), value, "UTF-8");
             LOGGER.fine("Logger file created successfully. Path is " + installedFile);
         }
 

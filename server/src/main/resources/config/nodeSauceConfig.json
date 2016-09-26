@@ -1,17 +1,12 @@
 {
-  "class": "org.openqa.grid.common.RegistrationRequest",
   "capabilities": [{
     "platform": "ANY",
     "browserName": "saucelabs",
     "maxInstances": 1
   }],
-  "configuration": {
-    "cleanUpCycle": 30000,
-    "timeout": 120000,
-    "proxy": "com.paypal.selion.proxy.SeLionSauceProxy",
-    "maxSession": 1,
-    "role": "wd",
-    "url": "http://localhost:4444",
-    "remoteHost": "http://ondemand.saucelabs.com:80"
-  }
+  "cleanUpCycle": 30000,
+  "timeout": 120000,
+  "proxy": "com.paypal.selion.proxy.SeLionSauceProxy",
+  "maxSession": 1,
+  "remoteHost": "http://ondemand.saucelabs.com:80"
 }

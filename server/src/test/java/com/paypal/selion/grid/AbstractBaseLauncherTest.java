@@ -27,6 +27,10 @@ import static org.testng.Assert.*;
 
 import static com.paypal.selion.pojos.SeLionGridConstants.*;
 import static com.paypal.selion.grid.RunnableLauncher.InstanceType.*;
+import static com.paypal.selion.grid.ProcessLauncherConfiguration.SELION_CONFIG_ARG;
+import static com.paypal.selion.grid.AbstractBaseLauncher.ROLE_ARG;
+import static com.paypal.selion.grid.AbstractBaseLauncher.HUB_CONFIG_ARG;
+import static com.paypal.selion.grid.AbstractBaseLauncher.NODE_CONFIG_ARG;
 
 public class AbstractBaseLauncherTest {
     private class DummyProcessLauncher extends AbstractBaseLauncher {
@@ -34,16 +38,20 @@ public class AbstractBaseLauncherTest {
             this(new String[] {});
         }
 
-        public DummyProcessLauncher(String [] args) {
+        public DummyProcessLauncher(String[] args) {
             List<String> commands = new LinkedList<>(Arrays.asList(args));
             setCommands(commands);
         }
 
         @Override
-        public void shutdown() {}
+        public void shutdown() {
+            // do nothing
+        }
 
         @Override
-        public void run() {}
+        public void run() {
+            // do nothing
+        }
     }
 
     @BeforeClass
@@ -63,23 +71,23 @@ public class AbstractBaseLauncherTest {
         assertEquals(launcher.getHost(), "localhost");
 
         // attempt to read from SeLion's default hubConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "hub"});
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "hub" });
         assertEquals(launcher.getHost(), "localhost");
 
         // attempt to read from provided hubConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "hub", HUB_CONFIG_ARG, HUB_CONFIG_FILE});
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "hub", HUB_CONFIG_ARG, HUB_CONFIG_FILE });
         assertEquals(launcher.getHost(), "localhost");
 
         // attempt to read from SeLion's default nodeConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "node"});
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "node" });
         assertEquals(launcher.getHost(), "localhost");
 
         // attempt to read from provided nodeConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "node", NODE_CONFIG_ARG, NODE_CONFIG_FILE});
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "node", NODE_CONFIG_ARG, NODE_CONFIG_FILE });
         assertEquals(launcher.getHost(), "localhost");
 
         // host provided case
-        launcher = new DummyProcessLauncher(new String[] {"-host", "dummyhost"});
+        launcher = new DummyProcessLauncher(new String[] { "-host", "dummyhost" });
         assertEquals(launcher.getHost(), "dummyhost");
     }
 
@@ -92,24 +100,23 @@ public class AbstractBaseLauncherTest {
         assertEquals(launcher.getPort(), 4444);
 
         // attempt to read from SeLion's default hubConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "hub"});
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "hub" });
         assertEquals(launcher.getPort(), 4444);
 
         // attempt to read from provided hubConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "hub", HUB_CONFIG_ARG, HUB_CONFIG_FILE});
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "hub", HUB_CONFIG_ARG, HUB_CONFIG_FILE });
         assertEquals(launcher.getPort(), 4444);
 
-
-        // attempt to read from nodeConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "node"});
+        // attempt to read from SeLion's default nodeConfig.json
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "node" });
         assertEquals(launcher.getPort(), 5555);
 
         // attempt to read from provided nodeConfig.json
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "node", NODE_CONFIG_ARG, NODE_CONFIG_FILE});
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "node", NODE_CONFIG_ARG, NODE_CONFIG_FILE });
         assertEquals(launcher.getPort(), 5555);
 
         // port provided case
-        launcher = new DummyProcessLauncher(new String[] {"-port", "1234"});
+        launcher = new DummyProcessLauncher(new String[] { "-port", "1234" });
         assertEquals(launcher.getPort(), 1234);
     }
 
@@ -123,23 +130,25 @@ public class AbstractBaseLauncherTest {
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_FILE));
 
         // "node" case
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "node"});;
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "node" });
+        ;
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_ARG));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_FILE));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(NODE_CONFIG_ARG));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(NODE_CONFIG_FILE));
 
         // "hub" case
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "hub"});;
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "hub" });
+        ;
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_ARG));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_FILE));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(HUB_CONFIG_ARG));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(HUB_CONFIG_FILE));
 
         // -selionConfig already provided case
-        launcher = new DummyProcessLauncher(new String[] {SELION_CONFIG_ARG, "mySeLionConfig.json"});
+        launcher = new DummyProcessLauncher(new String[] { SELION_CONFIG_ARG, "mySeLionConfig.json" });
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_ARG));
-        assertTrue(Arrays.asList(launcher.getProgramArguments()).contains( "mySeLionConfig.json"));
+        assertTrue(Arrays.asList(launcher.getProgramArguments()).contains("mySeLionConfig.json"));
     }
 
     @Test
@@ -149,7 +158,7 @@ public class AbstractBaseLauncherTest {
         launcher = new DummyProcessLauncher();
         assertTrue(launcher.getCommands().isEmpty());
 
-        launcher = new DummyProcessLauncher(new String[] {"-foo", "bar", "-bar", "baz"});
+        launcher = new DummyProcessLauncher(new String[] { "-foo", "bar", "-bar", "baz" });
         assertEquals(launcher.getCommands().size(), 4);
         assertTrue(launcher.getCommands().contains("-foo"));
     }
@@ -163,17 +172,17 @@ public class AbstractBaseLauncherTest {
         assertEquals(launcher.getType(), SELENIUM_STANDALONE);
 
         // "node" case
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "node"});;
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "node" });
         assertEquals(launcher.getType(), SELENIUM_NODE);
 
         // "hub" case
-        launcher = new DummyProcessLauncher(new String[] {ROLE_ARG, "hub"});;
+        launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "hub" });
         assertEquals(launcher.getType(), SELENIUM_HUB);
     }
 
     @Test
     public void testGetLauncherOptions() {
-        LauncherOptions options = new LauncherOptions.LauncherOptionsImpl();
+        LauncherOptions options = new LauncherConfiguration();
         options.setFileDownloadCheckTimeStampOnInvocation(true);
         DummyProcessLauncher launcher = new DummyProcessLauncher();
         launcher.setLauncherOptions(options);

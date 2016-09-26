@@ -93,8 +93,7 @@ public class BaseGridRegistyServletTest {
         nodeConfig.host = ipAddress;
         nodeConfig.port = nodePort;
 
-        RegistrationRequest registrationRequest = new RegistrationRequest();
-        registrationRequest.setConfiguration(nodeConfig);
+        RegistrationRequest registrationRequest = new RegistrationRequest(nodeConfig);
 
         // Add a BaseRemoteProxy to the registry
         RemoteProxy remoteProxy = new BaseRemoteProxy(registrationRequest, registry);

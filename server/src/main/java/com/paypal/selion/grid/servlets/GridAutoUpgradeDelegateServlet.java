@@ -182,7 +182,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
     private void showDefaultPage(HttpServletResponse response) throws IOException {
         String downloadJSON = "";
         try {
-            downloadJSON = FileUtils.readFileToString(new File(SeLionGridConstants.DOWNLOAD_JSON_FILE));
+            downloadJSON = FileUtils.readFileToString(new File(SeLionGridConstants.DOWNLOAD_JSON_FILE), "UTF-8");
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Unable to open download.json file", e);
         }

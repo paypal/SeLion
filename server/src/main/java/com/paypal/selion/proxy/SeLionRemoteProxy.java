@@ -71,30 +71,30 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
  * <code>SeLionConfig.json</code> with the setting <code>uniqueSessionCount</code>.<br>
  * <br>
  * For example:
- * 
+ *
  * <pre>
  *  "uniqueSessionCount": 25
  * </pre>
- * 
+ *
  * Here the value 25 indicates that the proxy will stop accepting new connections after 25 unique sessions and trigger a
  * graceful shutdown (see below). A value of <=0 indicates that this feature is disabled.</li>
- * 
+ *
  * <li>Request remote proxy to shutdown either forcefully or gracefully -- issues a request to
  * {@link NodeForceRestartServlet}. In the case of a graceful restart, the proxy respects a wait timeout for any
  * sessions in progress to complete. This is controlled via the json config file <code>SeLionConfig.json</code> with the
  * setting <code>nodeRecycleThreadWaitTimeout</code>.<br>
  * <br>
  * For example:
- * 
+ *
  * <pre>
  *  "nodeRecycleThreadWaitTimeout": 300
  * </pre>
- * 
+ *
  * Here the value 300 is in seconds -- the proxy will wait this amount of time before forcing a shutdown action. A value
  * of 0 indicates that the proxy will wait indefinitely.</li>
- * 
+ *
  * <li>Request remote proxy to auto upgrade -- issues a request to {@link NodeAutoUpgradeServlet}.</li>
- * 
+ *
  * <li>Determine whether the remote proxy supports {@link NodeAutoUpgradeServlet}, {@link NodeForceRestartServlet}, and
  * {@link LogServlet}</li>
  * </ul>
@@ -264,7 +264,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     /**
      * Upgrades the node by calling {@link NodeAutoUpgradeServlet} and then {@link #requestNodeShutdown}
-     * 
+     *
      * @param downloadJSON
      *            the download.json to install on node
      * @return <code>true</code> on success. <code>false</code> when an error occured.
@@ -377,7 +377,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private void updateBrowserCache(RegistrationRequest request) throws MalformedURLException {
         // Update the browser information cache. Used by GridStatics servlet
-        for (DesiredCapabilities desiredCapabilities : request.getCapabilities()) {
+        for (DesiredCapabilities desiredCapabilities : request.getConfiguration().capabilities) {
             Map<String, ?> capabilitiesMap = desiredCapabilities.asMap();
             String browserName = capabilitiesMap.get(CapabilityType.BROWSER_NAME).toString();
             String maxInstancesAsString = capabilitiesMap.get("maxInstances").toString();

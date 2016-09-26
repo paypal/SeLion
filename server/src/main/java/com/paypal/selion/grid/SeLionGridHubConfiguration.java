@@ -17,35 +17,52 @@ package com.paypal.selion.grid;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 
+/**
+ * An extension of {@link SeLionGridConfiguration} for the "hub" which includes SeLion Grid
+ * {@link ProcessLauncherConfiguration} configuration, and Selenium {@link GridHubConfiguration} configuration
+ */
 public class SeLionGridHubConfiguration extends SeLionGridConfiguration {
     public static final String TYPE = "type";
+    public static final String TYPE_ARG =  "-" + TYPE;
+
+    /**
+     * The SeLion hub type.
+     */
     @Parameter(
-            names = "-" + TYPE,
+            names = TYPE_ARG,
             description = "<String> type : Used to start a hub with the on demand sauce proxy. Accepted values : [sauce]"
     )
-    public String type;
+    String type;
 
+    /**
+     * The Selenium {@link GridHubConfiguration}
+     */
     @ParametersDelegate
-    private GridHubConfiguration ghc = new GridHubConfiguration();
+    GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
 
-    @ParametersDelegate
-    private ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public GridHubConfiguration getGridHubConfiguration() {
-        return ghc;
+        return gridHubConfiguration;
     }
 
-    public void setGridHubConfiguration(GridHubConfiguration ghc) {
-        this.ghc = ghc;
+    public void setGridHubConfiguration(GridHubConfiguration gridHubConfiguration) {
+        this.gridHubConfiguration = gridHubConfiguration;
     }
 
-    public ProcessLauncherConfiguration getProcessLauncherConfiguration() {
-        return plc;
-    }
-
+    /**
+     * merges the "custom:" { ... } values for this configuration
+     */
     protected void mergeCustom() {
-        super.mergeCustom(ghc);
+        super.mergeCustom(gridHubConfiguration);
     }
 }

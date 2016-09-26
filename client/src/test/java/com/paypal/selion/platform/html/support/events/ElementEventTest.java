@@ -147,6 +147,6 @@ public class ElementEventTest {
 
     private String getScript() throws IOException {
         File scriptFile = new File("src/test/resources/testdata/InsertHtmlElements.js");
-        return FileUtils.readFileToString(scriptFile);
+        return FileUtils.readFileToString(scriptFile, "UTF-8");
     }
 }

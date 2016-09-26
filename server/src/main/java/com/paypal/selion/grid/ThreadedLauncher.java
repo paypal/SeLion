@@ -15,11 +15,13 @@
 
 package com.paypal.selion.grid;
 
-import static com.paypal.selion.pojos.SeLionGridConstants.*;
-
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import com.paypal.selion.logging.SeLionGridLogger;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.utils.ConfigParser;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,8 +53,9 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
 
     /**
      * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
-     * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
-     *
+     * <code>-selionConfig</code>. Uses the provided {@link LauncherOptions}. All {@code args} take precedence over the
+     * {@code launcherOptions} and/or other values.
+     * 
      * @param args
      *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      * @param launcherOptions
@@ -64,7 +67,8 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
 
     /**
      * Initialize a new SeLion Grid with the args supplied. Supports SeLion specific args such as
-     * <code>-selionConfig</code>. Uses a default set of {@link LauncherOptions}.
+     * <code>-selionConfig</code>. Uses the provided {@link LauncherOptions} and the provided download list. All
+     * {@code args} take precedence over the {@code launcherOptions} and/or other values.
      *
      * @param args
      *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
@@ -75,19 +79,41 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
      */
     public ThreadedLauncher(String[] args, LauncherOptions launcherOptions, List<String> downloadList) {
         super();
+        LauncherConfiguration lc = new LauncherConfiguration();
+        lc.merge(launcherOptions);
+
+        JCommander commander = new JCommander();
+        commander.setAcceptUnknownOptions(true);
+        commander.addObject(lc);
+        try {
+            commander.parse(args);
+            // we need to consider the selionConfig file when the caller is providing
+            // a non-default selionConfig file location
+            if (lc.getSeLionConfig() != SeLionGridConstants.SELION_CONFIG_FILE) {
+                // reload the config from the file
+                lc = LauncherConfiguration.loadFromFile(lc.getSeLionConfig());
+                // re-merge the launcherOptions
+                lc.merge(launcherOptions);
+                // re-parse the args
+                commander = new JCommander();
+                commander.setAcceptUnknownOptions(true);
+                commander.addObject(lc);
+                commander.parse(args);
+            }
+        } catch (ParameterException | IOException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
         setLauncherOptions(launcherOptions);
-
-        InstallHelper.firstTimeSetup();
-
-        this.downloadList = downloadList;
 
         List<String> commands = new LinkedList<>(Arrays.asList(args));
         setCommands(commands);
 
-        // setup the SeLion config if the user want to override the default
-        if (commands.contains(SELION_CONFIG_ARG)) {
-            ConfigParser.setConfigFile(commands.get(commands.indexOf(SELION_CONFIG_ARG) + 1));
-        }
+        // setup the SeLion config
+        ConfigParser.setConfigFile(lc.getSeLionConfig());
+
+        ident();
+        InstallHelper.firstTimeSetup();
+        this.downloadList = downloadList;
     }
 
     public void run() {
@@ -115,7 +141,8 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
     }
 
     /**
-     * Shutdown the instance. Calls {@link SeLionGridLauncherV3#shutdown()} for the instance associated with this object.
+     * Shutdown the instance. Calls {@link SeLionGridLauncherV3#shutdown()} for the instance associated with this
+     * object.
      */
     public void shutdown() {
         LOGGER.entering();

@@ -31,6 +31,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
+
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -45,7 +48,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.ProcessUtils;
 
 import com.paypal.selion.SeLionConstants;
-import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.ConfigParser;
 import com.paypal.selion.utils.process.ProcessHandlerFactory;
@@ -84,15 +86,16 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
         public int getProcessId() {
             if (SystemUtils.IS_OS_WINDOWS) {
-                //TODO implement me
-                throw new IllegalStateException("Implementation missing.. No means to detect sub process pid on Windows");
+                // TODO implement me
+                throw new IllegalStateException(
+                        "Implementation missing.. No means to detect sub process pid on Windows");
             }
             try {
                 Field f = process.getClass().getDeclaredField("pid");
                 f.setAccessible(true);
                 Integer pid = (Integer) f.get(process);
                 return pid;
-            } catch (Exception e) { //NOSONAR
+            } catch (Exception e) { // NOSONAR
                 throw new RuntimeException("Couldn't detect sub process pid", e);
             }
         }
@@ -159,36 +162,62 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
     }
 
     /**
-     * Init with the supplied dash arguments and the default {@link ProcessLauncherOptions}
+     * Init with the supplied {@code args} and a default {@link ProcessLauncherConfiguration}. All {@code args} take
+     * precedence over any other values.
      *
      * @param args
+     *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      */
     void init(String[] args) {
         init(args, null);
     }
 
     /**
-     * Init with the supplied dash arguments and the supplied {@link ProcessLauncherOptions}
+     * Init with the supplied dash {@code args} and the supplied {@link ProcessLauncherOptions}. All {@code args} take
+     * precedence over the {@code options} and/or other values.
      *
      * @param args
+     *            The program arguments to use. Can be a mix of SeLion and selenium arguments.
      * @param options
+     *            {@link ProcessLauncherOptions} to consider
      */
     void init(String[] args, ProcessLauncherOptions options) {
-        setLauncherOptions(options);
+        ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
+        plc.merge(options);
 
-        InstallHelper.firstTimeSetup();
+        JCommander commander = new JCommander();
+        commander.setAcceptUnknownOptions(true);
+        commander.addObject(plc);
+        try {
+            commander.parse(args);
+            // we need to consider the selionConfig file when the caller is providing
+            // a non-default selionConfig file location
+            if (plc.getSeLionConfig() != SELION_CONFIG_FILE) {
+                // reload the config from the file
+                plc = ProcessLauncherConfiguration.loadFromFile(plc.getSeLionConfig());
+                // re-merge the options
+                plc.merge(options);
+                // re-parse the args
+                commander = new JCommander();
+                commander.setAcceptUnknownOptions(true);
+                commander.addObject(plc);
+                commander.parse(args);
+            }
+        } catch (ParameterException | IOException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            System.exit(1);
+        }
+        setLauncherOptions(plc);
 
-        List<String> commands = new LinkedList<String>(Arrays.asList(args));
+        // save off all the command line that were provided.
+        List<String> commands = new LinkedList<>(Arrays.asList(args));
         setCommands(commands);
 
-        if (Arrays.asList(args).contains(SELION_NOCONTINUOUS_ARG)) {
-            getLauncherOptions().setContinuouslyRestart(false);
-        }
+        // setup the SeLion config
+        ConfigParser.setConfigFile(plc.getSeLionConfig());
 
-        // setup the SeLion config if the user want to override the default
-        if (commands.contains(SELION_CONFIG_ARG)) {
-            ConfigParser.setConfigFile(commands.get(commands.indexOf(SELION_CONFIG_ARG) + 1));
-        }
+        ident();
+        InstallHelper.firstTimeSetup();
     }
 
     /**
@@ -200,7 +229,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      * @throws InterruptedException
      */
     final void continuouslyRestart(long interval) throws IOException, InterruptedException {
-        LOGGER.entering(new Object[]{interval});
+        LOGGER.entering(new Object[] { interval });
 
         while (true) {
             if (!isInitialized()) {
@@ -262,15 +291,17 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
                 setInitialized(true);
             }
 
-            if (getCommands().contains(HELP_ARG) || getCommands().contains("-h")) {
+            if (getCommands().contains("-help") || getCommands().contains("--help") || getCommands().contains("-h")) {
                 startProcess(true);
                 handler.waitFor();
-                printUsageInfo();
+                if (handler.getExitValue() == 0) {
+                    printUsageInfo();
+                }
                 return;
             }
 
             if (getLauncherOptions().isContinuouslyRestart()) {
-                long interval = ConfigParser.parse().getLong("restartCycle", 60000L);
+                long interval = getLauncherOptions().getRestartCycle();
                 LOGGER.info("Restart cycle will check every " + interval + " ms");
                 continuouslyRestart(interval);
             }
@@ -279,7 +310,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
             startProcess(false);
             handler.waitFor();
         } catch (InterruptedException | IOException e) {
-            //log the exception and exit, if shutdown was not called
+            // log the exception and exit, if shutdown was not called
             if (!shutdownCalled) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 System.exit(1);
@@ -332,7 +363,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      */
     String[] getJavaClassPathArguments(String jarNamePrefix, String mainClass) {
         LOGGER.entering();
-        Set<String> uniqueClassPathEntries = new LinkedHashSet<String>();
+        Set<String> uniqueClassPathEntries = new LinkedHashSet<>();
 
         // find all jars in the SELION_HOME_DIR
         if (getLauncherOptions().isIncludeJarsInSeLionHomeDir()) {
@@ -383,7 +414,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      */
     String[] getJavaSystemPropertiesArguments() throws IOException {
         LOGGER.entering();
-        List<String> args = new LinkedList<String>();
+        List<String> args = new LinkedList<>();
 
         // Next, FWD all JVM -D args to the child process
         args.addAll(Arrays.asList(getPresentJavaSystemPropertiesArguments()));
@@ -397,7 +428,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     private String[] getLoggingSystemPropertiesArguments() throws IOException {
         LOGGER.entering();
-        List<String> args = new LinkedList<String>();
+        List<String> args = new LinkedList<>();
 
         if (getLauncherOptions().isSetupLoggingForJavaSubProcess()) {
             InstallHelper.createLoggingPropertiesFile(getType());
@@ -409,7 +440,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     private String[] getPresentJavaSystemPropertiesArguments() {
         LOGGER.entering();
-        List<String> args = new LinkedList<String>();
+        List<String> args = new LinkedList<>();
 
         if (getLauncherOptions().isIncludeJavaSystemProperties()) {
             for (String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
@@ -433,13 +464,13 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
     @Override
     ProcessLauncherOptions getLauncherOptions() {
         if (launcherOptions == null) {
-            launcherOptions = new ProcessLauncherOptionsImpl();
+            launcherOptions = new ProcessLauncherConfiguration();
         }
         return launcherOptions;
     }
 
     final void addJVMShutDownHook() {
-        shutDownHook.setName("SeLionJarSpawnerShutdownHook");
+        shutDownHook.setName("SeLionProcessLauncherShutdownHook");
         Runtime.getRuntime().addShutdownHook(shutDownHook);
     }
 

@@ -28,9 +28,9 @@ import org.openqa.selenium.os.CommandLine;
 import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.LauncherConfiguration;
 import com.paypal.selion.grid.LauncherOptions;
 import com.paypal.selion.grid.ThreadedLauncher;
-import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -58,7 +58,7 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
             String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
             String hub = String.format("http://%s:%s/grid/register", instance.getHost(), hubPort);
 
-            LauncherOptions launcherOptions = new LauncherOptionsImpl()
+            LauncherOptions launcherOptions = new LauncherConfiguration()
                     .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
 
             List<String> downloadList = determineListOfDownloadsToProcess();
