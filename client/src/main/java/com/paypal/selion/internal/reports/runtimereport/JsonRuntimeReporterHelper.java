@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -192,7 +192,7 @@ public class JsonRuntimeReporterHelper {
         logger.entering(new Object[] { file, data });
 
         try {
-            FileUtils.writeStringToFile(file, data, true);
+            FileUtils.writeStringToFile(file, data, "UTF-8", true);
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ReporterException(e);
@@ -471,7 +471,7 @@ public class JsonRuntimeReporterHelper {
         String jsonTxt;
 
         try {
-            jsonTxt = FileUtils.readFileToString(jsonFile);
+            jsonTxt = FileUtils.readFileToString(jsonFile, "UTF-8");
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ReporterException(e);

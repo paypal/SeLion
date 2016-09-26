@@ -15,13 +15,13 @@
         <compileSource>1.8</compileSource>
         <skipTests>false</skipTests>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>3.0.0-beta3</selenium.version>
+        <selenium.version>3.0.1</selenium.version>
         <iosdriver.version>0.6.5</iosdriver.version>
         <selendroid.version>0.17.0</selendroid.version>
         <appium.version>4.1.2</appium.version>
         <testng.version>6.9.10</testng.version>
         <snakeyaml.version>1.15</snakeyaml.version>
-        <htmlunit.version>2.20</htmlunit.version>
+        <htmlunit.version>2.23</htmlunit.version>
         <project.bom.version>${project.version}</project.bom.version>
     </properties>
 

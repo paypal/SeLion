@@ -16,28 +16,32 @@
 package com.paypal.selion.grid;
 
 import com.beust.jcommander.ParametersDelegate;
+
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
+/**
+ * An extension of {@link SeLionGridConfiguration} for "nodes" which includes SeLion Grid
+ * {@link ProcessLauncherConfiguration} configuration, and Selenium {@link GridNodeConfiguration} configuration
+ */
 public class SeLionGridNodeConfiguration extends SeLionGridConfiguration {
+    /**
+     * The Selenium {@link GridNodeConfiguration}
+     */
     @ParametersDelegate
-    private GridNodeConfiguration gnc = new GridNodeConfiguration();
-
-    @ParametersDelegate
-    private ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
+    GridNodeConfiguration gridNodeConfiguration = new GridNodeConfiguration();
 
     public GridNodeConfiguration getGridNodeConfiguration() {
-        return gnc;
+        return gridNodeConfiguration;
     }
 
-    public void setGridNodeConfiguration(GridNodeConfiguration gnc) {
-        this.gnc = gnc;
+    public void setGridNodeConfiguration(GridNodeConfiguration gridNodeConfiguration) {
+        this.gridNodeConfiguration = gridNodeConfiguration;
     }
 
-    public ProcessLauncherConfiguration getProcessLauncherConfiguration() {
-        return plc;
-    }
-
+    /**
+     * merges the "custom:" { ... } values for this configuration
+     */
     protected void mergeCustom() {
-        super.mergeCustom(gnc);
+        super.mergeCustom(gridNodeConfiguration);
     }
 }

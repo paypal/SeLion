@@ -23,10 +23,15 @@
 package com.paypal.selion.grid;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
 
 import com.beust.jcommander.JCommander;
 import com.paypal.selion.utils.ConfigParser;
+
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.RegistrationRequest;
@@ -37,14 +42,16 @@ import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.grid.shared.CliUtils;
 import org.openqa.grid.web.Hub;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
 
 import com.google.common.collect.ImmutableMap;
 import com.paypal.selion.logging.SeLionGridLogger;
+
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
 /**
- * The SeLion version of the {@link GridLauncherV3}. We have intentionally duplicatedcode from {@link GridLauncherV3}
+ * The SeLion version of the {@link GridLauncherV3}. We have intentionally duplicated code from {@link GridLauncherV3}
  * because {@link GridLauncherV3} is meddling around with the {@link Logger} and thus preventing us from feeding in
  * {@link Logger} properties to control/tweak the File and console level logging. This class represents a stripped
  * version of {@link GridLauncherV3} without the logging tweaks.</br> </br> Use of this class to launch SeLion Grid
@@ -71,13 +78,16 @@ public class SeLionGridLauncherV3 {
             public void setConfiguration(String[] args) {
                 SeLionStandaloneConfiguration ssc = new SeLionStandaloneConfiguration();
                 new JCommander(ssc, args);
-                configuration = ssc.getStandaloneConfiguration();
+                configuration = ssc.standaloneConfiguration;
                 helpRequested = configuration.help;
             }
 
             public void launch() throws Exception {
                 LOGGER.info("Launching a standalone Selenium Server");
                 SeleniumServer server = new SeleniumServer(configuration);
+                Map<String, Class<? extends Servlet>> servlets = new HashMap<>();
+                servlets.put("/*", DisplayHelpServlet.class);
+                server.setExtraServlets(servlets);
                 type = server;
                 server.boot();
                 LOGGER.info("Selenium Server is up and running");
@@ -92,15 +102,15 @@ public class SeLionGridLauncherV3 {
                 SeLionGridHubConfiguration sghc = new SeLionGridHubConfiguration();
                 new JCommander(sghc, args);
 
-                GridHubConfiguration pending = sghc.getGridHubConfiguration();
+                GridHubConfiguration pending = sghc.gridHubConfiguration;
                 //re-parse the args using any -hubConfig specified to init
                 if (pending.hubConfig != null) {
-                    sghc.setGridHubConfiguration(GridHubConfiguration
-                        .loadFromJSON(JSONConfigurationUtils.loadJSON(pending.hubConfig)));
+                    sghc.gridHubConfiguration = GridHubConfiguration
+                        .loadFromJSON(JSONConfigurationUtils.loadJSON(pending.hubConfig));
                     new JCommander(sghc, args);
                 }
                 sghc.mergeCustom();
-                configuration = sghc.getGridHubConfiguration();
+                configuration = sghc.gridHubConfiguration;
                 helpRequested = configuration.help;
             }
 
@@ -122,15 +132,15 @@ public class SeLionGridLauncherV3 {
                 SeLionGridNodeConfiguration sgnc = new SeLionGridNodeConfiguration();
                 new JCommander(sgnc, args);
 
-                GridNodeConfiguration pending = sgnc.getGridNodeConfiguration();
+                GridNodeConfiguration pending = sgnc.gridNodeConfiguration;
                 //re-parse the args using any -nodeConfig specified to init
                 if (pending.nodeConfigFile != null) {
-                    sgnc.setGridNodeConfiguration(GridNodeConfiguration
-                            .loadFromJSON(JSONConfigurationUtils.loadJSON(pending.nodeConfigFile)));
+                    sgnc.gridNodeConfiguration = GridNodeConfiguration
+                            .loadFromJSON(JSONConfigurationUtils.loadJSON(pending.nodeConfigFile));
                     new JCommander(sgnc, args);
                 }
                 sgnc.mergeCustom();
-                configuration = sgnc.getGridNodeConfiguration();
+                configuration = sgnc.gridNodeConfiguration;
                 helpRequested = configuration.help;
                 if (configuration.port == null) {
                     configuration.port = 5555;
@@ -200,12 +210,10 @@ public class SeLionGridLauncherV3 {
         commander.addObject(configuration);
         commander.parse(args);
 
-        ProcessLauncherConfiguration plc = configuration.getProcessLauncherConfiguration();
-        if (plc.selionConfig != null) {
-            ConfigParser.setConfigFile(plc.selionConfig);
-        }
+        LauncherConfiguration lc = configuration.processLauncherConfiguration;
+        ConfigParser.setConfigFile(lc.getSeLionConfig());
 
-        StandaloneConfiguration sc = configuration.getStandaloneConfiguration();
+        StandaloneConfiguration sc = configuration.standaloneConfiguration;
         String role = sc.role.toLowerCase();
         GridRole gridRole = GridRole.get(role);
         if (launchers.containsKey(gridRole)) {
@@ -225,13 +233,8 @@ public class SeLionGridLauncherV3 {
                     buildInfo.getReleaseLabel(),
                     buildInfo.getBuildRevision()));
 
-            try {
-                launcher.launch();
-                type = launcher.type;
-            } catch (Exception e) {
-                launcher.printUsage();
-                e.printStackTrace();
-            }
+            launcher.launch();
+            type = launcher.type;
         } else {
             printInfoAboutRoles(role);
             return;

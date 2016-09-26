@@ -63,7 +63,7 @@ public final class ConfigParser {
 
     /**
      * Set the config file
-     * 
+     *
      * @param file
      *            the SeLion Grid config file to use
      */
@@ -131,6 +131,36 @@ public final class ConfigParser {
         LOGGER.entering(new Object[] { key, defaultVal });
         try {
             return configuration.get(key).getAsLong();
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
+            return defaultVal;
+        }
+    }
+
+    /**
+     * @param key
+     *            The key for which the value is to be read for.
+     * @return a Boolean that represents the value for the key.
+     */
+    public boolean getBoolean(String key) {
+        LOGGER.entering(key);
+        try {
+            return configuration.get(key).getAsBoolean();
+        } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
+            throw new ConfigParserException(e);
+        }
+    }
+
+    /**
+     * @param key
+     *            The key for which the value is to be read for.
+     * @param defaultVal
+     *            default value to use if the key does not exist or has an malformed value.
+     * @return a Boolean that represents the value for the key or the defaultVal if no such key exists.
+     */
+    public boolean getBoolean(String key, boolean defaultVal) {
+        LOGGER.entering(new Object[] { key, defaultVal });
+        try {
+            return configuration.get(key).getAsBoolean();
         } catch (JsonSyntaxException | NullPointerException e) { // NOSONAR
             return defaultVal;
         }
@@ -245,7 +275,7 @@ public final class ConfigParser {
 
     /**
      * A custom exception that represents all problems arising out of parsing configurations via {@link ConfigParser}
-     * 
+     *
      */
     public static class ConfigParserException extends RuntimeException {
         private static final long serialVersionUID = 6165338826147933550L;

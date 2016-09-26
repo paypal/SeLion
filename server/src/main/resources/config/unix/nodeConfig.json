@@ -12,23 +12,21 @@
     "browserName": "phantomjs",
     "maxInstances": 10
   }],
-  "configuration": {
-    "servlets": [
-      "com.paypal.selion.node.servlets.LogServlet",
-      "com.paypal.selion.node.servlets.NodeAutoUpgradeServlet",
-      "com.paypal.selion.node.servlets.NodeForceRestartServlet"
-    ],
-    "cleanUpCycle": 30000,
-    "timeout": 120000,
-    "registerCycle": 300000,
-    "proxy": "com.paypal.selion.proxy.SeLionRemoteProxy",
-    "maxSession": 20,
-    "port": 5555,
-    "host": "ip",
-    "register": true,
-    "hubPort": 4444,
-    "custom": {
-      "nodeRecycleThreadWaitTimeout": 300
-    }
+  "servlets": [
+    "com.paypal.selion.node.servlets.LogServlet",
+    "com.paypal.selion.node.servlets.NodeAutoUpgradeServlet",
+    "com.paypal.selion.node.servlets.NodeForceRestartServlet"
+  ],
+  "cleanUpCycle": 30000,
+  "timeout": 120000,
+  "registerCycle": 300000,
+  "proxy": "com.paypal.selion.proxy.SeLionRemoteProxy",
+  "maxSession": 20,
+  "port": 5555,
+  "host": "ip",
+  "register": true,
+  "hub": "http://localhost:4444/grid/register",
+  "custom": {
+    "nodeRecycleThreadWaitTimeout": 300
   }
 }

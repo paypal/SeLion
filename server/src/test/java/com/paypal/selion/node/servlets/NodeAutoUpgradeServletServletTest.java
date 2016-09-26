@@ -66,7 +66,7 @@ public class NodeAutoUpgradeServletServletTest extends BaseNodeServletTest {
         request.addParameter(InsecureHttpPostAuthChallenge.TOKEN_PARAMETER,
                              InsecureHttpPostAuthChallenge.CONFIGURED_TOKEN_VALUE);
         request.addParameter(GridAutoUpgradeDelegateServlet.PARAM_JSON, FileUtils.readFileToString(new File(
-                SeLionGridConstants.DOWNLOAD_JSON_FILE)));
+                SeLionGridConstants.DOWNLOAD_JSON_FILE), "UTF-8"));
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doPost(request, response);
         validateJsonResponse(response, HttpServletResponse.SC_OK, "success");

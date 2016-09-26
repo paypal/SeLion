@@ -16,28 +16,84 @@
 package com.paypal.selion.grid;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
+
 import org.openqa.grid.internal.utils.configuration.GridConfiguration;
 
+import com.paypal.selion.proxy.SeLionRemoteProxy;
+
+/**
+ * SeLion grid configuration options which are common to both hubs and nodes
+ */
 public class SeLionGridConfiguration {
     public static final String NODE_RECYCLE_THREAD_WAIT_TIMEOUT = "nodeRecycleThreadWaitTimeout";
-    @Parameter(
-        names = "-" + NODE_RECYCLE_THREAD_WAIT_TIMEOUT,
-        description = "<Integer> in ms : How long to wait for incomplete sessions when the node is attempting to " +
-                "shutdown. Default : 0, wait forever"
-    )
-    public Integer nodeRecycleThreadWaitTimeout = 0;
+    public static final String NODE_RECYCLE_THREAD_WAIT_TIMEOUT_ARG = "-" + NODE_RECYCLE_THREAD_WAIT_TIMEOUT;
 
     public static final String UNIQUE_SESSION_COUNT = "uniqueSessionCount";
+    public static final String UNIQUE_SESSION_COUNT_ARG = "-" + UNIQUE_SESSION_COUNT;
+
+    private static final int DEFAULT_INT_IFINITY = 0;
+
+    /**
+     * How long to wait for incomplete session when a {@link SeLionRemoteProxy} is attempting to shutdown.
+     */
     @Parameter(
-        names = "-" + UNIQUE_SESSION_COUNT,
-        description = "<Integer> value : Number of unique sessions to allow before triggering a node shutdown. " +
-                " Default : 0, infinite"
+        names = NODE_RECYCLE_THREAD_WAIT_TIMEOUT_ARG,
+        description = "<Integer> in ms : How long to wait for incomplete sessions when the node is attempting to " +
+                "shutdown. Default is wait forever."
     )
-    public Integer uniqueSessionCount = 0;
+    Integer nodeRecycleThreadWaitTimeout;
+
+    /**
+     * Number of unique session to allow before a {@link SeLionRemoteProxy} triggers a node shutdown
+     */
+    @Parameter(
+        names = UNIQUE_SESSION_COUNT_ARG,
+        description = "<Integer> value : Number of unique sessions to allow before triggering a node shutdown. " +
+                " Default is unlimited."
+    )
+    Integer uniqueSessionCount;
+
+    /**
+     * The SeLion {@link ProcessLauncherConfiguration}
+     */
+    @ParametersDelegate
+    ProcessLauncherConfiguration processLauncherConfiguration = new ProcessLauncherConfiguration();
+
+    public Integer getNodeRecycleThreadWaitTimeout() {
+        return nodeRecycleThreadWaitTimeout != null ? nodeRecycleThreadWaitTimeout : DEFAULT_INT_IFINITY;
+    }
+
+    public void setNodeRecycleThreadWaitTimeout(Integer nodeRecycleThreadWaitTimeout) {
+        this.nodeRecycleThreadWaitTimeout = nodeRecycleThreadWaitTimeout;
+    }
+
+    public Integer getUniqueSessionCount() {
+        return uniqueSessionCount != null ? uniqueSessionCount : DEFAULT_INT_IFINITY;
+    }
+
+    public void setUniqueSessionCount(Integer uniqueSessionCount) {
+        this.uniqueSessionCount = uniqueSessionCount;
+    }
+
+    public ProcessLauncherConfiguration getProcessLauncherConfiguration() {
+        return processLauncherConfiguration != null ? processLauncherConfiguration : new ProcessLauncherConfiguration();
+    }
+
+    public void setProcessLauncherConfiguration(ProcessLauncherConfiguration processLauncherConfiguration) {
+        this.processLauncherConfiguration = processLauncherConfiguration;
+    }
 
     // TODO "custom" GridConfiguration values are discouraged by Selenium. Find another path.
+    /**
+     * merges the "custom:" { ... } values for this configuration
+     */
     protected void mergeCustom(GridConfiguration gc) {
-        gc.custom.put(NODE_RECYCLE_THREAD_WAIT_TIMEOUT, String.valueOf(nodeRecycleThreadWaitTimeout));
-        gc.custom.put(UNIQUE_SESSION_COUNT, String.valueOf(uniqueSessionCount));
+        if (nodeRecycleThreadWaitTimeout != null) {
+            gc.custom.put(NODE_RECYCLE_THREAD_WAIT_TIMEOUT, String.valueOf(nodeRecycleThreadWaitTimeout));
+        }
+        if (uniqueSessionCount != null) {
+            gc.custom.put(UNIQUE_SESSION_COUNT, String.valueOf(uniqueSessionCount));
+        }
     }
 }

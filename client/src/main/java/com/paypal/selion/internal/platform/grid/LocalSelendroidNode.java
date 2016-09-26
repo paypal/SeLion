@@ -23,8 +23,8 @@ import org.openqa.selenium.net.PortProber;
 import com.google.common.annotations.Beta;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.ProcessLauncherConfiguration;
 import com.paypal.selion.grid.ProcessLauncherOptions;
-import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 import com.paypal.selion.grid.SelendroidJarSpawner;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -65,7 +65,7 @@ final class LocalSelendroidNode extends AbstractBaseLocalServerComponent {
                 forceReinstall = ("-forceReinstall");
             }
 
-            ProcessLauncherOptions processOptions = new ProcessLauncherOptionsImpl().setContinuouslyRestart(false)
+            ProcessLauncherOptions processOptions = new ProcessLauncherConfiguration().setContinuouslyRestart(false)
                     .setIncludeJarsInPresentWorkingDir(false).setIncludeParentProcessClassPath(false)
                     .setIncludeJavaSystemProperties(false).setFileDownloadCheckTimeStampOnInvocation(false)
                     .setFileDownloadCleanupOnInvocation(false);
