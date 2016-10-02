@@ -27,13 +27,13 @@ import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /**
  * This class test the Table class methods
- * 
+ *
  */
 
 public class TableTest {
     Table testTable = new Table(TestObjectRepository.TABLE_LOCATOR.getValue());
     CheckBox selectionCheck = new CheckBox(TestObjectRepository.CHECKBOX_LOCATOR.getValue());
-    
+
 
     @Test(groups = { "browser-tests" })
     @WebTest
@@ -105,7 +105,7 @@ public class TableTest {
     }
 
     @Test(groups = { "browser-tests" })
-    @WebTest()
+    @WebTest
     public void tableTestGetDataStartIndex() {
         // test all the methods that are affected by the DataStartIndex
         Grid.driver().get(TestServerUtils.getTestEditableURL());
@@ -116,7 +116,7 @@ public class TableTest {
     }
 
     @Test(groups = { "browser-tests" })
-    @WebTest()
+    @WebTest
     public void tableTestMultipleColumnRowsTbody() {
         // test a table that has the columns in the tbody and multiple rows of colums
         Grid.driver().get(TestServerUtils.getTestEditableURL());
@@ -130,7 +130,7 @@ public class TableTest {
     }
 
     @Test(groups = { "browser-tests" })
-    @WebTest()
+    @WebTest
     public void tableTestColumnsInThead() {
         // test a table that has the columns in the tbody and multiple rows of colums
         Grid.driver().get(TestServerUtils.getTestEditableURL());
@@ -144,7 +144,7 @@ public class TableTest {
     }
 
     @Test(groups = { "browser-tests" })
-    @WebTest()
+    @WebTest
     public void tableEmptyTest() {
         // test a table that has the columns in the tbody and empty data
         Grid.driver().get(TestServerUtils.getTestEditableURL());
@@ -154,5 +154,5 @@ public class TableTest {
         assertEquals(table.getRowIndex(search), -1);
         assertEquals(table.getNumberOfColumns(), 0);
     }
-    
+
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -74,16 +74,6 @@ public class AbstractTestSessionTest {
 
         assertTrue(Grid.getTestSession().getParamsInfo(info).equals("parameter1,parameter2"),
                 "verify the test parameters are properly parsed");
-    }
-
-    @Test(groups = "functional")
-    public void testParseIntoCapabilities() {
-        String[] capabilities = new String[2];
-        capabilities[0] = "capabilityName1:capabilityValue1";
-        capabilities[1] = "capabilityName2:capabilityValue2";
-
-        assertEquals(Grid.getTestSession().parseIntoCapabilities(capabilities).get("capabilityName1"),
-                "capabilityValue1", "verify the capability is parsed properly");
     }
 
     @Test(groups = "functional")

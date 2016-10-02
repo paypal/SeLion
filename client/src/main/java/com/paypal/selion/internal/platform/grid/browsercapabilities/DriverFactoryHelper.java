@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -86,23 +86,32 @@ final class DriverFactoryHelper {
     }
 
     static List<EventListener> getSeLionEventListeners() {
-        String listeners = Config.getConfigProperty(ConfigProperty.SELENIUM_WEBDRIVER_EVENT_LISTENER).trim();
+        List<Object> configuredListeners = Config
+                .getListConfigProperty(ConfigProperty.SELENIUM_WEBDRIVER_EVENT_LISTENER);
 
         List<EventListener> eventListeners = new ArrayList<EventListener>();
-
-        if (StringUtils.isBlank(listeners)) {
+        if (configuredListeners == null || configuredListeners.size() == 0) {
             return eventListeners;
         }
 
-        String[] allEventListeners = listeners.split(",");
-        for (String eachEventListener : allEventListeners) {
+        for (Object configuredListener : configuredListeners) {
+            // it is possible to get a List of { "", "   ", } depending on what the user specified.
+            String listenerString = (String) configuredListener;
+            if (StringUtils.isBlank(listenerString)) {
+                continue;
+            }
+
             try {
-                Object listener = Class.forName(eachEventListener.trim()).newInstance();
-                if (EventListener.class.isAssignableFrom(listener.getClass())) {
-                    eventListeners.add((EventListener) listener);
+                Class<?> listener = Class.forName(listenerString);
+                if (EventListener.class.isAssignableFrom(listener)) {
+                    eventListeners.add((EventListener) listener.newInstance());
+                    logger.info("Registered [" + listenerString + "] as a SeLion event listener.");
+                } else {
+                    logger.info("Skipping [" + listenerString + "] because it is not a subclass of "
+                            + EventListener.class.getCanonicalName());
                 }
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                logger.warning("Unable to register [" + eachEventListener + "] as a selion event listener.");
+                logger.warning("Unable to register [" + listenerString + "] as a SeLion event listener.");
             }
         }
 
@@ -110,22 +119,30 @@ final class DriverFactoryHelper {
     }
 
     static void registerElementEventListeners() {
-        String listeners = Config.getConfigProperty(ConfigProperty.ELEMENT_EVENT_LISTENER).trim();
+        List<Object> configuredListeners = Config.getListConfigProperty(ConfigProperty.ELEMENT_EVENT_LISTENER);
 
-        if (StringUtils.isBlank(listeners)) {
+        if (configuredListeners == null || configuredListeners.size() == 0) {
             return;
         }
 
-        String[] allEventListeners = listeners.split(",");
-        for (String eachEventListener : allEventListeners) {
+        for (Object configuredListener : configuredListeners) {
+            // it is possible to get a List of { "", "   ", } depending on what the user specified.
+            String listenerString = (String) configuredListener;
+            if (StringUtils.isBlank(listenerString)) {
+                continue;
+            }
+
             try {
-                Object listener = Class.forName(eachEventListener.trim()).newInstance();
-                if (ElementEventListener.class.isAssignableFrom(listener.getClass())) {
-                    Grid.getTestSession().getElementEventListeners().add((ElementEventListener) listener);
-                    logger.info("Registered [" + eachEventListener + "] as a selion element event listener.");
+                Class<?> listener = Class.forName(listenerString);
+                if (ElementEventListener.class.isAssignableFrom(listener)) {
+                    Grid.getTestSession().getElementEventListeners().add((ElementEventListener) listener.newInstance());
+                    logger.info("Registered [" + listenerString + "] as a SeLion element event listener.");
+                } else {
+                    logger.info("Skipping [" + listenerString + "] because it is not a subclass of "
+                            + ElementEventListener.class.getCanonicalName());
                 }
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                logger.warning("Unable to register [" + eachEventListener + "] as a selion element event listener.");
+                logger.warning("Unable to register [" + listenerString + "] as a SeLion element event listener.");
             }
         }
     }

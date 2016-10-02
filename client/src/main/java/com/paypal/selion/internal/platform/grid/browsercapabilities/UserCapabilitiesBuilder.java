@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,9 +17,13 @@ package com.paypal.selion.internal.platform.grid.browsercapabilities;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 
-public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
+/**
+ * Applies user specified desired capabilities.
+ */
+public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
@@ -33,8 +37,13 @@ public class UserCapabilitiesBuilder extends DefaultCapabilitiesBuilder{
         for (DesiredCapabilities eachCaps : CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders()) {
             capabilities.merge(eachCaps);
         }
-        return capabilities;
 
+        // Applies user provided capabilities which are specified either via the @WebTest or @MobileTest annotation or
+        // via the attributes of ITestResult object (deprecated) for the current test.This info will be available in the
+        // AbstractTestSession object for the current test.
+        capabilities.merge(Grid.getTestSession().getAdditionalCapabilities());
+
+        return capabilities;
     }
 
 }

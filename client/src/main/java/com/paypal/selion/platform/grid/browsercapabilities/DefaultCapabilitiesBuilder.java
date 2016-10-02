@@ -20,7 +20,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.ConfigManager;
-import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
@@ -44,8 +43,9 @@ public abstract class DefaultCapabilitiesBuilder {
     public DesiredCapabilities getDefaultCapabilities() {
         logger.entering();
         DesiredCapabilities capability = new DesiredCapabilities();
-        
-        capability.setCapability(ExtendedConfig.TEST_NAME.getConfig(), Grid.getTestSession().getTestName());
+
+        // always pass the @Test name as "name", because it is useful meta info
+        capability.setCapability("name", Grid.getTestSession().getTestName());
 
         capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
@@ -75,14 +75,14 @@ public abstract class DefaultCapabilitiesBuilder {
     }
 
     /**
-     * @return - <code>true</code> if the user is running locally.
+     * @return <code>true</code> if the user is running locally.
      */
     public boolean isLocalRun() {
         return Config.getBoolConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY);
     }
 
     /**
-     * @return - A String that represents the user agent that was set for the current &lt;test&gt;
+     * @return A String that represents the user agent that was set for the current &lt;test&gt;
      */
     public String getUserAgent() {
         return getLocalConfigProperty(ConfigProperty.SELENIUM_USERAGENT);
@@ -90,8 +90,8 @@ public abstract class DefaultCapabilitiesBuilder {
 
     /**
      * @param configProperty
-     *            - The {@link ConfigProperty} that is to be queried from the local &lt;test&gt;
-     * @return - A string that represents the configuration property.
+     *            The {@link ConfigProperty} that is to be queried from the local &lt;test&gt;
+     * @return A string that represents the configuration property.
      */
     public String getLocalConfigProperty(ConfigProperty configProperty) {
         String testName = Grid.getTestSession().getXmlTestName();

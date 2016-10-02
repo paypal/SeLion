@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,23 +16,43 @@
 package com.paypal.selion.platform.grid;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.gson.JsonArray;
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.configuration.ExtendedConfig;
 import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import com.paypal.selion.reports.runtime.SeLionReporter;
 
 /**
  * Tests different combinations for @Webtest annotation and it's parameters
  */
 public class WebTestTest {
+
+    public static class ChromeOptionsOverrideCapabilities extends DefaultCapabilitiesBuilder {
+        @Override
+        public DesiredCapabilities createCapabilities() {
+            return getCapabilities(DesiredCapabilities.chrome());
+        }
+
+        @Override
+        public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--bogus-arg");
+
+            capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+            return capabilities;
+        }
+    }
 
     /**
      * Test support of TestNG's {@link Test} capabilities for multi-threading
@@ -44,33 +64,65 @@ public class WebTestTest {
     }
 
     @Test(groups = "functional")
-    @WebTest(additionalCapabilities = { "useBooleanCaps:true","useStringCaps:'true'" })
+    @WebTest(additionalCapabilities = { "useBooleanCaps:true", "useStringCaps:'true'" })
     public void testCapabilityViaAnnotation() {
-        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useBooleanCaps"), Boolean.TRUE);
+        // @deprecated assertions
+        assertTrue((boolean) Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useBooleanCaps"));
         assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useStringCaps"), "true");
     }
-    
+
     @Test(groups = "functional")
-    @WebTest(additionalCapabilities = { "name:a:b"})
+    @WebTest(additionalCapabilities = { "name:a:b" })
     public void testCapabilityWithColonInValue() {
         assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("name"), "a:b");
     }
 
+    @Test(groups = "functional")
+    @WebTest(additionalCapabilitiesBuilders = ChromeOptionsOverrideCapabilities.class)
+    public void testCapabilityBuilderViaAnnotation() throws Exception {
+        DesiredCapabilities caps = Grid.getWebTestSession().getAdditionalCapabilities();
+
+        assertEquals(caps.getCapability(CapabilityType.BROWSER_NAME), "chrome");
+
+        ChromeOptions options = (ChromeOptions) caps.getCapability(ChromeOptions.CAPABILITY);
+        JsonArray args = options.toJson().getAsJsonObject().get("args").getAsJsonArray();
+        assertEquals(args.size(), 1);
+        assertEquals(args.get(0).getAsString(), "--bogus-arg");
+    }
+
+    @Test(groups = "functional")
+    @WebTest
+    public void testCapabilityBuilderInline() throws Exception {
+        DesiredCapabilities caps = Grid.getWebTestSession().getAdditionalCapabilities();
+
+        caps.merge(new ChromeOptionsOverrideCapabilities().createCapabilities());
+        assertEquals(caps.getCapability(CapabilityType.BROWSER_NAME), "chrome");
+
+        ChromeOptions options = (ChromeOptions)
+                Grid.getWebTestSession().getAdditionalCapabilities().getCapability(ChromeOptions.CAPABILITY);
+        JsonArray args = options.toJson().getAsJsonObject().get("args").getAsJsonArray();
+        assertEquals(args.size(), 1);
+        assertEquals(args.get(0).getAsString(), "--bogus-arg");
+    }
+
     @Test(testName = "testCapabilityViaTestResult", groups = "functional")
     @WebTest
+    @Deprecated
     public void testCapabilityViaTestResult() {
-        assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useBooleanDCCaps"), Boolean.TRUE);
+        // @deprecated assertions
+        assertTrue((boolean) Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useBooleanDCCaps"));
         assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("useStringDCCaps"), "true");
     }
 
     @BeforeMethod(alwaysRun = true)
+    @Deprecated
     public void setCapability(ITestResult testResult, Method method) {
         Test test = method.getAnnotation(Test.class);
         if (test != null && test.testName().equalsIgnoreCase("testCapabilityViaTestResult")) {
             DesiredCapabilities dc = new DesiredCapabilities();
             dc.setCapability("useStringDCCaps", "true");
             dc.setCapability("useBooleanDCCaps", Boolean.TRUE);
-            testResult.setAttribute(ExtendedConfig.CAPABILITIES.getConfig(), dc);
+            testResult.setAttribute(com.paypal.selion.configuration.ExtendedConfig.CAPABILITIES.getConfig(), dc);
         }
     }
 

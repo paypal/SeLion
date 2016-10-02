@@ -205,7 +205,9 @@ public class MobileTestSession extends AbstractTestSession {
             }
             this.mobileNodeType = MobileNodeType.getMobileNodeType(mobileNode);
 
-            initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities(), method);
+            initializeAdditionalCapabilities(method);
+            initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities());
+            initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilitiesBuilders());
         }
 
         boolean appPathProvided = StringUtils.isNotBlank(appPath);

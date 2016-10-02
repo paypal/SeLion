@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -45,10 +45,10 @@ public class WebTestSession extends AbstractTestSession {
 
     /**
      * Call this to initialize the {@link WebTestSession} object from the TestNG {@link IInvokedMethod}
-     * 
+     *
      * @param method
      *            - the TestNG {@link IInvokedMethod}
-     * 
+     *
      */
     @Override
     public void initializeTestSession(InvokedMethodInformation method) {
@@ -72,7 +72,9 @@ public class WebTestSession extends AbstractTestSession {
                 warnUserOfInvalidBrowserDimensions(webTestAnnotation);
             }
 
-            initializeAdditionalCapabilities(webTestAnnotation.additionalCapabilities(), method);
+            initializeAdditionalCapabilities(method);
+            initializeAdditionalCapabilities(webTestAnnotation.additionalCapabilities());
+            initializeAdditionalCapabilities(webTestAnnotation.additionalCapabilitiesBuilders());
         }
     }
 

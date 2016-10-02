@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,9 +15,17 @@
 
 package com.paypal.selion.configuration;
 
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.annotations.WebTest;
+
 /**
  * Commonly referred to as SeLion configurations.
+ * @deprecated with SeLion 1.2.0. {@link MobileTest} and {@link WebTest} have native support for wiring custom
+ * {@link DesiredCapabilities}
  */
+@Deprecated
 public enum ExtendedConfig {
     /**
      * This can be set from within the configuration method of a given test-script. Here's an example of how to use
@@ -37,7 +45,7 @@ public enum ExtendedConfig {
 
     private String configName;
 
-    private ExtendedConfig(String configName) {
+    ExtendedConfig(String configName) {
         this.configName = configName;
     }
 

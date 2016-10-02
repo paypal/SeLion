@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,6 +35,8 @@ public class NodeServletsTest {
     // Various node servlet tests will cause a System.exit() which fouls up our test execution.
     // So install a security mgr to prevent actual exit from jvm.
     protected static class ExitException extends SecurityException {
+        private static final long serialVersionUID = 4720346323475334961L;
+
         public final int status;
         public ExitException(int status) {
             super("There is no escape!");

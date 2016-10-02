@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import net.jcip.annotations.ThreadSafe;
@@ -123,6 +124,49 @@ public class LocalConfig {
         return propValue;
     }
 
+    public synchronized List<Object> getListConfigProperty(Config.ConfigProperty configProperty) {
+        SeLionLogger.getLogger().entering(configProperty);
+        checkArgument(configProperty != null, "Config property cannot be null");
+
+        // Search locally then query SeLionConfig if not found
+        List<Object> propValue = null;
+        if (baseConfig.containsKey(configProperty.getName())) {
+            propValue = baseConfig.getList(configProperty.getName());
+        }
+
+        if (propValue == null || propValue.isEmpty()) {
+            propValue = Config.getListConfigProperty(configProperty);
+        }
+        SeLionLogger.getLogger().exiting(propValue);
+        return propValue;
+    }
+
+    public synchronized int getIntConfigProperty(Config.ConfigProperty configProperty) {
+        SeLionLogger.getLogger().entering(configProperty);
+        checkArgument(configProperty != null, "Config property cannot be null");
+
+        // start with the global value, then update from the local value, if it exists
+        int propValue = Config.getIntConfigProperty(configProperty);
+        if (baseConfig.containsKey(configProperty.getName())) {
+            propValue = baseConfig.getInt(configProperty.getName());
+        }
+        SeLionLogger.getLogger().exiting(propValue);
+        return propValue;
+    }
+
+    public synchronized boolean getBooleanConfigProperty(Config.ConfigProperty configProperty) {
+        SeLionLogger.getLogger().entering(configProperty);
+        checkArgument(configProperty != null, "Config property cannot be null");
+
+        // start with the global value, then update from the local value, if it exists
+        boolean propValue = Config.getBoolConfigProperty(configProperty);
+        if (baseConfig.containsKey(configProperty.getName())) {
+            propValue = baseConfig.getBoolean(configProperty.getName());
+        }
+        SeLionLogger.getLogger().exiting(propValue);
+        return propValue;
+    }
+
     /**
      * Sets the SeLion configuration property value.
      * 
@@ -131,7 +175,7 @@ public class LocalConfig {
      * @param configPropertyValue
      *            The configuration property value to set.
      */
-    public synchronized void setConfigProperty(Config.ConfigProperty configProperty, String configPropertyValue) {
+    public synchronized void setConfigProperty(Config.ConfigProperty configProperty, Object configPropertyValue) {
         checkArgument(configProperty != null, "Config property cannot be null");
         checkArgument(checkNotInGlobalScope(configProperty),
                 String.format("The configuration property (%s) is not supported in local config.", configProperty)); // NOSONAR
