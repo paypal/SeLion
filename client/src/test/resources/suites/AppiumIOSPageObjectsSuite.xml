@@ -8,6 +8,7 @@
     <parameter name="mobileDevice" value="iphone:9.3"/>
     <parameter name="mobileDeviceType" value="iPhone 6"/>
 
+    <!-- See workaround here https://github.com/appium/appium/issues/6355 if having issues running this with appium -->
     <test verbose="2" name="appium-ios-page-objects-test" annotations="JDK">
         <classes>
             <class name="com.paypal.selion.ios.sample.AppiumIOSLabelAndNavigationTest" />

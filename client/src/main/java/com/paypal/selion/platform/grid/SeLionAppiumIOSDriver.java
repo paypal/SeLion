@@ -41,7 +41,6 @@ import org.openqa.selenium.Dimension;
 public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLionIOSBridgeDriver {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
-    private static final String ELEMENT = "element";
     private static final int TAP_DURATION = 100;
     private static final int SWIPE_DURATION = 1500;
     private static final int SWIPE_EDGE_OFFSET = 100;

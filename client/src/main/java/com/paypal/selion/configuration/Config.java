@@ -508,12 +508,12 @@ public final class Config {
          * This parameter represents the main activity of Android mobile appplication. By default it is always empty.
          */
         ANDROID_APP_MAIN_ACTIVITY("androidAppMainActivity", "", false),
-        
+
         /**
          * This parameter represents the package of Android mobile application. By default it is always empty.
          */
         ANDROID_APP_PACKAGE("androidAppPackage", "", false),
-        
+
         /**
          * This parameter represents device.
          */

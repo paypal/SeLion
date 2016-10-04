@@ -54,7 +54,7 @@ public class AppiumAndroidCheckBoxSeekBarTest {
         checkBoxTextView = new UiTextView(VALUE_TEXTVIEW_LOCATOR);
     }
 
-//    @Test
+    @Test
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testCheckBox() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);

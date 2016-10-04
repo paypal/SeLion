@@ -52,7 +52,7 @@ class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             capabilities.setCapability(ANDROID_APP_PACKAGE, mobileSession.getAndroidAppPackage());
             capabilities.setCapability(ANDROID_APP_WAIT_PACKAGE, mobileSession.getAndroidAppPackage());
         }
-        
+
         capabilities.setCapability(MOBILE_NODE_TYPE, mobileSession.getMobileNodeType().getAsString());
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, mobileSession.getDeviceType());
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, mobileSession.getPlatformVersion());
