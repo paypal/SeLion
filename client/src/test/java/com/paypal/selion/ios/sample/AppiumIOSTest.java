@@ -60,8 +60,8 @@ public class AppiumIOSTest {
         // And now use this to visit Google
         driver.get("http://www.google.com");
         SeLionReporter.log("Page loaded", true, true);
-        // Find the text input element by its name
-        WebElement element = driver.findElement(By.name("q"));
+        // Find the text input element by its id
+        WebElement element = driver.findElement(By.id("lst-ib"));
         // Enter something to search for
         element.sendKeys("Cheese!");
         // Now submit the form. WebDriver will find the form for us from the element
