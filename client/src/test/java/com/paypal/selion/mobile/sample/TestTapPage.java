@@ -44,7 +44,7 @@ public class TestTapPage {
             multiTapButton.doubleTap();
             Assert.assertEquals(tapPage.getMultiTapTextField().getValue(), "Tap Count: 2");
         } else {
-            Assert.fail("paltform " + tapPage.getPlatform().name() + " does not support double tap.");
+            Assert.fail("platform " + tapPage.getPlatform().name() + " does not support double tap.");
         }
 
     }
