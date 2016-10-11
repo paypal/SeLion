@@ -19,3 +19,6 @@ elements:
       US: "com.paypal.selion.pageobjectsdemoapp:id/txv1"
 pageTitle:
   US: "page_object"
+pageValidators:
+  - topTextField.isVisible
+  - nextButton.isEnable

@@ -30,6 +30,7 @@ public class TablePage extends BasicPageImpl {
     private MobileElement alertElement;
     private MobileTextField topTextField;
     private MobileButton preButton;
+    private MobileElement notVisibleElement;
 
     private static String CLASS_NAME = "TablePage";
     private static String PAGE_DOMAIN = "paypal/mobile";
@@ -147,4 +148,12 @@ public class TablePage extends BasicPageImpl {
         return this.preButton;
     }
 
+    public MobileElement getNotVisibleElement() {
+        MobileElement element = this.notVisibleElement;
+        if (element == null) {
+            this.notVisibleElement = MobileImplementationFinder.instantiate(getPlatform(), MobileElement.class,
+                    getObjectMap().get("notVisibleElement"));
+        }
+        return this.notVisibleElement;
+    }
 }

@@ -27,6 +27,8 @@
             <class name="com.paypal.selion.mobile.sample.TestTapPage" />
             <class name="com.paypal.selion.mobile.sample.TestStatePage" />
             <class name="com.paypal.selion.mobile.sample.TestTablePage" />
+            <class name="com.paypal.selion.mobile.sample.TestPageValidation" />
+            <class name="com.paypal.selion.mobile.sample.TestYamlReaderForMobilePlatform" />
         </classes>
     </test>
 
