@@ -66,6 +66,10 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
      *         returns false
      */
     public boolean hasExpectedPageTitle() {
+        if (Grid.getMobileTestSession() != null) {
+            // mobile platform does not support page title
+            return true;
+        }
         // If there are no page titles defined we should return false
         if (getExpectedPageTitle() == null) {
             return false;
@@ -161,24 +165,19 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
         boolean present = element.isElementPresent();
 
         switch (action) {
-        case "isPresent":
-            if (!present) {
-                throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't present.");
-            }
-            break;
         case "isVisible":
-            if (!present || (present && !element.isVisible())) {
+            if (!present || !element.isVisible()) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
                         + elementName + " with locator " + element.getLocator() + " isn't visible.");
             }
             break;
         case "isEnabled":
-            if (!present || (present && !element.isEnabled())) {
+            if (!present || !element.isEnabled()) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
                         + elementName + " with locator " + element.getLocator() + " isn't enabled.");
             }
             break;
+        case "isPresent":
         default:
             if (!present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
