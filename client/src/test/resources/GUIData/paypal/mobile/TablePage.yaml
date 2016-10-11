@@ -27,5 +27,12 @@ elements:
       US: "//UIAApplication[1]/UIAWindow[4]/UIAAlert[1]"
     android:
       US: "android:id/parentPanel"
+  notVisibleElement:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIATableView[1]/UIATableCell[15]"
+    android:
+      US: "//android.widget.ListView[1]/android.widget.TextView[15]"
 pageTitle:
   US: "page_object"
+pageValidators:
+  - notVisibleElement.isVisible
