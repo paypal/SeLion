@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -33,7 +33,7 @@ import com.paypal.selion.platform.html.support.HtmlElementUtils;
 
 /**
  * A Base class from which all page classes should be derived.
- * 
+ *
  * It contains the code to initialize pages, load values to the "ObjectMap", and interact in various ways with the
  * page(s).
  */
@@ -61,7 +61,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
 
     /**
      * Validates whether the actual current page title equals to expected page title.
-     * 
+     *
      * @return true if the actual page title is equal to any of the titles represented by this page object otherwise
      *         returns false
      */
@@ -128,7 +128,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
 
     /**
      * Get the AbstractElement by the key that is defined in the PageYAML files.
-     * 
+     *
      * @param elementName
      *            The element name
      * @return instance of {@link AbstractElement}
@@ -153,7 +153,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
 
     /**
      * Verify if the element is available based on a certain action
-     * 
+     *
      * @param elementName
      *            element to perform verification action on
      * @param action
