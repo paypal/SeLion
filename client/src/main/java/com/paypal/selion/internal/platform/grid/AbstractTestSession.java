@@ -232,7 +232,6 @@ public abstract class AbstractTestSession {
 
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
-        Grid.getThreadLocalException().set(null);
         this.isSessionStarted = false;
         logger.exiting();
     }

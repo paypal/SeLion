@@ -52,6 +52,7 @@ public final class Grid {
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private static ThreadLocal<RemoteWebDriver> threadLocalWebDriver = new ThreadLocal<RemoteWebDriver>();
     private static ThreadLocal<AbstractTestSession> threadTestSession = new ThreadLocal<AbstractTestSession>();
+    @Deprecated
     private static ThreadLocal<Exception> threadLocalException = new ThreadLocal<Exception>();
 
     static {
@@ -70,6 +71,10 @@ public final class Grid {
         return threadTestSession;
     }
 
+    @Deprecated
+    /**
+     * @deprecated in SeLion 1.2.0. Do not use. No alternative
+     */
     public static ThreadLocal<Exception> getThreadLocalException() {
         return threadLocalException;
     }
@@ -93,17 +98,11 @@ public final class Grid {
      *         {@link WebTest} flow.
      */
     public static RemoteWebDriver driver() {
-        // Need to throw an RuntimeException if already caught on SeleniumGridListener.beforeInvocation()
-        Exception exception = threadLocalException.get();
-        if (exception != null) {
-            if (exception instanceof RuntimeException) {
-                throw (RuntimeException) exception;
-            }
-            // convert the checked exception into a runtime exception.
-            throw new RuntimeException(exception.getMessage(), exception);
-        }
-
         AbstractTestSession testSession = getTestSession();
+        if (testSession == null) {
+            throw new IllegalStateException("Test session not initialized. Make sure the SeLion SeleniumGridListener is "
+                    + "enabled and you have annotated your class/method with @MobileTest/@WebTest.");
+        }
         if (!testSession.isStarted()) {
             testSession.startSession();
         }

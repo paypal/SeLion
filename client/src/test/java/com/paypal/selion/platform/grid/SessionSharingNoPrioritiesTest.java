@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,48 +13,25 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.internal.platform.grid;
+package com.paypal.selion.platform.grid;
 
-import com.paypal.selion.internal.utils.InvokedMethodInformation;
-import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.Grid;
-import com.paypal.test.utilities.logging.SimpleLogger;
+import static org.testng.Assert.fail;
+
+import org.testng.annotations.Test;
+
+import com.paypal.selion.annotations.WebTest;
 
 /**
- * This class represents a basic test session.
- * 
+ * Tests that test priorities must be defined for session sharing
  */
-public class BasicTestSession extends AbstractTestSession {
-    private static final SimpleLogger logger = SeLionLogger.getLogger();
-
-    @Override
-    public void startSession() {
-        logger.entering();
-        setStarted(true);
-        logger.exiting();
+@WebTest
+@Test(singleThreaded = true, groups = "functional", expectedExceptions = IllegalStateException.class)
+public class SessionSharingNoPrioritiesTest {
+    public void testSessionSharingStep11() {
+        fail("this test should not have been run.");
     }
 
-    @Override
-    public WebDriverPlatform getPlatform() {
-        logger.entering();
-        logger.exiting(WebDriverPlatform.UNDEFINED);
-        return WebDriverPlatform.UNDEFINED;
+    public void testSessionSharingStep2() {
+        fail("this test should not have been run.");
     }
-
-    @Override
-    public void initializeTestSession(InvokedMethodInformation method) {
-        logger.entering(method);
-        this.initTestSession(method);
-        logger.exiting();
-    }
-
-    @Override
-    public final void closeSession() {
-        logger.entering();
-        Grid.getThreadLocalWebDriver().set(null);
-        Grid.getThreadLocalTestSession().set(null);
-        setStarted(false);
-        logger.exiting();
-    }
-
 }

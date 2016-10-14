@@ -18,6 +18,7 @@ package com.paypal.selion.internal.platform.grid;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -107,10 +108,10 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
 
                 // For session sharing, we need to ensure @Test methods are priority based.
                 if (method.isTestMethod()) {
+                    // we need to ensure each @Test method is annotated
                     if (isLowPriority(method)) {
                         // For session sharing tests, Need to create new session only for Test (Web or Mobile) with
-                        // highest
-                        // priority (first test, smallest number) in the class.
+                        // highest priority (first test, smallest number) in the class.
                         testSessionSharingRules(method);
                     } else {
                         return;
@@ -139,7 +140,11 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 }
             }
         } catch (Exception e) { // NOSONAR
-            Grid.getThreadLocalException().set(e);
+            if (e instanceof RuntimeException) {
+                throw e;
+            }
+            // convert the checked exception into a runtime exception.
+            throw new RuntimeException(e.getMessage(), e);
         }
         logger.exiting();
     }
@@ -178,13 +183,19 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         int low = method.getTestMethod().getPriority();
 
         for (ITestNGMethod test : method.getTestMethod().getTestClass().getTestMethods()) {
-            if (test.getPriority() < low) {
+            // ensures all test methods have the @Test annotation. Throw exception if that's not the case
+            if (!isAnnotatedWithTest(test.getConstructorOrMethod().getMethod())) {
+                throw new IllegalStateException(
+                        "Session sharing requires all test methods to define a priority via the @Test annotation.");
+            }
+            if (test.getEnabled() && test.getPriority() < low) {
                 return false;
             }
         }
 
-        // If there is an existing session and the test method has a DP then don't create a session
         Test t = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
+
+        // If there is an existing session and the test method has a DP then don't create a session
 
         // For a data driven test method with the first data the session must be created
         // Hence return true if currentInvocationCount is 1 otherwise utilize the same session
@@ -198,15 +209,22 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
     }
 
     private boolean isHighPriority(IInvokedMethod method) {
+        if (!isAnnotatedWithTest(method)) {
+            // Abort. There will already be an exception thrown in isLowPriority for this case.
+            return true;
+        }
+
         int high = method.getTestMethod().getPriority();
 
         for (ITestNGMethod test : method.getTestMethod().getTestClass().getTestMethods()) {
-            if (test.getPriority() > high) {
+            if (test.getEnabled() && test.getPriority() > high) {
                 return false;
             }
         }
-        // For a test method with a data provider
+
         Test t = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
+
+        // For a test method with a data provider
         if (!(t.dataProvider().isEmpty())) {
             int currentInvocationCount = method.getTestMethod().getCurrentInvocationCount();
             int parameterInvocationCount = method.getTestMethod().getParameterInvocationCount();
@@ -218,14 +236,29 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
         return true;
     }
 
+    private boolean isAnnotatedWithTest(IInvokedMethod method) {
+        return isAnnotatedWithTest(method.getTestMethod().getConstructorOrMethod().getMethod());
+    }
+
+    private boolean isAnnotatedWithTest(Method method) {
+        Test t = method.getAnnotation(Test.class);
+        return t != null;
+   }
+
     private boolean isPriorityUnique(IInvokedMethod method) {
         // Logic to check priorities of all test methods are unique. This is used in Session Sharing.
 
         Set<Integer> check = new HashSet<Integer>();
         int length = method.getTestMethod().getTestClass().getTestMethods().length;
+        int expectedSize = 0;
         for (int i = 0; i < length; i++) {
+            //ignore @Test(enabled = false) methods
+            if (!method.getTestMethod().getTestClass().getTestMethods()[i].getEnabled()) {
+                continue;
+            }
             check.add(method.getTestMethod().getTestClass().getTestMethods()[i].getPriority());
-            if (check.size() != i + 1) {
+            expectedSize += 1;
+            if (check.size() != expectedSize) {
                 return false;
             }
         }
@@ -275,8 +308,7 @@ public class SeleniumGridListener implements IInvokedMethodListener, ISuiteListe
                 }
                 if (method.isTestMethod() && !isHighPriority(method)) {
                     // For session sharing tests, Need to close session only for Test (Web or Mobile) with highest
-                    // priority
-                    // (last test) in the class.
+                    // priority (last test) in the class.
                     return;
                 }
             }

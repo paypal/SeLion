@@ -7,18 +7,18 @@
     </listeners>
 
     <suite-files>
-        <suite-file path="Basic-Unit-Tests.xml"></suite-file>
-        <suite-file path="WebTestThreaded-Suite.xml"></suite-file>
-        <suite-file path="Functional-Suite.xml"></suite-file>
+        <suite-file path="Basic-Unit-Tests.xml" />
+        <suite-file path="SessionSharing-Suite.xml" />
+        <suite-file path="Functional-Suite.xml" />
         <suite-file path="SeLionGui-Suite.xml" />
-        <suite-file path="SeLionConfig-Suite.xml"></suite-file>
-        <suite-file path="SeLionConfig-Parallel-Tests-Suite.xml"></suite-file>
-        <suite-file path="SeLionConfig-Parallel-Classes-Suite.xml"></suite-file>
-        <suite-file path="Firefox-Suite.xml"></suite-file>
-        <suite-file path="Chrome-Suite.xml"></suite-file>
-        <suite-file path="IE-Suite.xml"></suite-file>
-        <suite-file path="PhantomJS-Suite.xml"></suite-file>
-        <suite-file path="ExcelReport-Test.xml"></suite-file>
+        <suite-file path="SeLionConfig-Suite.xml" />
+        <suite-file path="SeLionConfig-Parallel-Tests-Suite.xml" />
+        <suite-file path="SeLionConfig-Parallel-Classes-Suite.xml" />
+        <suite-file path="Firefox-Suite.xml" />
+        <suite-file path="Chrome-Suite.xml" />
+        <suite-file path="IE-Suite.xml" />
+        <suite-file path="PhantomJS-Suite.xml" />
+        <suite-file path="ExcelReport-Test.xml" />
         <suite-file path="EventFiringCapabilitiesTests.xml"/>
     </suite-files>
 </suite>
