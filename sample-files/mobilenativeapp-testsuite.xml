@@ -5,9 +5,7 @@
     <parameter name="mobileNodeType" value="appium" />
 
     <parameter name="appPath" value="/opt/appium/sample/selion/PageObjects3.app.zip"/>
-    <parameter name="mobilePlatform" value="IOS"/>
-    <parameter name="mobileDevice" value="iphone:9.1"/>
-    <parameter name="mobileDeviceType" value="iPhone 6"/>
+    <parameter name="mobileDevice" value="iPhone 6:9.1"/>
 
     <test verbose="2" name="mobile-appium-ios-test" annotations="JDK">
         <classes>
