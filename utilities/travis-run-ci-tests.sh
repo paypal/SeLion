@@ -1,6 +1,8 @@
 #!/bin/bash
+set -ev
+
 #########################################################
-# This script runs the tests either locally with 
+# This script runs the tests either locally with
 # phantomjs or remotely against sauce labs depending on
 # CI configuration / presence of environment variables
 #########################################################

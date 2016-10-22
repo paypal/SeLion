@@ -7,6 +7,7 @@ addons:
 cache:
   directories:
     - $HOME/.m2
+    - $HOME/.selion/downloads
 notifications:
   irc:
     channels:

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ev
 
 #############################################################
 # This script updates travis with firefox and
@@ -11,9 +11,8 @@ if [ -n "${SAUCE_USERNAME}" ]; then
 fi
 
 # Remove any existing firefox data
-if [[ $TRAVIS == "true" ]]
-then
-  rm -fr ~/.mozilla
+if [ "${TRAVIS}" = true ]; then
+  rm -rf ${HOME}/.mozilla
 fi
 
 mkdir -p target
@@ -26,18 +25,10 @@ then
   # and install downloaded firefox
   tar -xjf firefox-${FIREFOX_VERSION}.tar.bz2
 fi
-
-if [ ! -f "./geckodriver" ]
-then
-  export GECKODRIVER_VERSION=v0.11.1
-  curl -L -o geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
-  gunzip -c geckodriver.tar.gz | tar xopf -
-  chmod +x geckodriver
-fi
 cd ..
 
-export PATH="$PWD/target/firefox:$PATH"
-mvn test -pl client -B -V -DsuiteXmlFile=Firefox-Suite.xml -DSELION_SELENIUM_RUN_LOCALLY=true \
-  -DSELION_SELENIUM_USE_GECKODRIVER=true -DSELION_SELENIUM_GECKODRIVER_PATH=$PWD/target/geckodriver \
+export PATH=${PWD}/target/firefox:${PATH}
+mvn test -pl client -B -V -DsuiteXmlFile=Firefox-Suite.xml
+  -DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_DOWNLOAD_DEPENDENCIES=true \
   -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER=com.paypal.selion.TestCapabilityBuilder \
-  -DBROWSER_PATH=$PWD/target/firefox/firefox
+  -DBROWSER_PATH=${PWD}/target/firefox/firefox

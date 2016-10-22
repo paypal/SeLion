@@ -1,4 +1,6 @@
 #!/bin/bash
+set -ev
+
 #########################################################################################
 # This script generates javadocs for develop branch, moves them into gh-pages branch,
 # and pushes the changes to the paypal/SeLion repository on github.
