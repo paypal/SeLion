@@ -1,4 +1,6 @@
 #!/bin/bash
+set -ev
+
 ################################################
 # Deploys resulting artifacts to sonatype nexus
 ################################################
