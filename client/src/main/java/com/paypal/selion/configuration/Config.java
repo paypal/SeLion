@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
@@ -449,10 +450,12 @@ public final class Config {
         SELENIUM_EDGEDRIVER_PATH("edgeDriverPath", "", true),
 
         /**
-         * Flip this parameter to <code>true</code> to enable the use of Gecko/marionette driver (PKA wires) with
-         * Firefox. This is used for local as well as remote grid executions using Firefox browser.
+         * Set this parameter to <code>false</code> to disable the use of Gecko/marionette driver (PKA wires) with
+         * Firefox. This is used for local as well as remote grid executions using Firefox browser. Default value is the
+         * value of <code>-Dwebdriver.firefox.marionette</code> or <code>true</code>
          */
-        SELENIUM_USE_GECKODRIVER("useGeckoDriver", "false", true),
+        SELENIUM_USE_GECKODRIVER("useGeckoDriver", System.getProperty(
+                FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true"), true),
 
         /**
          * The path to the Gecko/Marionette driver executable file on the local machine. This parameter is taken into

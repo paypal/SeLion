@@ -28,7 +28,5 @@ fi
 cd ..
 
 export PATH=${PWD}/target/firefox:${PATH}
-mvn test -pl client -B -V -DsuiteXmlFile=Firefox-Suite.xml
-  -DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_DOWNLOAD_DEPENDENCIES=true \
-  -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER=com.paypal.selion.TestCapabilityBuilder \
-  -DBROWSER_PATH=${PWD}/target/firefox/firefox
+mvn test -pl client -B -V -DsuiteXmlFile=Firefox-Suite.xml \
+  -DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_DOWNLOAD_DEPENDENCIES=true -B -V

@@ -15,6 +15,7 @@
 
 package com.paypal.selion.internal.platform.grid.browsercapabilities;
 
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.Test;
 
@@ -27,8 +28,8 @@ public class CapabilitiesBuildersTest {
 
     @Test(groups = "unit")
     public void testGeckoDriverCaps() {
-        DesiredCapabilities caps = new GeckoCapabilitiesBuilder().createCapabilities();
-        assertTrue(caps.getCapability(GeckoCapabilitiesBuilder.MARIONETTE) == Boolean.TRUE);
+        DesiredCapabilities caps = new FireFoxCapabilitiesBuilder().createCapabilities();
+        assertTrue(caps.getCapability(FirefoxDriver.MARIONETTE) == Boolean.TRUE);
     }
 
 }
