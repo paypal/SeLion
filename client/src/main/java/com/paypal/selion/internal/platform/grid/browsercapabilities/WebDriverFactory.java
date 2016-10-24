@@ -56,12 +56,7 @@ public final class WebDriverFactory {
         RemoteWebDriver driver = null;
         switch (browser) {
         case FIREFOX:
-            boolean useGeckoDriver = Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_GECKODRIVER);
-            if (useGeckoDriver) {
-                capability = new GeckoCapabilitiesBuilder().createCapabilities();
-            } else {
-                capability = new FireFoxCapabilitiesBuilder().createCapabilities();
-            }
+            capability = new FireFoxCapabilitiesBuilder().createCapabilities();
             break;
         case CHROME:
             capability = new ChromeCapabilitiesBuilder().createCapabilities();

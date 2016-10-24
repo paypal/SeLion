@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.os.CommandLine;
@@ -58,6 +59,8 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
             String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
             String hub = String.format("http://%s:%s/grid/register", instance.getHost(), hubPort);
 
+            setLegacyFFBootupIfRequested();
+
             LauncherOptions launcherOptions = new LauncherConfiguration()
                     .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
 
@@ -93,6 +96,13 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
         }
         super.shutdown();
         LOGGER.exiting();
+    }
+
+    private void setLegacyFFBootupIfRequested() {
+        // Note: we do not support legacyFF AND marionette at the same time for local runs.
+        if (!Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_GECKODRIVER)) {
+            System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "false");
+        }
     }
 
     /*

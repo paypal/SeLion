@@ -25,5 +25,5 @@ cd ..
 export PATH=${PWD}/target:${PATH}
 mvn test -pl client -DsuiteXmlFile=Chrome-Suite.xml \
   -DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_DOWNLOAD_DEPENDENCIES=true \
-  -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER=com.paypal.selion.TestCapabilityBuilder \
+  -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER=com.paypal.selion.TravisCICapabilityBuilder \
   -DBROWSER_PATH=${PWD}/target/google-chrome -B -V
