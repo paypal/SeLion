@@ -131,7 +131,6 @@ public class AbstractBaseLauncherTest {
 
         // "node" case
         launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "node" });
-        ;
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_ARG));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_FILE));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(NODE_CONFIG_ARG));
@@ -139,7 +138,6 @@ public class AbstractBaseLauncherTest {
 
         // "hub" case
         launcher = new DummyProcessLauncher(new String[] { ROLE_ARG, "hub" });
-        ;
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_ARG));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(SELION_CONFIG_FILE));
         assertTrue(Arrays.asList(launcher.getProgramArguments()).contains(HUB_CONFIG_ARG));

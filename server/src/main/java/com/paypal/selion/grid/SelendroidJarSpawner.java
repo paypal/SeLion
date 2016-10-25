@@ -115,7 +115,7 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
         usage.append("\n");
         usage.append("  System Properties: \n");
         usage.append("    -DselionHome=<folderPath>: \n");
-        usage.append("       Path of SeLion home directory. Defaults to <user.home>/.selion/ \n");
+        usage.append("       Path of SeLion home directory. Defaults to <user.home>/.selion2/ \n");
         usage.append("    -D[property]=[value]: \n");
         usage.append("       Any other System Property you wish to pass to the JVM \n");
 

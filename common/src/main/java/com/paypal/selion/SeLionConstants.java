@@ -32,7 +32,7 @@ public class SeLionConstants {
     /**
      * The location SeLion-Grid will use to read/write/install required files to
      */
-    public static String SELION_HOME_DIR = HOME_PATH + "/.selion/";
+    public static String SELION_HOME_DIR = HOME_PATH + "/.selion2/";
 
     static {
         // allow for the user to override SELION_HOME via a system property
@@ -71,12 +71,12 @@ public class SeLionConstants {
      * Selenium system property for defining the location of chrome driver
      */
     public static final String WEBDRIVER_CHROME_DRIVER_PROPERTY = "webdriver.chrome.driver";
-    
+
     /**
      * Selenium system property for defining the location of ie driver.
      */
     public static final String WEBDRIVER_IE_DRIVER_PROPERTY = "webdriver.ie.driver";
-    
+
     /**
      * Selenium system property for defining the location of phantomjs
      */

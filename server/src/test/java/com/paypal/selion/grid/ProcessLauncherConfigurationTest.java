@@ -30,7 +30,7 @@ import com.google.gson.JsonObject;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 public class ProcessLauncherConfigurationTest {
-    class TestProcessLauncherOptions implements ProcessLauncherOptions {
+    private final class TestProcessLauncherOptions implements ProcessLauncherOptions {
         public <T extends LauncherOptions> T setFileDownloadCleanupOnInvocation(boolean val) {
             throw new UnsupportedOperationException("not implemented");
         }
@@ -139,7 +139,7 @@ public class ProcessLauncherConfigurationTest {
     @Test
     public void testParsedByJCommander() {
         ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
-        new JCommander(plc, "-selionConfig", "foo.bar", "-noContinuousRestart", "-excludeJarsInPWD");
+        new JCommander(plc, "-selionConfig", "foo.bar", "-continuousRestart", "false", "-includeJarsInPWD", "false");
         assertTrue(plc.isFileDownloadCheckTimeStampOnInvocation());
         assertTrue(plc.isFileDownloadCleanupOnInvocation());
         assertEquals(plc.getSeLionConfig(), "foo.bar");
@@ -172,20 +172,12 @@ public class ProcessLauncherConfigurationTest {
         assertTrue(plc.isSetupLoggingForJavaSubProcess());
         assertEquals(plc.getRestartCycle(), 0L);
 
-        // test that it can merge any ProcessLauncherConfiguration and that a null value is not merged
-        plc.noContinuousRestart = null;
+        // test that it can merge any ProcessLauncherOptions and that a null value results in the default value
+        plc.continuousRestart = null;
         ProcessLauncherConfiguration otherPlc = new ProcessLauncherConfiguration();
         otherPlc.merge(plc);
-        assertTrue(otherPlc.isFileDownloadCheckTimeStampOnInvocation());
-        assertTrue(otherPlc.isFileDownloadCleanupOnInvocation());
-        assertEquals(otherPlc.getSeLionConfig(), plc.getSeLionConfig()); // should be merged from the lc
-        assertTrue(otherPlc.isContinuouslyRestart()); // should be back to the default value
-        assertTrue(otherPlc.isIncludeJarsInPresentWorkingDir());
-        assertTrue(otherPlc.isIncludeJarsInSeLionHomeDir());
-        assertTrue(otherPlc.isIncludeJavaSystemProperties());
-        assertTrue(otherPlc.isIncludeParentProcessClassPath());
-        assertTrue(otherPlc.isIncludeWebDriverBinaryPaths());
-        assertTrue(otherPlc.isSetupLoggingForJavaSubProcess());
+        assertEquals(otherPlc.getSeLionConfig(), plc.getSeLionConfig()); // should be merged from the plc
+        assertTrue(otherPlc.isContinuouslyRestart()); // should return true since continuousRestart=null was merged
         assertEquals(otherPlc.getRestartCycle(), plc.getRestartCycle());
     }
 
@@ -220,8 +212,8 @@ public class ProcessLauncherConfigurationTest {
     public void testToString() {
         ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration();
         assertNotNull(plc.toString());
-        assertTrue(plc.toString().contains("noDownloadTimeStampCheck=null"));
-        assertTrue(plc.toString().contains("excludeJarsInPWD=null"));
+        assertTrue(plc.toString().contains("downloadTimeStampCheck=true"));
+        assertTrue(plc.toString().contains("includeJarsInPWD=true"));
     }
 
     @Test
@@ -230,15 +222,15 @@ public class ProcessLauncherConfigurationTest {
         plc.setIncludeJarsInPresentWorkingDir(false);
         JsonElement json = plc.toJson();
         assertNotNull(json);
-        assertTrue(json.getAsJsonObject().get("excludeJarsInPWD").getAsBoolean());
-        assertTrue(json.getAsJsonObject().get("noDownloadCleanup").isJsonNull());
+        assertFalse(json.getAsJsonObject().get("includeJarsInPWD").getAsBoolean());
+        assertTrue(json.getAsJsonObject().get("downloadCleanup").getAsBoolean());
         assertFalse(json.getAsJsonObject().has("selionConfig")); // does not serialize or de-serialize
     }
 
     @Test
     public void testFromJsonElement() {
         JsonObject json = new JsonObject();
-        json.addProperty("excludeJarsInPWD", true);
+        json.addProperty("includeJarsInPWD", false);
         ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration().fromJson(json);
         assertNotNull(plc);
         assertTrue(plc.isFileDownloadCheckTimeStampOnInvocation());
@@ -256,7 +248,7 @@ public class ProcessLauncherConfigurationTest {
 
     @Test
     public void testFromJsonString() {
-        String json = "{\"excludeJarsInPWD\": true}";
+        String json = "{\"includeJarsInPWD\": false}";
         ProcessLauncherConfiguration plc = new ProcessLauncherConfiguration().fromJson(json);
         assertNotNull(plc);
         assertTrue(plc.isFileDownloadCheckTimeStampOnInvocation());

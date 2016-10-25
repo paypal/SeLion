@@ -22,6 +22,7 @@
         <testng.version>6.9.10</testng.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <htmlunit.version>2.23</htmlunit.version>
+        <htmlunitdriver.version>2.23.2</htmlunitdriver.version>
         <project.bom.version>${project.version}</project.bom.version>
     </properties>
 

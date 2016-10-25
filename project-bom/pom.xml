@@ -132,6 +132,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.beust</groupId>
+                <artifactId>jcommander</artifactId>
+                <version>1.48</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>3.6</version>
@@ -226,7 +232,7 @@
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>htmlunit-driver</artifactId>
-                <version>${htmlunit.version}</version>
+                <version>${htmlunitdriver.version}</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>selenium-support</artifactId>
