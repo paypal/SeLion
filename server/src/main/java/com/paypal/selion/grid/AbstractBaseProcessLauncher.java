@@ -229,7 +229,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
      * @throws InterruptedException
      */
     final void continuouslyRestart(long interval) throws IOException, InterruptedException {
-        LOGGER.entering(new Object[] { interval });
+        LOGGER.entering(interval);
 
         while (true) {
             if (!isInitialized()) {

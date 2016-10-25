@@ -34,17 +34,17 @@ public class LauncherConfiguration implements LauncherOptions {
     public static final String SELION_CONFIG = "selionConfig";
     public static final String SELION_CONFIG_ARG = "-" + SELION_CONFIG;
 
-    public static final String NO_DOWNLOAD_CLEANUP = "noDownloadCleanup";
-    public static final String NO_DOWNLOAD_CLEANUP_ARG = "-" + NO_DOWNLOAD_CLEANUP;
+    public static final String DOWNLOAD_CLEANUP = "downloadCleanup";
+    public static final String DOWNLOAD_CLEANUP_ARG = "-" + DOWNLOAD_CLEANUP;
 
-    public static final String NO_DOWNLOAD_TIMESTAMP_CHECK = "noDownloadTimeStampCheck";
-    public static final String NO_DOWNLOAD_TIMESTAMP_CHECK_ARG = "-" + NO_DOWNLOAD_TIMESTAMP_CHECK;
+    public static final String DOWNLOAD_TIMESTAMP_CHECK = "downloadTimeStampCheck";
+    public static final String DOWNLOAD_TIMESTAMP_CHECK_ARG = "-" + DOWNLOAD_TIMESTAMP_CHECK;
 
     /**
      * the location of the SeLion Grid config file
      */
     @Parameter(
-        names = SELION_CONFIG_ARG, 
+        names = SELION_CONFIG_ARG,
         description = "<String> filename : A SeLion Grid configuration JSON file."
     )
     // transient because we don't want it to serialize
@@ -54,37 +54,39 @@ public class LauncherConfiguration implements LauncherOptions {
      * whether to clean up previously downloaded artifact within the JVM process
      */
     @Parameter(
-        names = NO_DOWNLOAD_CLEANUP_ARG, 
-        description = "<Boolean> : Disable clean up of previously downloaded artifacts within the same JVM process", 
-        hidden = true
+        names = DOWNLOAD_CLEANUP_ARG,
+        description = "<Boolean> : Enable/Disable clean up of previously downloaded artifacts within the same JVM process",
+        hidden = true,
+        arity = 1
     )
-    protected Boolean noDownloadCleanup;
+    protected Boolean downloadCleanup = true;
 
     /**
      * whether to disable timestamp checking on the download.json file within the JVM process
      */
     @Parameter(
-        names = NO_DOWNLOAD_TIMESTAMP_CHECK_ARG, 
-        description = "<Boolean> : Disable time stamp checks of the SeLion download.json file within the same JVM process",
-        hidden = true
+        names = DOWNLOAD_TIMESTAMP_CHECK_ARG,
+        description = "<Boolean> : Enable/Disable time stamp checks of the SeLion download.json file within the same JVM process",
+        hidden = true,
+        arity = 1
     )
-    protected Boolean noDownloadTimeStampCheck;
+    protected Boolean downloadTimeStampCheck = true;
 
     public boolean isFileDownloadCleanupOnInvocation() {
-        return noDownloadCleanup != null ? !noDownloadCleanup : true;
+        return downloadCleanup != null ? downloadCleanup : true;
     }
 
     public <T extends LauncherOptions> T setFileDownloadCleanupOnInvocation(boolean val) {
-        this.noDownloadCleanup = !val;
+        this.downloadCleanup = val;
         return (T) this;
     };
 
     public boolean isFileDownloadCheckTimeStampOnInvocation() {
-        return noDownloadTimeStampCheck != null ? !noDownloadTimeStampCheck : true;
+        return downloadTimeStampCheck != null ? downloadTimeStampCheck : true;
     }
 
     public <T extends LauncherOptions> T setFileDownloadCheckTimeStampOnInvocation(boolean val) {
-        this.noDownloadTimeStampCheck = !val;
+        this.downloadTimeStampCheck = val;
         return (T) this;
     }
 
@@ -102,26 +104,10 @@ public class LauncherConfiguration implements LauncherOptions {
             return;
         }
 
-        noDownloadCleanup = !other.isFileDownloadCleanupOnInvocation();
-        noDownloadTimeStampCheck = !other.isFileDownloadCheckTimeStampOnInvocation();
+        downloadCleanup = other.isFileDownloadCleanupOnInvocation();
+        downloadTimeStampCheck = other.isFileDownloadCheckTimeStampOnInvocation();
         if (StringUtils.isNotBlank(other.getSeLionConfig())) {
             selionConfig = other.getSeLionConfig();
-        }
-    }
-
-    public void merge(LauncherConfiguration other) {
-        if (other == null) {
-            return;
-        }
-
-        if (other.noDownloadCleanup != null) {
-            noDownloadCleanup = other.noDownloadCleanup;
-        }
-        if (other.noDownloadTimeStampCheck != null) {
-            noDownloadTimeStampCheck = other.noDownloadTimeStampCheck;
-        }
-        if (StringUtils.isNotBlank(other.selionConfig)) {
-            selionConfig = other.selionConfig;
         }
     }
 
@@ -130,10 +116,10 @@ public class LauncherConfiguration implements LauncherOptions {
         StringBuilder builder = new StringBuilder();
         builder.append("LauncherConfiguration [selionConfig=");
         builder.append(selionConfig);
-        builder.append(", noDownloadCleanup=");
-        builder.append(noDownloadCleanup);
-        builder.append(", noDownloadTimeStampCheck=");
-        builder.append(noDownloadTimeStampCheck);
+        builder.append(", downloadCleanup=");
+        builder.append(downloadCleanup);
+        builder.append(", downloadTimeStampCheck=");
+        builder.append(downloadTimeStampCheck);
         builder.append("]");
         return builder.toString();
     }

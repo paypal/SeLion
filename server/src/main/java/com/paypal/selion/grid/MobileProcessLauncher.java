@@ -42,11 +42,11 @@ abstract class MobileProcessLauncher extends AbstractBaseProcessLauncher {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(MobileProcessLauncher.class);
     JsonObject defaultArgs;
 
-    public MobileProcessLauncher(String[] args) {
+    MobileProcessLauncher(String[] args) {
         this(args, null);
     }
 
-    public MobileProcessLauncher(String[] args, ProcessLauncherOptions options) {
+    MobileProcessLauncher(String[] args, ProcessLauncherOptions options) {
         super();
         init(args, options);
     }
@@ -74,31 +74,60 @@ abstract class MobileProcessLauncher extends AbstractBaseProcessLauncher {
             }
         }
 
-        // filter out all SeLion Grid args -- They do not apply
-        // Assume all of the ProcessLauncherConfiguration and LauncherConfiguration arguments should not be forwarded
-        Set<Field> fields = new HashSet<Field>();
-        fields.addAll(Arrays.asList(ProcessLauncherConfiguration.class.getDeclaredFields()));
-        fields.addAll(Arrays.asList(LauncherConfiguration.class.getDeclaredFields()));
-
-        for (Field f : fields) {
-            Parameter p = f.getAnnotation(Parameter.class);
-            if (p == null) {
-                continue;
-            }
-            if (!f.getType().equals(Boolean.class)) {
-                for (String arg : args) {
-                    if (Arrays.asList(p.names()).contains(arg)) {
-                        args.set(args.indexOf(arg) + 1, "");
-                        args.set(args.indexOf(arg), "");
-                    }
-                }
-                args.removeAll(Arrays.asList(""));
-            } else {
-                args.removeAll(Arrays.asList(p.names()));
-            }
-        }
+        removeSeLionArgumentsAndValues(args);
 
         LOGGER.exiting(args.toString());
         return args.toArray(new String[args.size()]);
+    }
+
+    /**
+     * Filter out all SeLion Grid args -- They do not apply. Finds the argument names and how many values it can
+     * have through reflection.
+     *
+     * Note: this code does not concern itself with {@link Parameter}s that have
+     * {@link Parameter#variableArity()}}
+     */
+    private List<String> removeSeLionArgumentsAndValues(List<String> args) {
+        // assume all of the ProcessLauncherConfiguration and LauncherConfiguration arguments should not be forwarded
+        Set<Field> fields = new HashSet<>();
+        fields.addAll(Arrays.asList(ProcessLauncherConfiguration.class.getDeclaredFields()));
+        fields.addAll(Arrays.asList(LauncherConfiguration.class.getDeclaredFields()));
+
+        for (Field field : fields) {
+            // we need jcommander parameter fields only
+            Parameter parameter = field.getAnnotation(Parameter.class);
+            if (parameter == null) {
+                continue;
+            }
+
+            // get the "arity" (how many values it can have on the command line) of the parameter/argument.
+            // for example "-foo bar bar2"  --> argument = -foo --> arity = 2 --> values = {bar, bar2}
+            final Class<?> fieldType = field.getType();
+            final int arity = (parameter.arity() != -1) ? parameter.arity() :
+                (fieldType.equals(Integer.class) || fieldType.equals(Long.class) || fieldType.equals(String.class) ||
+                    fieldType.equals(int.class) || fieldType.equals(long.class)) ? 1 : 0;
+
+            if (arity > 0) {
+                for (String arg : args) {
+                    // when the arg we are processing is one of the @Parameter names
+                    if (Arrays.asList(parameter.names()).contains(arg)) {
+                        // replace each value with ""
+                        for (int x = 1; x <= arity; x += 1 ) {
+                            args.set(args.indexOf(arg) + x, "");
+                        }
+                        // replace the argument with ""
+                        args.set(args.indexOf(arg), "");
+                    }
+                }
+                // remove all ""
+                args.removeAll(Arrays.asList(""));
+            } else {
+                // the "arity" of the argument 0. there are no values to worry about.
+                // remove all instances of the argument (and/or one of its names) from args
+                args.removeAll(Arrays.asList(parameter.names()));
+            }
+        }
+
+        return args;
     }
 }

@@ -27,7 +27,7 @@ import com.google.gson.JsonObject;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 public class LauncherConfigurationTest {
-    class TestLauncherOptions implements LauncherOptions {
+    private final class TestLauncherOptions implements LauncherOptions {
         public <T extends LauncherOptions> T setFileDownloadCleanupOnInvocation(boolean val) {
             throw new UnsupportedOperationException("not implemented");
         }
@@ -64,7 +64,7 @@ public class LauncherConfigurationTest {
     @Test
     public void testParsedByJCommander() {
         LauncherConfiguration lc = new LauncherConfiguration();
-        new JCommander(lc, "-selionConfig", "foo.bar", "-noDownloadCleanup", "-noDownloadTimeStampCheck");
+        new JCommander(lc, "-selionConfig", "foo.bar", "-downloadCleanup", "false", "-downloadTimeStampCheck", "false");
         assertFalse(lc.isFileDownloadCheckTimeStampOnInvocation());
         assertFalse(lc.isFileDownloadCleanupOnInvocation());
         assertEquals(lc.getSeLionConfig(), "foo.bar");
@@ -81,12 +81,11 @@ public class LauncherConfigurationTest {
         assertFalse(lc.isFileDownloadCleanupOnInvocation());
         assertEquals(lc.getSeLionConfig(), tlo.getSeLionConfig());
 
-        // test that it can merge any LauncherConfiguraion and that a null value is not merged
-        lc.noDownloadCleanup = null;
+        // test that it can merge any LauncherOptions and that a merged null value results in the default response
+        lc.downloadCleanup = null;
         LauncherConfiguration otherLc = new LauncherConfiguration();
         otherLc.merge(lc);
-        assertTrue(otherLc.isFileDownloadCheckTimeStampOnInvocation());
-        assertTrue(otherLc.isFileDownloadCleanupOnInvocation()); // should be back to the default value
+        assertTrue(otherLc.isFileDownloadCleanupOnInvocation()); // should return true, since downloadCleanup=null
         assertEquals(otherLc.getSeLionConfig(), lc.getSeLionConfig()); // should be merged from the lc
     }
 
@@ -105,7 +104,7 @@ public class LauncherConfigurationTest {
     public void testToString() {
         LauncherConfiguration lc = new LauncherConfiguration();
         assertNotNull(lc.toString());
-        assertTrue(lc.toString().contains("noDownloadTimeStampCheck=null"));
+        assertTrue(lc.toString().contains("downloadTimeStampCheck=true"));
     }
 
     @Test
@@ -114,8 +113,8 @@ public class LauncherConfigurationTest {
         lc.setFileDownloadCheckTimeStampOnInvocation(false);
         JsonElement json = lc.toJson();
         assertNotNull(json);
-        assertTrue(json.getAsJsonObject().get("noDownloadTimeStampCheck").getAsBoolean());
-        assertTrue(json.getAsJsonObject().get("noDownloadCleanup").isJsonNull());
+        assertFalse(json.getAsJsonObject().get("downloadTimeStampCheck").getAsBoolean());
+        assertTrue(json.getAsJsonObject().get("downloadCleanup").getAsBoolean());
         assertFalse(json.getAsJsonObject().has("selionConfig")); // does not serialize or de-serialize
     }
 
@@ -123,7 +122,7 @@ public class LauncherConfigurationTest {
     public void testFromJsonElement() {
         JsonObject json = new JsonObject();
         json.addProperty("selionConfig", "");
-        json.addProperty("noDownloadCleanup", true);
+        json.addProperty("downloadCleanup", false);
         LauncherConfiguration lc = new LauncherConfiguration().fromJson(json);
         assertNotNull(lc);
         // selionConfig should not serialize or de-serialize, so the default value should be on lc
@@ -134,7 +133,7 @@ public class LauncherConfigurationTest {
 
     @Test
     public void testFromJsonString() {
-        String json = "{\"selionConfig\": \"\", \"noDownloadCleanup\": true}";
+        String json = "{\"selionConfig\": \"\", \"downloadCleanup\": false}";
         LauncherConfiguration lc = new LauncherConfiguration().fromJson(json);
         assertNotNull(lc);
         // selionConfig should not serialize or de-serialize, so the default value should be on lc
