@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The class represents the elements that can be given in a page object data source and are common to both the iOS
+ * and Android platforms
+ */
 public class MobileSeLionElementList extends AbstractSeLionElementList {
     public static final String UIAUTOMATION_ELEMENT_CLASS = "com.paypal.selion.platform.mobile.elements";
 

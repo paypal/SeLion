@@ -17,6 +17,9 @@ package com.paypal.selion.plugins;
 
 import org.apache.maven.plugin.logging.Log;
 
+/**
+ * A basic logger for the codegen maven mojo plugin
+ */
 public class Logger {
     private static Log log;
 

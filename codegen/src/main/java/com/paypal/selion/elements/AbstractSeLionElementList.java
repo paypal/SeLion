@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,6 +15,9 @@
 
 package com.paypal.selion.elements;
 
+/**
+ * Abstract implementation for representing SeLion elements which are use for code generation.
+ */
 public abstract class AbstractSeLionElementList {
 
     private final String element;

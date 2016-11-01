@@ -21,6 +21,10 @@ import java.util.List;
 
 import com.paypal.selion.plugins.GUIObjectDetails;
 
+/**
+ * The class represents the elements that can be given in a page object data source and are recognized by Android
+ * platform
+ */
 public class AndroidSeLionElementList extends AbstractSeLionElementList {
     public static final String UIAUTOMATION_ELEMENT_CLASS = "com.paypal.selion.platform.mobile.android";
 

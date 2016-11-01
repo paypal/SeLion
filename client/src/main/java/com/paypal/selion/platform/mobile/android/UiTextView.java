@@ -20,6 +20,9 @@ import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import org.openqa.selenium.WebElement;
 
+/**
+ * <code>UiTextView</code> interface allows access to, and control of, text field elements in your Android app.
+ */
 public class UiTextView extends UiObject implements MobileTextField {
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
