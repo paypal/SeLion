@@ -29,6 +29,9 @@ import org.testng.ITestResult;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
+/**
+ * Internal use only. Abstract class to split collections for reporting purposes.
+ */
 public abstract class CollectionSplitter {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();

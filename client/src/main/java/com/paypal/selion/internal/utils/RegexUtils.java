@@ -20,6 +20,9 @@ import com.google.common.base.Preconditions;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
+/**
+ * Methods for performing regex based matches.
+ */
 public final class RegexUtils {
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
