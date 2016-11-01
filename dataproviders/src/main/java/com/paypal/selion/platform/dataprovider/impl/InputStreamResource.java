@@ -20,7 +20,6 @@ import java.io.InputStream;
 import com.paypal.selion.platform.dataprovider.DataResource;
 
 /**
-/**
  * InputStreamResource defines input stream of the data source to be used for data provider consumption. Loading a
  * file (Yaml, Xml, Json, xls for e.g.,) containing user-defined (complex) objects also requires passing in the object class.
  * Passing in a complex object with nested complex objects does not require any additional parameters.

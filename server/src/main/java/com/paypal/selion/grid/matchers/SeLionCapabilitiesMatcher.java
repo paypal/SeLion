@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,6 +25,11 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.selenium.remote.BrowserType;
 import org.uiautomation.ios.IOSCapabilities;
 
+/**
+ * {@link DefaultCapabilityMatcher} which includes matching rules for ios-driver and selendroid nodes.
+ * @deprecated in SeLion 1.2.0
+ */
+@Deprecated
 public class SeLionCapabilitiesMatcher extends DefaultCapabilityMatcher {
 
     @Override
@@ -38,7 +43,7 @@ public class SeLionCapabilitiesMatcher extends DefaultCapabilityMatcher {
             //TODO Hack -- As of Selendroid 0.10.0, the AUT capabilities are not added, so we are removing it from the
             // requested capabilities before sending to the matcher. 
             // See io.selendroid.server.grid.SelfRegisteringRemote#getNodeConfig() for more on this problem
-            Map<String, Object> augmentedRequestedCapabilities = new HashMap<String, Object>();
+            Map<String, Object> augmentedRequestedCapabilities = new HashMap<>();
             augmentedRequestedCapabilities.putAll(requestedCapability);
             augmentedRequestedCapabilities.remove(SelendroidCapabilities.AUT);
             return new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities);

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,6 +35,10 @@ import com.paypal.selion.grid.servlets.transfer.UploadedArtifact.UploadedArtifac
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.utils.ConfigParser;
 
+/**
+ * <code>UploadRequestProcessor</code> processes any HTTP upload request for any type that extends
+ * {@link ManagedArtifact}.
+ */
 public interface UploadRequestProcessor {
 
     /**
