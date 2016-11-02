@@ -65,9 +65,10 @@ public class HtmlSeLionElementList extends AbstractSeLionElementList {
      * @param element string of the qualified class
      */
     public static void registerElement(String element) {
-        List<HtmlSeLionElementList> temp = new ArrayList<HtmlSeLionElementList>(Arrays.asList(values));
+        List<HtmlSeLionElementList> temp = new ArrayList<>(Arrays.asList(values));
         
-        temp.add(0, new HtmlSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), true, false));
+        temp.add(0, new HtmlSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element),
+                true, true));
         
         values = temp.toArray(new HtmlSeLionElementList[temp.size()]);
     }

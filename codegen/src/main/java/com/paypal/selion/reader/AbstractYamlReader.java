@@ -115,7 +115,7 @@ public abstract class AbstractYamlReader {
 
     protected List<String> parseKeysForContainer(String fileName, Map<String, HtmlContainerElement> allElements) {
 
-        List<String> elementKeys = new ArrayList<String>();
+        List<String> elementKeys = new ArrayList<>();
 
         for (Entry<String, HtmlContainerElement> element : allElements.entrySet()) {
             try {
