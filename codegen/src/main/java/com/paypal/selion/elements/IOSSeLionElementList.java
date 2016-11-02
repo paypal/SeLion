@@ -66,7 +66,7 @@ public class IOSSeLionElementList extends AbstractSeLionElementList {
      *            string of the qualified class
      */
     public static void registerElement(String element) {
-        List<IOSSeLionElementList> temp = new ArrayList<IOSSeLionElementList>(Arrays.asList(values));
+        List<IOSSeLionElementList> temp = new ArrayList<>(Arrays.asList(values));
 
         temp.add(0, new IOSSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element),
                 true));

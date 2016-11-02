@@ -1,0 +1,12 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+pageTitle:
+  US: "API Page"
+elements:
+  fooContainer:
+    locators:
+      US: "./html"
+    containerElements:
+      exampleCustomElement:
+        locators:
+          US: "./input"
+defaultLocale: "US"

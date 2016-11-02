@@ -27,6 +27,8 @@ import org.testng.annotations.Test;
 import com.paypal.selion.elements.HtmlSeLionElementList;
 import com.paypal.selion.elements.IOSSeLionElementList;
 
+import static org.testng.Assert.assertTrue;
+
 public class GUIObjectDetailsTest {
     class DummyMojo extends AbstractMojo {
         @Override
@@ -86,6 +88,26 @@ public class GUIObjectDetailsTest {
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
         GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
+    }
+
+    @Test
+    public void validateCustomElementInContainer() throws Exception {
+        String dataFile = "src/test/resources/CustomElementInContainerPage.yaml";
+        HtmlSeLionElementList.registerElement("com.paypal.test.CustomElement");
+
+        DataReader reader = new DataReader(dataFile);
+        TestPlatform currentPlatform = reader.platform();
+        GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
+
+        String expectedContainerName = "foo" + "Container";
+        String expectedCustomName = expectedContainerName + "#exampleCustomElement";
+
+        assertTrue(reader.getKeys().contains(expectedContainerName));
+        assertTrue(reader.getKeys().contains(expectedCustomName));
+
+        // get the GUI customElement and verify parent is the container
+        GUIObjectDetails customGuiElement = GUIObjectDetails.transformKeys(reader.getKeys(), currentPlatform).get(1);
+        assertTrue(customGuiElement.getParent().contains(expectedContainerName));
     }
 
     @Test(expectedExceptions = { IllegalArgumentException.class })
