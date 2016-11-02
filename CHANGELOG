@@ -1,0 +1,35 @@
+1.2.0
+=====
+- Selenium 2.53.1 upgrade
+- Add Geckodriver/Marionette support
+- Appium 1.5.x support
+- java_client 4.1.2 upgrade
+- Update all iOS elements to use TouchAction API
+- Reworked additional capabilities builders/provider support. You can now specify custom capability
+  builders/providers through the annotations @MobileTest and/or @WebTest. In addition, a bug which limited the number of
+  providers you could specify via configuration to one, has been fixed. Last, providers can now be configured at the 
+  <test> scope -- they are no longer global <suite> only.
+- A bug with session sharing which ignored @Test(disabled=true) has been fixed.
+- A bug in session sharing which included methods that did not define a @Test(priority) has been fixed.
+- PageYAML support for custom elements in page object containers.
+
+1.1.0
+=====
+- Selenium 2.53.0 upgrade
+- java_client 3.4.1 upgrade
+- Support for Edge browser
+- Add a common interface for ios and android elements
+- MOBILE_DEVICE and MOBILE_DEVICE_TYPE are now config properties
+- Misc SeLion grid fixes in the areas of;
+  - Process cleanup on node shutdown/restart
+  - SeLionConfig.json load and/or initialization
+  - SeLion SauceProxy
+  - ListAllNodes servlet
+  - SeLionRemoteProxy max unique sessions can be disabled.
+  - Look and feel improvements across all SeLion servlets.
+  - Add new browser statistics servlet which can return the number of requests by browser type in the hub's registry.
+- Fix '|' (or) support for mobile elements.
+- Fix mobile appName and appPath processing bug.
+- Support for the maven 'generate-test-sources' phase in SeLion's code generator. Now PageYAML can reside in your test
+  resources.
+- Add before and after screenshot events to element event listener.
