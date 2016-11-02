@@ -34,6 +34,9 @@ import com.paypal.selion.internal.platform.pageyaml.GuiMapReaderFactory;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.WebPage;
 
+/**
+ * Abstract page class for all "page object" classes.
+ */
 public abstract class AbstractPage implements WebPage {
 
     // Initialization state of WebPage

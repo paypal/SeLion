@@ -15,6 +15,9 @@
 
 package com.paypal.selion.platform.mobile;
 
+/**
+ * Thrown when a mobile element object can not be instantiated.
+ */
 public class MobileObjectInstantiationException extends RuntimeException {
 
     private static final long serialVersionUID = -8721008345311351866L;

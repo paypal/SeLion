@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -23,9 +23,9 @@ import com.paypal.selion.grid.RunnableLauncher;
 import static com.paypal.selion.SeLionConstants.*;
 
 /**
- * A Class which contains String constants used throughout SeLion Grid
+ * A Class which contains String constants used throughout SeLion Grid.
  * 
- * Patterns & conventions used in naming the constants for this class 
+ * Patterns & conventions used in naming the constants for this class.
  * </br> 
  * </br> - Anything that is a *DIR* ends with a trailing separator. File system dirs are platform specific  ('\' Windows, 
  * '/' Unix). CLASSPATH resource dirs will always be '/'. 

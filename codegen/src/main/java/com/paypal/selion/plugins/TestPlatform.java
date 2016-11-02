@@ -15,6 +15,10 @@
 
 package com.paypal.selion.plugins;
 
+/**
+ * Represents the platform types code generation can be performed for. Also maps each platform type to a velocity
+ * template.
+ */
 public enum TestPlatform {
 
     /**
