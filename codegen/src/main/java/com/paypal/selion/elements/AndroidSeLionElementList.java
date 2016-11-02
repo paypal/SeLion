@@ -58,7 +58,7 @@ public class AndroidSeLionElementList extends AbstractSeLionElementList {
      *            string of the qualified class
      */
     public static void registerElement(String element) {
-        List<AndroidSeLionElementList> temp = new ArrayList<AndroidSeLionElementList>(Arrays.asList(values));
+        List<AndroidSeLionElementList> temp = new ArrayList<>(Arrays.asList(values));
 
         temp.add(0, new AndroidSeLionElementList(HtmlElementUtils.getPackage(element), HtmlElementUtils.getClass(element), 
                  true));
