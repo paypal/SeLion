@@ -74,16 +74,6 @@
           </td>
         </tr>
         <tr>
-          <td>localGridConfigFile</td>
-          <td><span>SELION_SELENIUM_LOCAL_GRID_CONFIG_FILE</span></td>
-          <td colspan="1"><span>localnode.json</span></td>
-          <td colspan="1" class="warning"><span>GLOBAL</span></td>
-          <td>
-            <p>The name of the JSON file that can be used, in case for a local run the end user wants to create their own
-              customization for the local grid.</p>
-          </td>
-        </tr>
-        <tr>
           <td><span>saucelabGridConfigFile</span></td>
           <td><span>SELION_SELENIUM_SAUCELAB_GRID_CONFIG_FILE</span></td>
           <td colspan="1">&nbsp;</td>
@@ -166,7 +156,7 @@
           <td>customCapabilities</td>
           <td><span>SELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER</span></td>
           <td colspan="1">&nbsp;</td>
-          <td colspan="1" class="warning"><span>GLOBAL</span></td>
+          <td colspan="1"><span>GLOBAL, LOCAL</span></td>
           <td>
             <p>Use this parameter to provide SeLion with a custom capabilities provider. The value for this parameter
               would be the fully qualified class name which is a sub-class of DefaultCapabilitiesBuilder.
@@ -247,7 +237,7 @@
           <td colspan="1"><span>GLOBAL, LOCAL</span></td>
           <td>
             <p>This parameter represents the fully qualified path of the app that is to be spawned. Must be one of an absolute path on
-            the local filesystem, or a http:// URL, a file on "sauce storage" (sauce-storage:testApp.apk), or a file on "SeLion hub 
+            the local filesystem, or a http:// URL, a file on "sauce storage" (sauce-storage:testApp.apk), or a file on "SeLion hub
             storage" (selion-hub-storage:uuid/testApp.apk).</p>
           </td>
         </tr>
@@ -257,7 +247,7 @@
           <td colspan="1">&nbsp;</td>
           <td colspan="1"><span>GLOBAL, LOCAL</span></td>
           <td>
-            <p>This parameter represents the mobile driver which is used to execute mobile test cases. The valid values are 
+            <p>This parameter represents the mobile driver which is used to execute mobile test cases. The valid values are
               <code>appium, ios-driver, selendroid</code></p>
           </td>
         </tr>
@@ -347,7 +337,7 @@
           <td colspan="1"><span>GLOBAL, LOCAL</span></td>
           <td colspan="1">
             <p>Should javascript capability be enabled on the browser for the AUT. By default javascript will be
-              enabled on<br> * the client browser, but this flag can be used to toggle this setting.</p>
+              enabled on the client browser, but this flag can be used to toggle this setting.</p>
           </td>
         </tr>
         <tr>

@@ -11,7 +11,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <selion.version>1.1.0</selion.version>
+    <selion.version>1.2.0</selion.version>
   </properties>
 
   <!-- Optional, required when you want to use a SeLion SNAPSHOT version -->

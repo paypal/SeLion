@@ -4,4 +4,4 @@ mvn archetype:generate -B \
  -DgroupId=com.mycompany.myproject \
  -DarchetypeGroupId=com.paypal.selion \
  -DarchetypeArtifactId=SeLion-Archetype \
- -DarchetypeVersion=1.1.0
+ -DarchetypeVersion=1.2.0
