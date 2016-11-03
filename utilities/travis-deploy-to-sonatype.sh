@@ -14,7 +14,7 @@ set -ev
 ISDEVELOP=false
 
 check_branch() {
-  for developBranch in develop develop-1.2.0
+  for developBranch in develop
   do
     if [ "$TRAVIS_BRANCH" = "$developBranch" ]; then
       ISDEVELOP=true
