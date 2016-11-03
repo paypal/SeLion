@@ -87,6 +87,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion-Grid</artifactId>
             <version>${project.version}</version>
