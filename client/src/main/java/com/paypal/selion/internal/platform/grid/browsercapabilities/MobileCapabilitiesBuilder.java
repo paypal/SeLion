@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,37 +15,27 @@
 
 package com.paypal.selion.internal.platform.grid.browsercapabilities;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
-
+import com.paypal.selion.internal.platform.grid.MobileNodeType;
 import com.paypal.selion.internal.platform.grid.MobileTestSession;
 import com.paypal.selion.platform.grid.Grid;
+import com.paypal.selion.platform.grid.MobileProviderService;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 class MobileCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
-        if (Grid.getMobileTestSession() == null) {
+        MobileTestSession mobileSession = Grid.getMobileTestSession();
+        if (mobileSession == null) {
             return capabilities;
         }
-        MobileTestSession mobileSession = Grid.getMobileTestSession();
-        DefaultCapabilitiesBuilder capabilitiesBuilder = null;
-        switch (mobileSession.getMobileNodeType()) {
 
-        case IOS_DRIVER:
-            capabilitiesBuilder = new IOSDriverCapabilitiesBuilder();
-            break;
-        case SELENDROID:
-            capabilitiesBuilder = new SelendroidCapabilitiesBuilder();
-            break;
-        case APPIUM:
-            capabilitiesBuilder = new AppiumCapabilitiesBuilder();
-            break;
-        default:
-            break;
+        MobileNodeType mobileNodeType = mobileSession.getMobileNodeType();
+        if (mobileNodeType == null) {
+            return capabilities;
         }
-
-        return capabilitiesBuilder.getCapabilities(capabilities); // NOSONAR
+        return MobileProviderService.getInstance().capabilityBuilder(mobileNodeType).getCapabilities(capabilities);
     }
 
 }

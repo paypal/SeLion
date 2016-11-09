@@ -55,7 +55,8 @@ public class UiList extends UiObject implements MobileList {
     public void clickCellAtIndex(int index, Object... expected) {
         logger.entering(index, expected);
         WebElement element = findElementAtIndex(index);
-        getBridgeDriver().click(element);
+        initBridgeDriver();
+        driver.click(element);
         waitFor(expected);
         logger.exiting();
     }
