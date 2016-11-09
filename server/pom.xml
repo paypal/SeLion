@@ -135,6 +135,12 @@
         <dependency>
             <groupId>org.uiautomation</groupId>
             <artifactId>ios-grid</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.java.dev.jna</groupId>
+                    <artifactId>jna</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
