@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,6 +19,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
@@ -31,7 +32,6 @@ import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
 import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
 import com.paypal.selion.platform.mobile.ios.UIAPicker;
-import com.paypal.selion.platform.mobile.ios.UIAStaticText;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -49,7 +49,7 @@ public class IOSDriverPickerTest {
     @MobileTest(appName = "PageObjects")
     @Test
     public void testPickerValues() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 5; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();
@@ -64,7 +64,7 @@ public class IOSDriverPickerTest {
     @MobileTest(appName = "PageObjects")
     @Test
     public void testSetPickerValue() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 5; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();
@@ -72,14 +72,14 @@ public class IOSDriverPickerTest {
         }
         UIAPicker picker = new UIAPicker("xpath=//UIAApplication[1]/UIAWindow[1]/UIAPicker[1]");
         picker.setValueOfWheelAtIndex(0, "Nine");
-        UIAStaticText pickerLabel = new UIAStaticText("xpath=//UIAApplication[1]/UIAWindow[1]/UIAStaticText[1]");
+        MobileTextField pickerLabel = new MobileTextField("xpath=//UIAApplication[1]/UIAWindow[1]/UIAStaticText[1]");
         Assert.assertEquals(pickerLabel.getValue(), "Nine", "Value set to the picker wheel does not match");
     }
 
     @Test(expectedExceptions = InvalidSelectorException.class)
     @MobileTest(appName = "PageObjects")
     public void testInvalidXPath() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 5; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();
@@ -92,7 +92,7 @@ public class IOSDriverPickerTest {
     @Test(expectedExceptions = NoSuchElementException.class)
     @MobileTest(appName = "PageObjects")
     public void testInvalidPickerLocator() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 5; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();
@@ -105,7 +105,7 @@ public class IOSDriverPickerTest {
     @Test(expectedExceptions = UIOperationFailedException.class)
     @MobileTest(appName = "PageObjects")
     public void testInvalidWheelAccess() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 5; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();

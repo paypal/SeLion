@@ -17,13 +17,15 @@ package com.paypal.selion.platform.mobile.ios;
 
 import java.util.EnumMap;
 
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
+import com.paypal.selion.platform.mobile.elements.MobileSlider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * <code>SeLionIOSBridgeDriver</code> acts as single level of abstraction between different mobile driver
- * implementations. {@link UIAElement} class depends on this abstraction to delegate calls to the respective
+ * implementations. {@link AbstractMobileElement} class depends on this abstraction to delegate calls to the respective
  * implementations.
  */
 public interface SeLionIOSBridgeDriver {
@@ -60,7 +62,7 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Finds the {@link WebElement} using the underlying {@link RemoteWebDriver} implementation.
-     * 
+     *
      * @param by
      *            {@link By} instance
      * @return {@link WebElement} found for the corresponding {@link By}
@@ -69,7 +71,7 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Double tap the {@link WebElement}
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
      */
@@ -77,7 +79,7 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Scrolls until the specified {@link WebElement} is visible in a container view.
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
      */
@@ -85,7 +87,7 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Taps the specified {@link WebElement}.
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
      */
@@ -94,10 +96,10 @@ public interface SeLionIOSBridgeDriver {
     /**
      * Performs the specified gesture on the specified {@link WebElement} using a {@link EnumMap} to specify gesture
      * attributes. Refer {@link GestureOptions} for specifying gesture options.
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
-     * 
+     *
      * @param gestureOptions
      *            {@link EnumMap} specifying the gesture attributes.
      */
@@ -105,27 +107,27 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Performs a two-finger (two-touch) tap on the {@link WebElement}.
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
      */
     void twoFingerTap(WebElement webElement);
 
     /**
-     * Drags the {@link UIAutomationSlider} to the specified value.
-     * 
+     * Drags the {@link MobileSlider} to the specified value.
+     *
      * @param webElement
-     *            {@link WebElement} representing the {@link UIAutomationSlider}
+     *            {@link WebElement} representing the {@link MobileSlider}
      * @param value
      *            double value.
      */
     void dragSliderToValue(WebElement webElement, double value);
 
     /**
-     * Sets the value of {@link UIAutomationPicker} to the specified value.
-     * 
+     * Sets the value of {@link MobileSlider} to the specified value.
+     *
      * @param webElement
-     *            {@link WebElement} representing the {@link UIAutomationPicker}
+     *            {@link WebElement} representing the {@link MobileSlider}
      * @param value
      *            String value.
      */
@@ -133,7 +135,7 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Returns a string containing the label attribute of the {@link WebElement}.
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
      * @return Label of the {@link WebElement}
@@ -142,7 +144,7 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Returns a string containing the name attribute of the {@link WebElement}.
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
      * @return Name of the {@link WebElement}
@@ -151,7 +153,7 @@ public interface SeLionIOSBridgeDriver {
 
     /**
      * Returns a string containing the value attribute of the {@link WebElement}.
-     * 
+     *
      * @param webElement
      *            {@link WebElement} instance.
      * @return Value of the {@link WebElement}

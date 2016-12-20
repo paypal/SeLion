@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,15 +15,10 @@
 
 package com.paypal.selion.ios.sample;
 
-import java.util.EnumMap;
-
-import org.testng.annotations.Test;
-
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.ios.GestureOptions;
-import com.paypal.selion.platform.mobile.ios.UIAButton;
-import com.paypal.selion.platform.mobile.ios.UIAElement;
+import com.paypal.selion.platform.mobile.elements.MobileButton;
 import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
+import org.testng.annotations.Test;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -31,23 +26,18 @@ import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
 public class AppiumIOSButtonTouchTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testTwoFingerTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { new UIAButton(
-                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Touch')]") });
+        navigationBar.clickRightButton(new MobileButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Touch')]"));
         navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { new UIAButton(
-                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'State')]") });
-        UIAElement twoFingerButton = new UIAElement("xpath=//UIAApplication[1]/UIAWindow[1]/UIAElement[1]");
-        EnumMap<GestureOptions, String> options = new EnumMap<>(GestureOptions.class);
-        options.put(GestureOptions.TAP_COUNT, "1");
-        options.put(GestureOptions.TOUCH_COUNT, "2"); // transforms to Two Finger Tap
-        options.put(GestureOptions.DURATION, "0");
-        options.put(GestureOptions.X, "0.5");
-        options.put(GestureOptions.Y, "0.3");
-        twoFingerButton.tapWithOptions(options);
+        navigationBar.clickRightButton(new MobileButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'State')]"));
+        //appium can not inspect multi touch view !
+        MobileButton twoFingerButton = new MobileButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAElement[1]");
+        twoFingerButton.getMobileElement().tap(2, 100);
         Thread.sleep(2 * 1000);
     }
 

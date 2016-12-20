@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -36,7 +36,7 @@ public class AppiumAndroidBrowserTest {
      * versions.
      */
     @Test
-    @MobileTest(appName = "Chrome", device = "android:5.0.1", deviceType = "Android Emulator")
+    @MobileTest(appName = "Chrome")
     public void testWithChrome() {
         RemoteWebDriver driver = Grid.driver();
         assertNotNull(driver);

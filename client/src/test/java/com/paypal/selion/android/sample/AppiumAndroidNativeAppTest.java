@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -32,7 +32,7 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
 public class AppiumAndroidNativeAppTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/selendroid-test-app-0.15.0.apk", device = "android:5.0.1", deviceType = "Android Emulator", mobileNodeType = "appium")
+    @MobileTest(appPath = "src/test/resources/apps/selendroid-test-app-0.15.0.apk")
     public void testWithNativeApp() {
 
         RemoteWebDriver driver = Grid.driver();

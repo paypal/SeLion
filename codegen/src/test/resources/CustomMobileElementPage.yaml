@@ -3,10 +3,10 @@ pageTitle:
   US: "API Page"
 elements:
   buttonCustomElement:
-    locators: 
+    locators:
       US: "//div[@id='apiOption1']/p[3]/a"
   linkAnotherElement:
-    locators: 
+    locators:
       US: "//div[@id='apiOption2']/p[3]/a"
 defaultLocale: "US"
-platform: "ios"
+platform: "mobile"

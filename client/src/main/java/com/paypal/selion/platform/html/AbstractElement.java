@@ -141,7 +141,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * @param cause
      *            The associated cause for the exception.
      */
-    private void addInfoForNoSuchElementException(NoSuchElementException cause) {
+    protected void addInfoForNoSuchElementException(NoSuchElementException cause) {
         if (parent == null) {
             throw cause;
         }
@@ -385,6 +385,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     protected void processScreenShot() {
         logger.entering();
+        if (Grid.getWebTestSession() == null) {
+            return;
+        }
         processAlerts(Grid.getWebTestSession().getBrowser());
 
         dispatcher.beforeScreenshot(this);
@@ -434,6 +437,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     }
 
     protected void validatePresenceOfAlert() {
+        if (Grid.getWebTestSession() == null) {
+            return;
+        }
         String browser = Grid.getWebTestSession().getBrowser();
         logger.finest("Validating presence of alert with browser " + browser);
         if (doesNotHandleAlerts(browser)) {
@@ -448,7 +454,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
             // Gobble the exception and do nothing with it. No alert was triggered. So it is safe to proceed ahead.
         }
     }
-
+    
     /**
      * Basic click event on the Element. Functionally equivalent to {@link #clickonly()}
      */
@@ -471,11 +477,23 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      *            parameters in the form of an element locator {@link String}, a {@link WebPage}, an
      *            {@link AbstractElement}, or an {@link ExpectedCondition}
      */
-    @SuppressWarnings("unchecked")
+    
     public void click(Object... expected) {
+    	Function<?,?> remoteClick = new Function<WebElement, WebElement>(){
+			@Override
+			public WebElement apply(WebElement element) {
+				getElement().click();
+				return element;
+			}
+    	};
+    	click(remoteClick,expected);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void click(Function<?,?> action, Object... expected) {
         dispatcher.beforeClick(this, expected);
 
-        getElement().click();
+        action.apply(null);
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
         }

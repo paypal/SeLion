@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,6 +18,7 @@ package com.paypal.selion.ios.sample;
 import java.io.File;
 import java.net.URL;
 
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.openqa.selenium.WebDriverException;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -28,7 +29,6 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
 import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
-import com.paypal.selion.platform.mobile.ios.UIAStaticText;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -46,7 +46,7 @@ public class IOSDriverLabelAndNavigationTest {
     @MobileTest(appName = "PageObjects")
     @Test
     public void testLabelValue() throws InterruptedException {
-        UIAStaticText label = new UIAStaticText("xpath=//UIAApplication[1]/UIAWindow[1]/UIAStaticText[1]");
+        MobileTextField label = new MobileTextField("xpath=//UIAApplication[1]/UIAWindow[1]/UIAStaticText[1]");
         Assert.assertEquals(label.getValue(), "Page Objects Demo", "Label value does not match");
     }
 
@@ -55,7 +55,7 @@ public class IOSDriverLabelAndNavigationTest {
     public void testNavigationBarName() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        Assert.assertEquals(navigationBar.getName(), "Sample", "Navigation bar name does not match");
+        Assert.assertEquals(navigationBar.getControlName(), "Sample", "Navigation bar name does not match");
     }
 
     @MobileTest(appName = "PageObjects")
@@ -65,7 +65,7 @@ public class IOSDriverLabelAndNavigationTest {
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
         navigationBar.clickRightButton();
         navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        Assert.assertEquals(navigationBar.getName(), "Tap", "Navigation right button not functioning properly");
+        Assert.assertEquals(navigationBar.getControlName(), "Tap", "Navigation right button not functioning properly");
     }
 
     @MobileTest(appName = "PageObjects")
@@ -76,7 +76,7 @@ public class IOSDriverLabelAndNavigationTest {
         navigationBar.clickRightButton();
         navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
         navigationBar.clickLeftButton();
-        Assert.assertEquals(navigationBar.getName(), "Sample", "Navigation left button not functioning properly");
+        Assert.assertEquals(navigationBar.getControlName(), "Sample", "Navigation left button not functioning properly");
     }
 
     @MobileTest(appName = "PageObjects")
@@ -90,7 +90,7 @@ public class IOSDriverLabelAndNavigationTest {
     @MobileTest(appName = "PageObjects")
     @Test(expectedExceptions = UIOperationFailedException.class)
     public void testInvalidRightClick() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 5; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();

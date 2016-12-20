@@ -28,22 +28,23 @@ import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
+import io.appium.java_client.MobileElement;
+
 /**
  * The <code>UIAPicker</code> class allows access to, and control of, wheel elements within a picker
  */
-public class UIAPicker extends UIAElement implements UIAutomationPicker, MobilePicker {
+public class UIAPicker extends MobilePicker {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     private static final String VALUES = "values";
-    
+
     private static final String UIAPICKERWHEEL = "UIAPickerWheel";
 
     public UIAPicker(String locator) {
         super(locator);
     }
 
-    @Override
     public List<String> getValuesOfWheelAtIndex(int index) {
         logger.entering(index);
         WebElement pickerWheel = findWheelAtIndex(index);
@@ -53,19 +54,17 @@ public class UIAPicker extends UIAElement implements UIAutomationPicker, MobileP
         return list;
     }
 
-    @Override
     public void setValueOfWheelAtIndex(int index, String value) {
-        logger.entering(new Object[] { index, value });
+        logger.entering(index, value);
         if (value != null) {
             WebElement pickerWheel = findWheelAtIndex(index);
-            getBridgeDriver().setPickerWheelValue(pickerWheel, value);
+            pickerWheel.sendKeys(value);
         }
         logger.exiting();
     }
 
     private WebElement findWheelAtIndex(int index) {
-        WebElement pickerView = findElement(getLocator());
-        List<WebElement> pickerCells = pickerView.findElements(By.className(UIAPICKERWHEEL));
+        List<MobileElement> pickerCells = getMobileElement().findElements(By.className(UIAPICKERWHEEL));
         if (!pickerCells.isEmpty() && index < pickerCells.size()) {
             return pickerCells.get(index);
         }

@@ -29,16 +29,13 @@ import org.openqa.selenium.interactions.touch.TouchActions;
 import org.openqa.selenium.remote.CommandExecutor;
 
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.mobile.android.SeLionAndroidBridgeDriver;
-import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * <code>SeLionSelendroidDriver</code> provides facility to add custom {@link CommandExecutor} to
- * {@link SelendroidDriver}. This class also implements the {@link SeLionAndroidBridgeDriver} interface to expose
- * methods for {@link UiObject} and its subclasses.
+ * {@link SelendroidDriver}.
  */
-public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAndroidBridgeDriver {
+public class SeLionSelendroidDriver extends SelendroidDriver {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -61,14 +58,12 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         setCommandExecutor(commandExecutor);
     }
 
-    @Override
     public void clearText(WebElement webElement) {
         logger.entering(webElement);
         webElement.clear();
         logger.exiting();
     }
 
-    @Override
     public void click(WebElement webElement) {
         logger.entering(webElement);
         Point centerPoint = getElementCenter(webElement);
@@ -76,16 +71,13 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void clickBottomRight(WebElement webElement) {
         logger.entering(webElement);
         Point bottomRightPoint = getElementBottomRight(webElement);
         performShortClickAction(bottomRightPoint);
         logger.exiting();
-
     }
 
-    @Override
     public void clickTopLeft(WebElement webElement) {
         logger.entering(webElement);
         Point topLeftPoint = webElement.getLocation();
@@ -93,7 +85,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public String getText(WebElement webElement) {
         logger.entering(webElement);
         String text = webElement.getAttribute("text");
@@ -101,7 +92,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return text;
     }
 
-    @Override
     public boolean isCheckable(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("checkable"));
@@ -109,7 +99,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isChecked(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("checked"));
@@ -117,7 +106,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isClickable(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("clickable"));
@@ -125,7 +113,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isEnabled(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("enabled"));
@@ -133,7 +120,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isFocusable(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("focusable"));
@@ -141,7 +127,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isFocused(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("focused"));
@@ -149,7 +134,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isLongClickable(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("longClickable"));
@@ -157,9 +141,7 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isScrollable(WebElement webElement) {
-
         // This method does not seem to return true for a truly scrollable element in the app.
         // This method may return false for elements that appear with scrollable=true in uiautomatorviewer
         logger.entering(webElement);
@@ -168,7 +150,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public boolean isSelected(WebElement webElement) {
         logger.entering(webElement);
         boolean result = Boolean.parseBoolean(webElement.getAttribute("selected"));
@@ -176,7 +157,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         return result;
     }
 
-    @Override
     public void longClick(WebElement webElement) {
         logger.entering(webElement);
         Point centerPoint = getElementCenter(webElement);
@@ -184,7 +164,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void longClickBottomRight(WebElement webElement) {
         logger.entering(webElement);
         Point bottomRightPoint = getElementBottomRight(webElement);
@@ -192,7 +171,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void longClickTopLeft(WebElement webElement) {
         logger.entering(webElement);
         Point topLeftPoint = webElement.getLocation();
@@ -200,9 +178,8 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void setText(WebElement webElement, String text) {
-        logger.entering(new Object[] { webElement, text });
+        logger.entering(webElement, text );
         webElement.clear();
         webElement.sendKeys(text);
         logger.exiting();
@@ -252,7 +229,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void swipeLeft(WebElement webElement) {
         logger.entering(webElement);
         Point point = webElement.getLocation();
@@ -263,7 +239,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void swipeRight(WebElement webElement) {
         logger.entering(webElement);
         Point point = webElement.getLocation();
@@ -274,7 +249,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void swipeUp(WebElement webElement) {
         logger.entering(webElement);
         Point point = webElement.getLocation();
@@ -285,7 +259,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void swipeDown(WebElement webElement) {
         logger.entering(webElement);
         Point point = webElement.getLocation();
@@ -296,7 +269,6 @@ public class SeLionSelendroidDriver extends SelendroidDriver implements SeLionAn
         logger.exiting();
     }
 
-    @Override
     public void swipe(int startx, int starty, int endx, int endy) {
         Point start = new Point(startx, starty);
         Point end = new Point(endx, endy);

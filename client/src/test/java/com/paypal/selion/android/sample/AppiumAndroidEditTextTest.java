@@ -15,14 +15,12 @@
 
 package com.paypal.selion.android.sample;
 
-import com.paypal.selion.platform.mobile.android.UiTextView;
 import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -33,28 +31,27 @@ public class AppiumAndroidEditTextTest {
     private static final String PAGE_OBJECTS_APP_PATH = "src/test/resources/apps/PageObjectsDemoApp.apk";
     private static final String TEXT_FIELD_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/sampleTxbEditable";
 
-    private UiObject textField;
+    private MobileTextField textField;
 
     @BeforeClass
     public void initElements(){
-        textField = new UiObject(TEXT_FIELD_LOCATOR);
+        textField = new MobileTextField(TEXT_FIELD_LOCATOR);
     }
-    
+
     @Test
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testMobileTextField() {
-        MobileTextField mobileTextField = new UiTextView(TEXT_FIELD_LOCATOR);
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
-        mobileTextField.setText("Selion");
-        Assert.assertEquals(mobileTextField.getValue(), "Selion", "Set edit text value does not match");
-        mobileTextField.clearText();
-        Assert.assertEquals(mobileTextField.getValue(), "", "Set edit text value does not match");
-        mobileTextField.sendKeys("Selion");
-        Assert.assertEquals(mobileTextField.getValue(), "Selion", "Set edit text value does not match");
-        mobileTextField.setText("123");
-        Assert.assertEquals(mobileTextField.getValue(), "123", "Set edit text value does not match");
-        mobileTextField.sendKeys("456");
-        Assert.assertEquals(mobileTextField.getValue(), "123456", "Set edit text value does not match");
+        textField.setText("Selion");
+        Assert.assertEquals(textField.getText(), "Selion", "Set edit text value does not match");
+        textField.clear();
+        Assert.assertEquals(textField.getText(), "", "Set edit text value does not match");
+        textField.sendKeys("Selion");
+        Assert.assertEquals(textField.getText(), "Selion", "Set edit text value does not match");
+        textField.setText("123");
+        Assert.assertEquals(textField.getText(), "123", "Set edit text value does not match");
+        textField.sendKeys("456");
+        Assert.assertEquals(textField.getText(), "123456", "Set edit text value does not match");
     }
 
     @Test
@@ -71,7 +68,7 @@ public class AppiumAndroidEditTextTest {
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
         textField.setText("SeLion");
         Assert.assertEquals(textField.getText(), "SeLion", "Set value of edit-text does not match");
-        textField.clearText();
+        textField.clear();
         Assert.assertEquals(textField.getText(), "", "Clear on edit-text failed");
         textField.setText("SeLion");
         textField.setText("Selendroid");

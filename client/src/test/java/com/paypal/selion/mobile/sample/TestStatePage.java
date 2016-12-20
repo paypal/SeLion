@@ -31,9 +31,9 @@ public class TestStatePage {
     public void testSlider() throws Exception {
         StatePage statePage = InitializePages();
         statePage.getSeekbarSlider().dragToValue(1);
-        Assert.assertEquals(statePage.getSliderTextField().getValue(), "1.000000");
+        Assert.assertEquals(statePage.getSliderTextField().getText(), "1.000000");
         statePage.getSeekbarSlider().dragToValue(0);
-        Assert.assertEquals(statePage.getSliderTextField().getValue(), "0.000000");
+        Assert.assertEquals(statePage.getSliderTextField().getText(), "0.000000");
     }
 
     @Test
@@ -41,9 +41,9 @@ public class TestStatePage {
     public void testSwitch() throws Exception {
         StatePage statePage = InitializePages();
         statePage.getStateSwitch().changeValue();
-        Assert.assertEquals(statePage.getSwitchTextField().getValue(), "Switch is OFF");
+        Assert.assertEquals(statePage.getSwitchTextField().getText(), "Switch is OFF");
         statePage.getStateSwitch().changeValue();
-        Assert.assertEquals(statePage.getSwitchTextField().getValue(), "Switch is ON");
+        Assert.assertEquals(statePage.getSwitchTextField().getText(), "Switch is ON");
     }
 
     private StatePage InitializePages() {

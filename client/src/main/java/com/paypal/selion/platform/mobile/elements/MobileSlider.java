@@ -23,7 +23,11 @@ import com.paypal.selion.platform.mobile.ios.UIASlider;
  * <code>MobileSlider</code> interface allows access to, and control of, text field elements in your app.
  */
 @Implementor(ios = UIASlider.class, android = UiSlider.class)
-public interface MobileSlider extends MobileElement {
+public abstract class MobileSlider extends AbstractMobileElement {
+
+    public MobileSlider(String locator) {
+        super(locator);
+    }
 
     /**
      * Drags the slider to the specified value.
@@ -32,5 +36,5 @@ public interface MobileSlider extends MobileElement {
      *            The desired decimal value from 0 to 1, inclusive. A 0 value represents far left and a value of 1
      *            represents far right.
      */
-    void dragToValue(double value);
+    public abstract void dragToValue(double value);
 }

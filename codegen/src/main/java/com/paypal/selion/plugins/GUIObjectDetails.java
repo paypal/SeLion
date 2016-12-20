@@ -17,14 +17,12 @@ package com.paypal.selion.plugins;
 
 import java.util.List;
 
-import com.paypal.selion.elements.AndroidSeLionElementList;
-import com.paypal.selion.elements.IOSSeLionElementList;
 import com.paypal.selion.elements.HtmlSeLionElementList;
 import com.paypal.selion.elements.MobileSeLionElementList;
 
 /**
  * A simple POJO class that represents information pertaining to a html object.
- * 
+ *
  */
 public class GUIObjectDetails {
     private static final String DELIMITER = "#";
@@ -83,7 +81,7 @@ public class GUIObjectDetails {
     /**
      * This method convert each key in the data sheet into corresponding HtmlObjectDetails object and returns list of
      * HtmlObjectDetails
-     * 
+     *
      * @param keys
      *            keys for which {@link GUIObjectDetails} is to be created.
      * @return list of HtmlObjectDetails
@@ -98,12 +96,6 @@ public class GUIObjectDetails {
         case WEB:
             htmlObjectDetailsList = HtmlSeLionElementList.getGUIObjectList(keys);
             break;
-        case IOS:
-            htmlObjectDetailsList = IOSSeLionElementList.getGUIObjectList(keys);
-            break;
-        case ANDROID:
-            htmlObjectDetailsList = AndroidSeLionElementList.getGUIObjectList(keys);
-            break;
         case MOBILE:
             htmlObjectDetailsList = MobileSeLionElementList.getGUIObjectList(keys);
             break;
@@ -114,7 +106,7 @@ public class GUIObjectDetails {
     /**
      * A overloaded version of transformKeys method which internally specifies {@link TestPlatform#WEB} as the
      * {@link TestPlatform}
-     * 
+     *
      * @param keys
      *            keys for which {@link GUIObjectDetails} is to be created.
      * @return the {@link List} of {@link GUIObjectDetails}
@@ -124,9 +116,9 @@ public class GUIObjectDetails {
     }
 
     /**
-     * Method to validate the keys against the {@link HtmlSeLionElementList} or {@link IOSSeLionElementList} as per the
+     * Method to validate the keys against the {@link HtmlSeLionElementList} or {@link MobileSeLionElementList} as per the
      * {@link TestPlatform}
-     * 
+     *
      * @param keysToValidate
      *            the keys from the Page Yaml input
      * @param dataFileName
@@ -180,17 +172,6 @@ public class GUIObjectDetails {
     }
 
     private static boolean validForMobilePlatforms(TestPlatform currentPlatform, String currentKey) {
-        // Validations for IOS
-        if ((currentPlatform == TestPlatform.IOS && !(IOSSeLionElementList.isValidUIElement(currentKey)))) {
-            return false;
-        }
-
-        // Validations for Android - If a user provides an element that is not registered as custom element this
-        // validation takes care of it
-        if ((currentPlatform == TestPlatform.ANDROID && !(AndroidSeLionElementList.isValidUIElement(currentKey)))) {
-            return false;
-        }
-
         // Validations for Mobile
         return !(currentPlatform == TestPlatform.MOBILE && !(MobileSeLionElementList.isValidUIElement(currentKey)));
 

@@ -15,19 +15,26 @@
 
 package com.paypal.selion.platform.mobile.elements;
 
-import com.paypal.selion.platform.mobile.Implementor;
-import com.paypal.selion.platform.mobile.android.UiSwitch;
-import com.paypal.selion.platform.mobile.ios.UIASwitch;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * <code>MobileSwitch</code> interface allows access to, and control of, switch elements in your app.
  */
-@Implementor(ios = UIASwitch.class, android = UiSwitch.class)
-public interface MobileSwitch extends MobileElement {
+public class MobileSwitch extends AbstractMobileElement {
+    private static final SimpleLogger logger = SeLionLogger.getLogger();
+
+    public MobileSwitch(String locator) {
+        super(locator);
+    }
 
     /**
      * Toggles the state of the switch.
      */
-    void changeValue();
+    public void changeValue() {
+        logger.entering();
+        getElement().click();
+        logger.exiting();
+    }
 
 }

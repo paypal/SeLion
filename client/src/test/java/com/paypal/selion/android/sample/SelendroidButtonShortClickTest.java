@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,14 +18,14 @@ package com.paypal.selion.android.sample;
 import java.io.File;
 import java.net.URL;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.android.UiTextView;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -45,24 +45,24 @@ public class SelendroidButtonShortClickTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testButtonClick() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintButton[@value='Short Press']");
-        UiButton uiButton = new UiButton("id=short_press_button");
+        MobileButton uiButton = new MobileButton("id=short_press_button");
         uiButton.click("xpath=//TextView[contains(@value, ', short press')]");
-        UiTextView uiTextView = new UiTextView("id=short_press_button_output");
+        MobileTextField uiTextView = new MobileTextField("id=short_press_button_output");
         String output = uiTextView.getText();
         Assert.assertEquals(output.contains("short press"), true, "Button center click not working properly");
     }
-    
+
     @Test
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testButtonClickTopLeft() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintButton[@value='Short Press']");
-        UiButton uiButton = new UiButton("id=short_press_button");
-        uiButton.clickTopLeft("xpath=//TextView[contains(@value, ', short press')]");
-        UiTextView uiTextView = new UiTextView("id=short_press_button_output");
+        MobileButton uiButton = new MobileButton("id=short_press_button");
+        uiButton.tapTopLeft("xpath=//TextView[contains(@value, ', short press')]");
+        MobileTextField uiTextView = new MobileTextField("id=short_press_button_output");
         String output = uiTextView.getText();
         Assert.assertEquals(output.contains("short press"), true, "Button center click not working properly");
     }
@@ -71,11 +71,11 @@ public class SelendroidButtonShortClickTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testButtonClickBottomRight() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintButton[@value='Short Press']");
-        UiButton uiButton = new UiButton("id=short_press_button");
-        uiButton.clickBottomRight("xpath=//TextView[contains(@value, ', short press')]");
-        UiTextView uiTextView = new UiTextView("id=short_press_button_output");
+        MobileButton uiButton = new MobileButton("id=short_press_button");
+        uiButton.tapBottomRight("xpath=//TextView[contains(@value, ', short press')]");
+        MobileTextField uiTextView = new MobileTextField("id=short_press_button_output");
         String output = uiTextView.getText();
         Assert.assertEquals(output.contains("short press"), true, "Button center click not working properly");
     }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,6 +18,7 @@ package com.paypal.selion.android.sample;
 import java.io.File;
 import java.net.URL;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -28,7 +29,6 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.SeLionSelendroidDriver;
-import com.paypal.selion.platform.mobile.android.UiButton;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -48,11 +48,11 @@ public class SelendroidDriverScrollTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testDriverScroll() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//ActionMenuItemView[@name='Touch']");
-        uiObject = new UiButton("id=action_button");
+        uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//ActionMenuItemView[@name='Scroll']");
-        uiObject = new UiButton("id=action_button");
+        uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//ScrollView[@id='scroll_view']");
 
         SeLionSelendroidDriver selendroidDriver = ((SeLionSelendroidDriver) Grid.driver());

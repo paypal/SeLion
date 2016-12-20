@@ -18,6 +18,7 @@ package com.paypal.selion.plugins;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.paypal.selion.elements.MobileSeLionElementList;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -25,7 +26,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.elements.HtmlSeLionElementList;
-import com.paypal.selion.elements.IOSSeLionElementList;
 
 import static org.testng.Assert.assertTrue;
 
@@ -51,14 +51,6 @@ public class GUIObjectDetailsTest {
     }
 
     @Test
-    public void validateIOSElements() throws Exception {
-        String dataFile = "src/test/resources/IOSInteractionPage.yaml";
-        DataReader reader = new DataReader(dataFile);
-        TestPlatform currentPlatform = reader.platform();
-        GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
-    }
-    
-    @Test
     public void validateMobileElements() throws Exception {
         String dataFile = "src/test/resources/SampleMobilePage.yaml";
         DataReader reader = new DataReader(dataFile);
@@ -69,22 +61,22 @@ public class GUIObjectDetailsTest {
     @Test
     public void validateCustomWebElements() throws Exception {
         String dataFile = "src/test/resources/CustomWebElementPage.yaml";
-        
+
         HtmlSeLionElementList.registerElement("com.paypal.test.CustomElement");
         HtmlSeLionElementList.registerElement("com.paypal.test.AnotherElement");
-        
+
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
         GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
     }
-    
+
     @Test
     public void validateCustomMobileElements() throws Exception {
-        String dataFile = "src/test/resources/CustomIOSElementPage.yaml";
-        
-        IOSSeLionElementList.registerElement("com.paypal.test.CustomElement");
-        IOSSeLionElementList.registerElement("com.paypal.test.AnotherElement");
-        
+        String dataFile = "src/test/resources/CustomMobileElementPage.yaml";
+
+        MobileSeLionElementList.registerElement("com.paypal.test.CustomElement");
+        MobileSeLionElementList.registerElement("com.paypal.test.AnotherElement");
+
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
         GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
@@ -115,7 +107,7 @@ public class GUIObjectDetailsTest {
         String dataFile = "src/test/resources/SampleV2YamlPage.yaml";
         DataReader reader = new DataReader(dataFile);
         // Note: forcing to load a WEaB platform YAML using IOS platform
-        GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, TestPlatform.IOS);
+        GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, TestPlatform.MOBILE);
 
     }
 

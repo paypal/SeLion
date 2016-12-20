@@ -15,14 +15,11 @@
 
 package com.paypal.selion.platform.mobile.elements;
 
-
-import com.paypal.selion.platform.mobile.Implementor;
-import com.paypal.selion.platform.mobile.android.UiLabel;
-import com.paypal.selion.platform.mobile.ios.UIAStaticText;
-
 /**
- * <code>MobileLabel</code> interface allows access to, and control of, label elements in your app.
+ * <code>MobileLabel</code> allows access to, and control of, label elements in your app.
  */
-@Implementor(ios = UIAStaticText.class, android = UiLabel.class)
-public interface MobileLabel extends MobileElement {
+public class MobileLabel extends AbstractMobileElement {
+    public MobileLabel(String locator) {
+        super(locator);
+    }
 }

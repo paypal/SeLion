@@ -15,38 +15,47 @@
 
 package com.paypal.selion.platform.mobile.elements;
 
-import com.paypal.selion.platform.mobile.Implementor;
-import com.paypal.selion.platform.mobile.android.UiTextView;
-import com.paypal.selion.platform.mobile.ios.UIATextField;
+import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * <code>MobileTextField</code> interface allows access to, and control of, text field elements in your app.
  */
-@Implementor(ios = UIATextField.class, android = UiTextView.class)
-public interface MobileTextField extends MobileElement {
+public class MobileTextField extends AbstractMobileElement {
+    private static final SimpleLogger logger = SeLionLogger.getLogger();
+
+    public MobileTextField(String locator) {
+        super(locator);
+    }
 
     /**
      * clear the current text inside the element
      */
-    void clearText();
+    public void clear() {
+        logger.entering();
+        getMobileElement().clear();
+        logger.exiting();
+    }
 
     /**
      * send keys to element without cleaning its values
      *
      * @param keys keys to send to element
      */
-    void sendKeys(String keys);
+    public void sendKeys(String keys) {
+        logger.entering(keys);
+        getMobileElement().click();
+        getMobileElement().sendKeys(keys);
+        logger.exiting();
+    }
 
     /**
      * clear the existing text in text field and sets the text in the text field.
      *
-     * @param text text to set in the text field.
+     * @param keysToSend text to set in the text field.
      */
-    void setText(String text);
-
-    /**
-     * deprecated because of wrong name. use setText or sendKeys instead.
-     */
-    @Deprecated
-    void setValue(CharSequence... keysToSend);
+    public void setText(String keysToSend) {
+        getMobileElement().clear();
+        sendKeys(keysToSend);
+    }
 }

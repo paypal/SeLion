@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,15 +15,15 @@
 
 package com.paypal.selion.ios.sample;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.ios.UIAButton;
 import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
-import com.paypal.selion.platform.mobile.ios.UIATextField;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -31,52 +31,54 @@ import com.paypal.selion.platform.mobile.ios.UIATextField;
 public class AppiumIOSButtonTapTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testSingleTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { "//UIAApplication[1]/UIAWindow[1]/UIAButton[2]" });
-        UIAButton singleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[2]");
+        navigationBar.clickRightButton("//UIAApplication[1]/UIAWindow[1]/UIAButton[2]");
+        MobileButton singleTapButton = new MobileButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[2]");
         singleTapButton.tap();
-        UIATextField singleTapResponseTextField = new UIATextField(
+        MobileTextField singleTapResponseTextField = new MobileTextField(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIATextField[2]");
         Assert.assertEquals(singleTapResponseTextField.getValue(), "Tap Count: 1", "Single tap count does not match");
     }
 
+/*TODO double tap issue
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testDoubleTap() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { new UIAButton(
-                "xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[1]") });
-        UIAButton doubleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[1]");
-        doubleTapButton.doubleTap(new Object[] { "//UIAApplication[1]/UIAWindow[1]/UIATextField[1]" });
-        UIATextField singleTapResponseTextField = new UIATextField(
+        navigationBar.clickRightButton(new MobileButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[1]"));
+        MobileButton doubleTapButton = new MobileButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[1]");
+        doubleTapButton.doubleTap();
+        MobileTextField singleTapResponseTextField = new MobileTextField(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIATextField[1]");
         Assert.assertEquals(singleTapResponseTextField.getValue(), "Tap Count: 2", "Double tap count does not match");
     }
+*/
 
     @Test(expectedExceptions = WebDriverException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testInvalidXpath() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
         navigationBar.clickRightButton();
         Thread.sleep(500);
-        UIAButton singleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[]");
-        singleTapButton.doubleTap();
+        MobileButton singleTapButton = new MobileButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[]");
+        singleTapButton.click();
     }
 
     @Test(expectedExceptions = NoSuchElementException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testInvalidLocator() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
         navigationBar.clickRightButton();
         Thread.sleep(500);
-        UIAButton singleTapButton = new UIAButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[3]");
-        singleTapButton.doubleTap();
+        MobileButton singleTapButton = new MobileButton("xpath=//UIAApplication[1]/UIAWindow[1]/UIAButton[3]");
+        singleTapButton.click();
     }
 
 }

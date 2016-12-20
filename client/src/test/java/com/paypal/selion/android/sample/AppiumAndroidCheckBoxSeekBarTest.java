@@ -15,15 +15,14 @@
 
 package com.paypal.selion.android.sample;
 
-import com.paypal.selion.platform.mobile.android.UiSlider;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
+import com.paypal.selion.platform.mobile.elements.MobileButton;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.android.UiObject;
-import com.paypal.selion.platform.mobile.android.UiTextView;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -39,19 +38,19 @@ public class AppiumAndroidCheckBoxSeekBarTest {
     private static final String CHECKBOX_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/stateSwitch";
     private static final String VALUE_TEXTVIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/stateTxtSwitch";
 
-    private UiButton menuButton;
-    private UiSlider seekBar;
-    private UiTextView seekBarTextView;
-    private UiTextView checkBoxTextView;
-    private UiObject checkBox;
+    private MobileButton menuButton;
+    private AbstractMobileElement seekBar;
+    private MobileTextField seekBarTextView;
+    private MobileTextField checkBoxTextView;
+    private AbstractMobileElement checkBox;
 
     @BeforeClass
     public void initElements() {
-        menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
-        seekBar = new UiSlider(SEEK_BAR_LOCATOR);
-        seekBarTextView = new UiTextView(TEXT_VIEW_LOCATOR);
-        checkBox = new UiObject(CHECKBOX_LOCATOR);
-        checkBoxTextView = new UiTextView(VALUE_TEXTVIEW_LOCATOR);
+        menuButton = new MobileButton(ACTION_BUTTON_LOCATOR);
+        seekBar = new AbstractMobileElement(SEEK_BAR_LOCATOR);
+        seekBarTextView = new MobileTextField(TEXT_VIEW_LOCATOR);
+        checkBox = new AbstractMobileElement(CHECKBOX_LOCATOR);
+        checkBoxTextView = new MobileTextField(VALUE_TEXTVIEW_LOCATOR);
     }
 
     @Test
@@ -77,8 +76,8 @@ public class AppiumAndroidCheckBoxSeekBarTest {
         menuButton.click(seekBar);
         seekBar.swipeRight();
         Assert.assertEquals(seekBarTextView.getText(), "1.000000", "Seek Bar swipe right value does not match");
-        seekBar = new UiSlider(SEEK_BAR_LOCATOR);
-        seekBar.dragToValue(0.0);
+        seekBar = new AbstractMobileElement(SEEK_BAR_LOCATOR);
+        seekBar.swipeLeft();
         Assert.assertEquals(seekBarTextView.getText(), "0.000000", "Seek Bar swipe right value does not match");
     }
 

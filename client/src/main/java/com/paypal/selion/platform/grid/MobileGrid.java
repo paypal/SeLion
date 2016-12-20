@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,17 +13,22 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.platform.mobile.ios;
+package com.paypal.selion.platform.grid;
 
-import com.paypal.selion.platform.mobile.elements.MobileButton;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 
-/**
- * The <code>UIAButton</code> class allows access to, and control of, button elements in your app.
- */
-public class UIAButton extends UIAElement implements UIAutomationButton, MobileButton {
-
-    public UIAButton(String locator) {
-        super(locator);
+public class MobileGrid {
+    @SuppressWarnings("unchecked")
+    public static AppiumDriver<MobileElement> mobileDriver() {
+        return AppiumDriver.class.cast(Grid.driver());
     }
 
+    public static SeLionAppiumAndroidDriver androidDriver() {
+        return SeLionAppiumAndroidDriver.class.cast(Grid.driver());
+    }
+
+    public static SeLionAppiumIOSDriver iOSDriver() {
+        return SeLionAppiumIOSDriver.class.cast(Grid.driver());
+    }
 }

@@ -16,13 +16,12 @@
 package com.paypal.selion.android.sample;
 
 
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -35,22 +34,22 @@ public class AppiumAndroidScrollTest {
     private static final String MENU_LOCATOR ="com.paypal.selion.pageobjectsdemoapp:id/btnNext";
     private static final String LIST_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tableListView";
     
-    private UiButton menuButton;
-    private UiObject scrollView;
-    private UiObject messageBox;
+    private AbstractMobileElement menuButton;
+    private AbstractMobileElement scrollView;
+    private AbstractMobileElement messageBox;
 
     @BeforeClass
     public void initElements(){
-        menuButton = new UiButton(MENU_LOCATOR);
-        scrollView = new UiObject(LIST_VIEW_LOCATOR);
-        messageBox = new UiObject(MESSGAE_BOX_LOCATOR);
+        menuButton = new AbstractMobileElement(MENU_LOCATOR);
+        scrollView = new AbstractMobileElement(LIST_VIEW_LOCATOR);
+        messageBox = new AbstractMobileElement(MESSGAE_BOX_LOCATOR);
     }
-    
+
     @Test
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testSwipeActions() {
-        UiObject sampleCell = new UiObject("android:id/text1");
-        UiButton sampleButton = new UiButton("android:id/button1");
+        AbstractMobileElement sampleCell = new AbstractMobileElement("android:id/text1");
+        AbstractMobileElement sampleButton = new AbstractMobileElement("android:id/button1");
         WebDriverWaitUtils.waitUntilElementIsVisible(MENU_LOCATOR);
         menuButton.click(MENU_LOCATOR);
         menuButton.click(MENU_LOCATOR);

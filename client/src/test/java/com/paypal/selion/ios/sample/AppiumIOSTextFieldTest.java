@@ -18,7 +18,6 @@ package com.paypal.selion.ios.sample;
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
-import com.paypal.selion.platform.mobile.ios.UIATextField;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -31,16 +30,16 @@ public class AppiumIOSTextFieldTest {
     private static final String TEXT_FIELD_LOCATOR = "xpath=//UIAApplication[1]/UIAWindow[1]/UIATextField[2]";
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testMobileTextField() {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
         navigationBar.clickRightButton("//UIAApplication[1]/UIAWindow[1]/UIAButton[2]");
-        MobileTextField textField = new UIATextField(TEXT_FIELD_LOCATOR);
+        MobileTextField textField = new MobileTextField(TEXT_FIELD_LOCATOR);
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_FIELD_LOCATOR);
         textField.setText("Selion");
         Assert.assertEquals(textField.getValue(), "Selion", "Set edit text value does not match");
-        textField.clearText();
+        textField.clear();
         Assert.assertEquals(textField.getValue(), "", "Set edit text value does not match");
         textField.sendKeys("Selion");
         Assert.assertEquals(textField.getValue(), "Selion", "Set edit text value does not match");

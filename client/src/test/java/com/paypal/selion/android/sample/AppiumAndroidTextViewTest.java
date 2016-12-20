@@ -15,11 +15,11 @@
 
 package com.paypal.selion.android.sample;
 
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -34,7 +34,7 @@ public class AppiumAndroidTextViewTest {
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testTextView() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_VIEW_LOCATOR);
-        UiObject uiObject = new UiObject(TEXT_VIEW_LOCATOR);
+        AbstractMobileElement uiObject = new AbstractMobileElement(TEXT_VIEW_LOCATOR);
         Assert.assertEquals(uiObject.getText(), "PageObjects Demo", "Text View value does not match");
     }
 
@@ -42,7 +42,7 @@ public class AppiumAndroidTextViewTest {
     @MobileTest(appPath = PAGE_OBJECTS_APP_PATH)
     public void testTextViewEnabled() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(TEXT_VIEW_LOCATOR);
-        UiObject uiObject = new UiObject(TEXT_VIEW_LOCATOR);
+        AbstractMobileElement uiObject = new AbstractMobileElement(TEXT_VIEW_LOCATOR);
         Assert.assertEquals(uiObject.isEnabled(), true, "Text View is not enabled");
     }
 

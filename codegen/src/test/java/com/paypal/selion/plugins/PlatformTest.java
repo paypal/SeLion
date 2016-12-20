@@ -45,13 +45,6 @@ public class PlatformTest {
     }
 
     @Test
-    public void testIOSPlatform() throws Exception {
-        // For IOS platform, the value must be specified
-        TestPlatform currentPlatform = getPlatformToTest("src/test/resources/IOSInteractionPage.yaml");
-        assertEquals(currentPlatform, TestPlatform.IOS);
-    }
-
-    @Test
     public void testMobilePlatform() throws Exception {
         // For IOS platform, the value must be specified
         TestPlatform currentPlatform = getPlatformToTest("src/test/resources/SampleMobilePage.yaml");
