@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,7 +24,7 @@ import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.configuration.Config;
@@ -171,8 +171,7 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
     private boolean checkForPresenceOf(ConfigProperty property, String systemProperty, String driverBinary) {
         if (StringUtils.isBlank(Config.getConfigProperty(property)) && System.getProperty(systemProperty) == null) {
             // check the CWD and PATH for the driverBinary
-            @SuppressWarnings("deprecation")
-            String location = CommandLine.find(driverBinary.replace(".exe", ""));
+            String location = new ExecutableFinder().find(driverBinary.replace(".exe", ""));
             return (location != null);
         }
         return true;

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2016 PayPal                                                                                          |
+|  Copyright (C) 2016-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,9 +18,9 @@ package com.paypal.selion.grid;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 
-import org.openqa.grid.internal.utils.configuration.GridConfiguration;
-
 import com.paypal.selion.proxy.SeLionRemoteProxy;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
 /**
  * SeLion grid configuration options which are common to both hubs and nodes
@@ -88,7 +88,20 @@ public class SeLionGridConfiguration {
     /**
      * merges the "custom:" { ... } values for this configuration
      */
-    protected void mergeCustom(GridConfiguration gc) {
+    protected void mergeCustom(GridHubConfiguration gc) {
+        if (nodeRecycleThreadWaitTimeout != null) {
+            gc.custom.put(NODE_RECYCLE_THREAD_WAIT_TIMEOUT, String.valueOf(nodeRecycleThreadWaitTimeout));
+        }
+        if (uniqueSessionCount != null) {
+            gc.custom.put(UNIQUE_SESSION_COUNT, String.valueOf(uniqueSessionCount));
+        }
+    }
+
+    // TODO "custom" GridConfiguration values are discouraged by Selenium. Find another path.
+    /**
+     * merges the "custom:" { ... } values for this configuration
+     */
+    protected void mergeCustom(GridNodeConfiguration gc) {
         if (nodeRecycleThreadWaitTimeout != null) {
             gc.custom.put(NODE_RECYCLE_THREAD_WAIT_TIMEOUT, String.valueOf(nodeRecycleThreadWaitTimeout));
         }

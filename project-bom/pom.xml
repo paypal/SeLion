@@ -115,7 +115,7 @@
             <dependency>
                 <artifactId>guava</artifactId>
                 <groupId>com.google.guava</groupId>
-                <version>19.0</version>
+                <version>21.0</version>
             </dependency>
 
             <!-- TestNG -->
@@ -178,19 +178,19 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
                 <version>${selenium.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>htmlunit</artifactId>
-                        <groupId>net.sourceforge.htmlunit</groupId>
-                    </exclusion>
-                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-support</artifactId>
+                <version>${selenium.version}</version>
             </dependency>
 
             <!-- Phantomjsdriver -->
             <dependency>
                 <groupId>com.codeborne</groupId>
                 <artifactId>phantomjsdriver</artifactId>
-                <version>1.3.0</version>
+                <version>1.4.0</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>selenium-remote-driver</artifactId>
@@ -233,12 +233,6 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>htmlunit-driver</artifactId>
                 <version>${htmlunitdriver.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>selenium-support</artifactId>
-                        <groupId>org.seleniumhq.selenium</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
