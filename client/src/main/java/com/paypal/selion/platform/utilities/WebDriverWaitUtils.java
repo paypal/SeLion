@@ -17,7 +17,7 @@ package com.paypal.selion.platform.utilities;
 
 import java.util.Arrays;
 
-import com.paypal.selion.platform.mobile.elements.MobileElement;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -74,7 +74,7 @@ public final class WebDriverWaitUtils {
      * @param element
      *            element to be cickable
      */
-    public static void waitUntilElementIsClickable(final MobileElement element) {
+    public static void waitUntilElementIsClickable(final AbstractMobileElement element) {
         waitUntilElementIsClickable(element.getLocator());
     }
 
@@ -98,7 +98,7 @@ public final class WebDriverWaitUtils {
      * @param element
      *            element to be found
      */
-    public static void waitUntilElementIsInvisible(final MobileElement element) {
+    public static void waitUntilElementIsInvisible(final AbstractMobileElement element) {
         waitUntilElementIsInvisible(element.getLocator());
     }
 
@@ -123,7 +123,7 @@ public final class WebDriverWaitUtils {
      * @param element
      *            element to be found
      */
-    public static void waitUntilElementIsPresent(final MobileElement element) {
+    public static void waitUntilElementIsPresent(final AbstractMobileElement element) {
         waitUntilElementIsPresent(element.getLocator());
     }
 
@@ -149,7 +149,7 @@ public final class WebDriverWaitUtils {
      * @param element
      *            element to be visible
      */
-    public static void waitUntilElementIsVisible(final MobileElement element) {
+    public static void waitUntilElementIsVisible(final AbstractMobileElement element) {
         waitUntilElementIsVisible(element.getLocator());
     }
 
@@ -243,5 +243,23 @@ public final class WebDriverWaitUtils {
 
     private static long timeoutInSeconds() {
         return Grid.getExecutionTimeoutValue() / 1000;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void waitFor(Object... expected) {
+        if (expected == null) {
+            return;
+        }
+        for (Object expect : expected) {
+            if (expect instanceof AbstractMobileElement) {
+                waitUntilElementIsPresent(((AbstractMobileElement) expect).getLocator());
+            } else if (expect instanceof String) {
+                waitUntilElementIsPresent(String.valueOf(expect));
+            } else if (expect instanceof ExpectedCondition<?>) {
+                long timeOutInSeconds = Grid.getExecutionTimeoutValue() / 1000;
+                WebDriverWait wait = new WebDriverWait(Grid.driver(), timeOutInSeconds);
+                wait.until(ExpectedCondition.class.cast(expect));
+            }
+        }
     }
 }

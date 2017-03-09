@@ -46,6 +46,7 @@ public class MobileSeLionElementList extends AbstractSeLionElementList {
             new MobileSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "Switch", true);
     public static final MobileSeLionElementList TextField =
             new MobileSeLionElementList(UIAUTOMATION_ELEMENT_CLASS, "TextField", true);
+
     public static final MobileSeLionElementList BASE_CLASS =
             new MobileSeLionElementList(null, "baseClass", false);
 
@@ -77,7 +78,7 @@ public class MobileSeLionElementList extends AbstractSeLionElementList {
      *            The String using which an attempt to find a matching {@link MobileSeLionElementList} is to be
      *            performed.
      * @return A {@link MobileSeLionElementList} if the type ends with one of the values of
-     *         {@link MobileSeLionElementList} that were passed as android elements (or) <code>null</code> if there were
+     *         {@link MobileSeLionElementList} that were passed as mobile elements (or) <code>null</code> if there were
      *         no matches.
      */
     public static MobileSeLionElementList findMatch(String rawType) {
@@ -112,7 +113,8 @@ public class MobileSeLionElementList extends AbstractSeLionElementList {
             if (element != null && element.isUIElement()) {
                 GUIObjectDetails mobileObjectDetails;
                 if (element.getElementPackage().equals(UIAUTOMATION_ELEMENT_CLASS)) {
-                    mobileObjectDetails = new GUIObjectDetails("Mobile" + element.stringify(), key,
+                    String className =  element.equals(Element)?"AbstractMobileElement":("Mobile" + element.stringify());
+                    mobileObjectDetails = new GUIObjectDetails(className, key,
                             element.getElementPackage(), element.stringify());
                 } else {
                     mobileObjectDetails = new GUIObjectDetails(element.stringify(), key, element.getElementPackage());

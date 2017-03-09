@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,6 +15,7 @@
 
 package com.paypal.selion.ios.sample;
 
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.openqa.selenium.WebDriverException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -22,7 +23,6 @@ import org.testng.annotations.Test;
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
 import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
-import com.paypal.selion.platform.mobile.ios.UIAStaticText;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -30,14 +30,14 @@ import com.paypal.selion.platform.mobile.ios.UIAStaticText;
 public class AppiumIOSLabelAndNavigationTest {
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testLabelValue() throws InterruptedException {
-        UIAStaticText label = new UIAStaticText("xpath=//UIAApplication[1]/UIAWindow[1]/UIAStaticText[1]");
+        MobileTextField label = new MobileTextField("xpath=//UIAApplication[1]/UIAWindow[1]/UIAStaticText[1]");
         Assert.assertEquals(label.getValue(), "Page Objects Demo", "Label value does not match");
     }
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testNavigationBarName() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -45,7 +45,7 @@ public class AppiumIOSLabelAndNavigationTest {
     }
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testNavigationRightClick() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -55,7 +55,7 @@ public class AppiumIOSLabelAndNavigationTest {
     }
 
     @Test
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testNavigationLeftClick() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -67,7 +67,7 @@ public class AppiumIOSLabelAndNavigationTest {
 
     //disable this case cause can't see why this should throw exception while the above one works.
     @Test(expectedExceptions = WebDriverException.class, enabled=false)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testInvalidLeftClick() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
@@ -75,9 +75,9 @@ public class AppiumIOSLabelAndNavigationTest {
     }
 
     @Test(expectedExceptions = UIOperationFailedException.class)
-    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app")
+    @MobileTest(appPath = "src/test/resources/apps/PageObjects.app", deviceType = "iPhone Simulator")
     public void testInvalidRightClick() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 5; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();

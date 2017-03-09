@@ -1,13 +1,13 @@
 baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
 defaultLocale: "US"
 elements:
-  sampleUIANavigationBar:
+  sampleElement:
     locators:
       US: "//UIAApplication[1]/UIAWindow[2]/UIANavigationBar[1]"
-  sampleUIATableView:
+  sampleList:
     locators:
       US: "//UIAApplication[1]/UIAWindow[2]/UIATableView[1]"
-  sampleUIAStaticText:
+  sampleLabel:
     locators:
       US: "//UIAApplication[1]/UIAWindow[2]/UIAStaticText[1]"
-platform: "ios"
+platform: "mobile"

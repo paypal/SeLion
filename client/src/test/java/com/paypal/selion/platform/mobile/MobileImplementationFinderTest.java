@@ -16,8 +16,7 @@
 package com.paypal.selion.platform.mobile;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.elements.MobileElement;
+import com.paypal.selion.platform.mobile.elements.MobileButton;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -28,9 +27,9 @@ public class MobileImplementationFinderTest {
 
     @Test(groups = "unit")
     public void testInstantiateDirectClass() throws Exception {
-        final MobileElement button = MobileImplementationFinder.instantiate(WebDriverPlatform.UNDEFINED,
-                UiButton.class, "//locator");
+        final MobileButton button = MobileImplementationFinder.instantiate(WebDriverPlatform.UNDEFINED,
+                MobileButton.class, "//locator");
         Assert.assertEquals(button.getLocator(), "//locator", "locator is wrong");
-        Assert.assertEquals(button.getClass(), UiButton.class, "wrong class associated");
+        Assert.assertEquals(button.getClass(), MobileButton.class, "wrong class associated");
     }
 }

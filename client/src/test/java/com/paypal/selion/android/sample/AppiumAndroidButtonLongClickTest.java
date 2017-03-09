@@ -15,13 +15,13 @@
 
 package com.paypal.selion.android.sample;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.android.UiTextView;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -35,15 +35,15 @@ public class AppiumAndroidButtonLongClickTest {
     private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tapTxtLongTap";
     private static final String LONG_PRESS_TEXT = "Long Clicked";
 
-    private UiButton menuButton;
-    private UiButton longPressButton;
-    private UiTextView textView;
+    private MobileButton menuButton;
+    private MobileButton longPressButton;
+    private MobileTextField textView;
 
     @BeforeClass
     public void initElements() {
-        menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
-        longPressButton = new UiButton(LONG_PRESS_BUTTON_LOCATOR);
-        textView = new UiTextView(TEXT_VIEW_LOCATOR);
+        menuButton = new MobileButton(ACTION_BUTTON_LOCATOR);
+        longPressButton = new MobileButton(LONG_PRESS_BUTTON_LOCATOR);
+        textView = new MobileTextField(TEXT_VIEW_LOCATOR);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class AppiumAndroidButtonLongClickTest {
     public void testButtonClick() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(longPressButton);
-        longPressButton.longClick(textView);
+        longPressButton.longPress();
         String output = textView.getText();
         Assert.assertEquals(output.contains(LONG_PRESS_TEXT), true, "Button center click not working properly");
     }
@@ -69,7 +69,7 @@ public class AppiumAndroidButtonLongClickTest {
     public void testButtonClickTopLeft() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(longPressButton);
-        longPressButton.longClickTopLeft(textView);
+        longPressButton.longPress(textView);
         String output = textView.getText();
         Assert.assertEquals(output.contains(LONG_PRESS_TEXT), true, "Button top left click not working properly");
     }
@@ -80,7 +80,7 @@ public class AppiumAndroidButtonLongClickTest {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(longPressButton);
         WebDriverWaitUtils.waitUntilElementIsVisible(LONG_PRESS_BUTTON_LOCATOR);
-        longPressButton.longClickBottomRight(textView);
+        longPressButton.longPress(textView);
         String output = textView.getText();
         Assert.assertEquals(output.contains(LONG_PRESS_TEXT), true, "Button bottom right click not working properly");
     }

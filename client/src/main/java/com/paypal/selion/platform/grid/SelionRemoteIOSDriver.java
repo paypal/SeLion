@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -35,16 +36,34 @@ import com.paypal.selion.platform.mobile.ios.GestureOptions;
 import com.paypal.selion.platform.mobile.ios.SeLionIOSBridgeDriver;
 import com.paypal.selion.platform.mobile.ios.GestureOptions.TapOffset;
 import com.paypal.selion.platform.mobile.ios.GestureOptions.TapOptions;
-import com.paypal.selion.platform.mobile.ios.UIAElement;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * <code>SelionRemoteIOSDriver</code> provides facility to add custom {@link CommandExecutor} to {@link RemoteIOSDriver}
- * . This class also implements the {@link SeLionIOSBridgeDriver} interface to expose methods for {@link UIAElement} and
+ * . This class also implements the {@link SeLionIOSBridgeDriver} interface to expose methods for {@link AbstractMobileElement} and
  * its subclasses.
- * 
+ *
  */
-public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSBridgeDriver {
+public class SelionRemoteIOSDriver extends RemoteIOSDriver {
+    /**
+     * Constant representing one finger
+     */
+    private static final String ONE_FINGER = "1";
+
+    /**
+     * Constant representing single tap
+     */
+    private static final String SINGLE_TAP = "1";
+
+    /**
+     * Constant representing double tap
+     */
+    private static final String DOUBLE_TAP = "2";
+
+    /**
+     * Constant representing tap gesture
+     */
+    private static final String TAP_DURATION = "0";
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -60,7 +79,6 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         setCommandExecutor(command);
     }
 
-    @Override
     public WebElement findElementBy(By by) {
         logger.entering(by);
         WebElement webElement = findElement(by);
@@ -68,7 +86,6 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         return webElement;
     }
 
-    @Override
     public void doubleTap(WebElement webElement) {
         logger.entering(webElement);
         TapOptions tapOptions = createTapOptionsForDoubleTap(ONE_FINGER);
@@ -76,14 +93,12 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         logger.exiting();
     }
 
-    @Override
     public void scrollToVisible(WebElement webElement) {
         logger.entering(webElement);
         javascriptExecutor.executeScript("arguments[0].scrollToVisible()", webElement);
         logger.exiting();
     }
 
-    @Override
     public void tap(WebElement webElement) {
         logger.entering(webElement);
         TapOptions tapOptions = createTapOptionsForSingleTap(ONE_FINGER);
@@ -91,7 +106,6 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         logger.exiting();
     }
 
-    @Override
     public void tapWithOptions(WebElement webElement, EnumMap<GestureOptions, String> gestureOptions) {
         logger.entering(new Object[] { webElement, gestureOptions });
         try {
@@ -111,7 +125,6 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         }
     }
 
-    @Override
     public void twoFingerTap(WebElement webElement) {
         logger.entering(webElement);
         TapOptions tapOptions = new TapOptions();
@@ -122,21 +135,18 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         logger.exiting();
     }
 
-    @Override
     public void dragSliderToValue(WebElement webElement, double value) {
         logger.entering(new Object[] { webElement, value });
         javascriptExecutor.executeScript("arguments[0].dragToValue(" + value + ")", webElement);
         logger.exiting();
     }
 
-    @Override
     public void setPickerWheelValue(WebElement webElement, String value) {
         logger.entering(new Object[] { webElement, value });
         javascriptExecutor.executeScript("arguments[0].selectValue('" + value + "')", webElement);
         logger.exiting();
     }
 
-    @Override
     public String getLabel(WebElement webElement) {
         logger.entering(webElement);
         String label = webElement.getAttribute("label");
@@ -144,7 +154,6 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         return label;
     }
 
-    @Override
     public String getName(WebElement webElement) {
         logger.entering(webElement);
         String name = webElement.getAttribute("name");
@@ -152,7 +161,6 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         return name;
     }
 
-    @Override
     public String getValue(WebElement webElement) {
         logger.entering(webElement);
         String value = webElement.getAttribute("value");
@@ -171,7 +179,7 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         TapOptions tapOptions = new TapOptions();
         tapOptions.setOption(GestureOptions.TAP_COUNT, Integer.parseInt(SINGLE_TAP));
         tapOptions.setOption(GestureOptions.TOUCH_COUNT, Integer.parseInt(fingers));
-        tapOptions.setOption(GestureOptions.DURATION, Integer.parseInt(TAP));
+        tapOptions.setOption(GestureOptions.DURATION, Integer.parseInt(TAP_DURATION));
         return tapOptions;
     }
 
@@ -179,7 +187,7 @@ public class SelionRemoteIOSDriver extends RemoteIOSDriver implements SeLionIOSB
         TapOptions tapOptions = new TapOptions();
         tapOptions.setOption(GestureOptions.TAP_COUNT, Integer.parseInt(DOUBLE_TAP));
         tapOptions.setOption(GestureOptions.TOUCH_COUNT, Integer.parseInt(fingers));
-        tapOptions.setOption(GestureOptions.DURATION, Integer.parseInt(TAP));
+        tapOptions.setOption(GestureOptions.DURATION, Integer.parseInt(TAP_DURATION));
         return tapOptions;
     }
 }

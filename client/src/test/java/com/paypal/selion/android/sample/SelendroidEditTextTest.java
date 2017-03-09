@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,14 +18,14 @@ package com.paypal.selion.android.sample;
 import java.io.File;
 import java.net.URL;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -45,26 +45,26 @@ public class SelendroidEditTextTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testSetText() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintEditText[@id='edit_text']");
-        UiObject uiEditText = new UiObject("id=edit_text");
+        MobileTextField uiEditText = new MobileTextField("id=edit_text");
         uiEditText.setText("SeLion");
-        uiEditText = new UiObject("id=edit_text");
+        uiEditText = new MobileTextField("id=edit_text");
         Assert.assertEquals(uiEditText.getText(), "SeLion", "Set edit text value does not match");
     }
-    
+
     @Test
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testSetClearText() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintEditText[@id='edit_text']");
-        UiObject uiEditText = new UiObject("id=edit_text");
+        MobileTextField uiEditText = new MobileTextField("id=edit_text");
         uiEditText.setText("SeLion");
-        uiEditText = new UiObject("id=edit_text");
+        uiEditText = new MobileTextField("id=edit_text");
         Assert.assertEquals(uiEditText.getText(), "SeLion", "Set value of edit-text does not match");
-        uiEditText = new UiObject("id=edit_text");
-        uiEditText.clearText();
+        uiEditText = new MobileTextField("id=edit_text");
+        uiEditText.clear();
         Assert.assertEquals(uiEditText.getText(), "", "Clear on edit-text failed");
         uiEditText.setText("SeLion");
         uiEditText.setText("Selendroid");

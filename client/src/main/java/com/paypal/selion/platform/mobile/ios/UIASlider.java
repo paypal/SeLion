@@ -15,16 +15,14 @@
 
 package com.paypal.selion.platform.mobile.ios;
 
-import com.paypal.selion.platform.mobile.elements.MobileSlider;
-import org.openqa.selenium.WebElement;
-
 import com.paypal.selion.logger.SeLionLogger;
+import com.paypal.selion.platform.mobile.elements.MobileSlider;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * The <code>UIASlider</code> class allows access to, and control of, slider elements in your app
  */
-public class UIASlider extends UIAElement implements UIAutomationSlider, MobileSlider {
+public class UIASlider extends MobileSlider {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -35,8 +33,7 @@ public class UIASlider extends UIAElement implements UIAutomationSlider, MobileS
     @Override
     public void dragToValue(double value) {
         logger.entering(value);
-        WebElement webElement = findElement(getLocator());
-        getBridgeDriver().dragSliderToValue(webElement, value);
+        getMobileElement().sendKeys(String.valueOf(value));
         logger.exiting();
     }
 

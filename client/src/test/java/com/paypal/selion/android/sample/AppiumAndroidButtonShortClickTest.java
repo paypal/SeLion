@@ -15,13 +15,13 @@
 
 package com.paypal.selion.android.sample;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.android.UiTextView;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -35,15 +35,15 @@ public class AppiumAndroidButtonShortClickTest {
     private static final String TEXT_VIEW_LOCATOR = "com.paypal.selion.pageobjectsdemoapp:id/tapTxtSingleTap";
     private static final String CLICKED_TEXT = "Tap Count: 1";
 
-    UiButton menuButton;
-    UiButton shortPressButton;
-    UiTextView textView;
+    MobileButton menuButton;
+    MobileButton shortPressButton;
+    MobileTextField textView;
 
     @BeforeClass
     public void initElements() {
-        menuButton = new UiButton(ACTION_BUTTON_LOCATOR);
-        shortPressButton = new UiButton(SHORT_PRESS_BUTTON_LOCATOR);
-        textView = new UiTextView(TEXT_VIEW_LOCATOR);
+        menuButton = new MobileButton(ACTION_BUTTON_LOCATOR);
+        shortPressButton = new MobileButton(SHORT_PRESS_BUTTON_LOCATOR);
+        textView = new MobileTextField(TEXT_VIEW_LOCATOR);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class AppiumAndroidButtonShortClickTest {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(shortPressButton);
         WebDriverWaitUtils.waitUntilElementIsVisible(SHORT_PRESS_BUTTON_LOCATOR);
-        shortPressButton.clickTopLeft(textView);
+        shortPressButton.tapTopLeft(textView);
         String output = textView.getText();
         Assert.assertEquals(output.contains(CLICKED_TEXT), true, "Button top left click not working properly");
     }
@@ -72,7 +72,7 @@ public class AppiumAndroidButtonShortClickTest {
     public void testButtonClickBottomRight() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible(ACTION_BUTTON_LOCATOR);
         menuButton.click(shortPressButton);
-        shortPressButton.clickBottomRight(textView);
+        shortPressButton.tapBottomRight(textView);
         String output = textView.getText();
         Assert.assertEquals(output.contains(CLICKED_TEXT), true, "Button bottom right click not working properly");
     }

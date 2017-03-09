@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,14 +18,14 @@ package com.paypal.selion.android.sample;
 import java.io.File;
 import java.net.URL;
 
+import com.paypal.selion.platform.mobile.elements.MobileButton;
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.android.UiTextView;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -45,9 +45,9 @@ public class SelendroidButtonLongClickTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testLongClickButtonProperties() throws InterruptedException {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
-        uiObject.click("xpath=//TintButton[@value='Long Press']");
-        UiButton uiButton = new UiButton("id=long_press_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
+        uiObject.click(new MobileButton("xpath=//TintButton[@value='Long Press']"));
+        MobileButton uiButton = new MobileButton("id=long_press_button");
         Assert.assertEquals(uiButton.isLongClickable(), true, "Button is not long clickable");
     }
 
@@ -55,11 +55,11 @@ public class SelendroidButtonLongClickTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testButtonClick() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintButton[@value='Long Press']");
-        UiButton uiButton = new UiButton("id=long_press_button");
-        uiButton.longClick("xpath=//TextView[contains(@value, ', long press')]");
-        UiTextView uiTextView = new UiTextView("id=long_press_button_output");
+        MobileButton uiButton = new MobileButton("id=long_press_button");
+        uiButton.longPress(new MobileButton("xpath=//TextView[contains(@value, ', long press')]"));
+        MobileTextField uiTextView = new MobileTextField("id=long_press_button_output");
         String output = uiTextView.getText();
         Assert.assertEquals(output.contains("long press"), true, "Button center click not working properly");
     }
@@ -68,11 +68,11 @@ public class SelendroidButtonLongClickTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testButtonClickTopLeft() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintButton[@value='Long Press']");
-        UiButton uiButton = new UiButton("id=long_press_button");
-        uiButton.longClickTopLeft("xpath=//TextView[contains(@value, ', long press')]");
-        UiTextView uiTextView = new UiTextView("id=long_press_button_output");
+        MobileButton uiButton = new MobileButton("id=long_press_button");
+        uiButton.longPress("xpath=//TextView[contains(@value, ', long press')]");
+        MobileTextField uiTextView = new MobileTextField("id=long_press_button_output");
         String output = uiTextView.getText();
         Assert.assertEquals(output.contains("long press"), true, "Button top left click not working properly");
     }
@@ -81,11 +81,11 @@ public class SelendroidButtonLongClickTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testButtonClickBottomRight() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=action_button");
-        UiButton uiObject = new UiButton("id=action_button");
+        MobileButton uiObject = new MobileButton("id=action_button");
         uiObject.click("xpath=//TintButton[@value='Long Press']");
-        UiButton uiButton = new UiButton("id=long_press_button");
-        uiButton.longClickBottomRight("xpath=//TextView[contains(@value, ', long press')]");
-        UiTextView uiTextView = new UiTextView("id=long_press_button_output");
+        MobileButton uiButton = new MobileButton("id=long_press_button");
+        uiButton.longPress("xpath=//TextView[contains(@value, ', long press')]");
+        MobileTextField uiTextView = new MobileTextField("id=long_press_button_output");
         String output = uiTextView.getText();
         Assert.assertEquals(output.contains("long press"), true, "Button bottom right click not working properly");
     }

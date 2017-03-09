@@ -15,6 +15,7 @@
 
 package com.paypal.selion.platform.grid;
 
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import io.appium.java_client.ios.IOSDriver;
 
 import java.net.URL;
@@ -28,15 +29,15 @@ import org.openqa.selenium.remote.CommandExecutor;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.mobile.ios.GestureOptions;
 import com.paypal.selion.platform.mobile.ios.SeLionIOSBridgeDriver;
-import com.paypal.selion.platform.mobile.ios.UIAElement;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import io.appium.java_client.TouchAction;
 import org.openqa.selenium.Dimension;
 
 /**
- * <code>SeLionAppiumIOSDriver</code> provides facility to add custom {@link CommandExecutor} to {@link IOSDriver}. This
- * class also implements the {@link SeLionIOSBridgeDriver} interface to expose methods for {@link UIAElement} and its
- * subclasses.
+ * <code>SeLionAppiumIOSDriver</code> provides facility to add custom
+ * {@link CommandExecutor} to {@link IOSDriver}. This class also implements the
+ * {@link SeLionIOSBridgeDriver} interface to expose methods for
+ * {@link AbstractMobileElement} and its subclasses.
  */
 public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLionIOSBridgeDriver {
 
@@ -104,7 +105,6 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
     }
 
     @Deprecated
-    @Override
     public void tapWithOptions(WebElement webElement, EnumMap<GestureOptions, String> gestureOptions) {
         logger.entering(webElement, gestureOptions);
         String s = gestureOptions.get(GestureOptions.TOUCH_COUNT);
@@ -159,5 +159,10 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
         String value = webElement.getAttribute("value");
         logger.exiting(value);
         return value;
+    }
+
+    @Override
+    public void swipe(int startx, int starty, int endx, int endy, int duration) {
+        doSwipe(startx, starty, endx, endy, duration);
     }
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -32,8 +32,7 @@ import com.paypal.selion.reports.runtime.SeLionReporter;
 public class AppiumIOSNativeAppSauceCloudTest {
 
     @Test
-    @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", device = "iphone:8.1",
-            deviceType = "iPhone Simulator", additionalCapabilities = { "appiumVersion:1.4.13" })
+    @MobileTest(appPath = "sauce-storage:InternationalMountains.app.zip", additionalCapabilities = { "appiumVersion:1.4.13" })
     public void testWithNativeApp() throws InterruptedException {
         SeLionReporter.log("My Screenshot 1", true);
         List<WebElement> cells = Grid.driver().findElements(By.className("UIATableCell"));

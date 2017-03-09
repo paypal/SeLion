@@ -16,10 +16,11 @@
 package com.paypal.selion.platform.mobile;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
-import com.paypal.selion.platform.mobile.elements.MobileElement;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 
 /**
  * This class finds correct implementation for mobile interfaces and create a new instance for it or throw exception. It
@@ -33,10 +34,10 @@ public class MobileImplementationFinder {
     private MobileImplementationFinder() {
     }
 
-    public static <T extends MobileElement> T instantiate(WebDriverPlatform platform, Class<T> tClass, String locator) {
+    public static <T extends AbstractMobileElement> T instantiate(WebDriverPlatform platform, Class<T> tClass, String locator) {
         try {
-            final Class<T> mobileElementClass = find(tClass, platform);
-            final Constructor<T> constructor = mobileElementClass.getConstructor(String.class);
+            final Class<T> AbstractMobileElementClass = find(tClass, platform);
+            final Constructor<T> constructor = AbstractMobileElementClass.getConstructor(String.class);
             return constructor.newInstance(locator);
         } catch (ClassCastException | ClassNotFoundException | InstantiationException | IllegalAccessException
                 | NoSuchMethodException | InvocationTargetException e) {
@@ -45,9 +46,9 @@ public class MobileImplementationFinder {
         }
     }
 
-    private static <T extends MobileElement> Class<T> find(Class<T> aClass, WebDriverPlatform platform)
+    private static <T extends AbstractMobileElement> Class<T> find(Class<T> aClass, WebDriverPlatform platform)
             throws ClassNotFoundException {
-        if (!aClass.isInterface()) {
+        if (!aClass.isInterface() && !Modifier.isAbstract(aClass.getModifiers())) {
             return aClass;
         }
         Implementor implementor = aClass.getAnnotation(Implementor.class);

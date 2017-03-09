@@ -15,7 +15,7 @@
 
 package com.paypal.selion.platform.mobile;
 
-import com.paypal.selion.platform.mobile.elements.MobileElement;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -28,6 +28,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Implementor {
-    Class<? extends MobileElement> ios() default MobileElement.class;
-    Class<? extends MobileElement> android() default MobileElement.class;
+    Class<? extends AbstractMobileElement> ios() default AbstractMobileElement.class;
+    Class<? extends AbstractMobileElement> android() default AbstractMobileElement.class;
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,13 +18,13 @@ package com.paypal.selion.android.sample;
 import java.io.File;
 import java.net.URL;
 
+import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.platform.mobile.android.UiObject;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 
 /*
@@ -44,7 +44,7 @@ public class SelendroidTextViewTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testTextView() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=page_objects_text_view");
-        UiObject uiObject = new UiObject("id=page_objects_text_view");
+        MobileTextField uiObject = new MobileTextField("id=page_objects_text_view");
         Assert.assertEquals(uiObject.getText(), "Page Objects Demo", "Text View value does not match");
     }
 
@@ -52,7 +52,7 @@ public class SelendroidTextViewTest {
     @MobileTest(appName = "com.paypal.selion.pageobjectsdemoapp:1.0", device = "android:19")
     public void testTextViewEnabled() {
         WebDriverWaitUtils.waitUntilElementIsVisible("id=page_objects_text_view");
-        UiObject uiObject = new UiObject("id=page_objects_text_view");
+        MobileTextField uiObject = new MobileTextField("id=page_objects_text_view");
         Assert.assertEquals(uiObject.isEnabled(), true, "Text View is not enabled");
     }
 

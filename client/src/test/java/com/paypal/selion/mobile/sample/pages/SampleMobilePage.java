@@ -17,15 +17,15 @@ package com.paypal.selion.mobile.sample.pages;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.mobile.MobileImplementationFinder;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import com.paypal.selion.platform.mobile.elements.MobileButton;
-import com.paypal.selion.platform.mobile.elements.MobileElement;
 import com.paypal.selion.platform.mobile.elements.MobileTextField;
 import com.paypal.selion.testcomponents.BasicPageImpl;
 
 public class SampleMobilePage extends BasicPageImpl {
 
     private MobileButton sampleButton;
-    private MobileElement sampleElement;
+    private AbstractMobileElement sampleElement;
     private MobileTextField sampleTextField;
 
     private static String CLASS_NAME = "SampleMobilePage";
@@ -93,10 +93,10 @@ public class SampleMobilePage extends BasicPageImpl {
      *
      * @return sampleElement
      */
-    public MobileElement getSampleElement() {
-        MobileElement element = this.sampleElement;
+    public AbstractMobileElement getSampleElement() {
+        AbstractMobileElement element = this.sampleElement;
         if (element == null) {
-            this.sampleElement = MobileImplementationFinder.instantiate(getPlatform(), MobileElement.class,
+            this.sampleElement = MobileImplementationFinder.instantiate(getPlatform(), AbstractMobileElement.class,
                     getObjectMap().get("sampleElement"));
         }
         return this.sampleElement;

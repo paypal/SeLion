@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -150,7 +150,7 @@ public final class Grid {
     /**
      * Helper method to load a URL in a browser. Can be used for browsers in the case of {@link WebTest} and
      * {@link MobileTest}
-     * 
+     *
      * @param url
      *            The url of the web application that needs to be opened.
      */
@@ -160,7 +160,7 @@ public final class Grid {
 
     /**
      * Converts a {@link HttpResponse} into a {@link JSONObject}
-     * 
+     *
      * @param resp
      *            A {@link HttpResponse} obtained from executing a request against a host
      * @return An object of type {@link JSONObject}
@@ -184,7 +184,7 @@ public final class Grid {
     /**
      * For a given Session ID against a host on a particular port, this method returns the remote webdriver node and the
      * port to which the execution was redirected to by the hub.
-     * 
+     *
      * @param hostName
      *            The name of the hub machine
      * @param port
@@ -202,8 +202,8 @@ public final class Grid {
         // go ahead and abort if this is a known grid where know we won't be able to extract the proxy info via the hub
         // api
         if (Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_SAUCELAB_GRID)) {
-            logger.exiting(node);
-            return node;
+            logger.exiting();
+            return null;
         }
 
         try {

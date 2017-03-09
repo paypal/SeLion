@@ -15,14 +15,11 @@
 
 package com.paypal.selion.platform.mobile.elements;
 
-
-import com.paypal.selion.platform.mobile.Implementor;
-import com.paypal.selion.platform.mobile.android.UiImage;
-import com.paypal.selion.platform.mobile.ios.UIAImage;
-
 /**
- * <code>MobileImage</code> interface allows access to, and control of, Image elements in your app.
+ * <code>MobileImage</code> allows access to, and control of, Image elements in your app.
  */
-@Implementor(ios = UIAImage.class, android = UiImage.class)
-public interface MobileImage extends MobileElement {
+public class MobileImage extends AbstractMobileElement {
+    public MobileImage(String locator) {
+        super(locator);
+    }
 }

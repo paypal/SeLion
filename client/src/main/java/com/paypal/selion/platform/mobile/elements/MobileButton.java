@@ -15,14 +15,11 @@
 
 package com.paypal.selion.platform.mobile.elements;
 
-import com.paypal.selion.platform.mobile.Implementor;
-import com.paypal.selion.platform.mobile.android.UiButton;
-import com.paypal.selion.platform.mobile.ios.UIAButton;
-
 /**
- * <code>MobileButton</code> interface allows access to, and control of, button elements in your app.
+ * <code>MobileButton</code> allows access to, and control of, button elements in your app.
  */
-@Implementor(ios = UIAButton.class, android = UiButton.class)
-public interface MobileButton extends MobileElement {
-
+public class MobileButton extends AbstractMobileElement {
+    public MobileButton(String locator) {
+        super(locator);
+    }
 }

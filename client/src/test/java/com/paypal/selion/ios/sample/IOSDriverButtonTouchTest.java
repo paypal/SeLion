@@ -17,17 +17,12 @@ package com.paypal.selion.ios.sample;
 
 import java.io.File;
 import java.net.URL;
-import java.util.EnumMap;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.configuration.Config;
-import com.paypal.selion.platform.mobile.ios.GestureOptions;
-import com.paypal.selion.platform.mobile.ios.UIAElement;
-import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -41,6 +36,7 @@ public class IOSDriverButtonTouchTest {
         URL url = IOSDriverButtonTouchTest.class.getResource(appFolder);
         Config.setConfigProperty(Config.ConfigProperty.MOBILE_APP_FOLDER, (new File(url.getPath()).getAbsolutePath()));
     }
+/*TODO do something about double tap
 
     @MobileTest(appName = "PageObjects")
     @Test
@@ -61,6 +57,7 @@ public class IOSDriverButtonTouchTest {
         twoFingerButton.tapWithOptions(options);
         Thread.sleep(2 * 1000);
     }
+*/
 
     @AfterClass
     public void teardown() {

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,20 +15,20 @@
 
 package com.paypal.selion.ios.sample;
 
-import java.io.File;
-import java.net.URL;
-
+import com.paypal.selion.annotations.MobileTest;
+import com.paypal.selion.platform.mobile.UIOperationFailedException;
+import com.paypal.selion.platform.mobile.elements.MobileButton;
+import com.paypal.selion.platform.mobile.ios.UIAAlert;
+import com.paypal.selion.platform.mobile.ios.UIAList;
+import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
 import org.testng.annotations.AfterClass;
+
+import com.paypal.selion.configuration.Config;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.annotations.MobileTest;
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.platform.mobile.UIOperationFailedException;
-import com.paypal.selion.platform.mobile.ios.UIAAlert;
-import com.paypal.selion.platform.mobile.ios.UIAButton;
-import com.paypal.selion.platform.mobile.ios.UIANavigationBar;
-import com.paypal.selion.platform.mobile.ios.UIATableView;
+import java.io.File;
+import java.net.URL;
 
 /*
  * DEVNOTE Tests in this class exist primarily for demonstration purposes and as a basic sanity checks.
@@ -48,18 +48,18 @@ public class IOSDriverTableAlertTest {
     public void testTableAlertOfVisibleElement() throws InterruptedException {
         UIANavigationBar navigationBar = new UIANavigationBar(
                 "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { new UIAButton(
-                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Touch')]") });
+        navigationBar.clickRightButton(new MobileButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Touch')]"));
         navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { new UIAButton(
-                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'State')]") });
+        navigationBar.clickRightButton(new MobileButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'State')]"));
         navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { new UIAButton(
-                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Table')]") });
+        navigationBar.clickRightButton(new MobileButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Table')]"));
         navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
-        navigationBar.clickRightButton(new Object[] { new UIAButton(
-                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Picker')]") });
-        UIATableView table = new UIATableView("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
+        navigationBar.clickRightButton(new MobileButton(
+                "xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[contains(@name,'Picker')]"));
+        UIAList table = new UIAList("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
         table.clickCellAtIndex(2);
         Thread.sleep(500);
         UIAAlert alert = new UIAAlert("xpath=//UIAApplication[1]/UIAWindow[4]/UIAAlert[1]");
@@ -69,13 +69,13 @@ public class IOSDriverTableAlertTest {
     @MobileTest(appName = "PageObjects")
     @Test
     public void testTableAlertOfNotVisibleElement() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 4; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();
             Thread.sleep(500);
         }
-        UIATableView table = new UIATableView("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
+        UIAList table = new UIAList("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
         table.scrollToCellAtIndex(15);
         Thread.sleep(500);
         table.clickCellAtIndex(15);
@@ -86,13 +86,13 @@ public class IOSDriverTableAlertTest {
     @Test(expectedExceptions = UIOperationFailedException.class)
     @MobileTest(appName = "PageObjects")
     public void testInvalidAlertButtonClick() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 4; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();
             Thread.sleep(500);
         }
-        UIATableView table = new UIATableView("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
+        UIAList table = new UIAList("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
         table.clickCellAtIndex(2);
         Thread.sleep(500);
         UIAAlert alert = new UIAAlert("xpath=//UIAApplication[1]/UIAWindow[4]/UIAAlert[1]");
@@ -102,13 +102,13 @@ public class IOSDriverTableAlertTest {
     @Test(expectedExceptions = UIOperationFailedException.class)
     @MobileTest(appName = "PageObjects")
     public void testInvalideTableCellClick() throws InterruptedException {
-        UIANavigationBar navigationBar = null;
+        UIANavigationBar navigationBar;
         for (int i = 0; i < 4; i++) {
             navigationBar = new UIANavigationBar("xpath=//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]");
             navigationBar.clickRightButton();
             Thread.sleep(500);
         }
-        UIATableView table = new UIATableView("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
+        UIAList table = new UIAList("xpath=//UIAApplication[1]/UIAWindow[1]/UIATableView[1]");
         table.scrollToCellAtIndex(20);
     }
 

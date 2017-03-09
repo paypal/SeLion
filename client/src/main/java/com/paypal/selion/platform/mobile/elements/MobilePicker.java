@@ -25,7 +25,11 @@ import java.util.List;
  * keep that in mind that android does not have a default picker so this element should only be used with IOS
  */
 @Implementor(ios = UIAPicker.class)
-public interface MobilePicker extends MobileElement {
+public abstract class MobilePicker extends AbstractMobileElement {
+
+    public MobilePicker(String locator) {
+        super(locator);
+    }
 
     /**
      * Returns a {@link List} of String of values held by PickerWheel at the specified index
@@ -33,7 +37,7 @@ public interface MobilePicker extends MobileElement {
      * @param index Index of the PickerWheel
      * @return {@link List} of String
      */
-    List<String> getValuesOfWheelAtIndex(int index);
+    public abstract List<String> getValuesOfWheelAtIndex(int index);
 
     /**
      * Sets the value to the PickerWheel at the specified index.
@@ -41,6 +45,6 @@ public interface MobilePicker extends MobileElement {
      * @param index Index of the PickerWheel
      * @param value String value to set
      */
-    void setValueOfWheelAtIndex(int index, String value);
+    public abstract void setValueOfWheelAtIndex(int index, String value);
 
 }

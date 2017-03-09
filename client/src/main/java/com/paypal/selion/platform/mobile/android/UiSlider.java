@@ -16,7 +16,7 @@
 package com.paypal.selion.platform.mobile.android;
 
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.SeLionAppiumAndroidDriver;
+import com.paypal.selion.platform.grid.MobileGrid;
 import com.paypal.selion.platform.mobile.elements.MobileSlider;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import org.openqa.selenium.Dimension;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebElement;
 /**
  * <code>UiSlider</code> represents a Slider widget for Android UI automation framework.
  */
-public class UiSlider extends UiObject implements MobileSlider {
+public class UiSlider extends MobileSlider {
     private static final SimpleLogger logger = SeLionLogger.getLogger();
     private static final int MIN_END_X = 1;
     private static final int VALUE_UPPER_LIMIT = 1;
@@ -39,10 +39,9 @@ public class UiSlider extends UiObject implements MobileSlider {
      * it is not accurate and is best to used only for setting value to 0 or 1, otherwise the result is close to parameter
      * @param value The desired decimal value from 0 to 1, inclusive. 0 represents far left and 1 represent far right.
      */
-    @Override
     public void dragToValue(double value) {
         logger.entering(value);
-        WebElement webElement = findElement(locator);
+        WebElement webElement = getMobileElement();
         Point currentLocation = webElement.getLocation();
         Dimension elementSize = webElement.getSize();
         int x = currentLocation.getX();
@@ -57,11 +56,7 @@ public class UiSlider extends UiObject implements MobileSlider {
         if (endX < MIN_END_X) {
             endX = MIN_END_X;
         }
-        if (driver instanceof SeLionAppiumAndroidDriver) {
-            ((SeLionAppiumAndroidDriver) driver).tap(1, endX, y, 100);
-        } else {
-            driver.swipe(x, y,endX, y);
-        }
+        MobileGrid.mobileDriver().tap(1, endX, y, 100);
         logger.exiting();
     }
 }

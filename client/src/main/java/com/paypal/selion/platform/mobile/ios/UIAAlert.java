@@ -17,7 +17,7 @@ package com.paypal.selion.platform.mobile.ios;
 
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -25,10 +25,12 @@ import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
+import io.appium.java_client.MobileElement;
+
 /**
  * The <code>UIAAlert</code> class allows access to, and control of, alerts within your app.
  */
-public class UIAAlert extends UIAElement implements UIAutomationAlert {
+public class UIAAlert extends AbstractMobileElement {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -40,33 +42,27 @@ public class UIAAlert extends UIAElement implements UIAutomationAlert {
         super(locator);
     }
 
-    @Override
     public void clickCancelButton(Object... expected) {
         logger.entering(expected);
-        WebElement alertView = findElement(getLocator());
-        WebElement collectionView = alertView.findElement(By.className(UIACOLLECTIONVIEW));
-        List<WebElement> alertButtons = collectionView.findElements(By.className(UIACOLLECTIONCELL));
+        MobileElement collectionView = getMobileElement().findElement(By.className(UIACOLLECTIONVIEW));
+        List<MobileElement> alertButtons = collectionView.findElements(By.className(UIACOLLECTIONCELL));
         if (!alertButtons.isEmpty()) {
-            getBridgeDriver().tap(alertButtons.get(0));
-            if (!ArrayUtils.isEmpty(expected)) {
-                waitFor(expected);
-            }
+        	alertButtons.get(0).click();
             logger.exiting();
             return;
         }
         throw new UIOperationFailedException("UIAAlert does not have any button at index: 0");
     }
 
-    @Override
     public void clickButtonAtIndex(int index, Object... expected) {
-        logger.entering(new Object[] {index, expected});
-        WebElement alertView = findElement(getLocator());
-        WebElement collectionView = alertView.findElement(By.className(UIACOLLECTIONVIEW));
+        logger.entering(index, expected);
+        WebElement collectionView = getMobileElement().findElement(By.className(UIACOLLECTIONVIEW));
         List<WebElement> alertButtons = collectionView.findElements(By.className(UIACOLLECTIONCELL));
         if (!alertButtons.isEmpty() && index < alertButtons.size()) {
-            getBridgeDriver().tap(alertButtons.get(index));
-            if (!ArrayUtils.isEmpty(expected)) {
-                waitFor(expected);
+            if (!alertButtons.isEmpty()) {
+            	alertButtons.get(0).click();
+                logger.exiting();
+                return;
             }
             logger.exiting();
             return;

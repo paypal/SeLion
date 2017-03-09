@@ -17,7 +17,7 @@ package com.paypal.selion.mobile.sample.pages;
 
 import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.mobile.MobileImplementationFinder;
-import com.paypal.selion.platform.mobile.elements.MobileElement;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
 import com.paypal.selion.platform.mobile.elements.MobileButton;
 import com.paypal.selion.platform.mobile.elements.MobileList;
 import com.paypal.selion.platform.mobile.elements.MobileTextField;
@@ -27,10 +27,10 @@ public class TablePage extends BasicPageImpl {
 
     private MobileButton nextButton;
     private MobileList tableList;
-    private MobileElement alertElement;
+    private AbstractMobileElement alertElement;
     private MobileTextField topTextField;
     private MobileButton preButton;
-    private MobileElement notVisibleElement;
+    private AbstractMobileElement notVisibleElement;
 
     private static String CLASS_NAME = "TablePage";
     private static String PAGE_DOMAIN = "paypal/mobile";
@@ -111,10 +111,10 @@ public class TablePage extends BasicPageImpl {
      *
      * @return alertElement
      */
-    public MobileElement getAlertElement() {
-        MobileElement element = this.alertElement;
+    public AbstractMobileElement getAlertElement() {
+        AbstractMobileElement element = this.alertElement;
         if (element == null) {
-            this.alertElement = MobileImplementationFinder.instantiate(getPlatform(), MobileElement.class,
+            this.alertElement = MobileImplementationFinder.instantiate(getPlatform(), AbstractMobileElement.class,
                     getObjectMap().get("alertElement"));
         }
         return this.alertElement;
@@ -148,10 +148,10 @@ public class TablePage extends BasicPageImpl {
         return this.preButton;
     }
 
-    public MobileElement getNotVisibleElement() {
-        MobileElement element = this.notVisibleElement;
+    public AbstractMobileElement getNotVisibleElement() {
+        AbstractMobileElement element = this.notVisibleElement;
         if (element == null) {
-            this.notVisibleElement = MobileImplementationFinder.instantiate(getPlatform(), MobileElement.class,
+            this.notVisibleElement = MobileImplementationFinder.instantiate(getPlatform(), AbstractMobileElement.class,
                     getObjectMap().get("notVisibleElement"));
         }
         return this.notVisibleElement;

@@ -15,20 +15,21 @@
 
 package com.paypal.selion.platform.mobile.ios;
 
-import java.util.List;
-import java.util.ListIterator;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.mobile.UIOperationFailedException;
+import com.paypal.selion.platform.mobile.elements.AbstractMobileElement;
+import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
 import com.paypal.test.utilities.logging.SimpleLogger;
+import io.appium.java_client.MobileElement;
+import org.openqa.selenium.By;
+
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * The <code>UIANavigationBar</code> class allows access to, and control of, buttons in your app’s navigation bar.
  */
-public class UIANavigationBar extends UIAElement implements UIAutomationNavigationBar {
+public class UIANavigationBar extends AbstractMobileElement {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
@@ -44,35 +45,27 @@ public class UIANavigationBar extends UIAElement implements UIAutomationNavigati
         super(locator);
     }
 
-    @Override
     public void clickLeftButton(Object... expected) {
         logger.entering();
-        WebElement navigationBarElement = findElement(this.getLocator());
-        List<WebElement> buttonElements = navigationBarElement.findElements(By.className(UIABUTTON));
-        WebElement leftButton = findLeftButton(buttonElements);
-        getBridgeDriver().tap(leftButton);
-        if (expected != null && expected.length > 0) {
-            waitFor(expected);
-        }
+        List<MobileElement> buttonElements = getMobileElement().findElements(By.className(UIABUTTON));
+        MobileElement leftButton = findLeftButton(buttonElements);
+        leftButton.click();
+        WebDriverWaitUtils.waitFor(expected);
         logger.exiting();
     }
 
-    @Override
     public void clickRightButton(Object... expected) {
         logger.entering();
-        WebElement navigationBarElement = findElement(this.getLocator());
-        List<WebElement> buttonElements = navigationBarElement.findElements(By.className(UIABUTTON));
-        WebElement rightButton = findRightButton(buttonElements);
-        getBridgeDriver().tap(rightButton);
-        if (expected != null && expected.length > 0) {
-            waitFor(expected);
-        }
+        List<MobileElement> buttonElements = getMobileElement().findElements(By.className(UIABUTTON));
+        MobileElement rightButton = findRightButton(buttonElements);
+        rightButton.click();
+        WebDriverWaitUtils.waitFor(expected);
         logger.exiting();
     }
 
-    private WebElement findLeftButton(List<WebElement> buttonElements) {
+    private MobileElement findLeftButton(List<MobileElement> buttonElements) {
         if (buttonElements.size() >= 1) {
-            for (WebElement button : buttonElements) {
+            for (MobileElement button : buttonElements) {
                 if (BACK.equals(button.getAttribute(LABEL)) || BACK.equals(button.getAttribute(NAME))) {
                     return button;
                 }
@@ -89,16 +82,16 @@ public class UIANavigationBar extends UIAElement implements UIAutomationNavigati
         throw new UIOperationFailedException("UIANavigationBar does not have any left button");
     }
 
-    private WebElement findRightButton(List<WebElement> buttonElements) {
+    private MobileElement findRightButton(List<MobileElement> buttonElements) {
         if (buttonElements.size() >= 1) {
-            
+
             /*
              * Assumption that 'right navigation button is seated on an index greater than 0'
              */
             int index = buttonElements.size() - 1;
-            ListIterator<WebElement> listIterator = buttonElements.listIterator(buttonElements.size());
+            ListIterator<MobileElement> listIterator = buttonElements.listIterator(buttonElements.size());
             while (listIterator.hasPrevious()) {
-                WebElement button = listIterator.previous();
+                MobileElement button = listIterator.previous();
                 if (!BACK.equals(button.getAttribute(LABEL)) && !BACK.equals(button.getAttribute(NAME)) && index > 0) {
                     return button;
                 }
@@ -108,4 +101,7 @@ public class UIANavigationBar extends UIAElement implements UIAutomationNavigati
         throw new UIOperationFailedException("UIANavigationBar does not have any right button");
     }
 
+    public String getName() {
+        return getAttribute("name");
+    }
 }
