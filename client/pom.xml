@@ -132,22 +132,9 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- selendroid client dependency -->
         <dependency>
-            <groupId>io.selendroid</groupId>
-            <artifactId>selendroid-client</artifactId>
-        </dependency>
-
-        <!-- iosdriver client dependency -->
-        <dependency>
-            <groupId>org.uiautomation</groupId>
-            <artifactId>ios-client</artifactId>
-        </dependency>
-
-        <!-- Appium java client dependency -->
-        <dependency>
-            <groupId>io.appium</groupId>
-            <artifactId>java-client</artifactId>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
         </dependency>
 
         <dependency>

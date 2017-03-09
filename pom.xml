@@ -32,6 +32,9 @@
         <module>dataproviders</module>
         <module>server</module>
         <module>client</module>
+        <module>appium-provider</module>
+        <module>iosdriver-provider</module>
+        <module>selendroid-provider</module>
         <module>codegen</module>
         <module>archetype</module>
     </modules>

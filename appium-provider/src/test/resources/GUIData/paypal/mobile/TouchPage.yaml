@@ -1,0 +1,27 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+defaultLocale: "US"
+platform: "mobile"
+elements:
+  preButton:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/btnPre"
+  topTextField:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAStaticText[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/txtCurrect"
+  nextButton:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[3]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/btnNext"
+  touchButton:
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/touchButton"
+  touchTextField:
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/touchTxt"
+pageTitle:
+  US: "page_object"

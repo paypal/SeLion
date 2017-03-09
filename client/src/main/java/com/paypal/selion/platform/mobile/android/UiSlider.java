@@ -15,8 +15,10 @@
 
 package com.paypal.selion.platform.mobile.android;
 
+import com.paypal.selion.internal.platform.grid.MobileNodeType;
 import com.paypal.selion.logger.SeLionLogger;
-import com.paypal.selion.platform.grid.SeLionAppiumAndroidDriver;
+import com.paypal.selion.platform.grid.Grid;
+//import com.paypal.selion.platform.grid.SeLionAppiumAndroidDriver;
 import com.paypal.selion.platform.mobile.elements.MobileSlider;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import org.openqa.selenium.Dimension;
@@ -57,8 +59,12 @@ public class UiSlider extends UiObject implements MobileSlider {
         if (endX < MIN_END_X) {
             endX = MIN_END_X;
         }
-        if (driver instanceof SeLionAppiumAndroidDriver) {
-            ((SeLionAppiumAndroidDriver) driver).tap(1, endX, y, 100);
+
+        initBridgeDriver();
+        MobileNodeType mobileType = Grid.getMobileTestSession().getMobileNodeType();
+        if (mobileType.equals(MobileNodeType.APPIUM)) {
+            // On Appium we use tap (TouchAction) instead
+            driver.swipe(1, endX, y, 100);
         } else {
             driver.swipe(x, y,endX, y);
         }

@@ -1,0 +1,18 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="7" verbose="1" name="Appium iOS Sauce Cloud Test Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="50" annotations="JDK">
+    <!-- SELENIUM CONFIGURATION -->
+    <parameter name="useSauceLabGrid" value="true" />
+    <parameter name="mobileNodeType" value="appium" />
+    <parameter name="seleniumhost" value="ondemand.saucelabs.com" />
+    <parameter name="seleniumport" value="80" />
+
+    <test verbose="2" name="mobile-appium-ios-test-saucedemand" annotations="JDK">
+        <classes>
+            <class name="com.paypal.selion.appium.ios.sample.AppiumIOSSafariSauceCloudTest"></class>
+            <class name="com.paypal.selion.appium.ios.sample.AppiumIOSNativeAppSauceCloudTest"></class>
+        </classes>
+    </test>
+
+</suite>
+
