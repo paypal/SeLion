@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -41,11 +41,11 @@ final class InstallHelper {
     static void firstTimeSetup() {
         LOGGER.entering();
 
-        String msg = "Setting up SeLion Grid for first time use...";
+        String msg = "Setting up SeLion Grid for first time use...\n";
         if (new File(SeLionConstants.SELION_HOME_DIR).exists()) {
-            msg = "Verifying SeLion Grid installation...";
+            msg = "Verifying SeLion Grid installation...\n";
         }
-        LOGGER.info(msg);
+        System.out.println(msg);
 
         try {
             FileUtils.forceMkdir(new File(DOWNLOADS_DIR));

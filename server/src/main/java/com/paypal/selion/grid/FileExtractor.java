@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -75,7 +75,7 @@ final class FileExtractor {
     static List<String> extractArchive(String archiveFile) {
         LOGGER.entering(archiveFile);
 
-        LOGGER.info("Extracting " + archiveFile);
+        LOGGER.fine("Extracting " + archiveFile);
 
         String archiveStreamType;
         boolean isCompressedArchive = false;

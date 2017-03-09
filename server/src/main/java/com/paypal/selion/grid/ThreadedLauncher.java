@@ -111,7 +111,6 @@ public final class ThreadedLauncher extends AbstractBaseLauncher {
         // setup the SeLion config
         ConfigParser.setConfigFile(lc.getSeLionConfig());
 
-        ident();
         InstallHelper.firstTimeSetup();
         this.downloadList = downloadList;
     }

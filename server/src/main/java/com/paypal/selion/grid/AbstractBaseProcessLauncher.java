@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -53,7 +53,7 @@ import com.paypal.selion.utils.ConfigParser;
 import com.paypal.selion.utils.process.ProcessHandlerFactory;
 
 /**
- * An abstract {@link RunnableLauncher} for spinning nodes or hubs as a sub process. Supports continuously restarts of
+ * An abstract {@link RunnableLauncher} for spinning nodes or hubs as a sub process. Supports continuous restarts of
  * the sub process. Provides utility methods for working with Java CLASSPATH's and System Properties.
  */
 abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
@@ -216,7 +216,6 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         // setup the SeLion config
         ConfigParser.setConfigFile(plc.getSeLionConfig());
 
-        ident();
         InstallHelper.firstTimeSetup();
     }
 
@@ -267,7 +266,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         LOGGER.entering(squelch);
 
         if (!squelch) {
-            LOGGER.info("Executing command " + cmdLine.toString());
+            LOGGER.fine("Executing command " + cmdLine.toString());
         }
 
         watchdog.reset();
@@ -300,9 +299,13 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
                 return;
             }
 
+            if (getCommands().contains("-version")) {
+                getLauncherOptions().setContinuouslyRestart(false);
+            }
+
             if (getLauncherOptions().isContinuouslyRestart()) {
                 long interval = getLauncherOptions().getRestartCycle();
-                LOGGER.info("Restart cycle will check every " + interval + " ms");
+                LOGGER.fine("Restart cycle will check every " + interval + " ms");
                 continuouslyRestart(interval);
             }
 

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -96,5 +96,15 @@ public class SeLionConstants {
      * Platform specific executable name for gecko/marionette driver
      */
     public static final String GECKO_DRIVER = SystemUtils.IS_OS_WINDOWS ? "geckodriver.exe" : "geckodriver";
+
+    /**
+     * SeLion project url
+     */
+    public static final String SELION_PROJECT_GITHUB_URL = "https://github.com/paypal/SeLion";
+
+    /**
+     * SeLion project homepage
+     */
+    public static final String SELION_HOMEPAGE = "http://selion.io";
 
 }

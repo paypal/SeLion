@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -141,7 +141,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         loggerSettings.setDevLevel(Level.OFF);
         loggerSettings.setLoggerName(machine);
         loggerSettings.setClassName(SeLionRemoteProxy.class.getSimpleName());
-        loggerSettings.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
+        loggerSettings.setIdentifier("SeLion-Grid-" + SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
         loggerSettings.setMaxFileCount(1);
         loggerSettings.setMaxFileSize(5);
         proxyLogger = SimpleLogger.getLogger(loggerSettings);

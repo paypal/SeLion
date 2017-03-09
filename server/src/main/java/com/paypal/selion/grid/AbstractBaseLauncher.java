@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,7 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.paypal.selion.SeLionBuildInfo;
 import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
@@ -84,12 +83,6 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
      */
     private InstanceType type;
 
-    void ident() {
-        System.out.print(SEPARATOR);
-        System.out.print(SeLionBuildInfo.getBuildValue(SeLionBuildInfo.SeLionBuildProperty.SELION_VERSION));
-        System.out.print(SEPARATOR);
-    }
-    
     /*
      * The received launcher commands
      */
@@ -213,7 +206,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     private String[] getNodeProgramArguments() throws IOException {
         LOGGER.entering();
 
-        LOGGER.info("This instance is considered a SeLion Grid Node");
+        LOGGER.fine("This instance is considered a SeLion Grid Node");
 
         List<String> args = new LinkedList<>();
 
@@ -236,7 +229,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     private String[] getHubProgramArguments() throws IOException {
         LOGGER.entering();
 
-        LOGGER.info("This instance is considered a SeLion Grid Hub");
+        LOGGER.fine("This instance is considered a SeLion Grid Hub");
 
         List<String> args = new LinkedList<>();
 
@@ -245,7 +238,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
             // To verify this is SeLion Sauce Grid or not
             if (commands.contains(SeLionGridHubConfiguration.TYPE_ARG) &&
-                commands.contains(InstanceType.SELION_SAUCE_HUB.getFriendlyName())) {
+                    commands.contains(InstanceType.SELION_SAUCE_HUB.getFriendlyName())) {
                 hubConfig = HUB_SAUCE_CONFIG_FILE;
                 InstallHelper.copyFileFromResources(HUB_SAUCE_CONFIG_FILE_RESOURCE, HUB_SAUCE_CONFIG_FILE);
                 InstallHelper.copyFileFromResources(NODE_SAUCE_CONFIG_FILE_RESOURCE, NODE_SAUCE_CONFIG_FILE);

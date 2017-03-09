@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
 |  Copyright 2016 Software Freedom Conservancy                                                                        |
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -22,14 +22,22 @@
 
 package com.paypal.selion.grid;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
 import com.beust.jcommander.JCommander;
+import com.paypal.selion.SeLionBuildInfo;
+import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
 import com.paypal.selion.utils.ConfigParser;
 
 import org.openqa.grid.common.GridRole;
@@ -49,6 +57,8 @@ import com.paypal.selion.logging.SeLionGridLogger;
 
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.server.SeleniumServer;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.TerseFormatter;
 
 /**
  * The SeLion version of the {@link GridLauncherV3}. We have intentionally duplicated code from {@link GridLauncherV3}
@@ -66,9 +76,13 @@ public class SeLionGridLauncherV3 {
     private static abstract class SeLionGridItemLauncher {
         protected StandaloneConfiguration configuration;
         protected boolean helpRequested;
+        protected boolean versionRequested;
         protected Object type;
+
         abstract void setConfiguration(String[] args);
+
         abstract void launch() throws Exception;
+
         abstract void printUsage();
     }
 
@@ -80,6 +94,7 @@ public class SeLionGridLauncherV3 {
                 new JCommander(ssc, args);
                 configuration = ssc.standaloneConfiguration;
                 helpRequested = configuration.help;
+                versionRequested = configuration.version;
             }
 
             public void launch() throws Exception {
@@ -103,15 +118,16 @@ public class SeLionGridLauncherV3 {
                 new JCommander(sghc, args);
 
                 GridHubConfiguration pending = sghc.gridHubConfiguration;
-                //re-parse the args using any -hubConfig specified to init
+                // re-parse the args using any -hubConfig specified to init
                 if (pending.hubConfig != null) {
                     sghc.gridHubConfiguration = GridHubConfiguration
-                        .loadFromJSON(JSONConfigurationUtils.loadJSON(pending.hubConfig));
+                            .loadFromJSON(JSONConfigurationUtils.loadJSON(pending.hubConfig));
                     new JCommander(sghc, args);
                 }
                 sghc.mergeCustom();
                 configuration = sghc.gridHubConfiguration;
                 helpRequested = configuration.help;
+                versionRequested = configuration.version;
             }
 
             public void launch() throws Exception {
@@ -133,7 +149,7 @@ public class SeLionGridLauncherV3 {
                 new JCommander(sgnc, args);
 
                 GridNodeConfiguration pending = sgnc.gridNodeConfiguration;
-                //re-parse the args using any -nodeConfig specified to init
+                // re-parse the args using any -nodeConfig specified to init
                 if (pending.nodeConfigFile != null) {
                     sgnc.gridNodeConfiguration = GridNodeConfiguration
                             .loadFromJSON(JSONConfigurationUtils.loadJSON(pending.nodeConfigFile));
@@ -142,6 +158,7 @@ public class SeLionGridLauncherV3 {
                 sgnc.mergeCustom();
                 configuration = sgnc.gridNodeConfiguration;
                 helpRequested = configuration.help;
+                versionRequested = configuration.version;
                 if (configuration.port == null) {
                     configuration.port = 5555;
                 }
@@ -150,7 +167,7 @@ public class SeLionGridLauncherV3 {
             public void launch() throws Exception {
                 LOGGER.info("Launching a Selenium Grid node");
                 RegistrationRequest
-                        c =
+                c =
                         RegistrationRequest.build((GridNodeConfiguration) configuration);
                 SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
                 type = remote;
@@ -169,6 +186,45 @@ public class SeLionGridLauncherV3 {
     private static void logEnvironment() {
         LOGGER.fine("Environment Variables: " + Collections.singletonList(System.getenv()));
         LOGGER.fine("JVM System Properties: " + Collections.singletonList(System.getProperties()));
+    }
+
+    private static void configureLogging(StandaloneConfiguration configuration) {
+        Level logLevel =
+                configuration.debug
+                        ? Level.FINE
+                        : LoggingOptions.getDefaultLogLevel();
+        if (logLevel == null) {
+            logLevel = Level.INFO;
+        }
+        Logger.getLogger("").setLevel(logLevel);
+        Logger.getLogger("org.openqa.jetty").setLevel(Level.WARNING);
+
+        String logFilename =
+                configuration.log != null
+                        ? configuration.log
+                        : LoggingOptions.getDefaultLogOutFile();
+        if (logFilename != null) {
+            for (Handler handler : Logger.getLogger("").getHandlers()) {
+                if (handler instanceof ConsoleHandler) {
+                    Logger.getLogger("").removeHandler(handler);
+                }
+            }
+            try {
+                Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
+                logFile.setFormatter(new TerseFormatter());
+                logFile.setLevel(logLevel);
+                Logger.getLogger("").addHandler(logFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            for (Handler handler : Logger.getLogger("").getHandlers()) {
+                if (handler instanceof ConsoleHandler) {
+                    handler.setLevel(logLevel);
+                    handler.setFormatter(new TerseFormatter());
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -196,6 +252,15 @@ public class SeLionGridLauncherV3 {
         LOGGER.info("Selenium is shut down");
     }
 
+    private String ident() {
+        BuildInfo seleniumBuildInfo = new BuildInfo();
+        return String.format("SeLion Grid version: %s\n"
+                + "Selenium version: %s, revision: %s",
+                SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION),
+                seleniumBuildInfo.getReleaseLabel(),
+                seleniumBuildInfo.getBuildRevision());
+    }
+
     /**
      * Boot the instance base on the arguments supplied
      *
@@ -220,18 +285,20 @@ public class SeLionGridLauncherV3 {
             SeLionGridItemLauncher launcher = launchers.get(gridRole);
             launcher.setConfiguration(args);
 
+            if (launcher.versionRequested) {
+                System.out.println(ident());
+                return;
+            }
+
             if (launcher.helpRequested) {
                 launcher.printUsage();
                 return;
             }
 
+            configureLogging(sc);
             logEnvironment();
 
-            BuildInfo buildInfo = new BuildInfo();
-            LOGGER.info(String.format(
-                    "Selenium build info: version: '%s', revision: '%s'",
-                    buildInfo.getReleaseLabel(),
-                    buildInfo.getBuildRevision()));
+            LOGGER.info(ident());
 
             launcher.launch();
             type = launcher.type;
@@ -243,7 +310,7 @@ public class SeLionGridLauncherV3 {
 
     public static void printInfoAboutRoles(String roleCommandLineArg) {
         CliUtils.printWrappedLine("", "Error: the role '" + roleCommandLineArg
-                    + "' does not match a recognized server role\n");
+                + "' does not match a recognized server role\n");
         System.out.println("Selenium server can run in one of the following roles:\n"
                 + "  hub         as a hub of a Selenium grid\n"
                 + "  node        as a node of a Selenium grid\n"
