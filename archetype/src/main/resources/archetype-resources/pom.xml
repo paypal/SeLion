@@ -37,6 +37,24 @@
             <!-- Scope should be test when using Selion for testing only -->
             <!-- <scope>test</scope> -->
         </dependency>
+        <!-- required to run mobile tests via ios-driver. otherwise, not required -->
+        <dependency>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-iosdriver-provider</artifactId>
+            <version>${selion.version}</version>
+        </dependency>
+        <!-- required to run mobile tests via selendroid. otherwise, not required -->
+        <dependency>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-selendroid-provider</artifactId>
+            <version>${selion.version}</version>
+        </dependency>
+        <!-- required to run mobile tests via appium. otherwise, not required -->
+        <dependency>
+            <groupId>com.paypal.selion</groupId>
+            <artifactId>SeLion-appium-provider</artifactId>
+            <version>${selion.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion-Grid</artifactId>
@@ -124,10 +142,10 @@
                     </includes>
 
                     <!-- You can specify a specific testng.xml file here -->
-                    <!--  
-                    <suiteXmlFiles> 
-                        <suiteXmlFile>src/test/resources/testng-sample.xml</suiteXmlFile> 
-                    </suiteXmlFiles> 
+                    <!--
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng-sample.xml</suiteXmlFile>
+                    </suiteXmlFiles>
                     -->
 
                     <!-- Or dynamically with something like '-DsuiteXmlFile=src/test/resources/testng-sample.xml' -->
@@ -162,7 +180,7 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven 
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven
                     build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>

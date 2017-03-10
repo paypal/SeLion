@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>iosdriver-provider</artifactId>
+    <artifactId>SeLion-iosdriver-provider</artifactId>
     <packaging>jar</packaging>
     <name>SeLion iosdriver provider</name>
     <description>The SeLion iosdriver-provider. Adds iosdriver support into SeLion client</description>
@@ -77,68 +77,22 @@
 
 
     <dependencies>
-
-        <dependency>
-            <groupId>com.paypal.selion</groupId>
-            <artifactId>SeLion-Common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- IOS Driver dependencies. -->
         <dependency>
             <groupId>org.uiautomation</groupId>
             <artifactId>ios-client</artifactId>
-            <version>${iosdriver.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-remote-driver</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-io</artifactId>
-                    <groupId>commons-io</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jetty-servlet</artifactId>
-                    <groupId>org.eclipse.jetty</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.uiautomation</groupId>
             <artifactId>ios-common</artifactId>
-            <version>${iosdriver.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-servlet</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-remote-driver</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.netty</groupId>
-                    <artifactId>netty</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Selenium client dependency -->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-api</artifactId>
         </dependency>
 
         <dependency>
@@ -151,9 +105,8 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>

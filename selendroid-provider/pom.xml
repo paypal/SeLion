@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>selendroid-provider</artifactId>
+    <artifactId>SeLion-selendroid-provider</artifactId>
     <packaging>jar</packaging>
     <name>SeLion selendroid provider</name>
     <description>The SeLion selendroid-provider. Adds selendroid support to SeLion client</description>
@@ -19,7 +19,6 @@
         <skipTests>true</skipTests>
         <suiteXmlPath>src/test/resources/suites/</suiteXmlPath>
         <suiteXmlFile>Default-Suite.xml</suiteXmlFile>
-        <selendroid.version>0.17.0</selendroid.version>
     </properties>
 
     <build>
@@ -78,33 +77,31 @@
 
 
     <dependencies>
-
         <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- selendroid client dependency -->
         <dependency>
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-client</artifactId>
-            <version>${selendroid.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion-Grid</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>
