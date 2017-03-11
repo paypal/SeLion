@@ -19,7 +19,7 @@ mkdir -p target
 cd target
 if [ ! -f "./firefox/firefox" ]
 then
-  export FIREFOX_VERSION=49.0.1
+  export FIREFOX_VERSION=52.0
   export FIREFOX_URL=http://download.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2
   wget -O firefox-${FIREFOX_VERSION}.tar.bz2 ${FIREFOX_URL}
   # and install downloaded firefox
