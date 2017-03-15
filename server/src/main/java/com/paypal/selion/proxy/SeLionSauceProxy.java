@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -176,7 +176,7 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
                 // mark the proxy as down and let the polling thread determine when it is back up.
                 down = true;
                 // if we aren't polling sauce labs, kick the session back to the hub.
-                if (poll = false) {
+                if (poll == false) {
                     LOGGER.exiting(null);
                     return null;
                 }
