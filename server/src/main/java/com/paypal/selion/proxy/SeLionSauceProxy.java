@@ -176,7 +176,7 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
                 // mark the proxy as down and let the polling thread determine when it is back up.
                 down = true;
                 // if we aren't polling sauce labs, kick the session back to the hub.
-                if (poll = false) {
+                if (poll == false) {
                     LOGGER.exiting(null);
                     return null;
                 }
