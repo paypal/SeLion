@@ -47,7 +47,7 @@ public class FileSystemResource {
         }
         try {
             return new FileInputStream(fileName);
-        } catch (FileNotFoundException e) { 
+        } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("[" + fileName + "] is not a valid resource");
         }
     }

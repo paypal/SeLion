@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2016-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,35 +13,49 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reader;
+package com.paypal.selion.plugins;
 
-import com.paypal.selion.plugins.CodeGeneratorException;
-
-import java.io.IOException;
+import com.beust.jcommander.JCommander;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either process
- * YAML V1 format (or) V2 format.
- * 
+ * Class for code generation goals
  */
-// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
-public final class YamlReaderFactory {
-    private YamlReaderFactory() {
-        // Utility class. Hide constructor.
-    }
+public class CodeGeneratorMain {
 
-    public static AbstractYamlReader createInstance(String fileName) throws IOException {
-        if (!fileName.endsWith("yaml") && !fileName.endsWith("yml")) {
-            throw new IllegalArgumentException("Data file not supported : " + fileName);
-        }
-        AbstractYamlReader provider = new YamlV2Reader(fileName);
-        if (!provider.isProcessed()) {
-            provider = new YamlV1Reader(fileName);
-        }
-        if (!provider.isProcessed()) {
-            throw new CodeGeneratorException("Error parsing document. Please check file contents for syntax errors.");
-        }
-        return provider;
-    }
+    /**
+     * Main Entry
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+        final CodeGeneratorConfig config = new CodeGeneratorConfig();
+        final JCommander commander = new JCommander(config);
+        commander.parse(args);
 
+        if (config.help) {
+            commander.usage();
+            System.exit(0);
+        }
+
+        // make sure the logger is initialized
+        CodeGeneratorLoggerFactory.setLogger(new CodeGeneratorSimpleLogger());
+
+        // iff baseFolder is null or empty, reset it to the default value
+        config.baseFolder = StringUtils.defaultIfEmpty(config.baseFolder, "GUIData");
+
+        // create the helper with our config
+        CodeGeneratorHelper helper = new CodeGeneratorHelper(config);
+
+        if (CodeGeneratorLoggerFactory.getLogger().isDebugEnabled()) {
+            helper.displayProjectInformation();
+        }
+
+        // register all custom element classes
+        helper.registerCustomElements();
+
+        // process the files.
+        helper.processFiles();
+    }
 }

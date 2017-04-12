@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,24 +13,33 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.plugins;
+package com.paypal.selion.elements;
 
-import org.apache.maven.plugin.logging.Log;
+import com.paypal.selion.plugins.CodeGeneratorLoggerFactory;
+import com.paypal.selion.plugins.CodeGeneratorSimpleLogger;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-/**
- * A basic logger for the codegen maven mojo plugin
- */
-public class Logger {
-    private static Log log;
+import java.util.Collections;
+import java.util.Optional;
 
-    public static void setLogger(Log tempLog) {
-        log = tempLog;
+import static org.testng.Assert.*;
+
+public class BaseMobileSeLionElementSetTest {
+    @BeforeClass
+    public void before() {
+        CodeGeneratorLoggerFactory.setLogger(new CodeGeneratorSimpleLogger());
     }
 
-    public static Log getLogger() {
-        if (log == null) {
-            throw new IllegalStateException("The logger instance is not yet created.");
-        }
-        return log;
+    @Test
+    public void testAdd() {
+        SeLionElementSet elementSet = new BaseMobileSeLionElementSet(Collections.emptyList());
+        assertEquals(elementSet.size(), 0);
+
+        elementSet.add("com.foo.BaseMobileSeLionElementSetTest");
+
+        Optional<SeLionElement> first = elementSet.stream().findFirst();
+        assertEquals(first.orElse(null).getElementClass(),"BaseMobileSeLionElementSetTest" ,
+            "the custom added element is not first");
     }
 }

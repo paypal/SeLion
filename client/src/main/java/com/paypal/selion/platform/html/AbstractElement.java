@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -95,7 +95,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Instance method used to call static class method locateElement.
-     * 
+     *
      * @return the web element found by locator
      */
     public RemoteWebElement getElement() {
@@ -117,7 +117,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Instance method used to call static class method locateElements.
-     * 
+     *
      * @return the list of web elements found by locator
      */
     public List<WebElement> getElements() {
@@ -137,7 +137,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * A utility method to provide additional information to the user when a NoSuchElementException is thrown.
-     * 
+     *
      * @param cause
      *            The associated cause for the exception.
      */
@@ -181,7 +181,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Constructs an AbstractElement with locator.
-     * 
+     *
      * @param locator
      */
     public AbstractElement(String locator) {
@@ -190,7 +190,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Constructs an AbstractElement with locator and parent.
-     * 
+     *
      * @param parent
      *            A {@link ParentTraits} object that represents the parent element for this element.
      * @param locator
@@ -203,7 +203,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Constructs an AbstractElement with locator and controlName.
-     * 
+     *
      * @param locator
      *            the element locator
      * @param controlName
@@ -215,7 +215,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Constructs an AbstractElement with locator, parent, and controlName.
-     * 
+     *
      * @param locator
      *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
      * @param controlName
@@ -231,7 +231,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Retrieves the locator (id/name/xpath/css locator) for the current {@link AbstractElement} element.
-     * 
+     *
      * @return The value of locator.
      */
     public String getLocator() {
@@ -240,7 +240,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Retrieves the control name for the current {@link AbstractElement} element.
-     * 
+     *
      * @return The value of controlName.
      */
     public String getControlName() {
@@ -249,7 +249,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Retrieves the parent element for the current {@link AbstractElement} element.
-     * 
+     *
      * @return A {@link ParentTraits} that represents the parent of the current {@link AbstractElement} element.
      */
     public ParentTraits getParent() {
@@ -259,7 +259,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     /**
      * Finds element on the page and returns the visible (i.e. not hidden by CSS) innerText of this element, including
      * sub-elements, without any leading or trailing whitespace.
-     * 
+     *
      * @return The innerText of this element.
      */
     public String getText() {
@@ -270,7 +270,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * Checks if element is present in the html dom. An element that is present in the html dom does not mean it is
      * visible. To check if element is visible, use {@link #getElement()} to get {@link WebElement} and then invoke
      * {@link WebElement#isDisplayed()}.
-     * 
+     *
      * @return True if element is present, false otherwise.
      */
     public boolean isElementPresent() {
@@ -290,7 +290,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     /**
      * Is this element displayed or not? This method avoids the problem of having to parse an element's "style"
      * attribute.
-     * 
+     *
      * @return Whether or not the element is displayed
      */
     public boolean isVisible() {
@@ -300,7 +300,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     /**
      * Is the element currently enabled or not? This will generally return true for everything but disabled input
      * elements.
-     * 
+     *
      * @return True if element is enabled, false otherwise.
      */
     public boolean isEnabled() {
@@ -318,8 +318,8 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade, novalidate, nowrap, open, paused, pubdate,
      * readonly, required, reversed, scoped, seamless, seeking, selected, spellcheck, truespeed, willvalidate. Finally,
      * the following commonly mis-capitalized attribute/property names are evaluated as expected: class, readonly
-     * 
-     * 
+     *
+     *
      * @param attributeName
      *            the attribute name to get current value
      * @return The attribute's current value or null if the value is not set.
@@ -331,7 +331,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
     /**
      * Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter). For
      * checkbox/radio elements, the value will be "on" or "off" depending on whether the element is checked or not.
-     * 
+     *
      * @return the element value, or "on/off" for checkbox/radio elements
      */
     public String getValue() {
@@ -340,7 +340,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Gets value from property map {@link #propMap}.
-     * 
+     *
      * @param key
      *            the key to retrieve a value from the property map
      * @return the value to which the specified key is mapped, or null if this map contains no mapping for the key
@@ -351,7 +351,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Sets value in property map {@link #propMap}.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -393,7 +393,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         try {
             title = Grid.driver().getTitle();
         } catch (WebDriverException thrown) { // NOSONAR
-            logger.log(Level.FINER, "An exception occured while getting page title", thrown);
+            logger.log(Level.FINER, "An exception occurred while getting page title", thrown);
         }
         boolean logPages = Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.LOG_PAGES));
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.AUTO_SCREEN_SHOT))) {
@@ -458,7 +458,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Basic click event on the Element. Doesn't wait for anything to load.
-     * 
+     *
      */
     public void clickonly() {
         click(new Object[] {});
@@ -466,7 +466,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * The click function and wait for expected {@link Object} items to load.
-     * 
+     *
      * @param expected
      *            parameters in the form of an element locator {@link String}, a {@link WebPage}, an
      *            {@link AbstractElement}, or an {@link ExpectedCondition}
@@ -519,20 +519,20 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * The click function and wait based on the ExpectedCondition.
-     * 
+     *
      * @param expectedCondition
      *            ExpectedCondition<?> instance to be passed.
-     * 
+     *
      * @return The return value of
      *         {@link org.openqa.selenium.support.ui.FluentWait#until(com.google.common.base.Function)} if the function
      *         returned something different from null or false before the timeout expired.<br>
-     * 
+     *
      *         <pre>
      * Grid.driver().get(&quot;https://www.paypal.com&quot;);
      * TextField userName = new TextField(&quot;login_email&quot;);
      * TextField password = new TextField(&quot;login_password&quot;);
      * Button btn = new Button(&quot;submit.x&quot;);
-     * 
+     *
      * userName.type(&quot;exampleId@paypal.com&quot;);
      * password.type(&quot;123Abcde&quot;);
      * btn.clickAndExpect(ExpectedConditions.titleIs(&quot;MyAccount - PayPal&quot;));
@@ -560,7 +560,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
      * Click function that will wait for one of the ExpectedConditions to match.
      * {@link org.openqa.selenium.TimeoutException} exception will be thrown if no conditions are matched within the
      * allowed time {@link ConfigProperty#EXECUTION_TIMEOUT}
-     * 
+     *
      * @param conditions
      *            {@link List}&lt;{@link ExpectedCondition}&lt;?&gt;&gt; of supplied conditions passed.
      * @return first {@link org.openqa.selenium.support.ui.ExpectedCondition} that was matched
@@ -630,7 +630,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * The click function and wait for one of the expected {@link Object} items to load.
-     * 
+     *
      * @param expected
      *            parameters in the form of an element locator {@link String}, a {@link WebPage}, or an
      *            {@link AbstractElement}
@@ -710,7 +710,7 @@ public abstract class AbstractElement implements Clickable, Hoverable {
 
     /**
      * Moves the mouse pointer to the middle of the element. And waits for the expected elements to be visible.
-     * 
+     *
      * @param expected
      *            parameters in the form of an element locator {@link String} or an {@link AbstractElement}
      */

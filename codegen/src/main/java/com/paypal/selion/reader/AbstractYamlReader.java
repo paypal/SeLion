@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -23,14 +23,15 @@ import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
-import com.paypal.selion.elements.HtmlSeLionElementList;
+import com.paypal.selion.elements.HtmlSeLionElementSet;
+import com.paypal.selion.elements.HtmlSeLionElementSet.HtmlSeLionElement;
 import com.paypal.selion.platform.web.HtmlContainerElement;
 import com.paypal.selion.plugins.TestPlatform;
 
 /**
  * This is an abstract representation of a typical yaml reader.
  */
-//TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
+// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 public abstract class AbstractYamlReader {
     private Yaml yaml;
     private boolean processed;
@@ -56,12 +57,12 @@ public abstract class AbstractYamlReader {
     public String getBaseClassName() {
         return baseClassName;
     }
-    
-    final void setPlatform(TestPlatform platform){
+
+    final void setPlatform(TestPlatform platform) {
         this.platform = platform;
     }
-    
-    public TestPlatform getPlatform(){
+
+    public TestPlatform getPlatform() {
         return this.platform;
     }
 
@@ -95,12 +96,12 @@ public abstract class AbstractYamlReader {
                     continue;
                 }
 
-                if (!(HtmlSeLionElementList.isValid(elementKey))) {
+                if (!(HtmlSeLionElementSet.getInstance().isValid(elementKey))) {
                     throw new IllegalArgumentException(String.format("Detected an invalid key [%s] in data file %s",
                             elementKey, fileName));
                 }
 
-                if (HtmlSeLionElementList.CONTAINER.looksLike(elementKey)) {
+                if (HtmlSeLionElement.CONTAINER.looksLike(elementKey)) {
                     throw new IllegalArgumentException("Cannot define a Container within a Container.");
                 }
 
@@ -125,12 +126,12 @@ public abstract class AbstractYamlReader {
                     continue;
                 }
 
-                if (!(HtmlSeLionElementList.isValidHtmlElement(elementKey))) {
+                if (!(HtmlSeLionElementSet.getInstance().isValidUIElement(elementKey))) {
                     throw new IllegalArgumentException(String.format("Detected an invalid key [%s] in data file %s",
                             elementKey, fileName));
                 }
 
-                if (HtmlSeLionElementList.CONTAINER.looksLike(elementKey)) {
+                if (HtmlSeLionElement.CONTAINER.looksLike(elementKey)) {
                     throw new IllegalArgumentException("Cannot define a Container within a Container.");
                 }
 
@@ -145,7 +146,9 @@ public abstract class AbstractYamlReader {
 
     /**
      * This method processes the contents of a data source (yaml file for e.g.,).
-     * @param resource - A {@link FileSystemResource} that represents a particular data source.
+     *
+     * @param resource
+     *            - A {@link FileSystemResource} that represents a particular data source.
      * @throws IOException
      */
     public abstract void processPage(FileSystemResource resource) throws IOException;

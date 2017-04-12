@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,35 +13,22 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reader;
-
-import com.paypal.selion.plugins.CodeGeneratorException;
-
-import java.io.IOException;
+package com.paypal.selion.plugins;
 
 /**
- * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either process
- * YAML V1 format (or) V2 format.
- * 
+ * A basic logger for the codegen maven mojo plugin
  */
-// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
-public final class YamlReaderFactory {
-    private YamlReaderFactory() {
-        // Utility class. Hide constructor.
+public class CodeGeneratorLoggerFactory {
+    private static CodeGeneratorLogger instance;
+
+    public static void setLogger(CodeGeneratorLogger logger) {
+        instance = logger;
     }
 
-    public static AbstractYamlReader createInstance(String fileName) throws IOException {
-        if (!fileName.endsWith("yaml") && !fileName.endsWith("yml")) {
-            throw new IllegalArgumentException("Data file not supported : " + fileName);
+    public static CodeGeneratorLogger getLogger() {
+        if (instance == null) {
+            new IllegalStateException("The logger instance is not yet created.");
         }
-        AbstractYamlReader provider = new YamlV2Reader(fileName);
-        if (!provider.isProcessed()) {
-            provider = new YamlV1Reader(fileName);
-        }
-        if (!provider.isProcessed()) {
-            throw new CodeGeneratorException("Error parsing document. Please check file contents for syntax errors.");
-        }
-        return provider;
+        return instance;
     }
-
 }

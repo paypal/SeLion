@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,35 +13,34 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reader;
+package com.paypal.selion.elements;
 
-import com.paypal.selion.plugins.CodeGeneratorException;
+import com.paypal.selion.plugins.GUIObjectDetails;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-/**
- * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either process
- * YAML V1 format (or) V2 format.
- * 
- */
-// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
-public final class YamlReaderFactory {
-    private YamlReaderFactory() {
-        // Utility class. Hide constructor.
+public class BaseMobileSeLionElementSet extends SeLionElementSet {
+    public BaseMobileSeLionElementSet(Collection<SeLionElement> elements) {
+        super(elements);
     }
 
-    public static AbstractYamlReader createInstance(String fileName) throws IOException {
-        if (!fileName.endsWith("yaml") && !fileName.endsWith("yml")) {
-            throw new IllegalArgumentException("Data file not supported : " + fileName);
+    public List<GUIObjectDetails> getGUIObjectList(List<String> keys) {
+        List<GUIObjectDetails> mobileObjectDetailsList = new ArrayList<>();
+
+        for (String key : keys) {
+            SeLionElement element = findMatch(key);
+            if (element != null && element.isUIElement()) {
+                GUIObjectDetails mobileObjectDetails =
+                    new GUIObjectDetails(element.getElementClass(), key, element.getElementPackage());
+                mobileObjectDetailsList.add(mobileObjectDetails);
+            }
         }
-        AbstractYamlReader provider = new YamlV2Reader(fileName);
-        if (!provider.isProcessed()) {
-            provider = new YamlV1Reader(fileName);
-        }
-        if (!provider.isProcessed()) {
-            throw new CodeGeneratorException("Error parsing document. Please check file contents for syntax errors.");
-        }
-        return provider;
+        return mobileObjectDetailsList;
     }
 
+    public boolean add(String element) {
+        return super.add(new SeLionElement(element));
+    }
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,35 +13,40 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reader;
+package com.paypal.selion.elements;
 
-import com.paypal.selion.plugins.CodeGeneratorException;
+import com.paypal.selion.elements.HtmlSeLionElementSet.HtmlSeLionElement;
+import com.paypal.selion.plugins.CodeGeneratorLoggerFactory;
+import com.paypal.selion.plugins.CodeGeneratorSimpleLogger;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.io.IOException;
+import java.util.Optional;
 
-/**
- * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either process
- * YAML V1 format (or) V2 format.
- * 
- */
-// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
-public final class YamlReaderFactory {
-    private YamlReaderFactory() {
-        // Utility class. Hide constructor.
+import static org.testng.Assert.*;
+
+public class HtmlSeLionElementSetTest {
+    @BeforeClass
+    public void before() {
+        CodeGeneratorLoggerFactory.setLogger(new CodeGeneratorSimpleLogger());
     }
 
-    public static AbstractYamlReader createInstance(String fileName) throws IOException {
-        if (!fileName.endsWith("yaml") && !fileName.endsWith("yml")) {
-            throw new IllegalArgumentException("Data file not supported : " + fileName);
-        }
-        AbstractYamlReader provider = new YamlV2Reader(fileName);
-        if (!provider.isProcessed()) {
-            provider = new YamlV1Reader(fileName);
-        }
-        if (!provider.isProcessed()) {
-            throw new CodeGeneratorException("Error parsing document. Please check file contents for syntax errors.");
-        }
-        return provider;
+    @Test
+    public void testGet() {
+        SeLionElementSet elementSet = HtmlSeLionElementSet.getInstance();
+        assertNotNull(elementSet);
+        // check for gte due to other tests adding custom elements to the set
+        assertTrue(elementSet.size() >= 14);
+        assertTrue(elementSet.contains(HtmlSeLionElement.BUTTON));
     }
 
+    @Test
+    public void testAdd() {
+        SeLionElementSet elementSet = HtmlSeLionElementSet.getInstance();
+        elementSet.add("com.foo.HtmlSelionElementSetTest");
+
+        Optional<SeLionElement> first = elementSet.stream().findFirst();
+        assertEquals(first.orElse(null).getElementClass(), "HtmlSelionElementSetTest",
+            "the custom added element is not first");
+    }
 }

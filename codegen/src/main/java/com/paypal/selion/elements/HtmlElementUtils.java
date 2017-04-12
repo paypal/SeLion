@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,27 +15,31 @@
 
 package com.paypal.selion.elements;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Utility methods to do code generation for supported elements.
  */
 public class HtmlElementUtils {
     /**
      * Extracts the package from a qualified class.
-     * 
+     *
      * @param element string of the qualified class
      * @return package
      */
     public static String getPackage(String element) {
+        Preconditions.checkNotNull(element,"argument 'element' can not be null");
         return element.substring(0, element.lastIndexOf('.'));
     }
-    
+
     /**
      * Extracts the class name from a qualified class.
-     * 
+     *
      * @param element string of the qualified class
      * @return class name
      */
     public static String getClass(String element) {
+        Preconditions.checkNotNull(element,"argument 'element' can not be null");
         return element.substring(element.lastIndexOf('.') + 1);
     }
 }

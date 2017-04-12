@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -13,35 +13,33 @@
 |  the specific language governing permissions and limitations under the License.                                     |
 \*-------------------------------------------------------------------------------------------------------------------*/
 
-package com.paypal.selion.reader;
+package com.paypal.selion.plugins;
 
-import com.paypal.selion.plugins.CodeGeneratorException;
+import static org.testng.Assert.*;
 
-import java.io.IOException;
+import org.apache.maven.monitor.logging.DefaultLog;
+import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.testng.annotations.Test;
 
-/**
- * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either process
- * YAML V1 format (or) V2 format.
- * 
- */
-// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
-public final class YamlReaderFactory {
-    private YamlReaderFactory() {
-        // Utility class. Hide constructor.
+public class CodeGeneratorMojoLoggerTest {
+    @Test
+    public void testDefaultConstructor() {
+        CodeGeneratorMojoLogger logger = new CodeGeneratorMojoLogger();
+        assertTrue(logger.getInstance() instanceof SystemStreamLog);
     }
 
-    public static AbstractYamlReader createInstance(String fileName) throws IOException {
-        if (!fileName.endsWith("yaml") && !fileName.endsWith("yml")) {
-            throw new IllegalArgumentException("Data file not supported : " + fileName);
-        }
-        AbstractYamlReader provider = new YamlV2Reader(fileName);
-        if (!provider.isProcessed()) {
-            provider = new YamlV1Reader(fileName);
-        }
-        if (!provider.isProcessed()) {
-            throw new CodeGeneratorException("Error parsing document. Please check file contents for syntax errors.");
-        }
-        return provider;
+    @Test
+    public void testConstructorWithLog() {
+        CodeGeneratorMojoLogger logger = new CodeGeneratorMojoLogger(new DefaultLog(new ConsoleLogger()));
+        assertTrue(logger.getInstance() instanceof DefaultLog);
     }
 
+    @Test
+    public void testConformsWithCodeGeneratorLoggerType() {
+        CodeGeneratorMojoLogger logger = new CodeGeneratorMojoLogger();
+        CodeGeneratorLoggerFactory.setLogger(logger);
+        assertSame(CodeGeneratorLoggerFactory.getLogger(), logger);
+        assertTrue(CodeGeneratorLoggerFactory.getLogger() instanceof CodeGeneratorLogger);
+    }
 }
