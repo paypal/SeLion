@@ -112,6 +112,11 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
             }
         } else {
             for (String elementName : getPageValidators()) {
+                boolean isInvertValidationLogic = false;
+                if (elementName.startsWith("!") || elementName.toLowerCase().contains(".isnot")) {
+                    isInvertValidationLogic = true;
+                    elementName = elementName.replaceAll("(?i)(^!)|(?<=\\.is)not", "");
+                }
                 // We can set the action we want to check for, by putting a dot at the end of the elementName.
                 // Following by isPresent, isVisible or isEnabled, default behaviour is isPresent
                 String action = "";
@@ -121,7 +126,7 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
                     elementName = elementName.substring(0, indexOf);
                 }
 
-                verifyElementByAction(elementName, action);
+                verifyElementByAction(elementName, action, isInvertValidationLogic);
             }
         }
     }
@@ -159,29 +164,32 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
      * @param action
      *            verification action to perform
      */
-    private void verifyElementByAction(String elementName, String action) {
+    private void verifyElementByAction(String elementName, String action, boolean isInvertValidationLogic) {
         AbstractElement element = getAbstractElementThroughReflection(elementName);
 
         boolean present = element.isElementPresent();
 
         switch (action) {
         case "isVisible":
-            if (!present || !element.isVisible()) {
+            if (isInvertValidationLogic ? present && element.isVisible() : !present || !element.isVisible()) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't visible.");
+                        + elementName + " with locator " + element.getLocator() + " is" +
+                                                      (isInvertValidationLogic ? " visible.": " not visible."));
             }
             break;
         case "isEnabled":
-            if (!present || !element.isEnabled()) {
+            if (isInvertValidationLogic ? present && element.isEnabled() : !present || !element.isEnabled()) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't enabled.");
+                        + elementName + " with locator " + element.getLocator() + " is" +
+                                                      (isInvertValidationLogic ? " enabled.": " not enabled."));
             }
             break;
         case "isPresent":
         default:
-            if (!present) {
+            if (isInvertValidationLogic ? present : !present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't present.");
+                        + elementName + " with locator " + element.getLocator() + " is" +
+                                                      (isInvertValidationLogic ? " present.": " not present."));
             }
             break;
         }

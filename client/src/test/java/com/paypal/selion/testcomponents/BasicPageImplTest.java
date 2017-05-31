@@ -68,6 +68,32 @@ public class BasicPageImplTest {
         WebDriverWaitUtils.waitUntilPageIsValidated(page);
     }
 
+    @Test(groups = { "functional" })
+    @WebTest
+    public void testPageWithNegativeValidators() throws InterruptedException, IOException {
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+
+        TestPage negativeValidatorsPage = new TestPage("US", "TestPageNegativeValidator");
+
+        WebDriverWaitUtils.waitUntilPageIsValidated(negativeValidatorsPage);
+    }
+
+    @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
+    @WebTest
+    public void testPageWithNegativeValidators_Neg() throws InterruptedException, IOException {
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+
+        TestPage negativeValidatorsPage = new TestPage("US", "TestPageExpectedNotVisible");
+
+        WebDriverWaitUtils.waitUntilPageIsValidated(negativeValidatorsPage);
+    }
+
     @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
     @WebTest
     public void testWaitUntilPageIsValidated_Neg() throws InterruptedException, IOException {
