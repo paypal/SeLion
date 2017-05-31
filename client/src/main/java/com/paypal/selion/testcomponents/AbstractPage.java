@@ -62,6 +62,9 @@ public abstract class AbstractPage implements WebPage {
     /** The elements that should be present on the Page **/
     private final List<String> pageValidators = new ArrayList<>();
 
+    /** The elements which indicate if the Page is still loading **/
+    private final List<String> pageLoadingValidators = new ArrayList<>();
+
     /** Map to store our GUI object map content for all Containers */
     private final Map<String, Map<String, String>> objectContainerMap = new HashMap<>();
 
@@ -79,6 +82,10 @@ public abstract class AbstractPage implements WebPage {
 
     protected List<String> getPageValidators() {
         return pageValidators;
+    }
+
+    protected List<String> getPageLoadingValidators() {
+        return pageLoadingValidators;
     }
 
     protected Map<String, Map<String, String>> getObjectContainerMap() {
@@ -134,6 +141,7 @@ public abstract class AbstractPage implements WebPage {
                 }
 
                 pageValidators.addAll(dataProvider.getPageValidators());
+                pageLoadingValidators.addAll(dataProvider.getPageLoadingValidators());
 
                 if (objectMap != null) {
                     objectMap.putAll(currentObjectMap);
@@ -214,7 +222,15 @@ public abstract class AbstractPage implements WebPage {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 
+    public void checkIfLoaded() {
+        throw new UnsupportedOperationException("This operation is NOT supported.");
+    }
+
     public boolean isPageValidated() {
+        throw new UnsupportedOperationException("This operation is NOT supported.");
+    }
+
+    public boolean isPageLoaded() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 

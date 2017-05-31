@@ -241,6 +241,27 @@ public final class WebDriverWaitUtils {
         logger.exiting();
     }
 
+    /**
+     * Waits until all <code>pageLoadingValidators</code> for a given object pass. If the {@link WebPage} does not
+     * express any criteria for loading state this method will return <code>true</code> immediately
+     * @param pageObject
+     *            a {@link WebPage} instance.
+     */
+    public static void waitUntilPageIsLoaded(WebPage pageObject) {
+        logger.entering(pageObject);
+        Preconditions.checkArgument(pageObject != null, "Please provide a valid instance of WebPage.");
+        final WebPage w = pageObject;
+        ExpectedCondition<Boolean> conditionToCheck = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                w.checkIfLoaded();
+                return true;
+            }
+        };
+        waitForConditionIgnoring(conditionToCheck, PageValidationException.class);
+        logger.exiting();
+    }
+
     private static long timeoutInSeconds() {
         return Grid.getExecutionTimeoutValue() / 1000;
     }

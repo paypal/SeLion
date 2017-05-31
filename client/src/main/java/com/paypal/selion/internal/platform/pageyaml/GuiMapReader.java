@@ -39,4 +39,6 @@ public interface GuiMapReader {
 
     List<String> getPageValidators();
 
+    List<String> getPageLoadingValidators();
+
 }

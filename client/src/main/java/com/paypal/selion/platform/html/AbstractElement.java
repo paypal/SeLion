@@ -485,6 +485,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         if (expected == null || expected.length == 0) {
             return;
         }
+        if (parent != null) {
+            WebDriverWaitUtils.waitUntilPageIsLoaded(parent.getCurrentPage());
+        }
         validatePresenceOfAlert();
         try {
             for (Object expect : expected) {
@@ -545,6 +548,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         if (Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.ENABLE_GUI_LOGGING))) {
             logUIAction(UIActions.CLICKED);
         }
+        if (parent != null) {
+            WebDriverWaitUtils.waitUntilPageIsLoaded(parent.getCurrentPage());
+        }
         validatePresenceOfAlert();
         long timeout = Grid.getExecutionTimeoutValue() / 1000;
         WebDriverWait wait = new WebDriverWait(Grid.driver(), timeout);
@@ -579,6 +585,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         // that to the user.
         if (conditions == null || conditions.size() <= 0) {
             return null;
+        }
+        if (parent != null) {
+            WebDriverWaitUtils.waitUntilPageIsLoaded(parent.getCurrentPage());
         }
         validatePresenceOfAlert();
 
@@ -649,6 +658,9 @@ public abstract class AbstractElement implements Clickable, Hoverable {
         // that to the user.
         if (expected == null || expected.length == 0) {
             return null;
+        }
+        if (parent != null) {
+            WebDriverWaitUtils.waitUntilPageIsLoaded(parent.getCurrentPage());
         }
         validatePresenceOfAlert();
 

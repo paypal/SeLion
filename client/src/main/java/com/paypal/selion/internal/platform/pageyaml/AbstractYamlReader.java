@@ -87,6 +87,19 @@ abstract class AbstractYamlReader implements GuiMapReader, ProcessGuiMap {
         return new ArrayList<String>();
     }
 
+    /**
+     * Returns a list of elements that can be used to check if pages are loading.
+     *
+     * @return list of elements
+     */
+    @Override
+    public List<String> getPageLoadingValidators() {
+        if (getPageYaml() != null) {
+            return getPageYaml().getPageLoadingValidators();
+        }
+        return new ArrayList<String>();
+    }
+
     @Override
     public boolean processed() {
         return processed;

@@ -48,6 +48,7 @@ public final class PageFactory {
 
         TypeDescription typeDesc = new TypeDescription(Page.class);
         typeDesc.putListPropertyType("pageValidators", String.class);
+        typeDesc.putListPropertyType("pageLoadingValidators", String.class);
         typeDesc.putMapPropertyType("elements", String.class, GUIElement.class);
         constructor.addTypeDescription(typeDesc);
 
