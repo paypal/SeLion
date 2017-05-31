@@ -44,6 +44,7 @@ public final class Page {
     private Map<String, GUIElement> elements = new HashMap<String, GUIElement>();
     private String defaultLocale = "US";
     private List<String> pageValidators = new ArrayList<String>();
+    private List<String> pageLoadingValidators = new ArrayList<String>();
 
     public void setDefaultLocale(String defaultLocale) {
         this.defaultLocale = defaultLocale;
@@ -60,6 +61,15 @@ public final class Page {
 
     public List<String> getPageValidators() {
         return Collections.unmodifiableList(this.pageValidators);
+    }
+
+    public void setPageLoadingValidators(List<String> pageValidators) {
+        this.pageLoadingValidators = new ArrayList<String>();
+        this.pageLoadingValidators.addAll(pageValidators);
+    }
+
+    public List<String> getPageLoadingValidators() {
+        return Collections.unmodifiableList(this.pageLoadingValidators);
     }
 
     public void setElements(Map<String, GUIElement> elements) {
@@ -114,6 +124,7 @@ public final class Page {
         sb.append("baseClass: ").append(this.baseClass).append("\n");
         sb.append("elements: ").append(this.elements.size()).append("\n");
         sb.append("pageValidators: ").append(this.pageValidators.size()).append("\n");
+        sb.append("pageLoadingValidators: ").append(this.pageLoadingValidators.size()).append("\n");
         sb.append("defaultLocale: ").append(this.defaultLocale).append("\n");
         return sb.toString();
     }

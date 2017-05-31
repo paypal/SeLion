@@ -35,6 +35,8 @@ public class TestPage extends BasicPageImpl {
     private Button continueButton;
     private TextField fieldXTextField;
     private CheckBox xCheckBox;
+    private Label loadingSpinnerLabel;
+    private Button performAnimationButton;
 
     private static String CLASS_NAME = "TestPage";
     private static String PAGE_DOMAIN = "paypal";
@@ -306,6 +308,64 @@ public class TestPage extends BasicPageImpl {
      */
     public void clickXCheckBox() {
         getXCheckBox().click();
+    }
+
+    /**
+     * Used to get loadingSpinnerLabel in the page ThePage
+     *
+     * @return loadingSpinnerLabel
+     */
+    public Label getLoadingSpinnerLabel() {
+        Label element = this.loadingSpinnerLabel;
+        if(element == null) {
+            this.loadingSpinnerLabel = new Label(getObjectMap().get("loadingSpinnerLabel"), "loadingSpinnerLabel",
+                                                    this);
+        }
+        return this.loadingSpinnerLabel;
+    }
+
+    /**
+     * Used to check for the specific text available in the control loadingSpinnerLabel
+     */
+    public boolean isTextPresentForLoadingSpinnerLabel(String pattern) {
+        return getLoadingSpinnerLabel().isTextPresent(pattern);
+    }
+
+    /**
+     * Used to get performAnimationButton in the page ThePage
+     *
+     * @return performAnimationButton
+     */
+    public Button getPerformAnimationButton() {
+        Button element = this.performAnimationButton;
+        if(element == null) {
+            this.performAnimationButton = new Button(getObjectMap().get("performAnimationButton"), "performAnimationButton",
+                                                        this);
+        }
+        return this.performAnimationButton;
+    }
+
+    /**
+     * Used to click performAnimationButton in the page ThePage and check that resulting page contains expected item.
+     */
+    public void clickPerformAnimationButton(Object... expected) {
+        getPerformAnimationButton().click(expected);
+    }
+
+    /**
+     * Used to click performAnimationButton in the page ThePage
+     */
+    public void clickPerformAnimationButton() {
+        getPerformAnimationButton().click();
+    }
+
+    /**
+     * Used to get the value of performAnimationButton in the page ThePage.
+     *
+     * @return text in performAnimationButton
+     */
+    public String getPerformAnimationButtonValue() {
+        return getPerformAnimationButton().getText();
     }
 
     public class SelionContainer extends Container {

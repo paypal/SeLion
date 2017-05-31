@@ -18,6 +18,7 @@ package com.paypal.selion.testcomponents;
 import java.io.File;
 import java.io.IOException;
 
+import com.paypal.selion.platform.html.Button;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.BeforeClass;
@@ -188,8 +189,31 @@ public class BasicPageImplTest {
                 .equals(Container.class), "Verify if a Container is assigned for element inside container");
     }
 
+    @Test(groups = { "functional" })
+    @WebTest
+    public void testDelayedPageValidation() throws InterruptedException, IOException {
+        TestPage pageTitleValidation = new TestPage("US", "PageTitleValidationPage");
+        TestPage pageAnimationChangedTitle = new TestPage("US", "FakeRedirectTitleValidationPage");
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+        String addAnimationScript = getAnimationScript();
+        Grid.driver().executeScript(addAnimationScript, 5000, "TestPage After Animation");
+        Thread.sleep(4000);
+        Button button = pageAnimationChangedTitle.getPerformAnimationButton();
+        TestPage landingPage = (TestPage) button.clickAndExpectOneOf(pageTitleValidation, pageAnimationChangedTitle);
+        SeLionAsserts.assertTrue(landingPage.getPageTitle().contains("Animation"));
+
+    }
+
     private String getScript() throws IOException {
         File scriptFile = new File("src/test/resources/testdata/InsertHtmlElements.js");
+        return FileUtils.readFileToString(scriptFile, "UTF-8");
+    }
+
+    private String getAnimationScript() throws IOException {
+        File scriptFile = new File("src/test/resources/testdata/InsertAnimation.js");
         return FileUtils.readFileToString(scriptFile, "UTF-8");
     }
 }
