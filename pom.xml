@@ -18,7 +18,7 @@
         <selenium.version>3.3.1</selenium.version>
         <iosdriver.version>0.6.5</iosdriver.version>
         <selendroid.version>0.17.0</selendroid.version>
-        <appium.version>4.1.2</appium.version>
+        <appium.version>5.0.0-BETA6</appium.version>
         <testng.version>6.9.10</testng.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <htmlunit.version>2.25</htmlunit.version>

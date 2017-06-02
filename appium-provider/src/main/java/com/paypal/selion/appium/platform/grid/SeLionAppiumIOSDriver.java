@@ -88,7 +88,7 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
                 found = true;
                 break;
             }
-            this.doSwipe(startx, height, startx, SWIPE_EDGE_OFFSET - height, SWIPE_DURATION);
+            this.swipe(startx, height, startx, SWIPE_EDGE_OFFSET - height, SWIPE_DURATION);
         }
         if (!found && !webElement.isDisplayed()) {
             // giving up scrolling for element to be displayed after MAX_SCROLL_COUNT reached.
