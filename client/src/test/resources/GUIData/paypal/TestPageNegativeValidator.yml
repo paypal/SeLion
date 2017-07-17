@@ -37,4 +37,4 @@ pageValidators: [
   "!hiddenButton.isVisible",
   "!continueButton",
   selionContainer.isVisible
-  ]
+]

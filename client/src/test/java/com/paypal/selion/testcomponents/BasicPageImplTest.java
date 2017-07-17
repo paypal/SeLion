@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -28,7 +28,6 @@ import com.paypal.selion.platform.asserts.SeLionAsserts;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.Container;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
-import com.paypal.selion.testcomponents.BasicPageImpl;
 
 public class BasicPageImplTest {
 
@@ -83,7 +82,7 @@ public class BasicPageImplTest {
 
     @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
     @WebTest
-    public void testPageWithNegativeValidators_Neg() throws InterruptedException, IOException {
+    public void testPageWithNegativeValidatorsNegative() throws InterruptedException, IOException {
         Grid.open("about:blank");
         String script = getScript();
         Grid.driver().executeScript(script);
@@ -96,7 +95,7 @@ public class BasicPageImplTest {
 
     @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
     @WebTest
-    public void testWaitUntilPageIsValidated_Neg() throws InterruptedException, IOException {
+    public void testWaitUntilPageIsValidatedNegative() throws InterruptedException, IOException {
         page = new TestPage("US", "TestWrongValidatorPage");
         Grid.open("about:blank");
         String script = getScript();
