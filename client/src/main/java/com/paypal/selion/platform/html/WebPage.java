@@ -69,12 +69,21 @@ public interface WebPage {
     WebPage getPage();
 
     /**
-     * Validates the page against the defined <code>pageValidators</code> defined in the PageYAML for this page.
+     * Validates the page against the <code>pageValidators</code> defined in the PageYAML for this page.
      * 
      * @throws PageValidationException
      *             when the page does not validate.
      */
     void validatePage();
+
+    /**
+     * Checks the page loading status against the <code>pageLoadingValidators</code> defined in the PageYAML
+     * for this page.
+     *
+     * @throws PageValidationException
+     *             when the page is still loading.
+     */
+    void checkIfLoaded();
 
     /**
      * Returns the outcome of calling {@link WebPage#validatePage()} to validate the loaded page on the WebDriver
@@ -84,4 +93,13 @@ public interface WebPage {
      *         <code>pageValidators</code> pass
      */
     boolean isPageValidated();
+
+    /**
+     * Returns the outcome of calling {@link WebPage#isPageLoaded()} to check if page is considered fully loaded on the
+     * Webdriver session.
+     *
+     * @return <code>true</code> or <code>false</code>, if the page is loaded, meaning all
+     *         <code>pageLoadingValidators</code> pass
+     */
+    boolean isPageLoaded();
 }

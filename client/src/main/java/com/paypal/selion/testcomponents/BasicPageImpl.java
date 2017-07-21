@@ -198,7 +198,37 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
     @Override
     public boolean isPageValidated() {
         try {
+            checkIfLoaded();
             validatePage();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void checkIfLoaded() {
+        getObjectMap();
+
+        for (String elementName : getPageLoadingValidators()) {
+            // We can set the action we want to check for, by putting a dot at the end of the elementName.
+            // Following by isPresent, isVisible or isEnabled, default behaviour isPresent
+            String action = "";
+            int indexOf = elementName.indexOf(".");
+            if (indexOf != -1) {
+                action = elementName.substring(indexOf + 1, elementName.length());
+                elementName = elementName.substring(0, indexOf);
+            }
+            // Validation logic is inverted because page is considered fully loaded when no loading validators are
+            // present, visible, or enabled in the page.
+            verifyElementByAction(elementName, action, true);
+        }
+    }
+
+    @Override
+    public boolean isPageLoaded() {
+        try {
+            checkIfLoaded();
             return true;
         } catch (Exception ex) {
             return false;
