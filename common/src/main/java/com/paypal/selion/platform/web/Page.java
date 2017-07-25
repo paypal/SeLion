@@ -41,7 +41,7 @@ public final class Page {
     private Map<String, String> pageTitle = new HashMap<>();
     private String baseClass;
     private String platform = "web";
-    private Map<String, GUIElement> elements = new HashMap>();
+    private Map<String, GUIElement> elements = new HashMap<>();
     private String defaultLocale = "US";
     private List<String> pageValidators = new ArrayList<>();
     private List<String> pageLoadingValidators = new ArrayList<>();
