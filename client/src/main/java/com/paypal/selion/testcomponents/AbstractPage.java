@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -161,7 +161,7 @@ public abstract class AbstractPage implements WebPage {
      * Load object map. This method takes a HashMap<String, String> and uses it to populate the objectMap This is
      * intended to allow for the use of programmatically generated locators in addition to the yaml file format IDs and
      * Locators
-     * 
+     *
      * @param sourceMap
      *            the source map
      */
@@ -170,11 +170,11 @@ public abstract class AbstractPage implements WebPage {
         if (sourceMap == null) {
             return;
         }
-        
+
         if(sourceMap.isEmpty()){
             return;
         }
-        
+
         if (sourceMap.containsKey("pageTitle")) {
             pageTitle = sourceMap.get("pageTitle");
         }

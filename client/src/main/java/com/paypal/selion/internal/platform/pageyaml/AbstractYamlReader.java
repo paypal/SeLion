@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -75,7 +75,7 @@ abstract class AbstractYamlReader implements GuiMapReader, ProcessGuiMap {
 
     /**
      * Returns a list of elements that can be used for validating pages.
-     * 
+     *
      * @return list of elements
      */
     @Override
@@ -84,7 +84,7 @@ abstract class AbstractYamlReader implements GuiMapReader, ProcessGuiMap {
             return getPageYaml().getPageValidators();
         }
 
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class AbstractYamlReader implements GuiMapReader, ProcessGuiMap {
         if (getPageYaml() != null) {
             return getPageYaml().getPageLoadingValidators();
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     @Override

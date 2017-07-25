@@ -26,13 +26,13 @@ spinner.id = "loader";
 document.body.appendChild(spinner);
 
 function doAnimate() {
-	document.getElementById("loader").style.display = "block";
-	setTimeout(update, timeout);
+  document.getElementById("loader").style.display = "block";
+  setTimeout(update, timeout);
 }
 
 function update() {
-	document.getElementById("loader").style.display = "none";
-	document.title = newPageTitle;
+  document.getElementById("loader").style.display = "none";
+  document.title = newPageTitle;
 }
 
 var animationControlButton = document.createElement("input");

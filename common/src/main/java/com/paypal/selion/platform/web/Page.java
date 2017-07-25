@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,7 +25,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * This class represents the PageYaml V2 file.</br> </br> <b>Example file:</b>
- * 
+ *
  * <pre>
  * baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
  * pageTitle:
@@ -38,13 +38,13 @@ import org.apache.commons.lang.StringUtils;
  * </pre>
  */
 public final class Page {
-    private Map<String, String> pageTitle = new HashMap<String, String>();
+    private Map<String, String> pageTitle = new HashMap<>();
     private String baseClass;
     private String platform = "web";
-    private Map<String, GUIElement> elements = new HashMap<String, GUIElement>();
+    private Map<String, GUIElement> elements = new HashMap>();
     private String defaultLocale = "US";
-    private List<String> pageValidators = new ArrayList<String>();
-    private List<String> pageLoadingValidators = new ArrayList<String>();
+    private List<String> pageValidators = new ArrayList<>();
+    private List<String> pageLoadingValidators = new ArrayList<>();
 
     public void setDefaultLocale(String defaultLocale) {
         this.defaultLocale = defaultLocale;
@@ -55,7 +55,7 @@ public final class Page {
     }
 
     public void setPageValidators(List<String> pageValidators) {
-        this.pageValidators = new ArrayList<String>();
+        this.pageValidators = new ArrayList<>();
         this.pageValidators.addAll(pageValidators);
     }
 
@@ -64,7 +64,7 @@ public final class Page {
     }
 
     public void setPageLoadingValidators(List<String> pageValidators) {
-        this.pageLoadingValidators = new ArrayList<String>();
+        this.pageLoadingValidators = new ArrayList<>();
         this.pageLoadingValidators.addAll(pageValidators);
     }
 
@@ -73,7 +73,7 @@ public final class Page {
     }
 
     public void setElements(Map<String, GUIElement> elements) {
-        this.elements = new HashMap<String, GUIElement>();
+        this.elements = new HashMap<>();
         this.elements.putAll(elements);
     }
 
@@ -82,7 +82,7 @@ public final class Page {
     }
 
     public void setPageTitle(Map<String, String> pageTitle) {
-        this.pageTitle = new HashMap<String, String>();
+        this.pageTitle = new HashMap<>();
         this.pageTitle.putAll(pageTitle);
     }
 
@@ -93,11 +93,11 @@ public final class Page {
     public String getBaseClass() {
         return this.baseClass;
     }
-    
+
     public void setPlatform(String platform) {
         this.platform = platform;
     }
-    
+
     public String getPlatform() {
         if (StringUtils.isBlank(platform)) {
             throw new IllegalArgumentException("The platform cannot be empty or null. Please specify a valid platform.");
