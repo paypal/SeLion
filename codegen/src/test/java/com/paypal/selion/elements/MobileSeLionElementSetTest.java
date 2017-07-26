@@ -33,7 +33,8 @@ public class MobileSeLionElementSetTest {
     public void testGet() {
         SeLionElementSet elementSet = MobileSeLionElementSet.getInstance();
         assertNotNull(elementSet);
-        assertEquals(elementSet.size(), 10);
+        // 10 is the min required from the construction of MobileSeLionElementSet
+        assertTrue(elementSet.size() >= 10);
         assertTrue(elementSet.contains(MobileSeLionElement.BUTTON));
     }
 }

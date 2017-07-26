@@ -33,7 +33,8 @@ public class AndroidSeLionElementSetTest {
     public void testGet() {
         SeLionElementSet elementSet = AndroidSeLionElementSet.getInstance();
         assertNotNull(elementSet);
-        assertEquals(elementSet.size(), 7);
+        // 7 is the min required from the construction of AndroidSeLionElementSet
+        assertTrue(elementSet.size() >= 7);
         assertTrue(elementSet.contains(AndroidSeLionElement.UI_BUTTON));
     }
 }
