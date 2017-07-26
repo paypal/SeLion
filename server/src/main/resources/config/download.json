@@ -27,16 +27,16 @@
     "name": "geckodriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-win64.zip",
-      "checksum": "09357d3e9e4375414d7eb01ac8ba9124"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.18.0/geckodriver-v0.18.0-win64.zip",
+      "checksum": "22431740413b7149c5901d4da8dcd129"
     },
     "linux": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-linux64.tar.gz",
-      "checksum": "fb4035dd149f355c47a4856f725cc5f8"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.18.0/geckodriver-v0.18.0-linux64.tar.gz",
+      "checksum": "4ccb56fb3700005c9f9188f84152f21a"
     },
     "mac": {
-      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-macos.tar.gz",
-      "checksum": "88fe950a6e4efaf9a82615d4fabbfbf4"
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.18.0/geckodriver-v0.18.0-macos.tar.gz",
+      "checksum": "79cf3050cc942cdff6edbc7605d05ef2"
     }
   },
   {
