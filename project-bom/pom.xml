@@ -85,7 +85,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.1</version>
+                <version>4.5.3</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-codec</groupId>
@@ -115,7 +115,7 @@
             <dependency>
                 <artifactId>guava</artifactId>
                 <groupId>com.google.guava</groupId>
-                <version>21.0</version>
+                <version>23.0</version>
             </dependency>
 
             <!-- TestNG -->
@@ -246,6 +246,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
 
             <!-- selendroid dependencies -->
             <dependency>
