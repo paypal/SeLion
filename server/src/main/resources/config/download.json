@@ -3,8 +3,8 @@
     "name": "selenium",
     "roles": [ "node", "hub", "standalone", "sauce" ],
     "any": {
-      "url": "https://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.2.jar",
-      "checksum": "6c51b1ee72ee615aee05d4963d237ddd"
+      "url": "https://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar",
+      "checksum": "3dd4cad1d343f9d1cb1302ef1b3cec98"
     }
   },
   {
