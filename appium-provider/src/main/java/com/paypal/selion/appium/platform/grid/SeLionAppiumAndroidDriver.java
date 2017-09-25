@@ -15,13 +15,14 @@
 
 package com.paypal.selion.appium.platform.grid;
 
+import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 
 import java.net.URL;
+import java.time.Duration;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -34,8 +35,8 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * <code>SeLionAppiumAndroidDriver</code> provides facility to add custom {@link CommandExecutor} to
- * {@link AndroidDriver}. This class also implements the {@link SeLionAndroidBridgeDriver} interface to expose
- * methods for {@link UiObject} and its subclasses.
+ * {@link AndroidDriver}. This class also implements the {@link SeLionAndroidBridgeDriver} interface to expose methods
+ * for {@link UiObject} and its subclasses.
  */
 public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> implements SeLionAndroidBridgeDriver {
 
@@ -54,7 +55,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
     @Override
     public void click(WebElement webElement) {
         logger.entering(webElement);
-        this.tap(1, webElement, 1);
+        tap(1, webElement, 1);
         logger.exiting();
     }
 
@@ -162,7 +163,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
     @Override
     public void longClick(WebElement webElement) {
         logger.entering(webElement);
-        this.tap(1, webElement, OPERATION_DURATION_MILLI_SECONDS);
+        tap(1, webElement, OPERATION_DURATION_MILLI_SECONDS);
         logger.exiting();
     }
 
@@ -192,10 +193,10 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
         logger.entering(webElement);
         Point currentLocation = webElement.getLocation();
         Dimension elementSize = webElement.getSize();
-        int x =  currentLocation.getX() + elementSize.getWidth() - 1;
+        int x = currentLocation.getX() + elementSize.getWidth() - 1;
         int y = currentLocation.getY();
         int endx = currentLocation.getX();
-        this.swipe(x, y, endx, y, OPERATION_DURATION_MILLI_SECONDS);
+        swipe(x, y, endx, y);
         logger.exiting();
     }
 
@@ -207,7 +208,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
         int x = currentLocation.getX();
         int y = currentLocation.getY();
         int endx = x + elementSize.getWidth() - 1;
-        this.swipe(x,y,endx, y, OPERATION_DURATION_MILLI_SECONDS);
+        swipe(x, y, endx, y);
         logger.exiting();
     }
 
@@ -219,7 +220,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
         int x = currentLocation.getX();
         int y = currentLocation.getY() + elementSize.getHeight() - 1;
         int endy = currentLocation.getY();
-        this.swipe(x, y, x, endy, OPERATION_DURATION_MILLI_SECONDS);
+        swipe(x, y, x, endy);
         logger.exiting();
     }
 
@@ -231,7 +232,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
         int x = currentLocation.getX();
         int y = currentLocation.getY();
         int endy = y + elementSize.getHeight() - 1;
-        this.swipe(x, y, x, endy, OPERATION_DURATION_MILLI_SECONDS);
+        swipe(x, y, x, endy);
         logger.exiting();
     }
 
@@ -245,7 +246,7 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
     @Override
     public void setText(WebElement webElement, String text) {
         logger.entering(webElement);
-        //As per the UI Object API doc a text field will be cleared before setting value
+        // As per the UI Object API doc a text field will be cleared before setting value
         webElement.clear();
         webElement.sendKeys(text);
         logger.exiting();
@@ -253,19 +254,32 @@ public class SeLionAppiumAndroidDriver extends AndroidDriver<WebElement> impleme
 
     @Override
     public void swipe(int startx, int starty, int endx, int endy) {
-        //super.swipe(startx, starty, endx, endy, OPERATION_DURATION_MILLI_SECONDS );
-
-        // On Appium Android we mimic swipe via one finger tap
-        this.tap(1, starty, endx, OPERATION_DURATION_MILLI_SECONDS);
+        swipe(startx, starty, endx, endy, OPERATION_DURATION_MILLI_SECONDS);
     }
 
-    @Override
-    public void rotate(DeviceRotation rotation) {
-        // TODO
+    public void swipe(int startx, int starty, int endx, int endy, int duration) {
+        new TouchAction(this).press(startx, starty).waitAction(Duration.ofMillis(duration)).moveTo(endx, endy).release().perform();
     }
 
-    @Override
-    public DeviceRotation rotation() {
-        return null;
+    public void tap(int fingers, WebElement element, int duration) {
+        MultiTouchAction multiTouch = new MultiTouchAction(this);
+
+        for (int i = 0; i < fingers; i++) {
+            TouchAction tap = new TouchAction(this);
+            multiTouch.add(tap.press(element).waitAction(Duration.ofMillis(duration)).release());
+        }
+
+        multiTouch.perform();
     }
+
+    public void tap(int fingers, int x, int y, int duration) {
+        MultiTouchAction multiTouch = new MultiTouchAction(this);
+
+        for (int i = 0; i < fingers; i++) {
+            TouchAction tap = new TouchAction(this);
+            multiTouch.add(tap.press(x, y).waitAction(Duration.ofMillis(duration)).release());
+        }
+        multiTouch.perform();
+    }
+
 }

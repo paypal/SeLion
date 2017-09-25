@@ -18,11 +18,11 @@ package com.paypal.selion.appium.platform.grid;
 import io.appium.java_client.ios.IOSDriver;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.EnumMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -32,6 +32,8 @@ import com.paypal.selion.platform.mobile.ios.GestureOptions;
 import com.paypal.selion.platform.mobile.ios.SeLionIOSBridgeDriver;
 import com.paypal.selion.platform.mobile.ios.UIAElement;
 import com.paypal.test.utilities.logging.SimpleLogger;
+
+import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
 
 /**
@@ -68,11 +70,8 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
     @Override
     public void doubleTap(WebElement webElement) {
         logger.entering(webElement);
-        new TouchAction(this)
-                .tap(webElement).release()
-                .waitAction(DOUBLE_TAP_WAIT_TIME)
-                .tap(webElement).release()
-                .perform();
+        new TouchAction(this).tap(webElement).release().waitAction(Duration.ofMillis(DOUBLE_TAP_WAIT_TIME))
+                .tap(webElement).release().perform();
         logger.exiting();
     }
 
@@ -88,7 +87,7 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
                 found = true;
                 break;
             }
-            this.swipe(startx, height, startx, SWIPE_EDGE_OFFSET - height, SWIPE_DURATION);
+            swipe(startx, height, startx, SWIPE_EDGE_OFFSET - height, SWIPE_DURATION);
         }
         if (!found && !webElement.isDisplayed()) {
             // giving up scrolling for element to be displayed after MAX_SCROLL_COUNT reached.
@@ -100,7 +99,7 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
     @Override
     public void tap(WebElement webElement) {
         logger.entering(webElement);
-        super.tap(1, webElement, TAP_DURATION);
+        tap(1, webElement, TAP_DURATION);
         logger.exiting();
     }
 
@@ -112,14 +111,14 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
         int touchCount = s == null ? 1 : Integer.parseInt(s);
         s = gestureOptions.get(GestureOptions.DURATION);
         int duration = s == null ? TAP_DURATION : Integer.parseInt(s);
-        super.tap(touchCount, webElement, duration);
+        tap(touchCount, webElement, duration);
         logger.exiting();
     }
 
     @Override
     public void twoFingerTap(WebElement webElement) {
         logger.entering(webElement);
-        super.tap(2, webElement, 1);
+        tap(2, webElement, 1);
         logger.exiting();
     }
 
@@ -162,13 +161,27 @@ public class SeLionAppiumIOSDriver extends IOSDriver<WebElement> implements SeLi
         return value;
     }
 
-    @Override
-    public void rotate(DeviceRotation deviceRotation) {
-        //TODO
+    public void swipe(int startx, int starty, int endx, int endy) {
+        swipe(startx, starty, endx, endy, SWIPE_DURATION);
     }
 
-    @Override
-    public DeviceRotation rotation() {
-        return null;
+    
+    public void swipe(int startx, int starty, int endx, int endy, int duration) {
+        int xOffset = endx - startx;
+        int yOffset = endy - starty;
+        new TouchAction(this).press(startx, starty).waitAction(Duration.ofMillis(duration)).moveTo(xOffset, yOffset)
+                .release().perform();
     }
+
+    public void tap(int fingers, WebElement element, int duration) {
+        MultiTouchAction multiTouch = new MultiTouchAction(this);
+
+        for (int i = 0; i < fingers; i++) {
+            TouchAction tap = new TouchAction(this);
+            multiTouch.add(tap.press(element).waitAction(Duration.ofMillis(duration)).release());
+        }
+
+        multiTouch.perform();
+    }
+
 }
