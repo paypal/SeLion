@@ -35,7 +35,7 @@ public class AppiumAndroidBrowserTest {
      * versions.
      */
     @Test
-    @MobileTest(appName = "Chrome", device = "android:5.1", deviceType = "Android Emulator")
+    @MobileTest(browserName = "Browser", device = "android:5.1", deviceType = "Android Emulator")
     public void testWithChrome() {
         RemoteWebDriver driver = Grid.driver();
         assertNotNull(driver);

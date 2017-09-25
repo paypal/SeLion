@@ -31,7 +31,7 @@ import static org.testng.Assert.assertNotNull;
 public class AppiumAndroidBrowserSauceCloudTest {
 
     @Test
-    @MobileTest(appName = "browser", device = "android:4.4", deviceType = "Android Emulator", additionalCapabilities = {
+    @MobileTest(browserName = "browser", device = "android:4.4", deviceType = "Android Emulator", additionalCapabilities = {
             "appiumVersion:1.4.13" })
     public void testWithChrome() {
         RemoteWebDriver driver = Grid.driver();

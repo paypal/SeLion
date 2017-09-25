@@ -51,7 +51,7 @@ public class AppiumIOSTest {
     }
 
     @Test
-    @MobileTest(appName = "safari", device = "iphone:8.1", deviceType = "iPhone Simulator")
+    @MobileTest(browserName = "safari", device = "iphone:8.1", deviceType = "iPhone Simulator")
     public void testWithSafari() {
         RemoteWebDriver driver = Grid.driver();
         assertNotNull(driver);

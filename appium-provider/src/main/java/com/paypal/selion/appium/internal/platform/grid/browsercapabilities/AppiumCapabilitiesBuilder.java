@@ -39,8 +39,11 @@ public class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
 
         MobileTestSession mobileSession = Grid.getMobileTestSession();
-
-        capabilities.setCapability(MobileCapabilityType.APP, mobileSession.getAppName());
+        
+        if(StringUtils.isNotBlank(mobileSession.getAppName())){
+            capabilities.setCapability(MobileCapabilityType.APP, mobileSession.getAppName());
+        }
+        
         if (StringUtils.isBlank(mobileSession.getAppName())) {
             capabilities.setCapability(MobileCapabilityType.APP, mobileSession.getAppPath());
         }
@@ -58,6 +61,8 @@ public class AppiumCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, mobileSession.getPlatformVersion());
         capabilities.setCapability(MobileCapabilityType.LOCALE, mobileSession.getAppLocale());
         capabilities.setCapability(MobileCapabilityType.LANGUAGE, mobileSession.getAppLanguage());
+        capabilities.setCapability(MobileCapabilityType.BROWSER_NAME, mobileSession.getBrowserName());
+        
         if (mobileSession.getPlatform() == WebDriverPlatform.ANDROID) {
             capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, APPIUM_ANDROID_PLATFORM_TYPE);
         }
