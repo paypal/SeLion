@@ -124,5 +124,11 @@ public @interface MobileTest {
      * This parameter specifies to execute mobile test cases using respective mobile driver.
      */
     String mobileNodeType() default "";
+    
+    /**
+     * This parameter specifies the name of the browser
+     * 
+     */
 
+    String browserName() default "";
 }
