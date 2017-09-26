@@ -31,8 +31,7 @@ import static org.testng.Assert.assertNotNull;
 public class AppiumIOSSafariSauceCloudTest {
 
     @Test
-    @MobileTest
-    (browserName = "safari", device = "iphone:10.2", deviceType = "iPhone SE", additionalCapabilities = {
+    @MobileTest(browserName = "safari", device = "iphone:10.2", deviceType = "iPhone SE", additionalCapabilities = {
             "appiumVersion:1.4.13" })
     public void testWithSafari() {
         RemoteWebDriver driver = Grid.driver();

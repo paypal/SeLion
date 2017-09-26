@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -227,7 +227,6 @@ public class MobileTestSession extends AbstractTestSession {
         
         //App run and browser run should be mutually exclusive. If appName or appPath is provided disregard
         //the browser parameter
-        
         if(StringUtils.isNotBlank(appName) || StringUtils.isNotBlank(appPath)){
         	this.browserName = ""; //to nullify the default value *firefox
         }
@@ -237,8 +236,8 @@ public class MobileTestSession extends AbstractTestSession {
 
         checkArgument(
                 StringUtils.isNotBlank(appName) ^ StringUtils.isNotBlank(appPath) ^ StringUtils.isNotBlank(browserName),
-                "Either you have provided appPath, appName and browserName all three of them or you have specified nothing. Please specify either "
-                + "appPath or appName or browserName");
+                "Either you have provided appPath, appName, and browserName all at once or you have specified nothing. "
+                + "Please specify one of appPath, appName, or browserName");
 
         checkArgument(isDeviceDefined(),
                 "The device should either be provided as 'device name:version' or 'device' or 'device:version'." +
