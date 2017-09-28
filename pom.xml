@@ -15,7 +15,7 @@
         <compileSource>1.8</compileSource>
         <skipTests>false</skipTests>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>3.5.3</selenium.version>
+        <selenium.version>3.6.0</selenium.version>
         <iosdriver.version>0.6.5</iosdriver.version>
         <selendroid.version>0.17.0</selendroid.version>
         <appium.version>5.0.0-BETA6</appium.version>
