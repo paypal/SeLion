@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,8 +35,6 @@ final class MinimalIOSCapabilityMatcher implements CapabilityMatcher {
      * and CFBundleName keys.
      */
     private boolean isValid(Map<String, Object> capability) {
-        boolean validCapability = false;
-        validCapability = capability != null && capability.containsKey(BUNDLE_NAME);
-        return validCapability;
+        return capability != null && capability.containsKey(BUNDLE_NAME);
     }
 }
