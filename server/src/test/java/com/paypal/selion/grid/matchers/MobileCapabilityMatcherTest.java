@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -22,6 +22,7 @@ import io.selendroid.common.SelendroidCapabilities;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 import org.testng.annotations.Test;
 import org.uiautomation.ios.IOSCapabilities;
@@ -32,13 +33,15 @@ public class MobileCapabilityMatcherTest {
     public void matchAppiumNode() {
         MobileCapabilityMatcher matcher = new MobileCapabilityMatcher();
 
-        Map<String, Object> nodeCapability = new HashMap<String, Object>();
+        Map<String, Object> nodeCapability = new HashMap<>();
+        nodeCapability.put("platform", Platform.ANDROID);
         nodeCapability.put("platformName", "Android");
         nodeCapability.put("platformVersion", "4.4.2");
         nodeCapability.put("mobileNodeType", "appium");
 
         //Success scenario1
-        Map<String, Object> requestedCapability = new HashMap<String, Object>();
+        Map<String, Object> requestedCapability = new HashMap<>();
+        requestedCapability.put("platform", Platform.ANDROID);
         requestedCapability.put("mobileNodeType", "appium");
         requestedCapability.put("platformName", "Android");
         requestedCapability.put("platformVersion", "4.4.2");
@@ -64,12 +67,12 @@ public class MobileCapabilityMatcherTest {
     public void matchSelendroid() {
         MobileCapabilityMatcher matcher = new MobileCapabilityMatcher();
 
-        Map<String, Object> nodeCapability = new HashMap<String, Object>();
+        Map<String, Object> nodeCapability = new HashMap<>();
         nodeCapability.put(CapabilityType.BROWSER_NAME, "selendroid");
         nodeCapability.put("mobileNodeType", "selendroid");
 
         //Success scenario
-        Map<String, Object> requestedCapability = new HashMap<String, Object>();
+        Map<String, Object> requestedCapability = new HashMap<>();
         requestedCapability.put("mobileNodeType", "selendroid");
         requestedCapability.put(CapabilityType.BROWSER_NAME, "selendroid");
         requestedCapability.put(SelendroidCapabilities.AUT, "appname");
@@ -88,24 +91,24 @@ public class MobileCapabilityMatcherTest {
         MobileCapabilityMatcher matcher = new MobileCapabilityMatcher();
 
         //Failure scenario
-        Map<String, Object> requestedCapability = new HashMap<String, Object>();
+        Map<String, Object> requestedCapability = new HashMap<>();
         requestedCapability.put("mobileNodeType", "ios-driver");
         requestedCapability.put(IOSCapabilities.DEVICE, "iphone");
         requestedCapability.put(IOSCapabilities.LANGUAGE, "english");
         requestedCapability.put(IOSCapabilities.LOCALE, "en_us");
         requestedCapability.put(IOSCapabilities.BUNDLE_NAME, "appname");
-        assertFalse(matcher.matches(new HashMap<String, Object>(), requestedCapability));
+        assertFalse(matcher.matches(new HashMap<>(), requestedCapability));
     }
 
     @Test
     public void matchBrowser() {
         MobileCapabilityMatcher matcher = new MobileCapabilityMatcher();
 
-        Map<String, Object> nodeCapability = new HashMap<String, Object>();
+        Map<String, Object> nodeCapability = new HashMap<>();
         nodeCapability.put(CapabilityType.BROWSER_NAME, "chrome");
 
         //Success scenario
-        Map<String, Object> requestedCapability = new HashMap<String, Object>();
+        Map<String, Object> requestedCapability = new HashMap<>();
         requestedCapability.put(CapabilityType.BROWSER_NAME, "chrome");
 
         assertTrue(matcher.matches(nodeCapability, requestedCapability));
@@ -115,11 +118,11 @@ public class MobileCapabilityMatcherTest {
     public void matchBrowserWithNonMatchingMobileNodeType() {
         MobileCapabilityMatcher matcher = new MobileCapabilityMatcher();
 
-        Map<String, Object> nodeCapability = new HashMap<String, Object>();
+        Map<String, Object> nodeCapability = new HashMap<>();
         nodeCapability.put(CapabilityType.BROWSER_NAME, "ff");
 
         //Success scenario
-        Map<String, Object> requestedCapability = new HashMap<String, Object>();
+        Map<String, Object> requestedCapability = new HashMap<>();
         requestedCapability.put("mobileNodeType", "");
         requestedCapability.put(CapabilityType.BROWSER_NAME, "ff");
 

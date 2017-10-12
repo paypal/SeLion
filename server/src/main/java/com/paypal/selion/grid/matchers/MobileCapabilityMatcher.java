@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,6 +35,8 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
      * Capability key to match against for mobile specific nodes.
      */
     private static final String MOBILE_NODE_TYPE = "mobileNodeType";
+    private static final String IGNORED_CAPABILITY_VALUE_1 = "ANY";
+    private static final String IGNORED_CAPABILITY_VALUE_2 = "*";
 
     public MobileCapabilityMatcher() {
         super();
@@ -48,30 +50,28 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
 
     @Override
     public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
+        String mobileNodeType = "";
         if (requestedCapability.containsKey(MOBILE_NODE_TYPE)) {
-            String mobileNodeType = (String) requestedCapability.get(MOBILE_NODE_TYPE);
-
-            switch (mobileNodeType) {
-            case "selendroid": {
+            mobileNodeType = (String) requestedCapability.get(MOBILE_NODE_TYPE);
+        }
+        switch (mobileNodeType) {
+            case "selendroid":
                 // TODO Hack -- As of Selendroid 0.10.0, the AUT capabilities are not added, so we are removing it from
                 // the requested capabilities before sending to the matcher.
                 // See io.selendroid.server.grid.SelfRegisteringRemote#getNodeConfig() for more on this problem
-                Map<String, Object> augmentedRequestedCapabilities = new HashMap<String, Object>(requestedCapability);
+                Map<String, Object> augmentedRequestedCapabilities = new HashMap<>(requestedCapability);
                 augmentedRequestedCapabilities.remove(SelendroidCapabilities.AUT);
                 return (new SelendroidCapabilityMatcher().matches(nodeCapability, augmentedRequestedCapabilities));
-            }
-            case "ios-driver": {
+            case "ios-driver":
                 return (new MinimalIOSCapabilityMatcher().matches(nodeCapability, requestedCapability));
-            }
-            case "appium": {
+            case "appium":
                 return (verifyAppiumCapabilities(nodeCapability, requestedCapability))
-                        && (matchAgainstMobileNodeType(nodeCapability, mobileNodeType));
-            }
-            }
+                    && (matchAgainstMobileNodeType(nodeCapability, mobileNodeType));
+            default:
+                // TODO what if the user does not care about which mobileNodeType they are routed to and instead they
+                // simply want ANY node with android or ios support
+                return super.matches(nodeCapability, requestedCapability);
         }
-        // TODO what if the user does not care about which mobileNodeType they are routed to and instead they
-        // simply want ANY node with android or ios support
-        return super.matches(nodeCapability, requestedCapability);
     }
 
     /**
@@ -79,28 +79,31 @@ public class MobileCapabilityMatcher extends DefaultCapabilityMatcher {
      */
     private boolean matchAgainstMobileNodeType(Map<String, Object> nodeCapability, String mobileNodeType) {
         String nodeValue = (String) nodeCapability.get(MOBILE_NODE_TYPE);
-        if (StringUtils.isBlank(nodeValue)) {
-            return false;
-        }
-        return nodeValue.equalsIgnoreCase(mobileNodeType);
+        return !StringUtils.isBlank(nodeValue) && nodeValue.equalsIgnoreCase(mobileNodeType);
     }
 
     /**
      * Requested capabilities compared with node capabilities when both capabilities are not blank. If requested
      * capability have "ANY" or "*" then matcher bypassed to next capability without comparison.
-     * 
-     * @param nodeCapability
-     * @param requestedCapability
+     *
+     * @param nodeCapability capabilities from node
+     * @param requestedCapability capabilities requested for
      * @return <code>true/false</code>
      */
     private boolean verifyAppiumCapabilities(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
         for (String capabilityName : toConsider) {
-            String capabilityValue = (String) requestedCapability.get(capabilityName);
-
-            if (StringUtils.isNotBlank(capabilityValue)
-                    && !("ANY".equalsIgnoreCase(capabilityValue) || "*".equals(capabilityValue))) {
-                String nodeValue = (String) nodeCapability.get(capabilityName);
-                if (StringUtils.isNotBlank(nodeValue) && !nodeValue.equalsIgnoreCase(capabilityValue)) {
+            Object capabilityValueObject = requestedCapability.get(capabilityName);
+            Object nodeValueObject = nodeCapability.get(capabilityName);
+            if (capabilityValueObject != null && nodeValueObject != null) {
+                String capabilityValue = capabilityValueObject.toString();
+                String nodeValue = nodeValueObject.toString();
+                if (StringUtils.isBlank(nodeValue) ||
+                    StringUtils.isBlank(capabilityValue) ||
+                    IGNORED_CAPABILITY_VALUE_1.equalsIgnoreCase(capabilityValue) ||
+                    IGNORED_CAPABILITY_VALUE_2.equalsIgnoreCase(capabilityValue)) {
+                    continue;
+                }
+                if (!nodeValue.equalsIgnoreCase(capabilityValue)) {
                     return false;
                 }
             }
