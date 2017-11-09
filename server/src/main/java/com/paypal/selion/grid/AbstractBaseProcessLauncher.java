@@ -45,7 +45,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.ProcessUtils;
 
 import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.logging.SeLionGridLogger;
@@ -133,7 +132,13 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
         }
 
         public void destroyProcessForcefully() {
-            ProcessUtils.killProcess(process);
+            try {
+                Process awaitFor = this.process.destroyForcibly();
+                awaitFor.waitFor(10, SECONDS);
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+                throw new RuntimeException(e);
+            }
         }
     }
 

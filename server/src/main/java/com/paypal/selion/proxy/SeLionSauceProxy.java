@@ -37,7 +37,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
@@ -104,7 +104,7 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
         return request;
     }
 
-    public SeLionSauceProxy(RegistrationRequest request, Registry registry) {
+    public SeLionSauceProxy(RegistrationRequest request, GridRegistry registry) {
         super(fixTimeout(request), registry);
 
         down = false;

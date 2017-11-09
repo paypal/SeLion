@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -37,10 +37,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import com.paypal.selion.utils.ServletHelper;
@@ -72,7 +72,7 @@ public class SauceServlet extends RegistryBasedServlet {
 
     private boolean registered;
 
-    public SauceServlet(Registry registry) {
+    public SauceServlet(GridRegistry registry) {
         super(registry);
     }
 
@@ -85,10 +85,10 @@ public class SauceServlet extends RegistryBasedServlet {
     }
 
     @Override
-    protected Registry getRegistry() {
+    protected GridRegistry getRegistry() {
         // ensure the Registry returned reflects the hub state.
-        final Registry localRegistry = super.getRegistry();
-        final Registry hubRegistry = localRegistry.getHub().getRegistry();
+        final GridRegistry localRegistry = super.getRegistry();
+        final GridRegistry hubRegistry = localRegistry.getHub().getRegistry();
         // yes, we only care if they are the same object reference.
         return (localRegistry.equals(hubRegistry)) ? localRegistry : hubRegistry;
     }
@@ -186,7 +186,7 @@ public class SauceServlet extends RegistryBasedServlet {
             gnc.maxSession = maxConcurrent;
 
             // update browser max instances for all saucelabs "browser" types
-            for (DesiredCapabilities caps : gnc.capabilities) {
+            for (MutableCapabilities caps : gnc.capabilities) {
                 if (caps.getBrowserName().equals(SAUCELABS_BROWSER_NAME)) {
                     caps.setCapability(MAX_INSTANCES_CONFIG_PROPERTY, maxConcurrent);
                 }
@@ -204,7 +204,7 @@ public class SauceServlet extends RegistryBasedServlet {
             gnc.port = PROXY_PORT;
         }
 
-        return new RegistrationRequest(gnc, SeLionSauceProxy.class.getSimpleName(), 
+        return new RegistrationRequest(gnc, SeLionSauceProxy.class.getSimpleName(),
                 "SeLion Grid Virtual Sauce Proxy").toJson().toString();
     }
 

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -33,7 +33,7 @@ import com.paypal.selion.utils.ServletHelper;
 
 /**
  * This plain vanilla servlet is responsible for supporting login/logout and display of the main page.
- * 
+ *
  */
 public class LoginServlet extends RegistryBasedServlet {
 
@@ -61,7 +61,7 @@ public class LoginServlet extends RegistryBasedServlet {
      */
     public static final String PASSWORD = "password";
 
-    public LoginServlet(Registry registry) {
+    public LoginServlet(GridRegistry registry) {
         super(registry);
     }
 

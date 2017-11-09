@@ -41,13 +41,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.RemoteUnregisterException;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.paypal.selion.SeLionBuildInfo;
 import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
@@ -120,10 +120,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      *            a {@link RegistrationRequest} request which represents the basic information that is to be consumed by
      *            the grid when it is registering a new node.
      * @param registry
-     *            a {@link Registry} object that represents the Grid's registry.
+     *            a {@link GridRegistry} object that represents the Grid's registry.
      * @throws IOException
      */
-    public SeLionRemoteProxy(RegistrationRequest request, Registry registry) throws IOException {
+    public SeLionRemoteProxy(RegistrationRequest request, GridRegistry registry) throws IOException {
         super(request, registry);
 
         proxyStartMillis = System.currentTimeMillis();
@@ -184,7 +184,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private boolean isSupportedOnHub(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
-        final boolean response = getRegistry().getConfiguration().servlets.contains(servlet.getCanonicalName());
+        final boolean response = getRegistry().getHub().getConfiguration().servlets.contains(servlet.getCanonicalName());
         LOGGER.exiting(response);
         return response;
     }
@@ -377,7 +377,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private void updateBrowserCache(RegistrationRequest request) throws MalformedURLException {
         // Update the browser information cache. Used by GridStatics servlet
-        for (DesiredCapabilities desiredCapabilities : request.getConfiguration().capabilities) {
+        for (MutableCapabilities desiredCapabilities : request.getConfiguration().capabilities) {
             Map<String, ?> capabilitiesMap = desiredCapabilities.asMap();
             String browserName = capabilitiesMap.get(CapabilityType.BROWSER_NAME).toString();
             String maxInstancesAsString = capabilitiesMap.get("maxInstances").toString();

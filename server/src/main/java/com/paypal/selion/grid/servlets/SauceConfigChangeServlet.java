@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.grid.common.JSONConfigurationUtils;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
 import com.google.gson.GsonBuilder;
@@ -99,7 +99,7 @@ public class SauceConfigChangeServlet extends RegistryBasedServlet {
      */
     public static final String REQUIRE_USER_CREDENTIALS_PARAM = "requireUserCredentials";
 
-    public SauceConfigChangeServlet(Registry registry) {
+    public SauceConfigChangeServlet(GridRegistry registry) {
         super(registry);
     }
 
