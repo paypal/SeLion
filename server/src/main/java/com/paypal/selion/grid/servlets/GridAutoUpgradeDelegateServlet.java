@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -82,7 +82,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
         this(null);
     }
 
-    public GridAutoUpgradeDelegateServlet(Registry registry) {
+    public GridAutoUpgradeDelegateServlet(GridRegistry registry) {
         super(registry);
     }
 

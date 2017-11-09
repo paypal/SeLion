@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2016 PayPal                                                                                          |
+|  Copyright (C) 2016-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -22,7 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -38,19 +38,19 @@ import com.paypal.selion.proxy.SeLionRemoteProxy;
  * using accept header for all media types and accept header of type application/json. This servlet should be injected
  * into the Grid. This servlet <strong>requires</strong> the remote proxies to update the {@link BrowserInformationCache}
  * upon initialization. Any {@link SeLionRemoteProxy} performs this required update.<br>
- * 
+ *
  * <pre>
  * cURL clients
- * 
+ *
  * Sample requests
  * curl -s http://<domain>:<port>/grid/admin/GridStatistics
  * curl -s -X GET http://<domain>:<port>/grid/admin/GridStatistics
  * curl -s -H "Accept: application/json" -X GET http://<domain>:<port>/grid/admin/GridStatistics
- * 
+ *
  * Browser clients
- * 
+ *
  * Go to the URL http://<domain>:<port>/grid/admin/GridStatistics
- * 
+ *
  * Sample response
  * [{
  *     "browserName": "chrome",
@@ -86,7 +86,7 @@ public class GridStatistics extends RegistryBasedServlet {
         this(null);
     }
 
-    public GridStatistics(Registry registry) {
+    public GridStatistics(GridRegistry registry) {
         super(registry);
     }
 
