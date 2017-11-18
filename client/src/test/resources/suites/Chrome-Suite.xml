@@ -2,7 +2,7 @@
 <suite thread-count="5" verbose="1" name="Chrome Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
     parallel="methods" data-provider-thread-count="10" annotations="JDK">
 
-    <parameter name="browser" value="*chrome " />
+    <parameter name="browser" value="*chrome" />
 
     <test verbose="2" name="Chrome-Test" annotations="JDK">
         <groups>
