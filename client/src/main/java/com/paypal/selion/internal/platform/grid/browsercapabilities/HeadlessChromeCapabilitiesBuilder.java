@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2017 PayPal                                                                                     |
+|  Copyright (C) 2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,47 +15,35 @@
 
 package com.paypal.selion.internal.platform.grid.browsercapabilities;
 
-import org.apache.commons.lang.StringUtils;
+import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.collections.Lists;
 
-import com.paypal.selion.SeLionConstants;
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
+import java.util.List;
+import java.util.Map;
 
-/**
- * This class represents the capabilities that are specific to Chrome browser.
- */
-class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
-
+public class HeadlessChromeCapabilitiesBuilder extends ChromeCapabilitiesBuilder {
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-        if (isLocalRun() && StringUtils.isNotBlank(getBinaryPath())) {
-            System.setProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY, getBinaryPath());
-        }
-        capabilities.setBrowserName(DesiredCapabilities.chrome().getBrowserName());
-        String userAgent = getUserAgent();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--test-type");
-        options.addArguments("--ignore-certificate-errors");
-        if ((userAgent != null) && (!userAgent.trim().isEmpty())) {
-            options.addArguments("--user-agent=" + userAgent);
-        }
-        options.setHeadless(Boolean.getBoolean(getLocalConfigProperty(ConfigProperty.BROWSER_RUN_HEADLESS)));
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        if (ProxyHelper.isProxyServerRequired()) {
-            capabilities.setCapability(CapabilityType.PROXY, ProxyHelper.createProxyObject());
-        }
-        return capabilities;
-    }
+        super.getCapabilities(capabilities);
+        Map<String, List<String>> existing =
+            (Map<String, List<String>>) capabilities.getCapability(ChromeOptions.CAPABILITY);
 
-    /*
-     * Returns the location of chromedriver or "" if it can not be determined.
-     */
-    private String getBinaryPath() {
-        return System.getProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY,
-            Config.getConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH));
+        // existing.get("args") is an immutable list.
+        // so we need to declare a new one and copy the values in, when present
+        List<String> args = Lists.newArrayList();
+        if (existing.containsKey("args")) {
+            args.addAll(existing.get("args"));
+        }
+
+        args.remove("--headless");
+        args.add("--headless");
+        args.add("--disable-gpu");
+
+        // put the updated args back as immutable.
+        existing.put("args", ImmutableList.copyOf(args));
+
+        return capabilities;
     }
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -29,6 +29,7 @@ public enum BrowserFlavors {
     CHROME("*chrome"),
     SAFARI("*safari"),
     OPERA("*opera"),
+    @Deprecated
     PHANTOMJS("*phantomjs");
 
     private String browser;
@@ -39,7 +40,7 @@ public enum BrowserFlavors {
 
     /**
      * Returns the browser flavor as a string
-     * 
+     *
      * @return - A string that represents the browser flavor in question
      */
     public String getBrowser() {
@@ -49,7 +50,7 @@ public enum BrowserFlavors {
     /**
      * This method returns all the browser flavors that are supported by the SeLion framework as a String with each
      * value delimited by a comma.
-     * 
+     *
      * @return - A comma separated string that represents all supported browser flavors.
      */
     public static String getSupportedBrowsersAsCSV() {
@@ -91,7 +92,7 @@ public enum BrowserFlavors {
     public static BrowserFlavors[] getBrowsersWithoutAlertSupport() {
         return new BrowserFlavors[] { PHANTOMJS };
     }
-    
+
     /**
      * @param flavor - A object that represents a browser.
      * @return <code>true</code> if the given browser is a headless browser.

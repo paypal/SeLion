@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -33,6 +33,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A singleton that is responsible for encapsulating all the logic w.r.t starting/shutting down a local ios driver node.
  */
 @Beta
+@Deprecated
 final class LocalIOSNode extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalIOSNode instance;
@@ -121,7 +122,7 @@ final class LocalIOSNode extends AbstractBaseLocalServerComponent {
      * Checks the presence of ios-driver specific parameters provided by the user and validates them.
      * IllegalArgumentException is thrown if the parameter is either insufficient or irrelevant. Throws a
      * NullPointerException if the received configProperty is null.
-     * 
+     *
      * @param configProperty
      *            a SeLion {@link ConfigProperty} to validate
      */
