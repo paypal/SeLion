@@ -27,14 +27,14 @@ public class HeadlessChromeCapabilitiesBuilder extends ChromeCapabilitiesBuilder
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
         super.getCapabilities(capabilities);
-        Map<String, List<String>> existing =
-            (Map<String, List<String>>) capabilities.getCapability(ChromeOptions.CAPABILITY);
+        Map<String, Object> existing =
+            (Map<String, Object>) capabilities.getCapability(ChromeOptions.CAPABILITY);
 
         // existing.get("args") is an immutable list.
         // so we need to declare a new one and copy the values in, when present
         List<String> args = Lists.newArrayList();
         if (existing.containsKey("args")) {
-            args.addAll(existing.get("args"));
+            args.addAll((List<String>) existing.get("args"));
         }
 
         args.remove("--headless");

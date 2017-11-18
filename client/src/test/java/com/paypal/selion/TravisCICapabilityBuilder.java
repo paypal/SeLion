@@ -15,6 +15,7 @@
 
 package com.paypal.selion;
 
+import com.google.common.collect.ImmutableList;
 import com.paypal.selion.internal.platform.grid.BrowserFlavors;
 import com.paypal.selion.internal.platform.grid.WebTestSession;
 import com.paypal.selion.platform.grid.Grid;
@@ -23,6 +24,10 @@ import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBu
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.collections.Lists;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * A custom capabilitiesBuilder used during test executions to establish custom browser paths and options.
@@ -39,11 +44,26 @@ public class TravisCICapabilityBuilder extends DefaultCapabilitiesBuilder {
 
         String browser = session.getBrowser();
         if (browser.equals(BrowserFlavors.CHROME.getBrowser())) {
-            ChromeOptions options = new ChromeOptions();
-            options.setBinary(browserPath);
+            Map<String, Object> existing =
+                (Map<String, Object>) capabilities.getCapability(ChromeOptions.CAPABILITY);
+
+            // update the binary path
+            existing.put("binary", browserPath);
+
+            // update the args
+
+            // existing.get("args") is an immutable list.
+            // so we need to declare a new one and copy the values in, when present
+            List<String> args = Lists.newArrayList();
+            if (existing.containsKey("args")) {
+                args.addAll((List<String>) existing.get("args"));
+            }
+
             // To run chrome on virtualized openVZ environments
-            options.addArguments("--no-sandbox");
-            capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+            args.add("--no-sandbox");
+
+            // put the updated args back as immutable.
+            existing.put("args", ImmutableList.copyOf(args));
         }
         return capabilities;
     }
