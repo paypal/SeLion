@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2017 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,31 +15,25 @@
 
 package com.paypal.selion.internal.platform.grid.browsercapabilities;
 
-import static org.testng.Assert.assertTrue;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.List;
+import java.util.Map;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.annotations.Test;
+public class HeadlessFirefoxCapabilitiesBuilder extends FireFoxCapabilitiesBuilder {
+    @Override
+    public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+        capabilities = super.getCapabilities(capabilities);
+        Map<String, List<String>> existing =
+            (Map<String, List<String>>) capabilities.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
 
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.configuration.Config.ConfigProperty;
-
-public class AdditionalSauceCapabilitiesBuilderTest {
-    private static final String SAUCE_CONFIG_FILE = "sauceConfig.json";
-
-    @Test
-    public void test() {
-        Config.setConfigProperty(ConfigProperty.SELENIUM_SAUCELAB_GRID_CONFIG_FILE, SAUCE_CONFIG_FILE);
-        Config.setConfigProperty(ConfigProperty.SELENIUM_USE_SAUCELAB_GRID, "true");
-        AdditionalSauceCapabilitiesBuilder builder = new AdditionalSauceCapabilitiesBuilder();
-        DesiredCapabilities capabilities = builder.getCapabilities(new DesiredCapabilities());
-
-        assertTrue(capabilities.getCapability("tunnel-identifier").equals(""));
-        assertTrue(capabilities.getCapability("tags") instanceof List<?>);
-        assertTrue(capabilities.getCapability("selenium-version") != null);
-        assertTrue(capabilities.getCapability("username") != null);
-        assertTrue(capabilities.getCapability("accessKey") != null);
-        assertTrue(capabilities.getCapability("parent-tunnel") != null);
+        FirefoxOptions updated = new FirefoxOptions();
+        if (existing != null) {
+            updated.addArguments(existing.get("args"));
+        }
+        updated.setHeadless(true);
+        capabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, updated);
+        return capabilities;
     }
 }
