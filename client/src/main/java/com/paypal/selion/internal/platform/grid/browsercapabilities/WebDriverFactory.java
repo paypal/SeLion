@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                          |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,7 +35,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * This factory class is responsible for providing the framework with a {@link RemoteWebDriver} instance based on the
  * browser type.
- * 
+ *
  */
 public final class WebDriverFactory {
 
@@ -58,8 +58,14 @@ public final class WebDriverFactory {
         case FIREFOX:
             capability = new FireFoxCapabilitiesBuilder().createCapabilities();
             break;
+        case FIREFOX_HEADLESS:
+            capability = new HeadlessFirefoxCapabilitiesBuilder().createCapabilities();
+            break;
         case CHROME:
             capability = new ChromeCapabilitiesBuilder().createCapabilities();
+            break;
+        case CHROME_HEADLESS:
+            capability = new HeadlessChromeCapabilitiesBuilder().createCapabilities();
             break;
         case INTERNET_EXPLORER:
             capability = new IECapabilitiesBuilder().createCapabilities();
