@@ -19,6 +19,8 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.CapabilityType;
@@ -31,7 +33,7 @@ import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBu
 
 /**
  * This class represents the capabilities that are specific to firefox.
- * 
+ *
  */
 class FireFoxCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
@@ -49,6 +51,9 @@ class FireFoxCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             if (isLocalRun() && StringUtils.isNotBlank(geckoDriverPath)) {
                 System.setProperty(SeLionConstants.WEBDRIVER_GECKO_DRIVER_PROPERTY, geckoDriverPath);
             }
+            FirefoxOptions options = new FirefoxOptions();
+            options.setLogLevel(FirefoxDriverLogLevel.INFO);
+            capabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options);
         }
 
         return capabilities;

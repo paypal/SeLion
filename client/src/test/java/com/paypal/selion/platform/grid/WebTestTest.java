@@ -30,7 +30,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import com.paypal.selion.reports.runtime.SeLionReporter;
 
@@ -60,7 +59,7 @@ public class WebTestTest {
      **/
     @Test(groups = { "functional" }, threadPoolSize = 2, invocationCount = 2, timeOut = 10000)
     @WebTest
-    public void testUnamedSessionMultipleThreadsAndInvocations() {
+    public void testUnnamedSessionMultipleThreadsAndInvocations() {
         SeLionReporter.log("Browser start page", true, true);
     }
 
@@ -101,7 +100,7 @@ public class WebTestTest {
         caps.merge(new ChromeOptionsOverrideCapabilities().createCapabilities());
         assertEquals(caps.getCapability(CapabilityType.BROWSER_NAME), "chrome");
 
-        Map<String, List<String>> chromeOptions = (Map<String, List<String>>) 
+        Map<String, List<String>> chromeOptions = (Map<String, List<String>>)
                 Grid.getWebTestSession().getAdditionalCapabilities().getCapability(ChromeOptions.CAPABILITY);
         List<String> args = (List<String>) chromeOptions.get("args");
         assertEquals(args.size(), 1);
