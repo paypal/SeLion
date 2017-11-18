@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -51,9 +51,9 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  *
  * <pre>
  * &lt;!-- If parameter is empty string or omitted, please see defaults --&gt;
- * 
+ *
  * &lt;!-- SELENIUM CONFIGURATION --&gt;
- * 
+ *
  * &lt;!-- optional, defaults to "" or localhost when runLocally is true (GLOBAL) --&gt;
  * &lt;parameter name="seleniumhost" value="" /&gt;
  * &lt;!-- optional, defaults to 4444 (GLOBAL) --&gt;
@@ -66,9 +66,9 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * &lt;parameter name="autoScreenShot" value="true" /&gt;
  * &lt;!-- optional, used when runLocally is true, defaults to 'default' --&gt;
  * &lt;parameter name="profileName" value="SeleniumProfile" /&gt;
- * 
+ *
  * &lt;!-- SELION FILES LOCATION --&gt;
- * 
+ *
  * &lt;!-- optional, default to selionFiles (GLOBAL) --&gt;
  * &lt;parameter name="basedir" value=""  /&gt;
  * &lt;!-- optional, default to ${selionFiles.basedir}/selionLogs (GLOBAL) --&gt;
@@ -435,6 +435,7 @@ public final class Config {
          * The path to the PhantomJS executable on the local machine. This parameter is taken into consideration for
          * local runs involving the PhantomJS browser.
          */
+        @Deprecated
         SELENIUM_PHANTOMJS_PATH("phantomjsPath", "", true),
 
         /**
@@ -618,6 +619,12 @@ public final class Config {
         BROWSER("browser", "*firefox", false),
 
         /**
+         * Run the browser in headless mode, if supported
+         * Default is set to <b>false</b>>
+         */
+        BROWSER_RUN_HEADLESS("browserRunHeadless", "false", false),
+
+        /**
          * version specified by user when working with custom browser needs.<br>
          */
         BROWSER_CAPABILITY_VERSION("version", "", false),
@@ -703,24 +710,28 @@ public final class Config {
          * The unit is milliseconds.<br>
          * Default is set to <b>1800000</b> milliseconds.
          */
+        @Deprecated
         MOBILE_DRIVER_SESSION_TIMEOUT("sessionTimeout", "1800000", false),
 
         /**
          * Selendroid Server port to use.<br>
          * Defaults to the value used by Selendroid (<b>8080</b>)
          */
+        @Deprecated
         SELENDROID_SERVER_PORT("selendroidServerPort", "8080", true),
 
         /**
          * Device Serial to use.<br>
          * Default is selected automatically by Selendroid
          */
+        @Deprecated
         SELENDROID_DEVICE_SERIAL("selendroidDeviceSerial", "", true),
 
         /**
          * Force Reinstall the Selendroid Server and AUT.<br>
          * Default is set to <b>false</b>
          */
+        @Deprecated
         SELENDROID_SERVER_FORCE_REINSTALL("selendroidServerForceReinstall", "false", true),
 
         /**
@@ -731,6 +742,7 @@ public final class Config {
          * The unit is milliseconds.<br>
          * Default is set to <b>300000</b> milliseconds.<br>
          */
+        @Deprecated
         SELENDROID_EMULATOR_START_TIMEOUT("timeoutEmulatorStart", "300000", false),
 
         /**
@@ -741,6 +753,7 @@ public final class Config {
          * The unit is milliseconds.<br>
          * Default is set to <b>20000</b> milliseconds.<br>
          */
+        @Deprecated
         SELENDROID_SERVER_START_TIMEOUT("serverStartTimeout", "20000", false),
 
         /**
