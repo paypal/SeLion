@@ -33,7 +33,6 @@ import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBu
 
 /**
  * This class represents the capabilities that are specific to firefox.
- *
  */
 class FireFoxCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
@@ -51,13 +50,21 @@ class FireFoxCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             if (isLocalRun() && StringUtils.isNotBlank(geckoDriverPath)) {
                 System.setProperty(SeLionConstants.WEBDRIVER_GECKO_DRIVER_PROPERTY, geckoDriverPath);
             }
-            FirefoxOptions options = new FirefoxOptions();
-            options.setLogLevel(FirefoxDriverLogLevel.INFO);
-            options.setHeadless(Boolean.getBoolean(getLocalConfigProperty(ConfigProperty.BROWSER_RUN_HEADLESS)));
-            capabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options);
+            capabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, getDefaultFirefoxOptions());
         }
 
         return capabilities;
+    }
+
+    /*
+     * Returns the default {@link FirefoxOptions} used by this capabilities builder.
+     */
+    private FirefoxOptions getDefaultFirefoxOptions() {
+        FirefoxOptions options = new FirefoxOptions();
+        options.setLogLevel(FirefoxDriverLogLevel.INFO);
+        options.setHeadless(Boolean.parseBoolean(getLocalConfigProperty(ConfigProperty.BROWSER_RUN_HEADLESS)));
+
+        return options;
     }
 
     private FirefoxProfile getProfile(String dirName) {
