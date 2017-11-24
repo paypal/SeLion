@@ -36,15 +36,7 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             System.setProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY, getBinaryPath());
         }
         capabilities.setBrowserName(DesiredCapabilities.chrome().getBrowserName());
-        String userAgent = getUserAgent();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--test-type");
-        options.addArguments("--ignore-certificate-errors");
-        if ((userAgent != null) && (!userAgent.trim().isEmpty())) {
-            options.addArguments("--user-agent=" + userAgent);
-        }
-        options.setHeadless(Boolean.getBoolean(getLocalConfigProperty(ConfigProperty.BROWSER_RUN_HEADLESS)));
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        capabilities.setCapability(ChromeOptions.CAPABILITY, getDefaultChromeOptions());
         if (ProxyHelper.isProxyServerRequired()) {
             capabilities.setCapability(CapabilityType.PROXY, ProxyHelper.createProxyObject());
         }
@@ -57,5 +49,21 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
     private String getBinaryPath() {
         return System.getProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY,
             Config.getConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH));
+    }
+
+    /*
+     * Returns the default {@link ChromeOptions} used by this capabilities builder
+     */
+    private ChromeOptions getDefaultChromeOptions() {
+        final String userAgent = getUserAgent();
+        final ChromeOptions options = new ChromeOptions();
+        options.addArguments("--test-type");
+        options.addArguments("--ignore-certificate-errors");
+        if ((userAgent != null) && (!userAgent.trim().isEmpty())) {
+            options.addArguments("--user-agent=" + userAgent);
+        }
+        options.setHeadless(Boolean.parseBoolean(getLocalConfigProperty(ConfigProperty.BROWSER_RUN_HEADLESS)));
+
+        return options;
     }
 }

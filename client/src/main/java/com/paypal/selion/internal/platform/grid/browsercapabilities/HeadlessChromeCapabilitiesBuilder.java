@@ -16,6 +16,8 @@
 package com.paypal.selion.internal.platform.grid.browsercapabilities;
 
 import com.google.common.collect.ImmutableList;
+import com.paypal.selion.annotations.WebTest;
+import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.collections.Lists;
@@ -23,8 +25,13 @@ import org.testng.collections.Lists;
 import java.util.List;
 import java.util.Map;
 
-public class HeadlessChromeCapabilitiesBuilder extends ChromeCapabilitiesBuilder {
+/**
+ * An optional {@link DefaultCapabilitiesBuilder} which can be used to force a single browser=chrome {@link WebTest}
+ * to be run in headless mode.
+ */
+public final class HeadlessChromeCapabilitiesBuilder extends ChromeCapabilitiesBuilder {
     @Override
+    @SuppressWarnings("unchecked")
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
         super.getCapabilities(capabilities);
         Map<String, Object> existing =
@@ -33,7 +40,7 @@ public class HeadlessChromeCapabilitiesBuilder extends ChromeCapabilitiesBuilder
         // existing.get("args") is an immutable list.
         // so we need to declare a new one and copy the values in, when present
         List<String> args = Lists.newArrayList();
-        if (existing.containsKey("args")) {
+        if (existing != null && existing.containsKey("args")) {
             args.addAll((List<String>) existing.get("args"));
         }
 

@@ -14,7 +14,5 @@ if [ "$USE_SAUCELABS" = true ]; then
   mvn test -pl client -B -V -DsuiteXmlFile=Chrome-Suite.xml -DSELION_BROWSER_RUN_HEADLESS=true && exit $?
 else
   mvn test -pl client -B -V -DsuiteXmlFile=Chrome-Suite.xml -DSELION_BROWSER_RUN_HEADLESS=true \
-    -DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_DOWNLOAD_DEPENDENCIES=true \
-    -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER=com.paypal.selion.TravisCICapabilityBuilder \
-    -DBROWSER_PATH=`which google-chrome` && exit $?
+    -DSELION_SELENIUM_RUN_LOCALLY=true -DSELION_DOWNLOAD_DEPENDENCIES=true && exit $?
 fi

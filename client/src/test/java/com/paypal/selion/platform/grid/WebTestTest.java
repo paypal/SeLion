@@ -85,8 +85,8 @@ public class WebTestTest {
 
         assertEquals(caps.getCapability(CapabilityType.BROWSER_NAME), "chrome");
 
-        Map<String, List<String>> chromeOptions = (Map<String, List<String>>) caps.asMap().get(ChromeOptions.CAPABILITY);
-        List<String> args = chromeOptions.get("args");
+        Map<String, ?> chromeOptions = (Map<String, ?>) caps.getCapability(ChromeOptions.CAPABILITY);
+        List<String> args = (List<String>) chromeOptions.get("args");
         assertEquals(args.size(), 1);
         assertEquals(args.get(0), "--bogus-arg");
     }
@@ -100,7 +100,7 @@ public class WebTestTest {
         caps.merge(new ChromeOptionsOverrideCapabilities().createCapabilities());
         assertEquals(caps.getCapability(CapabilityType.BROWSER_NAME), "chrome");
 
-        Map<String, List<String>> chromeOptions = (Map<String, List<String>>)
+        Map<String, ?> chromeOptions = (Map<String, ?>)
                 Grid.getWebTestSession().getAdditionalCapabilities().getCapability(ChromeOptions.CAPABILITY);
         List<String> args = (List<String>) chromeOptions.get("args");
         assertEquals(args.size(), 1);

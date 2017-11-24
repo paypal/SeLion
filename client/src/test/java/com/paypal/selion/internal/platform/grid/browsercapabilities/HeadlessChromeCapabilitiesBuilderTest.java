@@ -15,22 +15,37 @@
 
 package com.paypal.selion.internal.platform.grid.browsercapabilities;
 
-import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import static org.testng.Assert.*;
 
-/**
- * An optional {@link DefaultCapabilitiesBuilder} which can be used to force a single browser=firefox {@link WebTest}
- * to be run in headless mode.
- */
-public final class HeadlessFirefoxCapabilitiesBuilder extends FireFoxCapabilitiesBuilder {
-    @Override
-    public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
-        super.getCapabilities(capabilities);
-        FirefoxOptions updated = new FirefoxOptions(capabilities);
-        updated.setHeadless(true);
-        capabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, updated);
-        return capabilities;
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.configuration.LocalConfig;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.ITestContext;
+import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.Map;
+
+
+public class HeadlessChromeCapabilitiesBuilderTest {
+    @Test
+    public void testIsHeadless(ITestContext ctx) {
+        //first set a local config to not run this @test headless
+        LocalConfig lc = new LocalConfig();
+        lc.setConfigProperty(Config.ConfigProperty.BROWSER_RUN_HEADLESS, "false");
+        ConfigManager.addConfig(ctx.getCurrentXmlTest().getName(), lc);
+
+        DesiredCapabilities capabilities =
+            new HeadlessChromeCapabilitiesBuilder().getCapabilities(new DesiredCapabilities());
+
+        //assert the capabilities returned includes the '--headless' argument.
+        assertNotNull(capabilities.getCapability(ChromeOptions.CAPABILITY));
+
+        Map<String, List<String>> chromeOptionsMap =
+            (Map<String, List<String>>) capabilities.getCapability(ChromeOptions.CAPABILITY);
+        assertTrue(chromeOptionsMap.containsKey("args"));
+        assertTrue(chromeOptionsMap.get("args").contains("--headless"));
     }
 }
