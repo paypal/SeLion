@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -62,6 +62,9 @@ public abstract class AbstractPage implements WebPage {
     /** The elements that should be present on the Page **/
     private final List<String> pageValidators = new ArrayList<>();
 
+    /** The elements which indicate if the Page is still loading **/
+    private final List<String> pageLoadingValidators = new ArrayList<>();
+
     /** Map to store our GUI object map content for all Containers */
     private final Map<String, Map<String, String>> objectContainerMap = new HashMap<>();
 
@@ -79,6 +82,10 @@ public abstract class AbstractPage implements WebPage {
 
     protected List<String> getPageValidators() {
         return pageValidators;
+    }
+
+    protected List<String> getPageLoadingValidators() {
+        return pageLoadingValidators;
     }
 
     protected Map<String, Map<String, String>> getObjectContainerMap() {
@@ -102,7 +109,9 @@ public abstract class AbstractPage implements WebPage {
         if (session != null && StringUtils.isNotBlank(session.getXmlTestName())) {
             LocalConfig lc = ConfigManager.getConfig(session.getXmlTestName());
             site = lc.getConfigProperty(ConfigProperty.SITE_LOCALE);
-            platform = WebDriverPlatform.valueOf(lc.getConfigProperty(ConfigProperty.MOBILE_PLATFORM).toUpperCase());
+            if (Grid.getMobileTestSession() != null) {
+                platform = Grid.getMobileTestSession().getPlatform();
+            }
         }
     }
 
@@ -132,6 +141,7 @@ public abstract class AbstractPage implements WebPage {
                 }
 
                 pageValidators.addAll(dataProvider.getPageValidators());
+                pageLoadingValidators.addAll(dataProvider.getPageLoadingValidators());
 
                 if (objectMap != null) {
                     objectMap.putAll(currentObjectMap);
@@ -151,7 +161,7 @@ public abstract class AbstractPage implements WebPage {
      * Load object map. This method takes a HashMap<String, String> and uses it to populate the objectMap This is
      * intended to allow for the use of programmatically generated locators in addition to the yaml file format IDs and
      * Locators
-     * 
+     *
      * @param sourceMap
      *            the source map
      */
@@ -160,11 +170,11 @@ public abstract class AbstractPage implements WebPage {
         if (sourceMap == null) {
             return;
         }
-        
+
         if(sourceMap.isEmpty()){
             return;
         }
-        
+
         if (sourceMap.containsKey("pageTitle")) {
             pageTitle = sourceMap.get("pageTitle");
         }
@@ -212,7 +222,15 @@ public abstract class AbstractPage implements WebPage {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 
+    public void checkIfLoaded() {
+        throw new UnsupportedOperationException("This operation is NOT supported.");
+    }
+
     public boolean isPageValidated() {
+        throw new UnsupportedOperationException("This operation is NOT supported.");
+    }
+
+    public boolean isPageLoaded() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 

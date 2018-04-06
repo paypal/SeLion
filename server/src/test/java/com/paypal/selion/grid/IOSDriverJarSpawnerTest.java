@@ -23,8 +23,6 @@ import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
-
 @Test(singleThreaded = true, groups = { "ios-only", "downloads-dependencies" })
 public class IOSDriverJarSpawnerTest {
     private Thread thread;
@@ -36,7 +34,7 @@ public class IOSDriverJarSpawnerTest {
         int port = PortProber.findFreePort();
 
         spawner = new IOSDriverJarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
-                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false)
+                new ProcessLauncherConfiguration().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false)
                         .setIncludeParentProcessClassPath(false));
         thread = new Thread(spawner);
     }

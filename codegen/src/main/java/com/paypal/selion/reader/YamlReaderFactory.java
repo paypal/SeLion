@@ -20,11 +20,11 @@ import com.paypal.selion.plugins.CodeGeneratorException;
 import java.io.IOException;
 
 /**
- * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either
- * process YAML V1 format (or) V2 format.
+ * A Factory that is internally responsible for producing {@link AbstractYamlReader} instances which can either process
+ * YAML V1 format (or) V2 format.
  * 
  */
-//TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
+// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 public final class YamlReaderFactory {
     private YamlReaderFactory() {
         // Utility class. Hide constructor.

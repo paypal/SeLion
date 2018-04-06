@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -37,7 +37,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
@@ -99,19 +99,19 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
 
     private static RegistrationRequest fixTimeout(RegistrationRequest request) {
         // make sure there is a timeout set for this proxy
-        int timeout = request.getConfigAsInt(RegistrationRequest.TIME_OUT, DEFAULT_IDLE_TIMEOUT);
-        request.getConfiguration().put(RegistrationRequest.TIME_OUT, timeout);
+        int timeout = request.getConfiguration().timeout != null ? request.getConfiguration().timeout : DEFAULT_IDLE_TIMEOUT;
+        request.getConfiguration().timeout = timeout;
         return request;
     }
 
-    public SeLionSauceProxy(RegistrationRequest request, Registry registry) {
+    public SeLionSauceProxy(RegistrationRequest request, GridRegistry registry) {
         super(fixTimeout(request), registry);
 
         down = false;
         poll = true;
 
-        pollingInterval = request.getConfigAsInt(RegistrationRequest.NODE_POLLING, DEFAULT_POLLING_INTERVAL);
-        downPollingLimit = request.getConfigAsInt(RegistrationRequest.DOWN_POLLING_LIMIT, DEFAULT_DOWN_POLLING_LIMIT);
+        pollingInterval = config.nodePolling != null ? config.nodePolling : DEFAULT_POLLING_INTERVAL;
+        downPollingLimit = config.downPollingLimit != null ? config.downPollingLimit : DEFAULT_DOWN_POLLING_LIMIT;
         if ((pollingInterval <= 0) || (downPollingLimit <= 0)) {
             poll = false;
         }
@@ -157,7 +157,7 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
             processDeprecatedCapabilities(requestedCapabilities);
 
             // default the credentials, if required
-            processCredentails(requestedCapabilities);
+            processCredentials(requestedCapabilities);
 
             // setup the tunnelIdentifier, if required
             processTunnelIdentifierCapability(requestedCapabilities);
@@ -176,7 +176,7 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
                 // mark the proxy as down and let the polling thread determine when it is back up.
                 down = true;
                 // if we aren't polling sauce labs, kick the session back to the hub.
-                if (poll = false) {
+                if (poll == false) {
                     LOGGER.exiting(null);
                     return null;
                 }
@@ -223,7 +223,7 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
         }
     }
 
-    private void processCredentails(Map<String, Object> requestedCapabilities) {
+    private void processCredentials(Map<String, Object> requestedCapabilities) {
         if (sauceConfigReader.isRequireUserCredentials()) {
             return;
         }
@@ -273,7 +273,7 @@ public class SeLionSauceProxy extends BaseRemoteProxy implements CommandListener
     }
 
     private boolean isWebDriverCommand(HttpServletRequest request, HttpMethod method, String path) {
-        return request.getMethod() == method.toString() && request.getPathInfo().equals(path);
+        return request.getMethod().equals(method.toString()) && request.getPathInfo().equals(path);
     }
 
     public void beforeRelease(TestSession session) {

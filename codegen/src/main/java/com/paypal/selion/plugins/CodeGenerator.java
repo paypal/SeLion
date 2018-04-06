@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -33,7 +33,7 @@ import org.apache.velocity.app.Velocity;
 /**
  * This class houses the core logic which is responsible for transforming a yaml file that houses locators into
  * corresponding .java files. It leverages Velocity templates under the hoods to get this done.
- * 
+ *
  */
 public class CodeGenerator {
 
@@ -44,16 +44,16 @@ public class CodeGenerator {
     }
 
     /**
-     * 
+     *
      * This method will generate .java file based on the a yaml file contents.
-     * 
+     *
      * @param dataFile
      *            - Path to where the yaml file resides.
      * @param filePath
      *            - the relative file path where the generated .java file needs to be stored.
      * @param packageName
      *            - package name
-     * 
+     *
      * @throws IOException
      */
     public void generateNewCode(File dataFile, String filePath, String packageName, String domain) throws IOException,
@@ -86,7 +86,7 @@ public class CodeGenerator {
                     set.add("com.paypal.selion.platform.html.ParentTraits");
                 }
             }
-            
+
             Velocity.init();
 
             Velocity.setProperty("resource.loader", "class");

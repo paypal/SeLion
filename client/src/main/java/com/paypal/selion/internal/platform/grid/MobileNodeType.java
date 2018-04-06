@@ -17,11 +17,11 @@ package com.paypal.selion.internal.platform.grid;
 
 /**
  * Enum to represent the valid mobile node types.
- * 
+ *
  */
 public enum MobileNodeType {
 
-    APPIUM("appium"), IOS_DRIVER("ios-driver"), SELENDROID("selendroid");
+    APPIUM("appium"), @Deprecated IOS_DRIVER("ios-driver"), @Deprecated SELENDROID("selendroid");
 
     private String mobileNodeType;
 
@@ -36,7 +36,7 @@ public enum MobileNodeType {
     /**
      * This method returns all the mobile node typesthat are supported by the SeLion framework as a String with each
      * value delimited by a comma.
-     * 
+     *
      * @return - A comma separated string that represents all supported mobile node types.
      */
     public static String getSupportedMobileNodesAsCSV() {

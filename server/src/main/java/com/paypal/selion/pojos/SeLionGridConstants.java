@@ -18,8 +18,6 @@ package com.paypal.selion.pojos;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 
-import com.paypal.selion.grid.RunnableLauncher;
-
 import static com.paypal.selion.SeLionConstants.*;
 
 /**
@@ -159,41 +157,6 @@ public class SeLionGridConstants {
      */
     public static final String NODE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "nodeConfig.json");
-
-    /**
-     * Dash argument for specifying an alternative Selion Grid json config file
-     */
-    public static final String SELION_CONFIG_ARG = "-selionConfig";
-
-    /**
-     * Dash argument for specifying an alternative Selenium hub json config file
-     */
-    public static final String HUB_CONFIG_ARG = "-hubConfig";
-
-    /**
-     * Dash argument for specifying the SeLion Grid hub type &lt;sauce&gt;
-     */
-    public static final String TYPE_ARG = "-type";
-
-    /**
-     * Dash argument for specifying the Selenium role &lt;hub|node&gt;
-     */
-    public static final String ROLE_ARG = "-role";
-
-    /**
-     * Dash argument for specifying an alternative Selenium node json config file
-     */
-    public static final String NODE_CONFIG_ARG = "-nodeConfig";
-
-    /**
-     * Dash argument for displaying the help text
-     */
-    public static final String HELP_ARG = "-help";
-
-    /**
-     * Dash argument for disabling continuous restart nature of any {@link RunnableLauncher} which spawns a new process
-     */
-    public static final String SELION_NOCONTINUOUS_ARG = "-noContinuousRestart";
 
     private SeLionGridConstants() {
         // Restricting Object creation

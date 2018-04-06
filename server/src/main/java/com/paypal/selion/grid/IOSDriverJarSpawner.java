@@ -21,6 +21,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
+import com.beust.jcommander.JCommander;
 import com.google.common.annotations.Beta;
 import com.google.gson.JsonParser;
 import com.paypal.selion.logging.SeLionGridLogger;
@@ -39,7 +40,7 @@ public final class IOSDriverJarSpawner extends MobileProcessLauncher {
     public IOSDriverJarSpawner(String[] args) {
         this(args, null);
     }
-    
+
     public IOSDriverJarSpawner(String[] args, ProcessLauncherOptions options) {
         super(args, options);
         setType(InstanceType.IOS_DRIVER);
@@ -94,5 +95,33 @@ public final class IOSDriverJarSpawner extends MobileProcessLauncher {
 
         LOGGER.exiting(cmdLine.toString());
         return cmdLine;
+    }
+
+    void printUsageInfo() {
+        StringBuilder usage = new StringBuilder();
+        usage.append(SEPARATOR);
+        usage.append("To use SeLion Grid with ios-driver");
+        usage.append(SEPARATOR);
+        usage.append("\n");
+        usage.append("Usage: java [system properties] \\\n");
+        usage.append("            -cp SeLion-Grid.jar \\\n");
+        usage.append("            com.paypal.selion.grid.IOSDriverJarSpawner \\\n");
+        usage.append("            [options] [driver options] \n");
+
+        new JCommander(new ProcessLauncherConfiguration()).usage(usage);
+        final int start = usage.indexOf("Usage: <main class> [options]");
+        final int length = "Usage: <main class> [options]".length();
+        usage.replace(start, start + length, "");
+
+        usage.append("  Driver Options: \n");
+        usage.append("    Any valid ios-driver dash option(s). \n");
+        usage.append("\n");
+        usage.append("  System Properties: \n");
+        usage.append("    -DselionHome=<folderPath>: \n");
+        usage.append("       Path of SeLion home directory. Defaults to <user.home>/.selion2/ \n");
+        usage.append("    -D[property]=[value]: \n");
+        usage.append("       Any other System Property you wish to pass to the JVM \n");
+
+        System.out.print(usage.toString());
     }
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.paypal.selion.elements.HtmlSeLionElementList;
+import com.paypal.selion.elements.HtmlSeLionElementSet.HtmlSeLionElement;
 import com.paypal.selion.platform.web.GUIElement;
 import com.paypal.selion.platform.web.HtmlContainerElement;
-import com.paypal.selion.plugins.Logger;
+import com.paypal.selion.plugins.CodeGeneratorLoggerFactory;
 import com.paypal.selion.platform.web.Page;
 import com.paypal.selion.platform.web.PageFactory;
 import com.paypal.selion.plugins.TestPlatform;
@@ -32,12 +32,12 @@ import com.paypal.selion.plugins.TestPlatform;
 /**
  * Concrete YAML reader that is capable of reading YAML V2 format file.
  */
-//TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
+// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 class YamlV2Reader extends AbstractYamlReader {
 
     /**
      * This is a public constructor to create an input stream and YAML instance for the input file.
-     * 
+     *
      * @param fileName
      *            the name of the YAML data file.
      * @throws IOException
@@ -55,7 +55,8 @@ class YamlV2Reader extends AbstractYamlReader {
             String fileName = resource.getFileName();
             Page page = PageFactory.getPage(is);
             setBaseClassName(page.getBaseClass());
-            Logger.getLogger().debug(String.format("++ Attempting to process %s as PageYAML V2", fileName));
+            CodeGeneratorLoggerFactory.getLogger().debug(
+                    String.format("++ Attempting to process %s as PageYAML V2", fileName));
 
             TestPlatform currentPlatform = TestPlatform.identifyPlatform(page.getPlatform());
             if (currentPlatform == null) {
@@ -68,7 +69,7 @@ class YamlV2Reader extends AbstractYamlReader {
                 if (!eachElement.getKey().isEmpty()) {
                     appendKey(eachElement.getKey());
                     if ((currentPlatform == TestPlatform.WEB)
-                            && HtmlSeLionElementList.CONTAINER.looksLike(eachElement.getKey())
+                            && HtmlSeLionElement.CONTAINER.looksLike(eachElement.getKey())
                             && !eachElement.getValue().getContainerElements().isEmpty()) {
                         Map<String, HtmlContainerElement> allElements = eachElement.getValue().getContainerElements();
                         List<String> elementKeys = parseKeysForContainer(fileName, allElements);
@@ -82,7 +83,7 @@ class YamlV2Reader extends AbstractYamlReader {
             setProcessed(true);
         } catch (Exception e) { // NOSONAR
             // Just log an debug message. The input is probably not a V2 PageYAML
-            Logger.getLogger().debug(
+            CodeGeneratorLoggerFactory.getLogger().debug(
                     String.format("Unable to process %s as PageYAML V2.\n\t %s", resource.getFileName(),
                             e.getLocalizedMessage()));
         }

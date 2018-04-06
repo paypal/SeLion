@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2016 PayPal                                                                                          |
+|  Copyright (C) 2016-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,18 +18,17 @@ package com.paypal.selion.grid.servlets;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.DefaultGridRegistry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
@@ -39,7 +38,7 @@ import com.google.common.base.Preconditions;
 
 public class BaseGridRegistyServletTest {
     protected String ipAddress;
-    protected Registry registry;
+    protected GridRegistry registry;
     protected Hub hub;
     protected int nodePort;
     protected int hubPort;
@@ -80,22 +79,22 @@ public class BaseGridRegistyServletTest {
 
         // Create a Selenium grid hub configuration
         GridHubConfiguration hubConfig = new GridHubConfiguration();
-        hubConfig.setPort(hubPort);
-        hubConfig.setCapabilityMatcher(matcher);
+
+        hubConfig.port = hubPort;
+        hubConfig.capabilityMatcher = matcher;
 
         // Create a Hub instance
         hub = new Hub(hubConfig);
 
-        // Create a Selenium grid registry, using the new hubConfig
-        registry = Registry.newInstance(hub, hubConfig);
+        // Create a Selenium grid registry, using the new hub
+        registry = DefaultGridRegistry.newInstance(hub);
 
         // Create a Selenium grid registration request
-        Map<String, Object> configuration = new HashMap<>();
-        configuration.put(RegistrationRequest.REMOTE_HOST, String.format("http://%s:%s", ipAddress, nodePort));
-        configuration.put(RegistrationRequest.ID, ipAddress);
+        GridNodeConfiguration nodeConfig = new GridNodeConfiguration();
+        nodeConfig.host = ipAddress;
+        nodeConfig.port = nodePort;
 
-        RegistrationRequest registrationRequest = new RegistrationRequest();
-        registrationRequest.setConfiguration(configuration);
+        RegistrationRequest registrationRequest = new RegistrationRequest(nodeConfig);
 
         // Add a BaseRemoteProxy to the registry
         RemoteProxy remoteProxy = new BaseRemoteProxy(registrationRequest, registry);

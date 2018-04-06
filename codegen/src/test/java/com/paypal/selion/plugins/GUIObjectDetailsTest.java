@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,28 +18,19 @@ package com.paypal.selion.plugins;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.elements.HtmlSeLionElementList;
-import com.paypal.selion.elements.IOSSeLionElementList;
+import com.paypal.selion.elements.HtmlSeLionElementSet;
+import com.paypal.selion.elements.IOSSeLionElementSet;
 
 import static org.testng.Assert.assertTrue;
 
 public class GUIObjectDetailsTest {
-    class DummyMojo extends AbstractMojo {
-        @Override
-        public void execute() throws MojoExecutionException, MojoFailureException {
-            // Nothing to execute
-        }
-    }
 
     @BeforeClass
     public void before() {
-        Logger.setLogger(new DummyMojo().getLog());
+        CodeGeneratorLoggerFactory.setLogger(new CodeGeneratorSimpleLogger());
     }
 
     @Test
@@ -57,7 +48,7 @@ public class GUIObjectDetailsTest {
         TestPlatform currentPlatform = reader.platform();
         GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
     }
-    
+
     @Test
     public void validateMobileElements() throws Exception {
         String dataFile = "src/test/resources/SampleMobilePage.yaml";
@@ -69,22 +60,22 @@ public class GUIObjectDetailsTest {
     @Test
     public void validateCustomWebElements() throws Exception {
         String dataFile = "src/test/resources/CustomWebElementPage.yaml";
-        
-        HtmlSeLionElementList.registerElement("com.paypal.test.CustomElement");
-        HtmlSeLionElementList.registerElement("com.paypal.test.AnotherElement");
-        
+
+        HtmlSeLionElementSet.getInstance().add("com.paypal.test.CustomElement");
+        HtmlSeLionElementSet.getInstance().add("com.paypal.test.AnotherElement");
+
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
         GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
     }
-    
+
     @Test
     public void validateCustomMobileElements() throws Exception {
         String dataFile = "src/test/resources/CustomIOSElementPage.yaml";
-        
-        IOSSeLionElementList.registerElement("com.paypal.test.CustomElement");
-        IOSSeLionElementList.registerElement("com.paypal.test.AnotherElement");
-        
+
+        IOSSeLionElementSet.getInstance().add("com.paypal.test.CustomElement");
+        IOSSeLionElementSet.getInstance().add("com.paypal.test.AnotherElement");
+
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();
         GUIObjectDetails.validateKeysInDataFile(reader.getKeys(), dataFile, currentPlatform);
@@ -93,7 +84,7 @@ public class GUIObjectDetailsTest {
     @Test
     public void validateCustomElementInContainer() throws Exception {
         String dataFile = "src/test/resources/CustomElementInContainerPage.yaml";
-        HtmlSeLionElementList.registerElement("com.paypal.test.CustomElement");
+        HtmlSeLionElementSet.getInstance().add("com.paypal.test.CustomElement");
 
         DataReader reader = new DataReader(dataFile);
         TestPlatform currentPlatform = reader.platform();

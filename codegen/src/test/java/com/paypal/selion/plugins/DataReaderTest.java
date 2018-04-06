@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -20,28 +20,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.List;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.elements.HtmlSeLionElementList;
+import com.paypal.selion.elements.HtmlSeLionElementSet.HtmlSeLionElement;
 
 public class DataReaderTest {
     private static final String YAML_V2 = "src/test/resources/SampleV2YamlPage.yaml";
     private static final String YAML_MOBILE = "src/test/resources/SampleMobilePage.yaml";
 
-    class DummyMojo extends AbstractMojo {
-        @Override
-        public void execute() throws MojoExecutionException, MojoFailureException {
-            // Nothing to execute
-        }
-    }
-
     @BeforeClass
     public void before() {
-        Logger.setLogger(new DummyMojo().getLog());
+        CodeGeneratorLoggerFactory.setLogger(new CodeGeneratorSimpleLogger());
     }
 
     @Test
@@ -85,7 +75,7 @@ public class DataReaderTest {
             }
         }
         assertEquals(requestAPICredentialsLink != null ? requestAPICredentialsLink.getMemberType() : null,
-                HtmlSeLionElementList.LINK.stringify());
+                HtmlSeLionElement.LINK.getElementClass());
     }
 
 }

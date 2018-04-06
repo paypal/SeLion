@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -33,7 +33,7 @@ import com.paypal.selion.platform.html.support.HtmlElementUtils;
 
 /**
  * A Base class from which all page classes should be derived.
- * 
+ *
  * It contains the code to initialize pages, load values to the "ObjectMap", and interact in various ways with the
  * page(s).
  */
@@ -61,11 +61,15 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
 
     /**
      * Validates whether the actual current page title equals to expected page title.
-     * 
+     *
      * @return true if the actual page title is equal to any of the titles represented by this page object otherwise
      *         returns false
      */
     public boolean hasExpectedPageTitle() {
+        if (Grid.getMobileTestSession() != null) {
+            // mobile platform does not support page title
+            return true;
+        }
         // If there are no page titles defined we should return false
         if (getExpectedPageTitle() == null) {
             return false;
@@ -108,6 +112,11 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
             }
         } else {
             for (String elementName : getPageValidators()) {
+                boolean isInvertValidationLogic = false;
+                if (elementName.startsWith("!") || elementName.toLowerCase().contains(".isnot")) {
+                    isInvertValidationLogic = true;
+                    elementName = elementName.replaceAll("(?i)(^!)|(?<=\\.is)not", "");
+                }
                 // We can set the action we want to check for, by putting a dot at the end of the elementName.
                 // Following by isPresent, isVisible or isEnabled, default behaviour is isPresent
                 String action = "";
@@ -117,14 +126,14 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
                     elementName = elementName.substring(0, indexOf);
                 }
 
-                verifyElementByAction(elementName, action);
+                verifyElementByAction(elementName, action, isInvertValidationLogic);
             }
         }
     }
 
     /**
      * Get the AbstractElement by the key that is defined in the PageYAML files.
-     * 
+     *
      * @param elementName
      *            The element name
      * @return instance of {@link AbstractElement}
@@ -149,40 +158,38 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
 
     /**
      * Verify if the element is available based on a certain action
-     * 
+     *
      * @param elementName
      *            element to perform verification action on
      * @param action
      *            verification action to perform
      */
-    private void verifyElementByAction(String elementName, String action) {
+    private void verifyElementByAction(String elementName, String action, boolean isInvertValidationLogic) {
         AbstractElement element = getAbstractElementThroughReflection(elementName);
 
         boolean present = element.isElementPresent();
 
         switch (action) {
-        case "isPresent":
-            if (!present) {
-                throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't present.");
-            }
-            break;
         case "isVisible":
-            if (!present || (present && !element.isVisible())) {
+            if (isInvertValidationLogic ? present && element.isVisible() : !present || !element.isVisible()) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't visible.");
+                        + elementName + " with locator " + element.getLocator() + " is" +
+                                                      (isInvertValidationLogic ? " visible.": " not visible."));
             }
             break;
         case "isEnabled":
-            if (!present || (present && !element.isEnabled())) {
+            if (isInvertValidationLogic ? present && element.isEnabled() : !present || !element.isEnabled()) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't enabled.");
+                        + elementName + " with locator " + element.getLocator() + " is" +
+                                                      (isInvertValidationLogic ? " enabled.": " not enabled."));
             }
             break;
+        case "isPresent":
         default:
-            if (!present) {
+            if (isInvertValidationLogic ? present : !present) {
                 throw new PageValidationException(getClass().getSimpleName() + " isn't loaded in the browser, "
-                        + elementName + " with locator " + element.getLocator() + " isn't present.");
+                        + elementName + " with locator " + element.getLocator() + " is" +
+                                                      (isInvertValidationLogic ? " present.": " not present."));
             }
             break;
         }
@@ -191,7 +198,37 @@ public abstract class BasicPageImpl extends AbstractPage implements ParentTraits
     @Override
     public boolean isPageValidated() {
         try {
+            checkIfLoaded();
             validatePage();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void checkIfLoaded() {
+        getObjectMap();
+
+        for (String elementName : getPageLoadingValidators()) {
+            // We can set the action we want to check for, by putting a dot at the end of the elementName.
+            // Following by isPresent, isVisible or isEnabled, default behaviour isPresent
+            String action = "";
+            int indexOf = elementName.indexOf(".");
+            if (indexOf != -1) {
+                action = elementName.substring(indexOf + 1, elementName.length());
+                elementName = elementName.substring(0, indexOf);
+            }
+            // Validation logic is inverted because page is considered fully loaded when no loading validators are
+            // present, visible, or enabled in the page.
+            verifyElementByAction(elementName, action, true);
+        }
+    }
+
+    @Override
+    public boolean isPageLoaded() {
+        try {
+            checkIfLoaded();
             return true;
         } catch (Exception ex) {
             return false;

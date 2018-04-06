@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/a885c7bf48794b27aa72dfe8e85ee22b)](https://www.codacy.com/app/SeLion/paypal-SeLion)
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/paypal/SeLion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/paypal/SeLion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 
@@ -149,11 +149,11 @@ Projects we depend on that need contributors
 
 Current version
 ---------------
-[1.2.0](http://search.maven.org/#search%7Cga%7C1%7Cselion)
+[1.2.0](http://search.maven.org/#search%7Cga%7C1%7Cselion) (Selenium 2.53.x based)
 
 Development version
 -------------------
-2.0.0-SNAPSHOT
+2.0.0-SNAPSHOT (Selenium 3.x based)
 
 License
 -----------

@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.paypal.selion</groupId>
         <artifactId>SeLion-Parent</artifactId>
-        <version>1.2.0</version>
+        <version>2.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -87,6 +87,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.paypal.selion</groupId>
             <artifactId>SeLion-Grid</artifactId>
             <version>${project.version}</version>
@@ -109,12 +114,6 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-nodep</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -133,22 +132,9 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- selendroid client dependency -->
         <dependency>
-            <groupId>io.selendroid</groupId>
-            <artifactId>selendroid-client</artifactId>
-        </dependency>
-
-        <!-- iosdriver client dependency -->
-        <dependency>
-            <groupId>org.uiautomation</groupId>
-            <artifactId>ios-client</artifactId>
-        </dependency>
-
-        <!-- Appium java client dependency -->
-        <dependency>
-            <groupId>io.appium</groupId>
-            <artifactId>java-client</artifactId>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
         </dependency>
 
         <dependency>

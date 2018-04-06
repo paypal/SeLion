@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,6 +19,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
@@ -27,9 +29,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.google.gson.JsonArray;
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import com.paypal.selion.reports.runtime.SeLionReporter;
 
@@ -59,7 +59,7 @@ public class WebTestTest {
      **/
     @Test(groups = { "functional" }, threadPoolSize = 2, invocationCount = 2, timeOut = 10000)
     @WebTest
-    public void testUnamedSessionMultipleThreadsAndInvocations() {
+    public void testUnnamedSessionMultipleThreadsAndInvocations() {
         SeLionReporter.log("Browser start page", true, true);
     }
 
@@ -77,6 +77,7 @@ public class WebTestTest {
         assertEquals(Grid.getWebTestSession().getAdditionalCapabilities().getCapability("name"), "a:b");
     }
 
+    @SuppressWarnings("unchecked")
     @Test(groups = "functional")
     @WebTest(additionalCapabilitiesBuilders = ChromeOptionsOverrideCapabilities.class)
     public void testCapabilityBuilderViaAnnotation() throws Exception {
@@ -84,12 +85,13 @@ public class WebTestTest {
 
         assertEquals(caps.getCapability(CapabilityType.BROWSER_NAME), "chrome");
 
-        ChromeOptions options = (ChromeOptions) caps.getCapability(ChromeOptions.CAPABILITY);
-        JsonArray args = options.toJson().getAsJsonObject().get("args").getAsJsonArray();
+        Map<String, ?> chromeOptions = (Map<String, ?>) caps.getCapability(ChromeOptions.CAPABILITY);
+        List<String> args = (List<String>) chromeOptions.get("args");
         assertEquals(args.size(), 1);
-        assertEquals(args.get(0).getAsString(), "--bogus-arg");
+        assertEquals(args.get(0), "--bogus-arg");
     }
 
+    @SuppressWarnings("unchecked")
     @Test(groups = "functional")
     @WebTest
     public void testCapabilityBuilderInline() throws Exception {
@@ -98,11 +100,11 @@ public class WebTestTest {
         caps.merge(new ChromeOptionsOverrideCapabilities().createCapabilities());
         assertEquals(caps.getCapability(CapabilityType.BROWSER_NAME), "chrome");
 
-        ChromeOptions options = (ChromeOptions)
+        Map<String, ?> chromeOptions = (Map<String, ?>)
                 Grid.getWebTestSession().getAdditionalCapabilities().getCapability(ChromeOptions.CAPABILITY);
-        JsonArray args = options.toJson().getAsJsonObject().get("args").getAsJsonArray();
+        List<String> args = (List<String>) chromeOptions.get("args");
         assertEquals(args.size(), 1);
-        assertEquals(args.get(0).getAsString(), "--bogus-arg");
+        assertEquals(args.get(0), "--bogus-arg");
     }
 
     @Test(testName = "testCapabilityViaTestResult", groups = "functional")

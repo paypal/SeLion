@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,6 +35,8 @@ public class TestPage extends BasicPageImpl {
     private Button continueButton;
     private TextField fieldXTextField;
     private CheckBox xCheckBox;
+    private Label loadingSpinnerLabel;
+    private Button performAnimationButton;
 
     private static String CLASS_NAME = "TestPage";
     private static String PAGE_DOMAIN = "paypal";
@@ -49,7 +51,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Creates a new TestPage object
-     * 
+     *
      * @param siteLocale
      *            The Country locale for the site you are accessing
      */
@@ -69,7 +71,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get xRadioButton in the page TestPage
-     * 
+     *
      * @return xRadioButton
      */
     public RadioButton getXRadioButton() {
@@ -96,7 +98,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get logLabel in the page TestPage
-     * 
+     *
      * @return logLabel
      */
     public Label getLogLabel() {
@@ -116,7 +118,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get xSelectList in the page TestPage
-     * 
+     *
      * @return xSelectList
      */
     public SelectList getXSelectList() {
@@ -150,7 +152,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get hiddenButton in the page TestPage
-     * 
+     *
      * @return hiddenButton
      */
     public Button getHiddenButton() {
@@ -177,7 +179,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get the value of hiddenButton in the page TestPage.
-     * 
+     *
      * @return text in hiddenButton
      */
     public String getHiddenButtonValue() {
@@ -186,7 +188,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get the SelionContainer.
-     * 
+     *
      * @return selionContainer
      */
     public SelionContainer getSelionContainer() {
@@ -200,7 +202,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get SelionContainer at specified index.
-     * 
+     *
      * @return selionContainer at index
      */
     public SelionContainer getSelionContainer(int index) {
@@ -210,7 +212,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get continueButton in the page TestPage
-     * 
+     *
      * @return continueButton
      */
     public Button getContinueButton() {
@@ -237,7 +239,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get the value of continueButton in the page TestPage.
-     * 
+     *
      * @return text in continueButton
      */
     public String getContinueButtonValue() {
@@ -246,7 +248,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get fieldXTextField in the page TestPage
-     * 
+     *
      * @return fieldXTextField
      */
     public TextField getFieldXTextField() {
@@ -267,7 +269,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get the value of fieldXTextField in the page TestPage.
-     * 
+     *
      * @return text in fieldXTextField
      */
     public String getFieldXTextFieldValue() {
@@ -276,7 +278,7 @@ public class TestPage extends BasicPageImpl {
 
     /**
      * Used to get xCheckBox in the page TestPage
-     * 
+     *
      * @return xCheckBox
      */
     public CheckBox getXCheckBox() {
@@ -308,6 +310,64 @@ public class TestPage extends BasicPageImpl {
         getXCheckBox().click();
     }
 
+    /**
+     * Used to get loadingSpinnerLabel in the page ThePage
+     *
+     * @return loadingSpinnerLabel
+     */
+    public Label getLoadingSpinnerLabel() {
+        Label element = this.loadingSpinnerLabel;
+        if(element == null) {
+            this.loadingSpinnerLabel = new Label(getObjectMap().get("loadingSpinnerLabel"), "loadingSpinnerLabel",
+                                                    this);
+        }
+        return this.loadingSpinnerLabel;
+    }
+
+    /**
+     * Used to check for the specific text available in the control loadingSpinnerLabel
+     */
+    public boolean isTextPresentForLoadingSpinnerLabel(String pattern) {
+        return getLoadingSpinnerLabel().isTextPresent(pattern);
+    }
+
+    /**
+     * Used to get performAnimationButton in the page ThePage
+     *
+     * @return performAnimationButton
+     */
+    public Button getPerformAnimationButton() {
+        Button element = this.performAnimationButton;
+        if(element == null) {
+            this.performAnimationButton = new Button(getObjectMap().get("performAnimationButton"), "performAnimationButton",
+                                                        this);
+        }
+        return this.performAnimationButton;
+    }
+
+    /**
+     * Used to click performAnimationButton in the page ThePage and check that resulting page contains expected item.
+     */
+    public void clickPerformAnimationButton(Object... expected) {
+        getPerformAnimationButton().click(expected);
+    }
+
+    /**
+     * Used to click performAnimationButton in the page ThePage
+     */
+    public void clickPerformAnimationButton() {
+        getPerformAnimationButton().click();
+    }
+
+    /**
+     * Used to get the value of performAnimationButton in the page ThePage.
+     *
+     * @return text in performAnimationButton
+     */
+    public String getPerformAnimationButtonValue() {
+        return getPerformAnimationButton().getText();
+    }
+
     public class SelionContainer extends Container {
 
         private Button containerButton;
@@ -316,12 +376,12 @@ public class TestPage extends BasicPageImpl {
          * SelionContainer Construction method <br>
          * <br>
          * <b>Usage:</b>
-         * 
+         *
          * <pre>
          * private TestPage pageInstance = new TestPage();
          * private TestPage.SelionContainer selionContainer = pageInstance.new SelionContainer(&quot;//span[@id='containerLocator']&quot;);
          * </pre>
-         * 
+         *
          * @param locator
          *            the element locator
          */
@@ -332,7 +392,7 @@ public class TestPage extends BasicPageImpl {
         /**
          * Use this constructor to override default controlName for logging purposes. Default controlName would be the
          * element locator.
-         * 
+         *
          * @param locator
          *            the element locator
          * @param controlName
@@ -344,14 +404,14 @@ public class TestPage extends BasicPageImpl {
 
         /**
          * Use this constructor to override default controlName and assign a parent
-         * 
+         *
          * @param locator
          *            A String that represents the means to locate this element (could be id/name/xpath/css locator).
          * @param controlName
          *            the control name used for logging.
          * @param parent
          *            A {@link ParentTraits} object that represents the parent element for this element.
-         * 
+         *
          */
         public SelionContainer(String locator, String controlName, ParentTraits parent) {
             super(locator, controlName, parent);
@@ -370,11 +430,11 @@ public class TestPage extends BasicPageImpl {
         }
 
         /**
-         * 
+         *
          * For SelionContainer Button : containerButton
-         * 
+         *
          * Used to get containerButton in selionContainer
-         * 
+         *
          * @return containerButton
          */
         public Button getContainerButton() {

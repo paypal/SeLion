@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite thread-count="10" verbose="1" name="Firefox Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
-    parallel="methods" data-provider-thread-count="50" annotations="JDK">
+<suite thread-count="5" verbose="1" name="Firefox Unit Test Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="methods" data-provider-thread-count="10" annotations="JDK">
 
     <parameter name="browser" value="*firefox" />
 

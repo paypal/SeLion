@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -20,7 +20,7 @@ import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.proxy.SeLionRemoteProxy;
 import com.paypal.selion.utils.ServletHelper;
 import org.openqa.grid.internal.ProxySet;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -73,7 +73,7 @@ public class GridForceRestartDelegateServlet extends RegistryBasedServlet {
         this(null);
     }
 
-    public GridForceRestartDelegateServlet(Registry registry) {
+    public GridForceRestartDelegateServlet(GridRegistry registry) {
         super(registry);
     }
 

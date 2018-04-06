@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,17 +19,20 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import com.paypal.selion.SeLionConstants;
+import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 
 /**
  * This class represents the capabilities that are specific to firefox.
- * 
  */
 class FireFoxCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
 
@@ -41,7 +44,27 @@ class FireFoxCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
             capabilities.setCapability(CapabilityType.PROXY, ProxyHelper.createProxyObject());
         }
 
+        if (!isLegacyFF()) {
+            capabilities.setCapability(FirefoxDriver.MARIONETTE, true);
+            String geckoDriverPath = getBinaryPath();
+            if (isLocalRun() && StringUtils.isNotBlank(geckoDriverPath)) {
+                System.setProperty(SeLionConstants.WEBDRIVER_GECKO_DRIVER_PROPERTY, geckoDriverPath);
+            }
+            capabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, getDefaultFirefoxOptions());
+        }
+
         return capabilities;
+    }
+
+    /*
+     * Returns the default {@link FirefoxOptions} used by this capabilities builder.
+     */
+    private FirefoxOptions getDefaultFirefoxOptions() {
+        FirefoxOptions options = new FirefoxOptions();
+        options.setLogLevel(FirefoxDriverLogLevel.INFO);
+        options.setHeadless(Boolean.parseBoolean(getLocalConfigProperty(ConfigProperty.BROWSER_RUN_HEADLESS)));
+
+        return options;
     }
 
     private FirefoxProfile getProfile(String dirName) {
@@ -111,4 +134,17 @@ class FireFoxCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         logger.exiting(profile);
         return profile;
     }
+
+    /*
+     * Returns the location of Gecko/marionette driver or empty string if it cannot be determined.
+     */
+    private String getBinaryPath() {
+        return System.getProperty(SeLionConstants.WEBDRIVER_GECKO_DRIVER_PROPERTY,
+                Config.getConfigProperty(ConfigProperty.SELENIUM_GECKODRIVER_PATH));
+    }
+
+    private boolean isLegacyFF() {
+        return !Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_GECKODRIVER);
+    }
+
 }

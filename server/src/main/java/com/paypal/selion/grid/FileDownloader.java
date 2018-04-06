@@ -266,7 +266,7 @@ final class FileDownloader {
                 return filename;
             }
         }
-        LOGGER.info("Downloading from " + url + " with checksum " + checksum + "[" + algorithm + "]");
+        LOGGER.fine("Downloading from " + url + " with checksum " + checksum + "[" + algorithm + "]");
 
         try {
             FileUtils.copyURLToFile(new URL(url), new File(filename), 10000, 60000);

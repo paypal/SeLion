@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2016 PayPal                                                                                          |
+|  Copyright (C) 2016-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 
 import com.paypal.selion.logging.SeLionGridLogger;
@@ -47,7 +47,7 @@ public class BrowserInformationCache {
     private static final BrowserInformationCache instance = new BrowserInformationCache();
 
     private final Map<URL, TestSlotInformation> nodeMap;
-    
+
     static {
         List<String> browserList = new ArrayList<>();
         try {
@@ -78,7 +78,7 @@ public class BrowserInformationCache {
     /**
      * Updates the Cache for the provide Node represented by the {@link URL} instance. This methods creates or updates
      * information for the Node/Browser combination.
-     * 
+     *
      * @param url
      *            {@link URL} of the Node.
      * @param browserName
@@ -102,15 +102,15 @@ public class BrowserInformationCache {
 
     /**
      * Returns the total instances of a particular browser, available through all nodes. This methods takes an instance
-     * of {@link Registry} to clean the cache before returning the results.
-     * 
+     * of {@link GridRegistry} to clean the cache before returning the results.
+     *
      * @param browserName
      *            Browser name as {@link String}
      * @param registry
-     *            {@link Registry} instance.
+     *            {@link GridRegistry} instance.
      * @return Total instances of a particular browser across nodes.
      */
-    public synchronized int getTotalBrowserCapacity(String browserName, Registry registry) {
+    public synchronized int getTotalBrowserCapacity(String browserName, GridRegistry registry) {
         logger.entering(new Object[] { browserName, registry });
         cleanCacheUsingRegistry(registry);
         int totalBrowserCounts = 0;
@@ -122,12 +122,12 @@ public class BrowserInformationCache {
         return totalBrowserCounts;
     }
 
-    private void cleanCacheUsingRegistry(Registry registry) {
+    private void cleanCacheUsingRegistry(GridRegistry registry) {
         List<URL> relevantURLs = getRegistryURLs(registry);
         removeIrrelevantURLs(relevantURLs);
     }
 
-    private List<URL> getRegistryURLs(Registry registry) {
+    private List<URL> getRegistryURLs(GridRegistry registry) {
         Iterator<RemoteProxy> remoteProxyIterator = registry.getAllProxies().iterator();
         List<URL> urlList = new ArrayList<>();
         while (remoteProxyIterator.hasNext()) {
@@ -164,7 +164,7 @@ public class BrowserInformationCache {
 
         /**
          * Updates the BrowserInformation. This method removes the existing entry and updates with the new entry.
-         * 
+         *
          * @param browserInformation
          *            Instance of {@link BrowserInformation}
          * @return True if addition is successful, false otherwise.

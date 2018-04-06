@@ -15,14 +15,17 @@
 
 package com.paypal.selion.proxy;
 
+import com.beust.jcommander.JCommander;
 import com.paypal.selion.pojos.SeLionGridConstants;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -43,23 +46,28 @@ public class SeLionSauceProxyTest {
     @BeforeClass
     public void setup() throws Exception {
         httpClientFactory = new HttpClientFactory();
+
         String[] args = new String[] {
-                "-role", "hub", "-type", "sauce",
+                "-role", "hub",
                 "-host", "localhost",
-                "-servlets", "com.paypal.selion.grid.servlets.LoginServlet,com.paypal.selion.grid.servlets.SauceServlet"
+                "-port", String.valueOf(PortProber.findFreePort()),
+                "-servlet", "com.paypal.selion.grid.servlets.LoginServlet",
+                "-servlet", "com.paypal.selion.grid.servlets.SauceServlet"
         };
-        GridHubConfiguration ghc = GridHubConfiguration.build(args);
+        GridHubConfiguration ghc = new GridHubConfiguration();
+        new JCommander(ghc, args);
+
         hub = new Hub(ghc);
+        hub.start();
     }
 
-    @Test()
+    @Test
     public void testSauceProxyConfig() throws Exception {
         InputStream stream = this.getClass().getResourceAsStream(SeLionGridConstants.NODE_SAUCE_CONFIG_FILE_RESOURCE);
         tempFile = File.createTempFile("selion-test", null);
         FileUtils.copyInputStreamToFile(stream, tempFile);
-        req = new RegistrationRequest();
-        req.loadFromJSON(tempFile.toString());
-        assertTrue(req.getCapabilities().size() > 0);
+        req = new RegistrationRequest(GridNodeConfiguration.loadFromJSON(tempFile.toString()));
+        assertTrue(req.getConfiguration().capabilities.size() > 0);
     }
 
     @Test(dependsOnMethods = "testSauceProxyConfig")

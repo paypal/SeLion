@@ -1,0 +1,14 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+defaultLocale: "US"
+elements:
+  performAnimationButton:
+    locators:
+      US: "//input[@id='animation']"
+  loadingSpinnerLabel:
+    locators:
+      US: "//div[@id='loader']"
+pageLoadingValidators: [
+  loadingSpinnerLabel.isVisible
+]
+pageTitle:
+  US: "TestPage After Animation"

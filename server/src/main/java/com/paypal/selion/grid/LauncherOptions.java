@@ -22,8 +22,7 @@ package com.paypal.selion.grid;
  */
 public interface LauncherOptions {
     /**
-     * Enable/Disable clean up of previously downloaded artifacts for subsequent calls to {@link FileDownloader} .
-     * Default: enabled.
+     * Enable/Disable clean up of previously downloaded artifacts for subsequent calls to {@link FileDownloader}
      */
     <T extends LauncherOptions> T setFileDownloadCleanupOnInvocation(boolean val);
 
@@ -34,7 +33,7 @@ public interface LauncherOptions {
 
     /**
      * Enable/Disable download.json time stamp check. If enabled, subsequent calls to {@link FileDownloader} will
-     * immediately return if the time stamp is unchanged. Default: enabled.
+     * immediately return if the time stamp is unchanged.
      */
     <T extends LauncherOptions> T setFileDownloadCheckTimeStampOnInvocation(boolean val);
 
@@ -43,31 +42,13 @@ public interface LauncherOptions {
      */
     boolean isFileDownloadCheckTimeStampOnInvocation();
 
+    /**
+     * @return the selionConfig file to use
+     */
+    String getSeLionConfig();
 
     /**
-     * Implements {@link LauncherOptions}
+     * Set the selionConfig file to use
      */
-    @SuppressWarnings("unchecked")
-    class LauncherOptionsImpl implements LauncherOptions {
-        private boolean fileDownloadCleanupOnInvocation = true;
-        private boolean fileDownloadCheckTimeStampOnInvocation = true;
-
-        public <T extends LauncherOptions> T setFileDownloadCleanupOnInvocation(boolean val) {
-            fileDownloadCleanupOnInvocation = val;
-            return (T) this;
-        }
-
-        public boolean isFileDownloadCleanupOnInvocation() {
-            return fileDownloadCleanupOnInvocation;
-        }
-
-        public <T extends LauncherOptions> T setFileDownloadCheckTimeStampOnInvocation(boolean val) {
-            fileDownloadCheckTimeStampOnInvocation = val;
-            return (T) this;
-        }
-
-        public boolean isFileDownloadCheckTimeStampOnInvocation() {
-            return fileDownloadCheckTimeStampOnInvocation;
-        }
-    }
+    <T extends LauncherOptions> T setSeLionConfig(String configFile);
 }

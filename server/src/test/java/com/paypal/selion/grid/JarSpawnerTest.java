@@ -20,12 +20,9 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.fail;
 
 import org.apache.commons.lang.SystemUtils;
-import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
 
 @Test(singleThreaded = true, groups = { "downloads-dependencies" } )
 public class JarSpawnerTest {
@@ -34,10 +31,9 @@ public class JarSpawnerTest {
 
     @BeforeClass
     public void beforeClass() {
-        String host = new NetworkUtils().getIpOfLoopBackIp4();
         int port = PortProber.findFreePort();
-        spawner = new JarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
-                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false));
+        spawner = new JarSpawner(new String[] { "-port", String.valueOf(port) },
+                new ProcessLauncherConfiguration().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false));
 
         thread = new Thread(spawner);
     }

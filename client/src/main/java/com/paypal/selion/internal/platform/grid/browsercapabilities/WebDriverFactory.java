@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                          |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,7 +35,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * This factory class is responsible for providing the framework with a {@link RemoteWebDriver} instance based on the
  * browser type.
- * 
+ *
  */
 public final class WebDriverFactory {
 
@@ -46,8 +46,7 @@ public final class WebDriverFactory {
     }
 
     /**
-     * @param browser
-     *            - enum that represents the browser flavor for which capabilities are being requested.
+     * @param browser enum that represents the browser flavor for which capabilities are being requested.
      * @return A {@link RemoteWebDriver} instance based on the browser type
      */
     public static RemoteWebDriver createInstance(BrowserFlavors browser) {
@@ -56,12 +55,7 @@ public final class WebDriverFactory {
         RemoteWebDriver driver = null;
         switch (browser) {
         case FIREFOX:
-            boolean useGeckoDriver = Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_GECKODRIVER);
-            if (useGeckoDriver) {
-                capability = new GeckoCapabilitiesBuilder().createCapabilities();
-            } else {
-                capability = new FireFoxCapabilitiesBuilder().createCapabilities();
-            }
+            capability = new FireFoxCapabilitiesBuilder().createCapabilities();
             break;
         case CHROME:
             capability = new ChromeCapabilitiesBuilder().createCapabilities();

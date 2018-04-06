@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -119,7 +119,7 @@ public final class WebDriverWaitUtils {
     /**
      * Waits until element is present on the DOM of a page. This does not necessarily mean that the element is
      * visible.
-     * 
+     *
      * @param element
      *            element to be found
      */
@@ -170,7 +170,7 @@ public final class WebDriverWaitUtils {
 
     /**
      * Waits until the current page's title contains a case-sensitive substring of the given title.
-     * 
+     *
      * @param pageTitle
      *            title of page expected to appear
      */
@@ -208,7 +208,7 @@ public final class WebDriverWaitUtils {
      *
      * @param locators
      *            an array of strings that represents the list of elements to check.
-     * 
+     *
      */
     public static void waitUntilAllElementsArePresent(final String... locators) {
         logger.entering(new Object[] { Arrays.toString(locators) });
@@ -222,7 +222,7 @@ public final class WebDriverWaitUtils {
     /**
      * Waits until all <code>pageValidators</code> for a given object pass. The {@link WebPage} instance must express
      * something that validates the page or calling this will cause a wait timeout.
-     * 
+     *
      * @param pageObject
      *            a {@link WebPage} instance.
      */
@@ -234,6 +234,27 @@ public final class WebDriverWaitUtils {
             @Override
             public Boolean apply(WebDriver webDriver) {
                 w.validatePage();
+                return true;
+            }
+        };
+        waitForConditionIgnoring(conditionToCheck, PageValidationException.class);
+        logger.exiting();
+    }
+
+    /**
+     * Waits until all <code>pageLoadingValidators</code> for a given object pass. If the {@link WebPage} does not
+     * express any criteria for loading state this method will return <code>true</code> immediately
+     * @param pageObject
+     *            a {@link WebPage} instance.
+     */
+    public static void waitUntilPageIsLoaded(WebPage pageObject) {
+        logger.entering(pageObject);
+        Preconditions.checkArgument(pageObject != null, "Please provide a valid instance of WebPage.");
+        final WebPage w = pageObject;
+        ExpectedCondition<Boolean> conditionToCheck = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                w.checkIfLoaded();
                 return true;
             }
         };

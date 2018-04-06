@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,8 +24,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.ProxySet;
-import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -49,7 +49,7 @@ public class ListAllNodes extends RegistryBasedServlet {
         this(null);
     }
 
-    public ListAllNodes(Registry registry) {
+    public ListAllNodes(GridRegistry registry) {
         super(registry);
     }
 
@@ -66,7 +66,7 @@ public class ListAllNodes extends RegistryBasedServlet {
     /**
      * This method gets all the nodes which are connected to the grid machine from the Registry and displays them in
      * html page.
-     * 
+     *
      * @param request
      *            {@link HttpServletRequest} that represents the servlet request
      * @param response

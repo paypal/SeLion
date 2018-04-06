@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -21,16 +21,17 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.LauncherConfiguration;
 import com.paypal.selion.grid.LauncherOptions;
 import com.paypal.selion.grid.ThreadedLauncher;
-import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
@@ -58,7 +59,9 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
             String hubPort = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
             String hub = String.format("http://%s:%s/grid/register", instance.getHost(), hubPort);
 
-            LauncherOptions launcherOptions = new LauncherOptionsImpl()
+            setLegacyFFBootupIfRequested();
+
+            LauncherOptions launcherOptions = new LauncherConfiguration()
                     .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
 
             List<String> downloadList = determineListOfDownloadsToProcess();
@@ -93,6 +96,13 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
         }
         super.shutdown();
         LOGGER.exiting();
+    }
+
+    private void setLegacyFFBootupIfRequested() {
+        // Note: we do not support legacyFF AND marionette at the same time for local runs.
+        if (!Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_GECKODRIVER)) {
+            System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "false");
+        }
     }
 
     /*
@@ -161,8 +171,7 @@ final class LocalNode extends AbstractBaseLocalServerComponent {
     private boolean checkForPresenceOf(ConfigProperty property, String systemProperty, String driverBinary) {
         if (StringUtils.isBlank(Config.getConfigProperty(property)) && System.getProperty(systemProperty) == null) {
             // check the CWD and PATH for the driverBinary
-            @SuppressWarnings("deprecation")
-            String location = CommandLine.find(driverBinary.replace(".exe", ""));
+            String location = new ExecutableFinder().find(driverBinary.replace(".exe", ""));
             return (location != null);
         }
         return true;

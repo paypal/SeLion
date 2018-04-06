@@ -24,7 +24,6 @@ import org.testng.annotations.Test;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.internal.platform.grid.browsercapabilities.AdditionalSauceCapabilitiesBuilder;
 
 public class AdditionalSauceCapabilitiesBuilderTest {
     private static final String SAUCE_CONFIG_FILE = "sauceConfig.json";

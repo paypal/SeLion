@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2016 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,7 +17,6 @@ package com.paypal.selion.proxy;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +41,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.RemoteUnregisterException;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.paypal.selion.SeLionBuildInfo;
 import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
@@ -72,30 +71,30 @@ import com.paypal.test.utilities.logging.SimpleLoggerSettings;
  * <code>SeLionConfig.json</code> with the setting <code>uniqueSessionCount</code>.<br>
  * <br>
  * For example:
- * 
+ *
  * <pre>
  *  "uniqueSessionCount": 25
  * </pre>
- * 
+ *
  * Here the value 25 indicates that the proxy will stop accepting new connections after 25 unique sessions and trigger a
  * graceful shutdown (see below). A value of <=0 indicates that this feature is disabled.</li>
- * 
+ *
  * <li>Request remote proxy to shutdown either forcefully or gracefully -- issues a request to
  * {@link NodeForceRestartServlet}. In the case of a graceful restart, the proxy respects a wait timeout for any
  * sessions in progress to complete. This is controlled via the json config file <code>SeLionConfig.json</code> with the
  * setting <code>nodeRecycleThreadWaitTimeout</code>.<br>
  * <br>
  * For example:
- * 
+ *
  * <pre>
  *  "nodeRecycleThreadWaitTimeout": 300
  * </pre>
- * 
+ *
  * Here the value 300 is in seconds -- the proxy will wait this amount of time before forcing a shutdown action. A value
  * of 0 indicates that the proxy will wait indefinitely.</li>
- * 
+ *
  * <li>Request remote proxy to auto upgrade -- issues a request to {@link NodeAutoUpgradeServlet}.</li>
- * 
+ *
  * <li>Determine whether the remote proxy supports {@link NodeAutoUpgradeServlet}, {@link NodeForceRestartServlet}, and
  * {@link LogServlet}</li>
  * </ul>
@@ -121,10 +120,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      *            a {@link RegistrationRequest} request which represents the basic information that is to be consumed by
      *            the grid when it is registering a new node.
      * @param registry
-     *            a {@link Registry} object that represents the Grid's registry.
+     *            a {@link GridRegistry} object that represents the Grid's registry.
      * @throws IOException
      */
-    public SeLionRemoteProxy(RegistrationRequest request, Registry registry) throws IOException {
+    public SeLionRemoteProxy(RegistrationRequest request, GridRegistry registry) throws IOException {
         super(request, registry);
 
         proxyStartMillis = System.currentTimeMillis();
@@ -142,7 +141,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         loggerSettings.setDevLevel(Level.OFF);
         loggerSettings.setLoggerName(machine);
         loggerSettings.setClassName(SeLionRemoteProxy.class.getSimpleName());
-        loggerSettings.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
+        loggerSettings.setIdentifier("SeLion-Grid-" + SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
         loggerSettings.setMaxFileCount(1);
         loggerSettings.setMaxFileSize(5);
         proxyLogger = SimpleLogger.getLogger(loggerSettings);
@@ -185,7 +184,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private boolean isSupportedOnHub(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
-        final boolean response = getRegistry().getConfiguration().getServlets().contains(servlet.getCanonicalName());
+        final boolean response = getRegistry().getHub().getConfiguration().servlets.contains(servlet.getCanonicalName());
         LOGGER.exiting(response);
         return response;
     }
@@ -204,10 +203,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private boolean isSupportedOnNode(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
                 .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
-        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
         String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(),
                 servlet.getSimpleName());
 
@@ -238,10 +237,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     private HttpResponse sendToNodeServlet(Class<? extends HttpServlet> servlet, List<NameValuePair> nvps) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
                 .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
-        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
         String url = String.format("http://%s:%d/extra/%s", machine, this.getRemoteHost().getPort(),
                 servlet.getSimpleName());
 
@@ -265,7 +264,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     /**
      * Upgrades the node by calling {@link NodeAutoUpgradeServlet} and then {@link #requestNodeShutdown}
-     * 
+     *
      * @param downloadJSON
      *            the download.json to install on node
      * @return <code>true</code> on success. <code>false</code> when an error occured.
@@ -378,16 +377,14 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private void updateBrowserCache(RegistrationRequest request) throws MalformedURLException {
         // Update the browser information cache. Used by GridStatics servlet
-        String urlString = request.getConfiguration().get("url").toString();
-        URL url = new URL(urlString);
-        for (DesiredCapabilities desiredCapabilities : request.getCapabilities()) {
+        for (MutableCapabilities desiredCapabilities : request.getConfiguration().capabilities) {
             Map<String, ?> capabilitiesMap = desiredCapabilities.asMap();
             String browserName = capabilitiesMap.get(CapabilityType.BROWSER_NAME).toString();
             String maxInstancesAsString = capabilitiesMap.get("maxInstances").toString();
             if (StringUtils.isNotBlank(browserName) && StringUtils.isNotBlank(maxInstancesAsString)) {
                 int maxInstances = Integer.valueOf(maxInstancesAsString);
                 BrowserInformationCache cache = BrowserInformationCache.getInstance();
-                cache.updateBrowserInfo(url, browserName, maxInstances);
+                cache.updateBrowserInfo(getRemoteHost(), browserName, maxInstances);
             }
         }
     }
@@ -530,8 +527,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
         int getThreadWaitTimeout() {
             final String key = "nodeRecycleThreadWaitTimeout";
-            Map<String, Object> configuration =  getConfig();
-            return configuration.containsKey(key) ? (int) configuration.get(key) : DEFAULT_TIMEOUT;
+            return config.custom.containsKey(key) ? Integer.parseInt(config.custom.get(key)) : DEFAULT_TIMEOUT;
         }
 
         private boolean keepLooping(int expired, int timeout) {
@@ -563,7 +559,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private void disableMaxSessions() {
         proxyLogger.warning("Disabling max unique sessions for Node " + getId());
-        getConfig().put("uniqueSessionCount", -1);
+        config.custom.put("uniqueSessionCount", "-1");
     }
 
     /**
@@ -572,8 +568,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      */
     private int getMaxSessionsAllowed() {
         final String key = "uniqueSessionCount";
-        Map<String, Object> configuration =  getConfig();
-        return configuration.containsKey(key) ? (int) configuration.get(key) : DEFAULT_MAX_SESSIONS_ALLOWED;
+        return config.custom.containsKey(key) ? Integer.parseInt(config.custom.get(key)) : DEFAULT_MAX_SESSIONS_ALLOWED;
     }
 
     /**

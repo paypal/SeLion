@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -27,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.io.IOUtils;
 
 import com.paypal.selion.SeLionConstants;
 import com.paypal.selion.logging.SeLionGridLogger;
@@ -35,14 +34,14 @@ import com.paypal.selion.logging.SeLionGridLogger;
 /**
  * A Helper class that helps do an authentication check for the given user name password. NOTE: This class DOES NOT
  * validate the credentials against LDAP.
- * 
+ *
  * The following are some of the assumptions that this helper makes.
- * 
+ *
  * <ul>
  * <li>User name will always be <b>admin</admin> and CANNOT be changed.
  * <li>Multiple user names are not supported.
  * </ul>
- * 
+ *
  */
 public final class AuthenticationHelper {
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AuthenticationHelper.class);
@@ -61,7 +60,7 @@ public final class AuthenticationHelper {
 
     /**
      * Tries authenticating a given credentials and returns <code>true</code> if the credentials were valid.
-     * 
+     *
      * @param userName
      * @param userPassword
      * @return - <code>true</code> if the credentials were valid.
@@ -92,7 +91,7 @@ public final class AuthenticationHelper {
 
     /**
      * Changes the password for the given user to the new password
-     * 
+     *
      * @param userName
      * @param newPassword
      * @return <code>true</code> if the password was successfully changed.
@@ -130,33 +129,24 @@ public final class AuthenticationHelper {
     }
 
     private static void writeBytesToFile(File file, byte[] bytes) throws IOException {
-        FileOutputStream fos = null;
-        DataOutputStream dos = null;
-
-        try {
-            fos = new FileOutputStream(file);
-            dos = new DataOutputStream(fos);
+        try (
+            FileOutputStream fos = new FileOutputStream(file);
+            DataOutputStream dos = new DataOutputStream(fos)
+        ) {
             dos.write(bytes);
-        } finally {
-            IOUtils.closeQuietly(dos);
-            IOUtils.closeQuietly(fos);
         }
     }
 
     private static byte[] getBytesFromFile(File file) throws IOException {
         byte[] data;
-        FileInputStream fis = null;
-        DataInputStream ois = null;
 
-        try {
-            fis = new FileInputStream(file);
-            ois = new DataInputStream(fis);
+        try (
+            FileInputStream fis = new FileInputStream(file);
+            DataInputStream ois = new DataInputStream(fis);
+        ) {
             int length = (int) file.length();
             data = new byte[length];
             ois.read(data);
-        } finally {
-            IOUtils.closeQuietly(fis);
-            IOUtils.closeQuietly(ois);
         }
         return data;
     }

@@ -1,16 +1,16 @@
+dist: trusty
 language: java
-sudo: false
+sudo: required
 jdk:
-  - oraclejdk7
   - oraclejdk8
-  - openjdk7
-script:
-  - sh -e utilities/travis-run-ci-tests.sh
-after_success:
-  - sh -e utilities/travis-push-javadoc-to-gh-pages.sh
-  - sh -e utilities/travis-deploy-to-sonatype.sh
 addons:
   sauce_connect: true
+  chrome: stable
+  firefox: latest-esr
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.selion/downloads
 notifications:
   irc:
     channels:
@@ -18,9 +18,38 @@ notifications:
     on_success: always
     on_failure: always
     use_notice: true
-  webhooks: 
+  webhooks:
     urls:
       - https://webhooks.gitter.im/e/a8fc34e427360ced7ebf
     on_success: change
     on_failure: always
     on_start: never
+env:
+  matrix:
+    - TARGET=phantom
+    - TARGET=chrome
+    - TARGET=firefox
+matrix:
+  allow_failures:
+    - env: TARGET=firefox
+  fast_finish: true
+before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
+  - echo "MAVEN_OPTS='-Xmx1g -Xms256m'" > ~/.mavenrc
+script:
+  - |
+      if [[ $TRAVIS_OS_NAME == 'linux' ]] && [[ $TARGET == *"phantom"* ]]; then
+        sh -e utilities/travis-run-ci-tests.sh
+        if [[ $? == 0 ]]; then
+          sh -e utilities/travis-push-javadoc-to-gh-pages.sh
+          sh -e utilities/travis-deploy-to-sonatype.sh
+        fi
+      fi
+  - |
+      if [[ $TRAVIS_OS_NAME == 'linux' ]] && [[ $TARGET == *"chrome"* ]]; then
+        sh -e utilities/travis-run-chrome-tests.sh
+      fi
+  - |
+      if [[ $TRAVIS_OS_NAME == 'linux' ]] && [[ $TARGET == *"firefox"* ]]; then
+        USE_SAUCELABS=true sh -e utilities/travis-run-firefox-tests.sh
+      fi

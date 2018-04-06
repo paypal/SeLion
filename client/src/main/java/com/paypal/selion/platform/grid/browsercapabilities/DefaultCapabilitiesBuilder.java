@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,6 +15,7 @@
 
 package com.paypal.selion.platform.grid.browsercapabilities;
 
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -28,7 +29,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * This class will create instance of {@link DesiredCapabilities} which is pre-filled with all the common properties
  * that are considered de-facto for all browsers.
- * 
+ *
  */
 public abstract class DefaultCapabilitiesBuilder {
 
@@ -49,9 +50,14 @@ public abstract class DefaultCapabilitiesBuilder {
 
         capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
-        // refer here : http://code.google.com/p/selenium/wiki/DesiredCapabilities#Read-write_capabilities
-        // for understanding the relevance of this capability.
-        capability.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, "ignore");
+        // TODO geckodriver does not honor this capability as of v0.18.0 -- See https://github.com/mozilla/geckodriver/issues/617
+        if (!Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_GECKODRIVER) &&
+            Grid.getWebTestSession() != null &&
+            !Grid.getWebTestSession().getBrowser().contains("firefox")) {
+            // refer to https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities#read-write-capabilities
+            // for understanding the relevance of this capability.
+            capability.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE);
+        }
 
         capability.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, true);
         // if user has explicitly asked for javascript to be turned off, then switch it off

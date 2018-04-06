@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite thread-count="100" verbose="1" name="SeLion Client Default Test Suite" skipfailedinvocationcounts="false"
-    junit="false" parallel="false" data-provider-thread-count="50" annotations="JDK">
+<suite thread-count="20" verbose="1" name="SeLion Client Default Test Suite" skipfailedinvocationcounts="false"
+    junit="false" parallel="false" data-provider-thread-count="10" annotations="JDK">
 
     <listeners>
         <listener class-name="com.paypal.selion.reports.runtime.DebugListener" />

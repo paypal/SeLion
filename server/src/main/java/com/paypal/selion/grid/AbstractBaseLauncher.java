@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015-2016 PayPal                                                                                     |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,15 +35,38 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.logging.SeLionGridLogger;
 
 /**
  * An abstract base {@link RunnableLauncher} for SeLion Grid components
  */
 abstract class AbstractBaseLauncher implements RunnableLauncher {
-
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(AbstractBaseLauncher.class);
+    static final String SEPARATOR = "\n----------------------------------\n";
+
+    /**
+     * Selenium argument for specifying a hub config file
+     */
+    static final String HUB_CONFIG_ARG = "-hubConfig";
+
+    /**
+     * Selenium argument for specifying the role
+     */
+    static final String ROLE_ARG = "-role";
+
+    /**
+     * Selenium argument for specifying a node config file
+     */
+    static final String NODE_CONFIG_ARG = "-nodeConfig";
+
+    /**
+     * Selenium argument for specifying the port
+     */
+    static final String PORT_ARG = "-port";
+    /**
+     * Selenium argument for specifying the host
+     */
+    static final String HOST_ARG = "-host";
 
     /*
      * Launcher options to consider.
@@ -165,8 +188,8 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
         // else role is standalone
 
         // pass the -selionConfig by default, when not already present.
-        if (!commands.contains(SELION_CONFIG_ARG)) {
-            args.add(SELION_CONFIG_ARG);
+        if (!commands.contains(ProcessLauncherConfiguration.SELION_CONFIG_ARG)) {
+            args.add(ProcessLauncherConfiguration.SELION_CONFIG_ARG);
             args.add(SELION_CONFIG_FILE);
         }
 
@@ -183,7 +206,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     private String[] getNodeProgramArguments() throws IOException {
         LOGGER.entering();
 
-        LOGGER.info("This instance is considered a SeLion Grid Node");
+        LOGGER.fine("This instance is considered a SeLion Grid Node");
 
         List<String> args = new LinkedList<>();
 
@@ -206,7 +229,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
     private String[] getHubProgramArguments() throws IOException {
         LOGGER.entering();
 
-        LOGGER.info("This instance is considered a SeLion Grid Hub");
+        LOGGER.fine("This instance is considered a SeLion Grid Hub");
 
         List<String> args = new LinkedList<>();
 
@@ -214,7 +237,8 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
             String hubConfig = HUB_CONFIG_FILE;
 
             // To verify this is SeLion Sauce Grid or not
-            if (commands.contains(TYPE_ARG) && commands.contains(InstanceType.SELION_SAUCE_HUB.getFriendlyName())) {
+            if (commands.contains(SeLionGridHubConfiguration.TYPE_ARG) &&
+                    commands.contains(InstanceType.SELION_SAUCE_HUB.getFriendlyName())) {
                 hubConfig = HUB_SAUCE_CONFIG_FILE;
                 InstallHelper.copyFileFromResources(HUB_SAUCE_CONFIG_FILE_RESOURCE, HUB_SAUCE_CONFIG_FILE);
                 InstallHelper.copyFileFromResources(NODE_SAUCE_CONFIG_FILE_RESOURCE, NODE_SAUCE_CONFIG_FILE);
@@ -241,17 +265,14 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
         String val = "";
 
         InstanceType type = getType();
-        if (commands.contains("-host")) {
-            val = commands.get(commands.indexOf("-host") + 1);
+        if (commands.contains(HOST_ARG)) {
+            val = commands.get(commands.indexOf(HOST_ARG) + 1);
             LOGGER.exiting(val);
             return val;
         }
 
         try {
-            if (type.equals(InstanceType.SELENIUM_NODE)) {
-                val = getSeleniumConfigAsJsonObject().getAsJsonObject("configuration").get("host").getAsString();
-            }
-            if (type.equals(InstanceType.SELENIUM_HUB)) {
+            if (type.equals(InstanceType.SELENIUM_NODE) || type.equals(InstanceType.SELENIUM_HUB)) {
                 val = getSeleniumConfigAsJsonObject().get("host").getAsString();
             }
         } catch (JsonParseException | NullPointerException e) {
@@ -274,17 +295,14 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
         int val = -1;
 
         InstanceType type = getType();
-        if (commands.contains("-port")) {
-            val = Integer.parseInt(commands.get(commands.indexOf("-port") + 1));
+        if (commands.contains(PORT_ARG)) {
+            val = Integer.parseInt(commands.get(commands.indexOf(PORT_ARG) + 1));
             LOGGER.exiting(val);
             return val;
         }
 
         try {
-            if (type.equals(InstanceType.SELENIUM_NODE)) {
-                val = getSeleniumConfigAsJsonObject().getAsJsonObject("configuration").get("port").getAsInt();
-            }
-            if (type.equals(InstanceType.SELENIUM_HUB)) {
+            if (type.equals(InstanceType.SELENIUM_NODE) || type.equals(InstanceType.SELENIUM_HUB)) {
                 val = getSeleniumConfigAsJsonObject().get("port").getAsInt();
             }
         } catch (JsonParseException | NullPointerException e) {
@@ -310,7 +328,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
         String json;
         try {
-            json = FileUtils.readFileToString(new File(jsonFile));
+            json = FileUtils.readFileToString(new File(jsonFile), "UTF-8");
             jsonObject = new JsonParser().parse(json).getAsJsonObject();
         } catch (IOException e) {
             LOGGER.exiting(jsonObject.toString());
@@ -407,7 +425,7 @@ abstract class AbstractBaseLauncher implements RunnableLauncher {
 
     LauncherOptions getLauncherOptions() {
         if (launcherOptions == null) {
-            launcherOptions = new LauncherOptionsImpl();
+            launcherOptions = new LauncherConfiguration();
         }
         return launcherOptions;
     }
