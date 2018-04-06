@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -32,7 +32,7 @@ public class SeLionConstants {
     /**
      * The location SeLion-Grid will use to read/write/install required files to
      */
-    public static String SELION_HOME_DIR = HOME_PATH + "/.selion/";
+    public static String SELION_HOME_DIR = HOME_PATH + "/.selion2/";
 
     static {
         // allow for the user to override SELION_HOME via a system property
@@ -53,6 +53,11 @@ public class SeLionConstants {
     public static final String IE_DRIVER = "IEDriverServer.exe";
 
     /**
+     * Executable name for EdgeDriver
+     */
+    public static final String EDGE_DRIVER = "MicrosoftWebDriver.exe";
+
+    /**
      * Platform specific executable name for chromedriver
      */
     public static final String CHROME_DRIVER = SystemUtils.IS_OS_WINDOWS ? "chromedriver.exe" : "chromedriver";
@@ -66,12 +71,12 @@ public class SeLionConstants {
      * Selenium system property for defining the location of chrome driver
      */
     public static final String WEBDRIVER_CHROME_DRIVER_PROPERTY = "webdriver.chrome.driver";
-    
+
     /**
      * Selenium system property for defining the location of ie driver.
      */
     public static final String WEBDRIVER_IE_DRIVER_PROPERTY = "webdriver.ie.driver";
-    
+
     /**
      * Selenium system property for defining the location of phantomjs
      */
@@ -81,4 +86,25 @@ public class SeLionConstants {
      * Selenium system property for defining the location of edge driver.
      */
     public static final String WEBDRIVER_EDGE_DRIVER_PROPERTY = "webdriver.edge.driver";
+
+    /**
+     * Selenium system property for defining the location of Gecko/marionette driver
+     */
+    public static final String WEBDRIVER_GECKO_DRIVER_PROPERTY = "webdriver.gecko.driver";
+
+    /**
+     * Platform specific executable name for gecko/marionette driver
+     */
+    public static final String GECKO_DRIVER = SystemUtils.IS_OS_WINDOWS ? "geckodriver.exe" : "geckodriver";
+
+    /**
+     * SeLion project url
+     */
+    public static final String SELION_PROJECT_GITHUB_URL = "https://github.com/paypal/SeLion";
+
+    /**
+     * SeLion project homepage
+     */
+    public static final String SELION_HOMEPAGE = "http://selion.io";
+
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -28,7 +28,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.platform.dataprovider.impl.ExcelReader;
 import com.paypal.selion.platform.dataprovider.pojos.excel.USER;
 
 public class ExcelReaderTest {
@@ -124,5 +123,14 @@ public class ExcelReaderTest {
     public void testGetRowIndexKeyExistsButRowIsMarkedToBeExcluded() {
         int index = excelReader.getRowIndex("Sheet1", "#1");
         assertEquals(index, -1);
+    }
+
+    @Test(groups = "unit")
+    public void testGetHeaderRow() {
+        Field[] fields = USER.class.getDeclaredFields();
+        List<String> headerRowList = excelReader.getHeaderRowContents(USER.class.getSimpleName(), fields.length);
+        assertNotNull(headerRowList);
+        assertTrue(("[name, PASSWORD, accountnumber, amount, areaCode, bank, phoneNumber, preintTest, isbooleanGood,"
+                + " doubleTest, longTest, floattest, byteTest]").equals(headerRowList.toString()));
     }
 }

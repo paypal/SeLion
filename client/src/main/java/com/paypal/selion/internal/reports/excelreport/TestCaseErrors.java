@@ -31,17 +31,17 @@ public final class TestCaseErrors {
     private static final String BIND_EXCEPTION = "Bind Exception. Kill all javaw.exe and retry.";
 
     private static TestCaseErrors tcErrors;
-    private Map<String, String> mpErrorsInfo = new HashMap<>();
+    private final Map<String, String> MP_ERRORS_INFO = new HashMap<>();
 
     private TestCaseErrors() {
-        mpErrorsInfo.put("(?s).*WaitTimedOutException(?s).*", WAIT_EXCEPTION);
-        mpErrorsInfo.put("(?s).*SeleniumException: ERROR: Element.*not found(?s).*", ELEMENT_NOT_FOUND_EXCEPTION);
-        mpErrorsInfo.put("(?s).*XHR ERROR: URL(?s).*", XHR_ERROR_EXCEPTION);
-        mpErrorsInfo.put("(?s).*java.net.BindException(?s).*Address already in use(?s).*", BIND_EXCEPTION);
-        mpErrorsInfo.put("(?s).*NoSuchElementException(?s).*", ELEMENT_NOT_FOUND_EXCEPTION);
+        MP_ERRORS_INFO.put("(?s).*WaitTimedOutException(?s).*", WAIT_EXCEPTION);
+        MP_ERRORS_INFO.put("(?s).*SeleniumException: ERROR: Element.*not found(?s).*", ELEMENT_NOT_FOUND_EXCEPTION);
+        MP_ERRORS_INFO.put("(?s).*XHR ERROR: URL(?s).*", XHR_ERROR_EXCEPTION);
+        MP_ERRORS_INFO.put("(?s).*java.net.BindException(?s).*Address already in use(?s).*", BIND_EXCEPTION);
+        MP_ERRORS_INFO.put("(?s).*NoSuchElementException(?s).*", ELEMENT_NOT_FOUND_EXCEPTION);
     }
 
-    public static TestCaseErrors getInstance() {
+    public static synchronized TestCaseErrors getInstance() {
         if (tcErrors == null) {
             tcErrors = new TestCaseErrors();
         }
@@ -49,15 +49,15 @@ public final class TestCaseErrors {
     }
 
     String debugError(Throwable defect) {
-        for (String errPattern : mpErrorsInfo.keySet()) {
+        for (String errPattern : MP_ERRORS_INFO.keySet()) {
             if (defect.toString().matches(errPattern)) {
-                return mpErrorsInfo.get(errPattern);
+                return MP_ERRORS_INFO.get(errPattern);
             }
         }
         return null;
     }
 
     public void addError(String sErrorPattern, String sMsgToDisplay) {
-        this.mpErrorsInfo.put(sErrorPattern, sMsgToDisplay);
+        this.MP_ERRORS_INFO.put(sErrorPattern, sMsgToDisplay);
     }
 }

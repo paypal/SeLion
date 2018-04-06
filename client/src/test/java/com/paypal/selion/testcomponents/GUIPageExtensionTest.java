@@ -70,10 +70,6 @@ public class GUIPageExtensionTest {
 
         private Link personalLink;
 
-        public SampleTestPageExtn() {
-            super();
-        }
-
         @Override
         public SampleTestPageExtn getPage() {
             return this;

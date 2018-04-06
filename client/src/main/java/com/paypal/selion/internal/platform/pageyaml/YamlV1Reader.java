@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
+import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
 import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
 
 /**
@@ -63,7 +64,7 @@ class YamlV1Reader extends AbstractYamlReader {
     public Map<String, String> getGuiMap(String locale) {
         logger.entering(locale);
 
-        Map<String, String> instanceMap = new HashMap<String, String>();
+        Map<String, String> instanceMap = new HashMap<>();
         List<Object> allObj = getAllObjects();
 
         for (Object temp : allObj) {
@@ -84,6 +85,11 @@ class YamlV1Reader extends AbstractYamlReader {
         return instanceMap;
     }
 
+    @Override
+    public Map<String, String> getGuiMap(String locale, WebDriverPlatform platform) {
+        return getGuiMap(locale);
+    }
+
     /**
      * The user needs to provide the locale for which data needs to be read. After successfully reading the data from
      * the input stream, it is placed in the hash map and returned to the users.
@@ -98,7 +104,7 @@ class YamlV1Reader extends AbstractYamlReader {
     public Map<String, String> getGuiMapForContainer(String containerKey, String locale) {
         logger.entering(new Object[] { containerKey, locale });
 
-        Map<String, String> instanceMap = new HashMap<String, String>();
+        Map<String, String> instanceMap = new HashMap<>();
         List<Object> allObj = getAllObjects();
 
         for (Object temp : allObj) {

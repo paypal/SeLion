@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -173,8 +173,8 @@
         .append(createInfoLi('Uptime', node.uptimeInMinutes, 'min', true))
         .append(createInfoLi('Resource usage', node.percentResourceUsage, '&#37;', false))
         .append(createInfoLi('Idle timeout', node.configuration.timeout, 'ms', false))
-        .append(createInfoLi('Recycyle wait timeout', node.configuration.nodeRecycleThreadWaitTimeout, 'sec', true))
-        .append(createInfoLi('Max new sessions allowed', node.configuration.uniqueSessionCount, '', true));
+        .append(createInfoLi('Recycyle wait timeout', node.configuration.custom.nodeRecycleThreadWaitTimeout, 'sec', true))
+        .append(createInfoLi('Max new sessions allowed', node.configuration.custom.uniqueSessionCount, '', true));
       $(proxyInfoLeftColumnDiv).appendTo(proxyInfoDiv);
 
       // add right column list items

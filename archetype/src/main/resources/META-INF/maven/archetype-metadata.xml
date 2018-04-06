@@ -10,13 +10,13 @@
             </includes>
         </fileSet>
         <fileSet filtered="true" packaged="false">
-            <directory>src/main/resources/</directory>
+            <directory>src/test/resources/</directory>
             <includes>
                 <include>**/*.html</include>
             </includes>
         </fileSet>
         <fileSet filtered="false" packaged="false">
-            <directory>src/main/resources/GUIData/</directory>
+            <directory>src/test/resources/GUIData/</directory>
             <includes>
                 <include>**/*.yaml</include>
             </includes>

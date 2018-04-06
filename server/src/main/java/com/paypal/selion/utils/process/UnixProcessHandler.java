@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -41,10 +41,11 @@ public class UnixProcessHandler extends AbstractProcessHandler implements Proces
         LOGGER.entering();
         int ourProcessPID = getCurrentProcessID();
 
-        // Find all processes that are our direct children using our PID as the parent pid to pgrep.
+        // Find all processes that are our direct children using our PID with pgrep.
+        // Including any orphaned ones as candidates for cleanup (we will kill all candidate children).
         // The pgrep command is basically getting all child processes and we are interested only in
         // process name and PID with "<#>" as a delimiter.
-        String cmd = String.format("pgrep -P %s -l | awk '{ print $2\"%s\"$1 }'",
+        String cmd = String.format("pgrep -P 1,2,%s -l | awk '{ print $2\"%s\"$1 }'",
                 Integer.toString(ourProcessPID), DELIMITER);
 
         try {
@@ -59,6 +60,8 @@ public class UnixProcessHandler extends AbstractProcessHandler implements Proces
 
     @Override
     public void killProcess(List<ProcessInfo> processes) throws ProcessHandlerException {
+        // Kill all the child processes then actually kill candidates.  Still may not be ideal.
+        super.killProcess(new String[] { "pkill", "-9", "-P" }, processes);
         super.killProcess(new String[] { "kill", "-9" }, processes);
     }
 

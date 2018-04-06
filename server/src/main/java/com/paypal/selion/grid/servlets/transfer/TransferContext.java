@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * <code>TransferContext</code> acts as a data structure for holding upload and download information required for the
- * upload and download request and response factories. The also hold the intermediate data and or state between the
+ * upload and download request and response factories. It also holds the intermediate data and or state between the
  * request and response phases.
  */
 public class TransferContext {

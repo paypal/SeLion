@@ -32,6 +32,13 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * A utility class that helps perform various Reflection related tasks.
  */
 final class ReflectionUtils {
+
+    private static final List<Class<?>> PRIMITIVE_ARRAY_TYPES = Arrays.asList(new Class<?>[] { int[].class,
+            float[].class, char[].class, boolean[].class, short[].class, double[].class, byte[].class });
+    private static final List<Class<?>> WRAPPER_ARRAY_TYPES = Arrays.asList(new Class<?>[] { Integer[].class,
+            Float[].class, Character[].class, Boolean[].class, Short[].class, Double[].class, Byte[].class });
+    private static SimpleLogger logger = SeLionLogger.getLogger();
+
     /**
      * The Exception that is raised whenever {@link ReflectionUtils} encounters problems.
      * 
@@ -52,13 +59,6 @@ final class ReflectionUtils {
         }
 
     }
-
-    private static final List<Class<?>> PRIMITIVE_ARRAY_TYPES = Arrays.asList(new Class<?>[] { int[].class,
-            float[].class, char[].class, boolean[].class, short[].class, double[].class, byte[].class });
-    private static final List<Class<?>> WRAPPER_ARRAY_TYPES = Arrays.asList(new Class<?>[] { Integer[].class,
-            Float[].class, Character[].class, Boolean[].class, Short[].class, Double[].class, Byte[].class });
-
-    private static SimpleLogger logger = SeLionLogger.getLogger();
 
     private static Method getParserMethod(Class<?> type) {
         logger.entering(type);

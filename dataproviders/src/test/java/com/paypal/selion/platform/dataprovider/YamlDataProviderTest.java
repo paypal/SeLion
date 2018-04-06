@@ -604,7 +604,7 @@ public class YamlDataProviderTest {
     }
 
     @Test(groups = "unit", dataProvider = "getListOfLists")
-    public void testDataProviderGetListOfLists(ArrayList<?> test) {
+    public void testDataProviderGetListOfLists(List<?> test) {
         assertNotNull(test);
         assertEquals(test.size(), 3);
         for (Object obj : test) {

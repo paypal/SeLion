@@ -24,7 +24,7 @@ public interface RunnableLauncher extends Runnable {
      */
     void shutdown();
     /**
-     * @return Whether the launcher has completed it's initialization phase which includes downloading dependencies.
+     * @return Whether the launcher has completed its initialization phase which includes downloading dependencies.
      */ 
     boolean isInitialized();
     

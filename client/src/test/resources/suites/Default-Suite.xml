@@ -1,21 +1,21 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite thread-count="100" verbose="1" name="SeLion Client Default Test Suite" skipfailedinvocationcounts="false"
-    junit="false" parallel="false" data-provider-thread-count="50" annotations="JDK">
+<suite thread-count="20" verbose="1" name="SeLion Client Default Test Suite" skipfailedinvocationcounts="false"
+    junit="false" parallel="false" data-provider-thread-count="10" annotations="JDK">
 
     <listeners>
         <listener class-name="com.paypal.selion.reports.runtime.DebugListener" />
     </listeners>
 
     <suite-files>
-        <suite-file path="Chrome-Basic-Unit-Tests.xml"></suite-file>
-        <suite-file path="WebTestThreaded-Suite.xml"></suite-file>
-        <suite-file path="Functional-Suite.xml"></suite-file>
+        <suite-file path="Chrome-Basic-Unit-Tests.xml" />
+        <suite-file path="SessionSharing-Suite.xml" />
+        <suite-file path="Functional-Suite.xml" />
         <suite-file path="SeLionGui-Suite.xml" />
-        <suite-file path="SeLionConfig-Suite.xml"></suite-file>
-        <suite-file path="Chrome-SeLionConfig-Parallel-Tests-Suite.xml"></suite-file>
-        <suite-file path="Chrome-SeLionConfig-Parallel-Classes-Suite.xml"></suite-file>
-        <suite-file path="Chrome-Suite.xml"></suite-file>
-        <suite-file path="ExcelReport-Test.xml"></suite-file>
+        <suite-file path="SeLionConfig-Suite.xml" />
+        <suite-file path="Chrome-SeLionConfig-Parallel-Tests-Suite.xml" />
+        <suite-file path="Chrome-SeLionConfig-Parallel-Classes-Suite.xml" />
+        <suite-file path="Chrome-Suite.xml" />
+        <suite-file path="ExcelReport-Test.xml" />
         <suite-file path="EventFiringCapabilitiesTests.xml" />
     </suite-files>
 </suite>

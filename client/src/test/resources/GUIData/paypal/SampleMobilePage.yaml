@@ -1,0 +1,25 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+defaultLocale: "US"
+platform: "mobile"
+elements:
+  sampleButton:
+    locators:
+      US: "//SampleButton"
+  sampleTextField:
+    locators:
+      US: "//[@id='us_locators']"
+      CH: "//[@id='ch_locators']"
+    ios:
+      FR: "//iosFRTextField"
+    android:
+      FR: "//androidFRTextField"
+      US: "//duplicate_specific_define"
+  sampleElement:
+    ios:
+      FR: "//iosSampleElement"
+    android:
+      FR: "//androidSampleElement"
+pageTitle:
+  US: "Login - PayPal|Send Money, Pay Online or Set Up a Merchant Account with PayPal|Send\
+    \ Money, Pay Online, and Receive Money - all with PayPal|Use PayPal at Millions\
+    \ of Online Stores - It's Free, Safe and Secure"

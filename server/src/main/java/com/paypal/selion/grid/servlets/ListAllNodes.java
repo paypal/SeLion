@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,8 +24,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.ProxySet;
-import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -40,11 +40,16 @@ public class ListAllNodes extends RegistryBasedServlet {
 
     public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/listAllNodes.html";
 
+    /**
+     * Query parameter to use which instructs this servlet to ping the nodes for status.
+     */
+    public static final String PING_NODES = "pingNodes";
+
     public ListAllNodes() {
         this(null);
     }
 
-    public ListAllNodes(Registry registry) {
+    public ListAllNodes(GridRegistry registry) {
         super(registry);
     }
 
@@ -61,7 +66,7 @@ public class ListAllNodes extends RegistryBasedServlet {
     /**
      * This method gets all the nodes which are connected to the grid machine from the Registry and displays them in
      * html page.
-     * 
+     *
      * @param request
      *            {@link HttpServletRequest} that represents the servlet request
      * @param response
@@ -69,8 +74,9 @@ public class ListAllNodes extends RegistryBasedServlet {
      * @throws IOException
      */
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        boolean doStatusQuery = request.getParameter("pingNodes") != null;
-        if (request.getHeader("Accept").equalsIgnoreCase("application/json")) {
+        boolean doStatusQuery = request.getParameter(PING_NODES) != null;
+        String acceptHeader = request.getHeader("Accept");
+        if (acceptHeader != null && acceptHeader.equalsIgnoreCase("application/json")) {
             ServletHelper.respondAsJsonWithHttpStatus(response, getProxyInfo(doStatusQuery), HttpServletResponse.SC_OK);
         } else {
             ServletHelper.respondAsHtmlUsingJsonAndTemplateWithHttpStatus(response, getProxyInfo(doStatusQuery),

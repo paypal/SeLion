@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,6 +18,7 @@ package com.paypal.selion.testcomponents;
 import java.io.File;
 import java.io.IOException;
 
+import com.paypal.selion.platform.html.Button;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.BeforeClass;
@@ -28,7 +29,6 @@ import com.paypal.selion.platform.asserts.SeLionAsserts;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.Container;
 import com.paypal.selion.platform.utilities.WebDriverWaitUtils;
-import com.paypal.selion.testcomponents.BasicPageImpl;
 
 public class BasicPageImplTest {
 
@@ -68,9 +68,35 @@ public class BasicPageImplTest {
         WebDriverWaitUtils.waitUntilPageIsValidated(page);
     }
 
+    @Test(groups = { "functional" })
+    @WebTest
+    public void testPageWithNegativeValidators() throws InterruptedException, IOException {
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+
+        TestPage negativeValidatorsPage = new TestPage("US", "TestPageNegativeValidator");
+
+        WebDriverWaitUtils.waitUntilPageIsValidated(negativeValidatorsPage);
+    }
+
     @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
     @WebTest
-    public void testWaitUntilPageIsValidated_Neg() throws InterruptedException, IOException {
+    public void testPageWithNegativeValidatorsNegative() throws InterruptedException, IOException {
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+
+        TestPage negativeValidatorsPage = new TestPage("US", "TestPageExpectedNotVisible");
+
+        WebDriverWaitUtils.waitUntilPageIsValidated(negativeValidatorsPage);
+    }
+
+    @Test(groups = { "functional" }, expectedExceptions = { TimeoutException.class })
+    @WebTest
+    public void testWaitUntilPageIsValidatedNegative() throws InterruptedException, IOException {
         page = new TestPage("US", "TestWrongValidatorPage");
         Grid.open("about:blank");
         String script = getScript();
@@ -163,8 +189,31 @@ public class BasicPageImplTest {
                 .equals(Container.class), "Verify if a Container is assigned for element inside container");
     }
 
+    @Test(groups = { "functional" })
+    @WebTest
+    public void testDelayedPageValidation() throws InterruptedException, IOException {
+        TestPage pageTitleValidation = new TestPage("US", "PageTitleValidationPage");
+        TestPage pageAnimationChangedTitle = new TestPage("US", "FakeRedirectTitleValidationPage");
+        Grid.open("about:blank");
+        String script = getScript();
+        Grid.driver().executeScript(script);
+        Thread.sleep(4000);
+        String addAnimationScript = getAnimationScript();
+        Grid.driver().executeScript(addAnimationScript, 5000, "TestPage After Animation");
+        Thread.sleep(4000);
+        Button button = pageAnimationChangedTitle.getPerformAnimationButton();
+        TestPage landingPage = (TestPage) button.clickAndExpectOneOf(pageTitleValidation, pageAnimationChangedTitle);
+        SeLionAsserts.assertTrue(landingPage.getPageTitle().contains("Animation"));
+
+    }
+
     private String getScript() throws IOException {
         File scriptFile = new File("src/test/resources/testdata/InsertHtmlElements.js");
-        return FileUtils.readFileToString(scriptFile);
+        return FileUtils.readFileToString(scriptFile, "UTF-8");
+    }
+
+    private String getAnimationScript() throws IOException {
+        File scriptFile = new File("src/test/resources/testdata/InsertAnimation.js");
+        return FileUtils.readFileToString(scriptFile, "UTF-8");
     }
 }

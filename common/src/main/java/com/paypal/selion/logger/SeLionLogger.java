@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,12 +35,11 @@ import com.paypal.test.utilities.logging.SimpleLogger.ConsoleLevel;
 public final class SeLionLogger {
     private static final String SELION_LOGGER_NAME = "com.paypal.selion";
     private static final String CLASS_NAME = SeLionLogger.class.getSimpleName();
+    private static SimpleLogger baseLogger;
 
     private SeLionLogger() {
         // defeat all instantiation
     }
-
-    private static SimpleLogger baseLogger;
 
     /**
      * Establish the {@link SimpleLoggerSettings} for {@link SeLionLogger}
@@ -59,7 +58,7 @@ public final class SeLionLogger {
             this.setUserLevel(SimpleLogger.string2Level(LoggerConfig
                     .getConfigProperty(LoggerConfig.LoggerProperties.LOG_LEVEL_USER)));
             this.setSimpleLoggerEventsImpl(new SeLionLoggerEventsImpl());
-            this.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
+            this.setIdentifier("SeLion-" + SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
             this.setMaxFileSize(Integer.parseInt(LoggerConfig.getConfigProperty(LoggerProperties.LOGS_MAX_SIZE)));
             this.setMaxFileCount(Integer.parseInt(LoggerConfig.getConfigProperty(LoggerProperties.LOGS_MAX_FILE_COUNT)));
             String log2Console = LoggerConfig.getConfigProperty(LoggerConfig.LoggerProperties.LOG_TO_CONSOLE);

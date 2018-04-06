@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -21,9 +21,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ClassUtils;
@@ -292,14 +294,16 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
         // blank rows in the sheet then we will miss
         // some last rows of data.
         List<Row> rowToBeRead = excelReader.getAllExcelRows(resource.getCls().getSimpleName(), false);
+        List<String> excelHeaderRow = getHeaderRowContents(resource.getCls().getSimpleName(), fields.length);
         if (!rowToBeRead.isEmpty()) {
             i = 0;
             obj = new Object[rowToBeRead.size()][1];
             for (Row row : rowToBeRead) {
                 List<String> excelRowData = excelReader.getRowContents(row, fields.length);
+                Map<String, String> headerRowDataMap = prepareHeaderRowDataMap(excelHeaderRow, excelRowData);
                 if (excelRowData.size() != 0) {
                     try {
-                        obj[i++][0] = prepareObject(getObject(), fields, excelRowData);
+                        obj[i++][0] = prepareObject(getObject(), fields, excelRowData, headerRowDataMap);
                     } catch (IllegalAccessException e) {
                         throw new DataProviderException("Unable to create instance of type '"
                                 + resource.getCls().getName() + "'", e);
@@ -328,11 +332,13 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
         // Notice that numRows is returning the actual number of non-blank rows.
         // Thus if there are blank rows in the sheet then we will miss some last rows of data.
         List<Row> rowToBeRead = excelReader.getAllExcelRows(resource.getCls().getSimpleName(), false);
+        List<String> excelHeaderRow = getHeaderRowContents(resource.getCls().getSimpleName(), fields.length);
         for (Row row : rowToBeRead) {
             List<String> excelRowData = excelReader.getRowContents(row, fields.length);
+            Map<String, String> headerRowDataMap = prepareHeaderRowDataMap(excelHeaderRow, excelRowData);
             if (excelRowData.size() != 0) {
                 try {
-                    Object temp = prepareObject(getObject(), fields, excelRowData);
+                    Object temp = prepareObject(getObject(), fields, excelRowData, headerRowDataMap);
                     if (dataFilter.filter(temp)) {
                         objs.add(new Object[] { temp });
                     }
@@ -430,10 +436,12 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
         }
         Field[] fields = cls.getDeclaredFields();
 
+        List<String> excelHeaderRow = getHeaderRowContents(cls.getSimpleName(), fields.length);
         List<String> excelRowData = getRowContents(cls.getSimpleName(), newIndex, fields.length);
+        Map<String, String> headerRowDataMap = prepareHeaderRowDataMap(excelHeaderRow, excelRowData);
         if (excelRowData != null && excelRowData.size() != 0) {
             try {
-                obj = prepareObject(userObj, fields, excelRowData);
+                obj = prepareObject(userObj, fields, excelRowData, headerRowDataMap);
             } catch (IllegalAccessException e) {
                 throw new DataProviderException("Unable to create instance of type '" + userObj.getClass().getName()
                         + "'", e);
@@ -476,16 +484,18 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      * @param excelRowData
      *            the raw data read from the excel sheet to be extracted and filled up the object before return the full
      *            object to the caller.
+     * @param headerRowDataMap
+     *            this map has the excel header row as key and the current row that is used to prepare Object as value
      * @return Object which can be cast into a user defined type to get access to its fields
      */
-    protected Object prepareObject(Object userObj, Field[] fields, List<String> excelRowData)
-            throws IllegalAccessException {
-        logger.entering(new Object[] { userObj, fields, excelRowData });
+    protected Object prepareObject(Object userObj, Field[] fields, List<String> excelRowData, 
+            Map<String,String> headerRowDataMap) throws IllegalAccessException {
+        logger.entering(new Object[] { userObj, fields, excelRowData, headerRowDataMap });
         Object objectToReturn = createObjectToUse(userObj);
-        int index = 0;
+
         for (Field eachField : fields) {
             // If the data is not present in excel sheet then skip it
-            String data = excelRowData.get(index++);
+            String data = headerRowDataMap.get(eachField.getName().toLowerCase());
             if (StringUtils.isEmpty(data)) {
                 continue;
             }
@@ -522,6 +532,30 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
         }
         logger.exiting(objectToReturn);
         return objectToReturn;
+    }
+    
+   
+    /*
+     * prepares map of excel header row and the the excel data row
+     * 
+     * @param header the excel header row
+     * 
+     * @param rowData row data to be used for preparing the return value
+     * 
+     * @return map of the header row and data row
+     */
+    private Map<String, String> prepareHeaderRowDataMap(List<String> header, List<String> rowData) {
+        Map<String, String> headerRowDataMap = new HashMap<>();
+        if (header.size() == rowData.size()) {
+            for (int i = 0; i < header.size(); i++) {
+                if (null != header.get(i)) {
+                    headerRowDataMap.put(header.get(i).toLowerCase(), rowData.get(i));
+                }
+            }
+        } else {
+            logger.warning("header and columns are not of same size");
+        }
+        return headerRowDataMap;
     }
 
     private Object createObjectToUse(Object userObject) throws IllegalAccessException {
@@ -666,6 +700,19 @@ public class ExcelDataProviderImpl implements ExcelDataProvider {
      */
     public List<String> getRowContents(String sheetName, int rowIndex, int size) {
         return excelReader.getRowContents(sheetName, rowIndex, size);
+    }
+
+    /**
+     * Utility to get the header row contents of the excel sheet
+     * 
+     * @param sheetName
+     *            The excel sheet name where the data is to be fetched
+     * @param size
+     *            The number of columns to read, including empty and blank column.
+     * @return the header row data.
+     */
+    public List<String> getHeaderRowContents(String sheetName, int size) {
+        return excelReader.getHeaderRowContents(sheetName, size);
     }
 
     /**

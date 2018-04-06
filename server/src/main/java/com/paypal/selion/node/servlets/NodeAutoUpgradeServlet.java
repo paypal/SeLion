@@ -70,7 +70,7 @@ public class NodeAutoUpgradeServlet extends HttpServlet implements InsecureHttpP
 
         try {
             String json = requestParams.get(GridAutoUpgradeDelegateServlet.PARAM_JSON);
-            FileUtils.writeStringToFile(new File(SeLionGridConstants.DOWNLOAD_JSON_FILE), json);
+            FileUtils.writeStringToFile(new File(SeLionGridConstants.DOWNLOAD_JSON_FILE), json, "UTF-8");
             ServletHelper.respondAsJsonWithHttpStatus(resp, new NodeResponseBody().setSuccess(),
                     HttpServletResponse.SC_OK);
         } catch (IOException e) {

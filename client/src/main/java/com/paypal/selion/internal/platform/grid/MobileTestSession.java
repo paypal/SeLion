@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -33,13 +33,16 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
  * A class for loading and representing the {@link MobileTest} annotation parameters. Also performs sanity checks.
- * 
+ *
  */
 public class MobileTestSession extends AbstractTestSession {
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private String appName;
     private final String appLocation;
     private String device = "iphone";
+    private static final String ANDROID = "android";
+    private static final String IPHONE = "iphone";
+    private static final String IPAD = "ipad";
     private String appLanguage;
     private String appLocale;
     private String deviceSerial;
@@ -47,6 +50,9 @@ public class MobileTestSession extends AbstractTestSession {
     private String platformVersion;
     private String appPath;
     private String appVersion;
+    private String androidAppMainActivity;
+    private String androidAppPackage;
+    private String browserName;
 
     private WebDriverPlatform platform;
 
@@ -77,7 +83,7 @@ public class MobileTestSession extends AbstractTestSession {
         return appVersion;
     }
 
-    public String getdeviceSerial() {
+    public String getDeviceSerial() {
         return deviceSerial;
     }
 
@@ -87,6 +93,14 @@ public class MobileTestSession extends AbstractTestSession {
 
     public String getAppPath() {
         return appPath;
+    }
+
+    public String getAndroidAppPackage() {
+        return androidAppPackage;
+    }
+
+    public String getAndroidAppMainActivity() {
+        return androidAppMainActivity;
     }
 
     public WebDriverPlatform getPlatform() {
@@ -109,8 +123,12 @@ public class MobileTestSession extends AbstractTestSession {
         return deviceType;
     }
 
-    @Override
-    public void startSesion() {
+    public String getBrowserName() {
+		return browserName;
+	}
+
+	@Override
+    public void startSession() {
         logger.entering();
         Grid.getThreadLocalWebDriver().set(MobileDriverFactory.createInstance());
         setStarted(true);
@@ -146,15 +164,32 @@ public class MobileTestSession extends AbstractTestSession {
         if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE))) {
             appLanguage = getLocalConfigProperty(ConfigProperty.MOBILE_APP_LANGUAGE);
         }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE))) {
+            String device = getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE);
+            setDeviceParameters(device);
+        }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE_TYPE))) {
+            deviceType = getLocalConfigProperty(ConfigProperty.MOBILE_DEVICE_TYPE);
+        }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.ANDROID_APP_MAIN_ACTIVITY))) {
+            androidAppMainActivity = getLocalConfigProperty(ConfigProperty.ANDROID_APP_MAIN_ACTIVITY);
+        }
+
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.ANDROID_APP_PACKAGE))) {
+            androidAppPackage = getLocalConfigProperty(ConfigProperty.ANDROID_APP_PACKAGE);
+        }
+        
+        if (StringUtils.isNotBlank(getLocalConfigProperty(ConfigProperty.BROWSER))) {
+            browserName = getLocalConfigProperty(ConfigProperty.BROWSER);
+        }
+
         // Override values when supplied via the annotation
         if (deviceTestAnnotation != null) {
             if (StringUtils.isNotBlank(deviceTestAnnotation.appName())) {
                 this.appName = deviceTestAnnotation.appName();
-                String[] appNames = StringUtils.split(this.appName, ":");
-                if (StringUtils.contains(this.appName, ":")) {
-                    appVersion = appNames[1];
-                    appName = appNames[0];
-                }
             }
 
             if (StringUtils.isNotBlank(deviceTestAnnotation.language())) {
@@ -164,12 +199,7 @@ public class MobileTestSession extends AbstractTestSession {
                 this.appLocale = deviceTestAnnotation.locale();
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.device())) {
-                this.device = deviceTestAnnotation.device();
-                String[] devices = StringUtils.split(this.device, ":");
-                if (StringUtils.contains(device, ":")) {
-                    this.platformVersion = devices[1];
-                    this.device = devices[0];
-                }
+                setDeviceParameters(deviceTestAnnotation.device());
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.deviceSerial())) {
                 this.deviceSerial = deviceTestAnnotation.deviceSerial();
@@ -179,56 +209,99 @@ public class MobileTestSession extends AbstractTestSession {
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.appPath())) {
                 this.appPath = deviceTestAnnotation.appPath();
-
-                if (this.appPath.startsWith(SELION_HUB_STORAGE)) {
-                    // parse and construct the absolute url for selion hub storage
-                    this.appPath = getSelionHubStorageUrl(this.appPath);
-                } else if (!this.appPath.startsWith(SAUCE_URL) && !StringUtils.startsWithIgnoreCase(appPath, "http")) {
-
-                    // construct the absolute url for apps exist in resource folder.
-                    Path p = Paths.get(appPath);
-                    if (!p.isAbsolute()) {
-                        this.appPath = String.format("%s/%s", System.getProperty("user.dir"), appPath);
-                    }
-                }
             }
             if (StringUtils.isNotBlank(deviceTestAnnotation.mobileNodeType())) {
                 mobileNode = deviceTestAnnotation.mobileNodeType();
             }
+            if (StringUtils.isNotBlank(deviceTestAnnotation.browserName())) {
+                this.browserName = deviceTestAnnotation.browserName();
+            }
             this.mobileNodeType = MobileNodeType.getMobileNodeType(mobileNode);
-            
-            initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities(), method);
+
+            initializeAdditionalCapabilities(method);
+            initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilities());
+            initializeAdditionalCapabilities(deviceTestAnnotation.additionalCapabilitiesBuilders());
         }
 
         boolean appPathProvided = StringUtils.isNotBlank(appPath);
+        
+        //App run and browser run should be mutually exclusive. If appName or appPath is provided disregard
+        //the browser parameter
+        if(StringUtils.isNotBlank(appName) || StringUtils.isNotBlank(appPath)){
+        	this.browserName = ""; //to nullify the default value *firefox
+        }
 
         checkArgument(!(mobileNodeType != MobileNodeType.APPIUM && appPathProvided),
                 "appPath can be specified for appium only, Please specify appName instead of appPath");
 
         checkArgument(
-                StringUtils.isNotBlank(appName) ^ StringUtils.isNotBlank(appPath),
-                "Either you have provided both appPath and appName or you have specified nothing. Please specify either "
-                + "appPath or appName");
+                StringUtils.isNotBlank(appName) ^ StringUtils.isNotBlank(appPath) ^ StringUtils.isNotBlank(browserName),
+                "Either you have provided appPath, appName, and browserName all at once or you have specified nothing. "
+                + "Please specify one of appPath, appName, or browserName");
 
         checkArgument(isDeviceDefined(),
-                "The device should either be provided as 'iphone', 'ipad', 'iphone:7.1', 'android',"
-                        + " 'android:17', 'android:18', etc.");
+                "The device should either be provided as 'device name:version' or 'device' or 'device:version'." +
+                        " like 'iphone', 'ipad', 'iphone:7.1', 'android', 'nexus 5:17', 'android:18', etc.");
+
+        // appName can be passed via the annotation or as a config var. It may contain precision info.
+        if (StringUtils.contains(this.appName, ":")) {
+            String[] appNames = StringUtils.split(this.appName, ":");
+            appVersion = appNames[1];
+            appName = appNames[0];
+        }
+
+        // appPath can be passed via the annotation or as a config var. It may need formatting.
+        if (appPathProvided && this.appPath.startsWith(SELION_HUB_STORAGE)) {
+            // parse and construct the absolute url for selion hub storage
+            this.appPath = getSelionHubStorageUrl(this.appPath);
+        } else if (appPathProvided && !this.appPath.startsWith(SAUCE_URL) && !StringUtils.startsWithIgnoreCase(appPath, "http")) {
+            // construct the absolute url for apps exist in resource folder.
+            Path p = Paths.get(appPath);
+            if (!p.isAbsolute()) {
+                this.appPath = String.format("%s/%s", System.getProperty("user.dir"), appPath);
+            }
+        }
 
         this.platform = WebDriverPlatform.ANDROID;
-        if ("iphone".equalsIgnoreCase(getDevice()) || "ipad".equalsIgnoreCase(getDevice())) {
+        if (IPHONE.equalsIgnoreCase(getDevice()) || IPAD.equalsIgnoreCase(getDevice())) {
             this.platform = WebDriverPlatform.IOS;
         }
 
         logger.exiting();
     }
 
-    private String getSelionHubStorageUrl(String selionHubappPath) {
+    private void setDeviceParameters(String device) {
+        String deviceName;
+        String[] devices = StringUtils.split(device, ":");
+        boolean mobileDeviceContainsbothNameAndVersion = devices.length > 1;
+        if (mobileDeviceContainsbothNameAndVersion) {
+            this.platformVersion = devices[1];
+            deviceName = devices[0];
+        } else if (device.indexOf(':') == 0) {
+            this.platformVersion = devices[0];
+            deviceName = "";
+        } else {
+            deviceName = devices[0];
+        }
+        deviceName = deviceName.trim();
+        this.device =
+                deviceName.toLowerCase().startsWith(IPHONE) ? IPHONE :
+                        deviceName.toLowerCase().startsWith(IPAD) ? IPAD :
+                                StringUtils.isNotBlank(deviceName) ? ANDROID : "";
+        if (!deviceName.equalsIgnoreCase(ANDROID) &&
+                !deviceName.equalsIgnoreCase(IPHONE) &&
+                !deviceName.equalsIgnoreCase(IPAD)) {
+            this.deviceType = deviceName;
+        }
+    }
+
+    private String getSelionHubStorageUrl(String selionHubAppPath) {
         String COLON = ":";
         String SLASH = "/";
-        String appPathTokens[] = StringUtils.split(selionHubappPath, ":");
+        String appPathTokens[] = StringUtils.split(selionHubAppPath, ":");
         String hostName = Config.getConfigProperty(ConfigProperty.SELENIUM_HOST);
         int port = Integer.parseInt(Config.getConfigProperty(ConfigProperty.SELENIUM_PORT));
-        StringBuffer url = new StringBuffer("http://");
+        StringBuilder url = new StringBuilder("http://");
         url.append(hostName);
         url.append(COLON);
         url.append(port);

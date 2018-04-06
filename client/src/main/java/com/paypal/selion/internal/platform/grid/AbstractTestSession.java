@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,12 +17,11 @@ package com.paypal.selion.internal.platform.grid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
-import org.apache.commons.lang.StringUtils;
+import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
+
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.Test;
 
@@ -30,7 +29,7 @@ import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.ConfigManager;
-import com.paypal.selion.configuration.ExtendedConfig;
+import com.paypal.selion.internal.platform.grid.browsercapabilities.CapabilitiesHelper;
 import com.paypal.selion.internal.utils.InvokedMethodInformation;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
@@ -40,16 +39,16 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * A class for loading and representing the {@link WebTest}/{@link MobileTest} annotation basic parameters. Also
  * performs sanity checks. Concrete instances of this class are created via the {@link TestSessionFactory} factory.
- * 
+ *
  */
 public abstract class AbstractTestSession {
 
     /**
      * Shared session flag. This flag is populated during initTestSession method.
      */
-    protected boolean isSessionShared;
+    protected boolean isSharedSession;
 
-    private boolean isStarted;
+    private boolean isSessionStarted;
 
     private String methodName = "";
 
@@ -65,23 +64,23 @@ public abstract class AbstractTestSession {
 
     private String xmlTestName = "";
 
-    private final List<ElementEventListener> listeners = new ArrayList<ElementEventListener>();
+    private final List<ElementEventListener> listeners = new ArrayList<>();
 
     /**
      * @return whether the session is started <code>true</code> or <code>false</code>
      */
     public boolean isStarted() {
-        return isStarted;
+        return isSessionStarted;
     }
 
     /**
      * Set the session to started.
-     * 
+     *
      * @param started
      *            <code>true</code> or <code>false</code>
      */
     protected final void setStarted(boolean started) {
-        this.isStarted = started;
+        this.isSessionStarted = started;
     }
 
     public final DesiredCapabilities getAdditionalCapabilities() {
@@ -111,7 +110,7 @@ public abstract class AbstractTestSession {
 
     protected final void initTestSession(InvokedMethodInformation method) {
         logger.entering(method);
-        isSessionShared = isSessionShared(method);
+        isSharedSession = isSessionShared(method);
         this.dependsOnMethods = method.getMethodsDependedUpon();
         this.className = method.getCurrentClassName();
         this.methodName = method.getCurrentMethodName();
@@ -137,46 +136,22 @@ public abstract class AbstractTestSession {
         return isSingleThreaded && (isWebTestClass || isMobileTestClass);
     }
 
-    protected void initializeAdditionalCapabilities(String[] additionalCapabilities, InvokedMethodInformation method) {
-        Object additionalCaps = method.getTestAttribute(ExtendedConfig.CAPABILITIES.getConfig());
-        if (additionalCaps instanceof DesiredCapabilities) {
-            this.additionalCapabilities.merge((DesiredCapabilities) additionalCaps);
-        }
-        if (additionalCapabilities.length != 0) {
-            Map<String, Object> capabilityMap = parseIntoCapabilities(additionalCapabilities);
-            // We found some capabilities. Lets merge them.
-            this.additionalCapabilities.merge(new DesiredCapabilities(capabilityMap));
-        }
+    protected void initializeAdditionalCapabilities(String[] additionalCapabilities) {
+        this.additionalCapabilities.merge(CapabilitiesHelper.retrieveCustomCapabilities(additionalCapabilities));
     }
 
-    protected final Map<String, Object> parseIntoCapabilities(String[] capabilities) {
-        Map<String, Object> capabilityMap = new HashMap<String, Object>();
-        for (String eachCapability : capabilities) {
-            // split into key/value at the ':' character
-            String[] keyValuePair = eachCapability.split(":", 2);
-            if (keyValuePair.length == 2) {
-                String value = keyValuePair[1];
-                Object desiredCapability = value;
-                // treat true/false values surrounded with ' marks as strings
-                if (value.startsWith("'") && value.endsWith("'")) {
-                    String trimmedValue = StringUtils.mid(value, 1, value.length() - 2);
-                    if (trimmedValue.equalsIgnoreCase("true")) {
-                        desiredCapability = "true";
-                    } else if (trimmedValue.equalsIgnoreCase("false")) {
-                        desiredCapability = "false";
-                    }
-                } else if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
-                    desiredCapability = Boolean.parseBoolean(value);
-                }
-                capabilityMap.put(keyValuePair[0], desiredCapability);
-            } else {
-                StringBuilder errMsg = new StringBuilder();
-                errMsg.append("Capabilities are to be provided as name value pair separated by colons. ");
-                errMsg.append("For e.g., capabilityName:capabilityValue");
-                throw new IllegalArgumentException(errMsg.toString());
-            }
+    @Deprecated
+    protected void initializeAdditionalCapabilities(InvokedMethodInformation methodInfo) {
+        this.additionalCapabilities.merge(CapabilitiesHelper.retrieveCustomCapabilities(methodInfo));
+    }
+
+    protected void initializeAdditionalCapabilities(Class<? extends DefaultCapabilitiesBuilder>[] builders) {
+        if (builders == null || builders.length == 0) {
+            return;
         }
-        return capabilityMap;
+        for (Class<? extends DefaultCapabilitiesBuilder> builder : builders) {
+            this.additionalCapabilities.merge(CapabilitiesHelper.retrieveCustomCapabilities(builder));
+        }
     }
 
     /**
@@ -204,12 +179,12 @@ public abstract class AbstractTestSession {
      * Returns a test name for the current method. This method returns the the Class name, Method name, and Method
      * parameters if any, for a test case running on a Non-Session-Sharing context. For a test case running under
      * Session-Sharing context this method returns the Class name, Method name, and Method parameters if any.
-     * 
+     *
      * @return - test name.
      */
     public final String getTestName() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (isSessionShared) {
+        if (isSharedSession) {
             stringBuilder.append(getDeclaringClassName());
         } else {
             stringBuilder.append(getDeclaringClassName()).append(':').append(getMethodName()).append('(').append(')');
@@ -223,11 +198,11 @@ public abstract class AbstractTestSession {
     /**
      * A Method to start a new session.
      */
-    public abstract void startSesion();
+    public abstract void startSession();
 
     /**
      * A initializer that initializes the sub-class of {@link AbstractTestSession} based on the annotation.
-     * 
+     *
      * @param method
      *            - An {@link InvokedMethodInformation} object that represents the currently invoked method.
      */
@@ -257,8 +232,7 @@ public abstract class AbstractTestSession {
 
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
-        Grid.getThreadLocalException().set(null);
-        this.isStarted = false;
+        this.isSessionStarted = false;
         logger.exiting();
     }
 

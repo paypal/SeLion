@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -44,7 +44,8 @@ public class DataReader {
      * @return A {@link String} representation of the base page class.
      */
     public String getBaseClassName() {
-        Logger.getLogger().debug(String.format("Reading base class name from data file [%s]", fileName));
+        CodeGeneratorLoggerFactory.getLogger().debug(
+                String.format("Reading base class name from data file [%s]", fileName));
         String baseClass = reader.getBaseClassName();
         if (baseClass == null) {
             String path = new File(fileName).getAbsolutePath();
@@ -52,14 +53,15 @@ public class DataReader {
         }
         return baseClass;
     }
-    
+
     /**
      * Return the platform specified in the PageYaml input
      * 
      * @return {@link TestPlatform}
      */
     public TestPlatform platform() {
-        Logger.getLogger().debug(String.format("Specified platform in data file [%s] : [%s] ",fileName,reader.getPlatform()));
+        CodeGeneratorLoggerFactory.getLogger().debug(
+                String.format("Specified platform in data file [%s] : [%s] ", fileName, reader.getPlatform()));
         TestPlatform currentPlatform = reader.getPlatform();
         if (currentPlatform == null) {
             String dataFile = new File(fileName).getAbsolutePath();
@@ -76,7 +78,7 @@ public class DataReader {
      *         {@link List} on error or if no keys exist.
      */
     public List<String> getKeys() {
-        Logger.getLogger().debug(String.format("Reading keys from data file [%s]", fileName));
+        CodeGeneratorLoggerFactory.getLogger().debug(String.format("Reading keys from data file [%s]", fileName));
         List<String> keys = reader.getAllKeys();
         checkForDuplicateKeys(keys);
         return keys;

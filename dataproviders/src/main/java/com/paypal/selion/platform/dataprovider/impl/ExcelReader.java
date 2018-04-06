@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -51,7 +51,7 @@ class ExcelReader {
      * Use this constructor when a file that is available in the classpath is to be read by the ExcelDataProvider for
      * supporting Data Driven Tests.
      * 
-     * @param fileStream
+     * @param resource
      *            the stream of the excel file to be read.
      * @throws IOException
      *             If the file cannot be located, or cannot read by the method.
@@ -172,6 +172,29 @@ class ExcelReader {
         Sheet sheet = fetchSheet(sheetName);
 
         int actualExcelRow = rowIndex - 1;
+        Row row = sheet.getRow(actualExcelRow);
+
+        List<String> rowData = getRowContents(row, size);
+
+        logger.exiting(rowData);
+        return rowData;
+    }
+    
+    /**
+     * Fetches the header row contents of the excel sheet. The first row in the excel sheet is considered to be the
+     * header row
+     * 
+     * @param sheetName
+     *            The excel sheet name where header data is to be fetched
+     * @param size
+     *            The number of columns to read, including empty and blank columns.
+     * @return the header row data
+     */
+    public List<String> getHeaderRowContents(String sheetName, int size) {
+        logger.entering(new Object[]{sheetName, size});
+        Sheet sheet = fetchSheet(sheetName);
+
+        int actualExcelRow = 0;
         Row row = sheet.getRow(actualExcelRow);
 
         List<String> rowData = getRowContents(row, size);

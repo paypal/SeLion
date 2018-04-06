@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,7 +17,6 @@ package com.paypal.selion.grid.servlets;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,10 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
@@ -61,21 +58,31 @@ import com.paypal.selion.utils.ServletHelper;
  */
 public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
 
+    private static final long serialVersionUID = 1L;
+
+    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridAutoUpgradeDelegateServlet.class);
+
     /**
      * Resource path to the grid auto upgrade html template file
      */
     public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/gridAutoUpgradeDelegateServlet.html";
+    public static final String PENDING_NODE_FILE = "/com/paypal/selion/html/gridAutoUpgradePendingNode.html";
 
-    private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridAutoUpgradeDelegateServlet.class);
-    private static final String IDS = "ids";
+    /**
+     * Request parameter which may contain the list of nodes which fail to upgrade
+     */
+    public static final String IDS = "ids";
+
+    /**
+     * Request parameter which contains the new download.json to apply
+     */
     public static final String PARAM_JSON = "downloadJSON";
-    private static final long serialVersionUID = 1L;
 
     public GridAutoUpgradeDelegateServlet() {
         this(null);
     }
 
-    public GridAutoUpgradeDelegateServlet(Registry registry) {
+    public GridAutoUpgradeDelegateServlet(GridRegistry registry) {
         super(registry);
     }
 
@@ -87,18 +94,17 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         process(req, resp);
-
     }
 
     /**
-     * This method constructs the html page that gets the information pertaining to the jars/binaries and their artifact
-     * checksums from the user. The same method can also act as the end point that relays this information to each of
-     * the nodes as well.
-     * 
+     * This method constructs the html page that gets the information pertaining to the jars/binaries and their
+     * artifact checksums from the user. The same method can also act as the end point that relays this information
+     * to each of the nodes as well.
+     *
      * @param request
-     *            - {@link HttpServletRequest} that represent the servlet request
+     *             {@link HttpServletRequest} that represent the servlet request
      * @param response
-     *            - {@link HttpServletResponse} that represent the servlet response
+     *             {@link HttpServletResponse} that represent the servlet response
      * @throws IOException
      */
     protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -108,19 +114,12 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
             return;
         }
 
-        response.setContentType("text/html");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpStatus.SC_OK);
-        // idList will have the list of all the nodes that are failed to
-        // auto-upgrade
-        // (node may be restarting at the time of issuing the command to
-        // upgrade).
+        // idList will have the list of all the nodes that are failed to auto-upgrade (node may be restarting at the
+        // time of issuing the command to upgrade).
         String idList = request.getParameter(IDS);
         String downloadJSON = request.getParameter(PARAM_JSON);
-        PrintWriter writer = response.getWriter();
         if (downloadJSON != null) {
-            // proceed with relaying the information to each of the nodes if and
-            // only if the user has provided all
+            // proceed with relaying the information to each of the nodes if and only if the user has provided all
             // information for performing the upgrade.
 
             List<String> pendingProxy = new ArrayList<String>();
@@ -130,7 +129,8 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                     if (eachProxy == null) {
                         continue;
                     }
-                    if ((eachProxy instanceof SeLionRemoteProxy) && (((SeLionRemoteProxy) eachProxy).supportsAutoUpgrade())) {
+                    if ((eachProxy instanceof SeLionRemoteProxy)
+                            && (((SeLionRemoteProxy) eachProxy).supportsAutoUpgrade())) {
                         if (!((SeLionRemoteProxy) eachProxy).upgradeNode(downloadJSON)) {
                             pendingProxy.add(eachProxy.getId());
                         }
@@ -160,48 +160,33 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
             }
 
             if (pendingProxy.size() > 0) {
-                writer.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-                writer.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
-                writer.write("<body id='main_body'>");
-                writer.write("<form id='myForm' name='myForm' class='appnitro' method='post' onsubmit='validateForm()' action='"
-                        + GridAutoUpgradeDelegateServlet.class.getSimpleName() + "' >");
                 String ids = "";
                 for (String temp : pendingProxy) {
                     ids = ids + temp + ",";
                 }
                 ids = StringUtils.chop(ids);
-                writer.write("The following nodes were not auto upgraded: " + ids);
-                writer.write("<br>Click the Submit button to retry.");
-                writer.write("<input type='hidden' name='" + IDS + "' value='" + ids + "'>");
-                writer.write("<input type='hidden' name='" + PARAM_JSON + "' value='" + downloadJSON + "'>");
-                writer.write("<input id='saveForm' class='button_text' type='submit' name='submit' value='Submit' />");
-                writer.write("</form>");
-                writer.write("</body>");
-                writer.write("</html>");
+                ServletHelper.respondAsHtmlUsingArgsAndTemplateWithHttpStatus(response, PENDING_NODE_FILE,
+                        HttpServletResponse.SC_OK, ids, ids, downloadJSON);
             } else {
-                ServletHelper.displayMessageOnRedirect(writer, "Auto upgrade process initiated on all nodes.");
+
+                ServletHelper.respondAsHtmlWithMessage(response, "Auto upgrade process initiated on all nodes.");
             }
         } else {
             /*
              * Auto Upgrade form will be displayed. This the default page for GridAutoUpgradeDelegateServlet
              */
-            showDefaultPage(writer);
-
+            showDefaultPage(response);
         }
     }
 
-    private void showDefaultPage(PrintWriter writer) throws IOException {
+    private void showDefaultPage(HttpServletResponse response) throws IOException {
         String downloadJSON = "";
         try {
-            downloadJSON = FileUtils.readFileToString(new File(SeLionGridConstants.DOWNLOAD_JSON_FILE));
+            downloadJSON = FileUtils.readFileToString(new File(SeLionGridConstants.DOWNLOAD_JSON_FILE), "UTF-8");
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Unable to open download.json file", e);
         }
-
-        String template = IOUtils.toString(
-                this.getClass().getResourceAsStream(RESOURCE_PAGE_FILE), "UTF-8");
-
-        // Format the template with servlet name and download json values
-        writer.write(String.format(template, GridAutoUpgradeDelegateServlet.class.getSimpleName(), downloadJSON));
+        ServletHelper.respondAsHtmlUsingArgsAndTemplateWithHttpStatus(response, RESOURCE_PAGE_FILE,
+                HttpServletResponse.SC_OK, downloadJSON);
     }
 }

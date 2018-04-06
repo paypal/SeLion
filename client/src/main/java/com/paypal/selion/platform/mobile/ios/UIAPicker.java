@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.paypal.selion.platform.mobile.elements.MobilePicker;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -30,7 +31,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * The <code>UIAPicker</code> class allows access to, and control of, wheel elements within a picker
  */
-public class UIAPicker extends UIAElement implements UIAutomationPicker {
+public class UIAPicker extends UIAElement implements UIAutomationPicker, MobilePicker {
 
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,65 +24,65 @@ import static org.testng.Assert.assertTrue;
 import java.util.List;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.selion.annotations.WebTest;
-import com.paypal.selion.configuration.Config;
-import com.paypal.selion.internal.platform.grid.browsercapabilities.CapabilitiesHelper;
+import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 
 public class CapabilitiesHelperTest {
-    @BeforeClass(alwaysRun = true)
-    public void setup() {
-        StringBuilder className = new StringBuilder(CapabilitiesHelperTest.class.getCanonicalName());
-        className.append("$").append(MyTestCapabilities.class.getSimpleName());
-        Config.setConfigProperty(SELENIUM_CUSTOM_CAPABILITIES_PROVIDER, className.toString());
-    }
-
-    @AfterClass(alwaysRun = true)
-    public void cleanup() {
-        Config.setConfigProperty(SELENIUM_CUSTOM_CAPABILITIES_PROVIDER, "");
-    }
-
-    @Test(groups = "functional")
+    @Test(groups = "unit")
     public void testRetrieveCustomCapsViaServiceLoaders() {
         List<DesiredCapabilities> list = CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders();
         assertNotNull(list);
         assertFalse(list.isEmpty());
-        assertTrue(list.size() == 2);
-
-    }
-
-    @Test(groups = "functional")
-    @WebTest(additionalCapabilities = { "is-oss:true" })
-    public void testUserProvidedCapabilities() {
-        List<DesiredCapabilities> list = CapabilitiesHelper.retrieveCustomCapsViaServiceLoaders();
-        boolean found = false;
-        for (DesiredCapabilities eachItem : list) {
-            if (eachItem.is("is-oss")) {
-                found = true;
-                assertEquals(eachItem.getCapability("is-oss"), Boolean.TRUE);
-                break;
-            }
-        }
-        assertTrue(found);
+        // By default, only the DefaultCapabilitiesBuilder should be present
+        assertTrue(list.size() == 1);
+        assertTrue(((String) list.get(0).getCapability("name")).contains("testRetrieveCustomCapsViaServiceLoaders"));
     }
 
     @Test(groups = "unit")
+    @WebTest
     public void testRetrieveCustomCapsObjects() {
+        // add two capability providers to the local <test> configuration
+        StringBuilder providers = new StringBuilder();
+        providers.append(TestFrameWorkCapability.class.getName())
+                .append(",").append(TestPlatformCapability.class.getName());
+        ConfigManager.getConfig(Grid.getWebTestSession().getXmlTestName())
+                .setConfigProperty(SELENIUM_CUSTOM_CAPABILITIES_PROVIDER, providers.toString());
+
+        // ensure we get them back through the call into capabilities helper
         List<DesiredCapabilities> list = CapabilitiesHelper.retrieveCustomCapsObjects();
         assertNotNull(list);
         assertFalse(list.isEmpty());
-        assertTrue(list.size() == 1);
+        assertTrue(list.size() == 2);
         assertEquals(list.get(0).getCapability("framework"), "selion");
+        assertEquals(list.get(1).getCapability("platform"), "other");
     }
 
-    public static class MyTestCapabilities extends DefaultCapabilitiesBuilder {
+    @Test(groups = "unit")
+    public void testParseIntoCapabilities() {
+        String[] capabilities = new String[2];
+        capabilities[0] = "capabilityName1:capabilityValue1";
+        capabilities[1] = "capabilityName2:capabilityValue2";
+
+        assertEquals(CapabilitiesHelper.retrieveCustomCapabilities(capabilities).getCapability("capabilityName1"),
+                "capabilityValue1", "verify the capability is parsed properly");
+    }
+
+    public static class TestFrameWorkCapability extends DefaultCapabilitiesBuilder {
         @Override
         public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
             capabilities.setCapability("framework", "selion");
+            return capabilities;
+        }
+    }
+
+    public static class TestPlatformCapability extends DefaultCapabilitiesBuilder {
+        @Override
+        public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
+            capabilities.setCapability("platform", "other");
             return capabilities;
         }
     }

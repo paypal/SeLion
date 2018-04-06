@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
  */
 @ThreadSafe
 public final class LoggerConfig {
+    private static volatile BaseConfiguration config;
 
     private LoggerConfig() {
         // Utility class. So hide the constructor
@@ -38,7 +39,7 @@ public final class LoggerConfig {
     /**
      * Enum which contain the SeLion logger properties. To be used with {@link LoggerConfig}.
      */
-    public static enum LoggerProperties {
+    public enum LoggerProperties {
         /**
          * Should we log to the console (dev, user, off/no/false).<br>
          * Default is set to <b>false</b>
@@ -76,7 +77,7 @@ public final class LoggerConfig {
         private final String propertyName;
         private final String defaultValue;
 
-        private LoggerProperties(String configName, String defaultValue) {
+        LoggerProperties(String configName, String defaultValue) {
             this.propertyName = configName;
             this.defaultValue = defaultValue;
         }
@@ -90,8 +91,6 @@ public final class LoggerConfig {
         }
     }
 
-    private static volatile BaseConfiguration config;
-
     private static BaseConfiguration getConfig() {
         if (config != null) {
             return config;
@@ -101,9 +100,16 @@ public final class LoggerConfig {
     }
 
     private static synchronized void initConfig() {
+        /*
+         * Internally, HtmlUnit uses Apache commons logging. Each class that uses logging in HtmlUnit creates a Logger
+         * by using the LogFactory, and the defaults it generates. So to modify the Logger that is created, we need to
+         * set this attribute "org.apache.commons.logging.Log" to the Logger we want it to use.
+         *
+         * Note: this has to be the *first* thing done prior to any apache code getting a handle.
+         */
+        // NoOpLog essentially disables logging of HtmlUnit
 
-        final boolean permitClogging = Boolean.valueOf(System.getProperty("SELION_PERMIT_CLOGGING", "false"))
-                .booleanValue();
+        final boolean permitClogging = Boolean.valueOf(System.getProperty("SELION_PERMIT_CLOGGING", "false"));
 
         if (!permitClogging) {
             LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log",

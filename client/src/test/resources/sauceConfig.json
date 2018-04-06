@@ -1,1 +1,1 @@
-{ "sauceUserName": "foo", "sauceApiKey": "", "tunnel-identifier": "__string__", "build": "", "idle-timeout": 120, "tags": ["commit ", "branch ", "pull request "] }
+{ "sauceUserName": "foo", "sauceApiKey": "", "tunnelIdentifier": "__string__", "build": "", "idle-timeout": 120, "tags": ["commit ", "branch ", "pull request "] }

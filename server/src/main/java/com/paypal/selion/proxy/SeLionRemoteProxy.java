@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,6 +16,7 @@
 package com.paypal.selion.proxy;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServlet;
+
+import com.paypal.selion.grid.servlets.GridStatistics;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -35,42 +40,69 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.common.exception.RemoteUnregisterException;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.remote.CapabilityType;
 
 import com.paypal.selion.SeLionBuildInfo;
-import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
-import com.paypal.selion.node.servlets.LogServlet;
-import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.grid.servlets.GridAutoUpgradeDelegateServlet;
 import com.paypal.selion.logging.SeLionGridLogger;
+import com.paypal.selion.node.servlets.LogServlet;
 import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
-import com.paypal.selion.utils.ConfigParser;
+import com.paypal.selion.node.servlets.NodeForceRestartServlet;
+import com.paypal.selion.pojos.BrowserInformationCache;
+import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.test.utilities.logging.SimpleLogger;
 import com.paypal.test.utilities.logging.SimpleLoggerSettings;
 
-import javax.servlet.http.HttpServlet;
-
 /**
- * This is a customized {@link DefaultRemoteProxy} for SeLion. This proxy when injected into the Grid, starts counting
- * unique test sessions. After "n" test sessions, the proxy unhooks the node gracefully from the grid and self
- * terminates gracefully. The number of unique sessions is controlled via a json config file : "SeLionConfig.json". A
- * typical entry in this file looks like:
- * 
+ * This is a customized {@link DefaultRemoteProxy} for SeLion. <br>
+ * <br>
+ * This proxy, when utilized can: <br>
+ * <ul>
+ * <li>Count unique test sessions. After "n" test sessions, the proxy disconnects from the grid and issues a requests to
+ * {@link NodeForceRestartServlet}. The number of unique sessions is controlled via the json config file
+ * <code>SeLionConfig.json</code> with the setting <code>uniqueSessionCount</code>.<br>
+ * <br>
+ * For example:
+ *
  * <pre>
  *  "uniqueSessionCount": 25
  * </pre>
- * 
- * Here UniqueSessionCount represents the max. number of tests that the node will run before recycling itself.
+ *
+ * Here the value 25 indicates that the proxy will stop accepting new connections after 25 unique sessions and trigger a
+ * graceful shutdown (see below). A value of <=0 indicates that this feature is disabled.</li>
+ *
+ * <li>Request remote proxy to shutdown either forcefully or gracefully -- issues a request to
+ * {@link NodeForceRestartServlet}. In the case of a graceful restart, the proxy respects a wait timeout for any
+ * sessions in progress to complete. This is controlled via the json config file <code>SeLionConfig.json</code> with the
+ * setting <code>nodeRecycleThreadWaitTimeout</code>.<br>
+ * <br>
+ * For example:
+ *
+ * <pre>
+ *  "nodeRecycleThreadWaitTimeout": 300
+ * </pre>
+ *
+ * Here the value 300 is in seconds -- the proxy will wait this amount of time before forcing a shutdown action. A value
+ * of 0 indicates that the proxy will wait indefinitely.</li>
+ *
+ * <li>Request remote proxy to auto upgrade -- issues a request to {@link NodeAutoUpgradeServlet}.</li>
+ *
+ * <li>Determine whether the remote proxy supports {@link NodeAutoUpgradeServlet}, {@link NodeForceRestartServlet}, and
+ * {@link LogServlet}</li>
+ * </ul>
  */
 public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(SeLionRemoteProxy.class);
-    private static final int MAX_SESSION_ALLOWED = 50;
+    private static final int DEFAULT_MAX_SESSIONS_ALLOWED = 50;
     private static final int CONNECTION_TIMEOUT = 30000;
 
     private volatile boolean scheduledShutdown;
@@ -88,10 +120,10 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
      *            a {@link RegistrationRequest} request which represents the basic information that is to be consumed by
      *            the grid when it is registering a new node.
      * @param registry
-     *            a {@link Registry} object that represents the Grid's registry.
+     *            a {@link GridRegistry} object that represents the Grid's registry.
      * @throws IOException
      */
-    public SeLionRemoteProxy(RegistrationRequest request, Registry registry) throws IOException {
+    public SeLionRemoteProxy(RegistrationRequest request, GridRegistry registry) throws IOException {
         super(request, registry);
 
         proxyStartMillis = System.currentTimeMillis();
@@ -109,38 +141,73 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         loggerSettings.setDevLevel(Level.OFF);
         loggerSettings.setLoggerName(machine);
         loggerSettings.setClassName(SeLionRemoteProxy.class.getSimpleName());
-        loggerSettings.setIdentifier(SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
+        loggerSettings.setIdentifier("SeLion-Grid-" + SeLionBuildInfo.getBuildValue(SeLionBuildProperty.SELION_VERSION));
         loggerSettings.setMaxFileCount(1);
         loggerSettings.setMaxFileSize(5);
         proxyLogger = SimpleLogger.getLogger(loggerSettings);
 
         // Log initialization info
+        final int port = getRemoteHost().getPort();
+
         StringBuffer info = new StringBuffer();
-        info.append("New proxy instantiated for the machine ").append(machine);
+        info.append("New proxy instantiated for the node ").append(machine).append(":").append(port);
         proxyLogger.info(info.toString());
         info = new StringBuffer();
-        info.append("SeLionRemoteProxy will attempt to recycle the node [");
-        info.append(machine).append("] after ").append(getMaxSessionsAllowed()).append(" unique sessions");
+        if (isEnabledMaxUniqueSessions()) {
+            info.append("SeLionRemoteProxy will attempt to recycle the node ");
+            info.append(machine).append(":").append(port).append(" after ").append(getMaxSessionsAllowed())
+                .append(" unique sessions");
+        } else {
+            info.append("SeLionRemoteProxy will not attempt to recycle the node ");
+            info.append(machine).append(":").append(port).append(" based on unique session counting.");
+        }
         proxyLogger.info(info.toString());
+
+        // Enable the cache to store the browser information only when the
+        // "com.paypal.selion.grid.servlets.GridStatistics" is enabled - results in
+        // better memory management if the servlet is not loaded
+        if (isSupportedOnHub(GridStatistics.class)) {
+            updateBrowserCache(request);
+        }
 
         // detect presence of SeLion servlet capabilities on proxy
         canForceShutdown = isSupportedOnNode(NodeForceRestartServlet.class);
         canAutoUpgrade = isSupportedOnNode(NodeAutoUpgradeServlet.class);
         canViewLogs = isSupportedOnNode(LogServlet.class);
-
-        // push these important values to the registered configuration object.
-        getConfig().put("uniqueSessionCount", getMaxSessionsAllowed());
-        getConfig().put("nodeRecycleThreadWaitTimeout", getNodeRecycleThread().getThreadWaitTimeout());
     }
 
+    /**
+     * Determine if the hub supports the servlet in question by looking at the registry configuration.
+     * @param servlet
+     *            the {@link HttpServlet} to ping
+     * @return <code>true</code> or <code>false</code>
+     */
+    private boolean isSupportedOnHub(Class<? extends HttpServlet> servlet) {
+        LOGGER.entering();
+        final boolean response = getRegistry().getHub().getConfiguration().servlets.contains(servlet.getCanonicalName());
+        LOGGER.exiting(response);
+        return response;
+    }
+
+    /**
+     * Determine if the remote proxy supports the servlet in question by sending a http request to the remote. The
+     * proxy configuration could also be used to make a similar decision. This approach allows the remote to use a
+     * servlet which implements the same functionality as the `servlet` expected but does not necessarily reside in the
+     * same namespace. This method expects the `servlet` to return HTTP 200 OK as an indication that the remote proxy
+     * supports the `servlet` in question.
+     *
+     * @param servlet
+     *            the {@link HttpServlet} to ping
+     * @return <code>true</code> or <code>false</code>
+     */
     private boolean isSupportedOnNode(Class<? extends HttpServlet> servlet) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
                 .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
-        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-        String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(), 
+        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+        String url = String.format("http://%s:%d/extra/%s", machine, getRemoteHost().getPort(),
                 servlet.getSimpleName());
 
         try {
@@ -163,16 +230,17 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
+        LOGGER.exiting(true);
         return true;
     }
 
     private HttpResponse sendToNodeServlet(Class<? extends HttpServlet> servlet, List<NameValuePair> nvps) {
         LOGGER.entering();
 
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
                 .setSocketTimeout(CONNECTION_TIMEOUT).build();
 
-        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
         String url = String.format("http://%s:%d/extra/%s", machine, this.getRemoteHost().getPort(),
                 servlet.getSimpleName());
 
@@ -196,7 +264,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
     /**
      * Upgrades the node by calling {@link NodeAutoUpgradeServlet} and then {@link #requestNodeShutdown}
-     * 
+     *
      * @param downloadJSON
      *            the download.json to install on node
      * @return <code>true</code> on success. <code>false</code> when an error occured.
@@ -238,12 +306,22 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         return true;
     }
 
+    /**
+     * @return whether the proxy has reached the max unique sessions
+     */
+    private boolean isMaxUniqueSessionsReached() {
+        if (!isEnabledMaxUniqueSessions()) {
+            return false;
+        }
+        return totalSessionsStarted >= getMaxSessionsAllowed();
+    }
+
     @Override
     public TestSession getNewSession(Map<String, Object> requestedCapability) {
         LOGGER.entering();
 
         // verification should be before lock to avoid unnecessarily acquiring lock
-        if (totalSessionsStarted >= getMaxSessionsAllowed() || scheduledShutdown) {
+        if (isMaxUniqueSessionsReached() || scheduledShutdown) {
             LOGGER.exiting(null);
             return logSessionInfo();
         }
@@ -253,7 +331,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
             // As per double-checked locking pattern need to have check once again
             // to avoid spawning additional session then maxSessionAllowed
-            if (totalSessionsStarted >= getMaxSessionsAllowed() || scheduledShutdown) {
+            if (isMaxUniqueSessionsReached() || scheduledShutdown) {
                 LOGGER.exiting(null);
                 return logSessionInfo();
             }
@@ -262,7 +340,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
             if (session != null) {
                 // count ONLY if the session was a valid one
                 totalSessionsStarted++;
-                if (totalSessionsStarted >= getMaxSessionsAllowed()) {
+                if (isMaxUniqueSessionsReached()) {
                     startNodeRecycleThread();
                 }
                 proxyLogger.fine("Beginning session #" + totalSessionsStarted + " (" + session.toString() + ")");
@@ -275,8 +353,7 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     }
 
     private TestSession logSessionInfo() {
-        proxyLogger.fine("Was max sessions reached? " + (totalSessionsStarted >= getMaxSessionsAllowed()) + " on node "
-                + getId());
+        proxyLogger.fine("Was max sessions reached? " + (isMaxUniqueSessionsReached()) + " on node " + getId());
         proxyLogger.fine("Was this a scheduled shutdown? " + (scheduledShutdown) + " on node " + getId());
         return null;
     }
@@ -294,6 +371,20 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
                 getNodeRecycleThread().join(2000); // Wait no longer than 2x the recycle thread's loop
             } catch (InterruptedException e) { // NOSONAR
                 // ignore
+            }
+        }
+    }
+
+    private void updateBrowserCache(RegistrationRequest request) throws MalformedURLException {
+        // Update the browser information cache. Used by GridStatics servlet
+        for (MutableCapabilities desiredCapabilities : request.getConfiguration().capabilities) {
+            Map<String, ?> capabilitiesMap = desiredCapabilities.asMap();
+            String browserName = capabilitiesMap.get(CapabilityType.BROWSER_NAME).toString();
+            String maxInstancesAsString = capabilitiesMap.get("maxInstances").toString();
+            if (StringUtils.isNotBlank(browserName) && StringUtils.isNotBlank(maxInstancesAsString)) {
+                int maxInstances = Integer.valueOf(maxInstancesAsString);
+                BrowserInformationCache cache = BrowserInformationCache.getInstance();
+                cache.updateBrowserInfo(getRemoteHost(), browserName, maxInstances);
             }
         }
     }
@@ -332,6 +423,9 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
 
         // verify the servlet is supported on the node
         if (!canForceShutdown) {
+            // allow this proxy to keep going
+            disableMaxSessions();
+            scheduledShutdown = false;
             LOGGER.exiting();
             return;
         }
@@ -354,22 +448,33 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         HttpResponse response = sendToNodeServlet(NodeForceRestartServlet.class, nvps);
         if (response == null) {
             proxyLogger.warning("Node " + getId() + " failed to shutdown and returned a null response.");
-            LOGGER.exiting(false);
+            // stop the polling thread, mark this proxy as down, force this proxy to re-register
+            teardown("it failed to shutdown and must re-register");
+            LOGGER.exiting();
             return;
         }
 
         final int responseStatusCode = response.getStatusLine().getStatusCode();
         if (responseStatusCode != HttpStatus.SC_OK) {
-            proxyLogger.info("Node " + getId() + " did not shutdown and returned HTTP " + responseStatusCode);
-            LOGGER.exiting(false);
+            proxyLogger.warning("Node " + getId() + " did not shutdown and returned HTTP " + responseStatusCode);
+            // stop the polling thread, mark this proxy as down, force this proxy to re-register
+            teardown("it failed to shutdown and must re-register");
+            LOGGER.exiting();
             return;
         }
 
+        // stop the polling thread, mark this proxy as down
+        teardown("it is shutdown");
+
         proxyLogger.info("Node " + getId() + " shutdown successfully.");
-        // remove the node from the hub registry, if it reported 200 OK for NodeForceRestartServlet request
-        getRegistry().removeIfPresent(this);
 
         LOGGER.exiting();
+    }
+
+    private void teardown(String reason) {
+        addNewEvent(new RemoteUnregisterException(String.format("Unregistering node %s because %s.",
+                getId(), reason)));
+        teardown();
     }
 
     /**
@@ -421,7 +526,8 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
         }
 
         int getThreadWaitTimeout() {
-            return ConfigParser.parse().getInt("nodeRecycleThreadWaitTimeout", DEFAULT_TIMEOUT);
+            final String key = "nodeRecycleThreadWaitTimeout";
+            return config.custom.containsKey(key) ? Integer.parseInt(config.custom.get(key)) : DEFAULT_TIMEOUT;
         }
 
         private boolean keepLooping(int expired, int timeout) {
@@ -449,11 +555,20 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     }
 
     /**
+     * disables the max session count for this node.
+     */
+    private void disableMaxSessions() {
+        proxyLogger.warning("Disabling max unique sessions for Node " + getId());
+        config.custom.put("uniqueSessionCount", "-1");
+    }
+
+    /**
      * @return an integer value which represents the number of unique sessions this proxy allows for before
      *         automatically spinning up a {@link NodeRecycleThread}
      */
     private int getMaxSessionsAllowed() {
-        return ConfigParser.parse().getInt("uniqueSessionCount", MAX_SESSION_ALLOWED);
+        final String key = "uniqueSessionCount";
+        return config.custom.containsKey(key) ? Integer.parseInt(config.custom.get(key)) : DEFAULT_MAX_SESSIONS_ALLOWED;
     }
 
     /**
@@ -504,4 +619,12 @@ public class SeLionRemoteProxy extends DefaultRemoteProxy {
     public boolean supportsViewLogs() {
         return canViewLogs;
     }
+
+    /**
+     * @return whether the proxy is enabled to limit the number of unique sessions before triggering a graceful shutdown
+     */
+    private boolean isEnabledMaxUniqueSessions() {
+        return (getMaxSessionsAllowed() > 0);
+    }
+
 }

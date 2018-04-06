@@ -1,0 +1,24 @@
+baseClass: "com.paypal.selion.testcomponents.BasicPageImpl"
+defaultLocale: "US"
+platform: "mobile"
+elements:
+  topTextField:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAStaticText[1]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/txtCurrect"
+  nextButton:
+    ios:
+      US: "//UIAApplication[1]/UIAWindow[1]/UIANavigationBar[1]/UIAButton[2]"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/btnNext"
+  mainTextField:
+    ios:
+      US: "//iosFRTextField"
+    android:
+      US: "com.paypal.selion.pageobjectsdemoapp:id/txv1"
+pageTitle:
+  US: "page_object"
+pageValidators:
+  - topTextField.isVisible
+  - nextButton.isEnable

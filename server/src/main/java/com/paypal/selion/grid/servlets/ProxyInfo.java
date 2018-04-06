@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,6 +24,7 @@ import net.jcip.annotations.Immutable;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSlot;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.paypal.selion.node.servlets.LogServlet;
@@ -31,7 +32,7 @@ import com.paypal.selion.proxy.SeLionRemoteProxy;
 
 /**
  * Internal only. Used to create an immutable response object for the {@link ListAllNodes} servlet which gets serialized
- * application/json.
+ * to application/json.
  */
 @Immutable
 @SuppressWarnings("unused")
@@ -53,7 +54,7 @@ final class ProxyInfo {
 
     /**
      * The url to view logs (via LogServlet) on the proxy. Defaults to {@value #NOT_AVAILABLE}
-     * 
+     *
      * @see SeLionRemoteProxy#supportsViewLogs()
      */
     private String logsLocation = NOT_AVAILABLE;
@@ -96,7 +97,7 @@ final class ProxyInfo {
     /**
      * @see RemoteProxy#getConfig()
      */
-    private Map<String, Object> configuration;
+    private GridNodeConfiguration configuration;
 
     /**
      * Calls {@link RemoteProxy#getStatus()} to determine if proxy is {@value #ONLINE} or {@value #OFFLINE}. Defaults to
@@ -161,7 +162,7 @@ final class ProxyInfo {
 
     /**
      * Initializes proxy information from the supplied {@link RemoteProxy} object
-     * 
+     *
      * @param proxy
      *            the {@link RemoteProxy}
      * @param queryStatus
@@ -221,7 +222,7 @@ final class ProxyInfo {
     // SeLion specific features
     private void initSeLionRemoteProxySpecificValues(RemoteProxy proxy) {
         if (SeLionRemoteProxy.class.getCanonicalName().equals(
-                proxy.getOriginalRegistrationRequest().getRemoteProxyClass())) {
+                proxy.getOriginalRegistrationRequest().getConfiguration().proxy)) {
             SeLionRemoteProxy srp = (SeLionRemoteProxy) proxy;
 
             // figure out if the proxy is scheduled to shutdown

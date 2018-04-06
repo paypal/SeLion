@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -14,6 +14,8 @@
 \*-------------------------------------------------------------------------------------------------------------------*/
 
 package com.paypal.selion.annotations;
+
+import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.METHOD;
@@ -35,7 +37,7 @@ public @interface WebTest {
 
     /**
      * Establish browser profile to use. Will default to "firefox". <b>Example</b>
-     * 
+     *
      * <pre>
      * &#064;Test()
      * &#064;WebTest(browser = &quot;*iexplore&quot;)
@@ -49,27 +51,33 @@ public @interface WebTest {
     /**
      * Provide additional capabilities that you may wish to add as a name value pair. Values of true or false will be
      * treated as Boolean capabilities unless you surround the value with '
-     * 
+     *
      * <pre>
      * {@literal @}Test
      * {@literal @}WebTest(additionalCapabilities={"key1:value1","key2:value2"})
      * public void testMethod(){
-     *     //UI navigation steps 
+     *     //UI navigation steps
      * }
      * </pre>
      */
     String[] additionalCapabilities() default {};
 
     /**
+     * Additional {@link DefaultCapabilitiesBuilder}s that this web test should use. Capabilities which are
+     * constructed this way are merged with the results of any/all globally applicable capability builders.
+     */
+    Class<? extends DefaultCapabilitiesBuilder>[] additionalCapabilitiesBuilders() default {};
+
+    /**
      * Define the height of the browser window that will be spawned
-     * 
+     *
      * The width also has to be provided else the height is ignored
-     * 
+     *
      * <pre>
      * {@literal @}Test
      * {@literal @}WebTest(browserHeight="height")
      * public void testMethod(){
-     *     //UI navigation steps 
+     *     //UI navigation steps
      * }
      * </pre>
      */
@@ -77,14 +85,14 @@ public @interface WebTest {
 
     /**
      * Define the Width of the browser window that will be spawned
-     * 
+     *
      * The height also has to be provided else the width is ignored
-     * 
+     *
      * <pre>
      * {@literal @}Test
      * {@literal @}WebTest(browserWidth="width")
      * public void testMethod(){
-     *     //UI navigation steps 
+     *     //UI navigation steps
      * }
      * </pre>
      */

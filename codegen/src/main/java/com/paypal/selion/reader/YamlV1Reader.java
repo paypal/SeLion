@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -24,21 +24,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.paypal.selion.elements.HtmlSeLionElementList;
-import com.paypal.selion.plugins.Logger;
+import com.paypal.selion.elements.HtmlSeLionElementSet.HtmlSeLionElement;
+import com.paypal.selion.plugins.CodeGeneratorLoggerFactory;
 import com.paypal.selion.plugins.TestPlatform;
 
 /**
  * Concrete Yaml reader that is capable of reading Yaml v1 format file.
  */
-//TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
+// TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 class YamlV1Reader extends AbstractYamlReader {
 
     private static final String ELEMENTS = "Elements";
+    private static final String BASE_CLASS = "baseClass";
+    private static final String PLATFORM = "platform";
 
     /**
      * This is a public constructor to create an input stream and YAML instance for the input file.
-     * 
+     *
      * @param fileName
      *            the name of the YAML data file.
      * @throws IOException
@@ -57,7 +59,8 @@ class YamlV1Reader extends AbstractYamlReader {
         String fileName = resource.getFileName();
         InputStream is = resource.getInputStream();
         // Try to load PageYAML v1
-        Logger.getLogger().debug(String.format("++ Attempting to process %s as PageYAML V1", fileName));
+        CodeGeneratorLoggerFactory.getLogger().debug(
+                String.format("++ Attempting to process %s as PageYAML V1", fileName));
 
         Iterable<Object> allObjects = getYaml().loadAll(new BufferedReader(new InputStreamReader(is, "UTF-8")));
         try {
@@ -66,27 +69,25 @@ class YamlV1Reader extends AbstractYamlReader {
                 Map<String, Object> map = (Map<String, Object>) data;
 
                 String key = ((String) map.get(KEY)).trim();
-                if (key.equals("")) {
+                if (("").equals(key)) {
                     continue;
                 }
 
-                if ("baseClass".equals(map.get(KEY))) {
-                    Logger.getLogger().debug(
+                if (BASE_CLASS.equals(map.get(KEY))) {
+                    CodeGeneratorLoggerFactory.getLogger().debug(
                             String.format("++ Retrieved [%s] as the base class in [%s] PageYAML V1.", map.get("Value"),
                                     fileName));
                     setBaseClassName((String) map.get("Value"));
                 }
 
-                if ("platform".equals(map.get(KEY))) {
-                    if (!platformDefined) {
-                        TestPlatform currentPlatform = TestPlatform.identifyPlatform((String) map.get("Value"));
-                        if (currentPlatform == null) {
-                            String dataFile = new File(fileName).getAbsolutePath();
-                            throw new IllegalArgumentException("Missing or incorrect platform in Data file:" + dataFile);
-                        }
-                        setPlatform(currentPlatform);
-                        platformDefined = true;
+                if (PLATFORM.equals(map.get(KEY)) && !platformDefined) {
+                    TestPlatform currentPlatform = TestPlatform.identifyPlatform((String) map.get("Value"));
+                    if (currentPlatform == null) {
+                        String dataFile = new File(fileName).getAbsolutePath();
+                        throw new IllegalArgumentException("Missing or incorrect platform in Data file:" + dataFile);
                     }
+                    setPlatform(currentPlatform);
+                    platformDefined = true;
                 }
             }
 
@@ -110,7 +111,7 @@ class YamlV1Reader extends AbstractYamlReader {
                 if ("".equals(key)) {
                     continue;
                 }
-                if (map.get(KEY).equals("baseClass") || map.get(KEY).equals("platform")) {
+                if (map.get(KEY).equals(BASE_CLASS) || map.get(KEY).equals(PLATFORM)) {
                     continue;
                 }
 
@@ -130,16 +131,16 @@ class YamlV1Reader extends AbstractYamlReader {
             setProcessed(true);
         } catch (Exception e) {// NOSONAR
             // Just log a debug message. The input is probably not a V1 PageYAML
-            Logger.getLogger().debug(
+            CodeGeneratorLoggerFactory.getLogger().debug(
                     String.format("Unable to process %s as PageYAML V1.\n\t %s", resource.getFileName(),
                             e.getLocalizedMessage()));
         }
     }
-    
+
     private boolean canHaveContainers(TestPlatform platform, String key, Map<?, ?> map) {
         if (platform != TestPlatform.WEB) {
             return false;
         }
-        return HtmlSeLionElementList.CONTAINER.looksLike(key) && map.keySet().contains(ELEMENTS);
+        return HtmlSeLionElement.CONTAINER.looksLike(key) && map.keySet().contains(ELEMENTS);
     }
 }

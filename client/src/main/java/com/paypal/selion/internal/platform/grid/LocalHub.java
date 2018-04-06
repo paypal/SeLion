@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-2015 PayPal                                                                                     |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -16,11 +16,12 @@
 package com.paypal.selion.internal.platform.grid;
 
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.grid.LauncherConfiguration;
 import com.paypal.selion.grid.LauncherOptions;
-import com.paypal.selion.grid.LauncherOptions.LauncherOptionsImpl;
 import com.paypal.selion.grid.ThreadedLauncher;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.test.utilities.logging.SimpleLogger;
@@ -32,21 +33,26 @@ final class LocalHub extends AbstractBaseLocalServerComponent {
     private static final SimpleLogger LOGGER = SeLionLogger.getLogger();
     private static volatile LocalHub instance;
 
-    static synchronized final LocalServerComponent getSingleton() {
+    static synchronized LocalServerComponent getSingleton() {
         if (instance == null) {
             instance = new LocalHub().getLocalServerComponent();
         }
         return instance;
     }
 
-    synchronized final LocalHub getLocalServerComponent() {
+    synchronized LocalHub getLocalServerComponent() {
         if (instance == null) {
             instance = new LocalHub();
 
             instance.setHost(new NetworkUtils().getIpOfLoopBackIp4());
-            instance.setPort(Integer.parseInt(Config.getConfigProperty(ConfigProperty.SELENIUM_PORT)));
 
-            LauncherOptions launcherOptions = new LauncherOptionsImpl()
+            // Choose a random port for local hub.
+            int hubPort = PortProber.findFreePort();
+            instance.setPort(hubPort);
+            // Set ConfigProperty.SELENIUM_PORT so that the local nodes can register to it.
+            Config.setConfigProperty(ConfigProperty.SELENIUM_PORT, Integer.toString(hubPort));
+
+            LauncherOptions launcherOptions = new LauncherConfiguration()
                     .setFileDownloadCheckTimeStampOnInvocation(false).setFileDownloadCleanupOnInvocation(false);
 
             instance.setLauncher(new ThreadedLauncher(new String[] { "-role", "hub", "-port",
@@ -75,4 +81,5 @@ final class LocalHub extends AbstractBaseLocalServerComponent {
         super.shutdown();
         LOGGER.exiting();
     }
+
 }

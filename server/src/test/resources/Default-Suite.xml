@@ -2,7 +2,7 @@
 <suite thread-count="1" verbose="1" name="SeLion Grid Default Test Suite" skipfailedinvocationcounts="false"
     junit="false" parallel="false" data-provider-thread-count="50" annotations="JDK">
 
-    <test verbose="2" name="Default Tests" annotations="JDK">
+    <test verbose="2" name="Default Tests - set 1" annotations="JDK">
         <groups>
             <run>
                 <exclude name="downloads-dependencies" />
@@ -10,6 +10,16 @@
         </groups>
         <packages>
             <package name="com.paypal.selion.grid.*" />
+            <package name="com.paypal.selion.proxy.*" />
+            <package name="com.paypal.selion.resources.*" />
+            <package name="com.paypal.selion.node.*" />
+        </packages>
+    </test>
+    <!-- set 2 is temporarily isolated due to issues co-existing with set 1 -->
+    <!-- TODO fix the tests -->
+    <test verbose="2" name="Default Tests - set 2" annotations="JDK">
+        <packages>
+            <package name="com.paypal.selion.utils.*" />
         </packages>
     </test>
 </suite>

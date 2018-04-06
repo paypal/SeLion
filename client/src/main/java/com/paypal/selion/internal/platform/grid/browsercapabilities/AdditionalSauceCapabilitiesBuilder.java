@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-16 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -40,6 +40,8 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
     private static final String USER_NAME = "username";
     private static final String ACCESS_KEY = "accessKey";
     private static final String PARENT_TUNNEL = "parent-tunnel";
+    private static final String TUNNEL_ID = "tunnelIdentifier";
+    private static final String SELENIUM_VERSION = "seleniumVersion";
 
     @Override
     public DesiredCapabilities getCapabilities(DesiredCapabilities capabilities) {
@@ -50,6 +52,7 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         }
 
         capabilities = appendSauceLabsCredentials(capabilities);
+        capabilities = appendSauceLabsTunnel(capabilities);
         capabilities = appendSeleniumVersion(capabilities);
         capabilities = appendSauceLabsCapabilities(capabilities);
 
@@ -66,9 +69,9 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         }
         try {
             JsonObject jsonObject = new JsonParser().parse(FileAssistant.readFile(sauceJSONFileName)).getAsJsonObject();
-            Iterator<Entry<String,JsonElement>> iterator = jsonObject.entrySet().iterator();
+            Iterator<Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
             while (iterator.hasNext()) {
-                Entry<String,JsonElement> entry = iterator.next();
+                Entry<String, JsonElement> entry = iterator.next();
                 String capabilityName = entry.getKey();
                 Object capabilityValue = new JsonToBeanConverter().convert(Object.class, entry.getValue());
                 if ((capabilityValue instanceof String) && (capabilityValue.toString().startsWith("__string__"))) {
@@ -78,7 +81,7 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
             }
             logger.exiting(capabilities);
             return capabilities;
-        } catch (Exception e) { //NOSONAR
+        } catch (Exception e) { // NOSONAR
             String errorMsg = "An error occured while working with the JSON file : " + sauceJSONFileName
                     + ". Root cause: ";
             throw new WebDriverException(errorMsg, e);
@@ -88,7 +91,10 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
     private DesiredCapabilities appendSeleniumVersion(DesiredCapabilities caps) {
         logger.entering(caps);
         String seleniumVersion = new BuildInfo().getReleaseLabel();
-        caps.setCapability("selenium-version", seleniumVersion);
+        // allows the user to override this capability with their own version
+        if (caps.getCapability(SELENIUM_VERSION) == null) {
+            caps.setCapability(SELENIUM_VERSION, seleniumVersion);
+        }
         logger.exiting(caps);
         return caps;
     }
@@ -97,12 +103,25 @@ public class AdditionalSauceCapabilitiesBuilder extends DefaultCapabilitiesBuild
         logger.entering(caps);
         String sauceUserName = Config.getConfigProperty(ConfigProperty.SAUCELAB_USER_NAME);
         String sauceApiKey = Config.getConfigProperty(ConfigProperty.SAUCELAB_API_KEY);
-        String tunnelUserId = Config.getConfigProperty(ConfigProperty.SAUCELAB_TUNNEL_USER_ID);
 
-        if (sauceUserName != null && sauceApiKey != null) {
+        if (StringUtils.isNotBlank(sauceUserName) && StringUtils.isNotBlank(sauceApiKey)) {
             caps.setCapability(USER_NAME, sauceUserName);
             caps.setCapability(ACCESS_KEY, sauceApiKey);
+        }
+        logger.exiting(caps);
+        return caps;
+    }
+
+    private DesiredCapabilities appendSauceLabsTunnel(DesiredCapabilities caps) {
+        logger.entering(caps);
+        String tunnelUserId = Config.getConfigProperty(ConfigProperty.SAUCELAB_TUNNEL_USER_ID);
+        String tunnelId = Config.getConfigProperty(ConfigProperty.SAUCELAB_TUNNEL_ID);
+
+        if (StringUtils.isNotBlank(tunnelUserId)) {
             caps.setCapability(PARENT_TUNNEL, tunnelUserId);
+        }
+        if (StringUtils.isNotBlank(tunnelId)) {
+            caps.setCapability(TUNNEL_ID, tunnelId);
         }
         logger.exiting(caps);
         return caps;

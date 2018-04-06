@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -217,7 +217,8 @@ function displaySource(src, title) {
     generateSummary("running", running, total);
 
     //Pagination for Test case table
-    index = 1, configIndex = 1;
+    index = 1;
+    configIndex = 1;
     sortedRecords = treeFilter;
     filterSearch = sortedRecords;
     total = filterSearch.length;

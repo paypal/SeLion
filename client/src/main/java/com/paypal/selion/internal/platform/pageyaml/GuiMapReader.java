@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,6 +15,8 @@
 
 package com.paypal.selion.internal.platform.pageyaml;
 
+import com.paypal.selion.internal.platform.grid.WebDriverPlatform;
+
 import java.util.List;
 import java.util.Map;
 
@@ -23,16 +25,20 @@ import java.util.Map;
  */
 public interface GuiMapReader {
 
-    static final String KEY = "Key";
-    static final String CONTAINER = "Container";
-    static final String ELEMENTS = "Elements";
-    static final String ELEMENTSv2 = "containerElements";
-    static final String DEFAULT_LOCALE = "US";
+    String KEY = "Key";
+    String CONTAINER = "Container";
+    String ELEMENTS = "Elements";
+    String ELEMENTSv2 = "containerElements";
+    String DEFAULT_LOCALE = "US";
 
     Map<String, String> getGuiMap(String locale);
+
+    Map<String,String> getGuiMap(String locale, WebDriverPlatform platform);
 
     Map<String, String> getGuiMapForContainer(String containerKey, String locale);
 
     List<String> getPageValidators();
+
+    List<String> getPageLoadingValidators();
 
 }

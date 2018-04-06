@@ -55,6 +55,7 @@ document.body.appendChild(radio);
 
 var select = document.createElement("select");
 select.id = "select"
+select.multiple = true;
 
 var option1 = document.createElement("option");
 option1.innerHTML = "Option 1";

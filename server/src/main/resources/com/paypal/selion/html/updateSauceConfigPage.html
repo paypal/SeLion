@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!---------------------------------------------------------------------------------------------------------------------
+|  Copyright (C) 2016 PayPal                                                                                          |
+|                                                                                                                     |
+|  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
+|  with the License.                                                                                                  |
+|                                                                                                                     |
+|  You may obtain a copy of the License at                                                                            |
+|                                                                                                                     |
+|       http://www.apache.org/licenses/LICENSE-2.0                                                                    |
+|                                                                                                                     |
+|  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed   |
+|  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for  |
+|  the specific language governing permissions and limitations under the License.                                     |
+---------------------------------------------------------------------------------------------------------------------->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Grid Management Console</title>
+  <link rel="stylesheet" type="text/css" href="/grid/resources/com/paypal/selion/css/view.css" media="all">
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/view.js"></script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/jquery.min.js"></script>
+  <script type="text/javascript">
+    var sauceConfigJson = Object.freeze(%s);
+  </script>
+  <script type="text/javascript" src="/grid/resources/com/paypal/selion/js/updateSauceConfigPage.js"></script>
+</head>
+<body id="main_body">
+<img src="/grid/resources/com/paypal/selion/image/selion-horiz-notag.png" alt="SeLion Logo, horizontal" border="0">
+<img id="top" src="/grid/resources/com/paypal/selion/image/top.png" alt="Horizontal Line Top">
+<div id="form_container">
+  <form id="sauceGridConfigForm" class="appnitro" method="post" action="/grid/admin/SauceConfigChangeServlet">
+    <div class="form_description">
+      <h2>SeLion Grid - Sauce Proxy Configuration</h2>
+      <p>Fill out the form to change the sauce proxy configuration</p>
+    </div>
+    <noscript><p class="error">JavaScript required</p></noscript>
+
+    <ul class="javascript-enabled">
+      <li id="li_1">
+        <label class="description" for="sauceURL">Sauce URL</label>
+        <div>
+          <input id="sauceURL" name="sauceURL" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_2">
+        <label class="description" for="username">Username</label>
+        <div>
+          <input id="username" name="username" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_3">
+        <label class="description" for="accessKey">Access Key</label>
+        <div>
+          <input id="accessKey" name="accessKey" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_4">
+        <label class="description" for="tunnelIdentifier">Tunnel Identifier</label>
+        <div>
+          <input id="tunnelIdentifier" name="tunnelIdentifier" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_5">
+        <label class="description" for="parentTunnel">Default Parent Tunnel</label>
+        <div>
+          <input id="parentTunnel" name="parentTunnel" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_6">
+        <label class="description" for="retry">API Number of Retries</label>
+        <div>
+          <input id="retry" name="retry" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_7">
+        <label class="description" for="timeout">API Timeout (milliseconds)</label>
+        <div>
+          <input id="timeout" name="timeout" class="element text medium" maxlength="255"/>
+        </div>
+      </li>
+      <li id="li_8">
+        <label class="description" for="requireUserCredentials">Require User Credentials</label>
+        <div>
+          <input id="requireUserCredentials" type="checkbox" name="requireUserCredentials" class="element"/>
+        </div>
+      </li>
+      <li class="buttons">
+        <input type="hidden" name="form_id" value="login"/>
+        <input id="saveForm" class="button_text" type="submit" name="submit" value="Submit"/>
+      </li>
+    </ul>
+  </form>
+  <div id="footer">
+    <a href="/grid/admin/LoginServlet?form_id=login">Go To Home</a>&nbsp;&nbsp;
+    <a href="/grid/admin/LoginServlet?logout=true">Logout</a>
+    <p>Created by the <a href="http://selion.io">SeLion</a> project</p>
+  </div>
+</div>
+<img id="bottom" src="/grid/resources/com/paypal/selion/image/bottom.png" alt="Horizontal Line Bottom">
+</body>
+</html>

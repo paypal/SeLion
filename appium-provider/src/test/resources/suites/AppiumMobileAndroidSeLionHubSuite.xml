@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="7" verbose="1" name="Appium Android SeLion Hub Storage Test Suite"
+    skipfailedinvocationcounts="false" junit="false" parallel="false" data-provider-thread-count="50" annotations="JDK">
+    <!-- SELENIUM CONFIGURATION -->
+    <parameter name="mobileNodeType" value="appium" />
+
+    <test verbose="2" name="mobile-appium-android-test-selion-hub-storage" annotations="JDK">
+        <classes>
+            <class name="com.paypal.selion.appium.android.sample.AppiumAndroidNativeAppSeLionHubTest"></class>
+        </classes>
+    </test>
+
+</suite>
+

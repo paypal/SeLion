@@ -113,8 +113,9 @@ public class FileBackedStringBuffer {
     }
 
     private void flushToFile() {
-        if (builder.length() == 0)
+        if (builder.length() == 0) {
             return;
+        }
 
         if (file == null) {
             try {

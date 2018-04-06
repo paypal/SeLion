@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,23 +17,14 @@ package com.paypal.selion.plugins;
 
 import static org.testng.Assert.assertEquals;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class PlatformTest {
 
-    class DummyMojo extends AbstractMojo {
-        @Override
-        public void execute() throws MojoExecutionException, MojoFailureException {
-        }
-    }
-
     @BeforeClass
     public void before() {
-        Logger.setLogger(new DummyMojo().getLog());
+        CodeGeneratorLoggerFactory.setLogger(new CodeGeneratorSimpleLogger());
     }
 
     @Test
@@ -48,6 +39,13 @@ public class PlatformTest {
         // For IOS platform, the value must be specified
         TestPlatform currentPlatform = getPlatformToTest("src/test/resources/IOSInteractionPage.yaml");
         assertEquals(currentPlatform, TestPlatform.IOS);
+    }
+
+    @Test
+    public void testMobilePlatform() throws Exception {
+        // For IOS platform, the value must be specified
+        TestPlatform currentPlatform = getPlatformToTest("src/test/resources/SampleMobilePage.yaml");
+        assertEquals(currentPlatform, TestPlatform.MOBILE);
     }
 
     @Test(expectedExceptions = { CodeGeneratorException.class })

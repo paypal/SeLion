@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -62,6 +62,20 @@ public class LocalConfigTest {
         assertTrue(!portNumber.isEmpty(), "selenium port returned by getConfigProperty cannot be empty.");
     }
 
+    @Test(groups = "unit")
+    public void testLocalGetIntConfigProperty() {
+        LocalConfig localConfig = new LocalConfig();
+        int portNumber = localConfig.getIntConfigProperty(ConfigProperty.SELENIUM_PORT);
+        assertTrue(portNumber > 0);
+    }
+
+    @Test(groups = "unit")
+    public void testLocalGetBooleanConfigProperty() {
+        LocalConfig localConfig = new LocalConfig();
+        boolean autoScreenShot = localConfig.getBooleanConfigProperty(ConfigProperty.AUTO_SCREEN_SHOT);
+        assertTrue(autoScreenShot);
+    }
+
     @Test(groups = "unit", expectedExceptions = { IllegalArgumentException.class })
     public void testLocalGetConfigNullValue() throws Exception {
         LocalConfig localConfig = new LocalConfig();
@@ -118,9 +132,9 @@ public class LocalConfigTest {
         assertTrue(!browserParam.isEmpty());
         // Drop the "* in browser and first char"
         if ("*iexplore".equals(browserParam)) {
-            //Only for IE the user agent parsing library returns it as IE.
+            // Only for IE the user agent parsing library returns it as IE.
             assertTrue(actualBrowser.equalsIgnoreCase("ie"));
-        }else {
+        } else {
             assertTrue(actualBrowser.contains(browserParam.substring(1).toLowerCase()));
         }
     }

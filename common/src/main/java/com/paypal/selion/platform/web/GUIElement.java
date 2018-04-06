@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -23,15 +23,33 @@ import java.util.Map;
  * This page represents the Web elements on a {@link Page}
  */
 public final class GUIElement {
-    private Map<String, String> locators = new HashMap<String, String>();
-    private Map<String, HtmlContainerElement> containerElements = new HashMap<String, HtmlContainerElement>();
+    private Map<String, String> locators = new HashMap<>();
+    private Map<String, String> ios = new HashMap<>();
+    private Map<String, String> android = new HashMap<>();
+    private Map<String, HtmlContainerElement> containerElements = new HashMap<>();
 
     public Map<String, String> getLocators() {
         return Collections.unmodifiableMap(locators);
     }
 
     public void setLocators(Map<String, String> locators) {
-        this.locators = new HashMap<String, String>(locators);
+        this.locators = new HashMap<>(locators);
+    }
+
+    public Map<String, String> getIos() {
+        return Collections.unmodifiableMap(ios);
+    }
+
+    public void setIos(Map<String, String> ios) {
+        this.ios = ios;
+    }
+
+    public Map<String, String> getAndroid() {
+        return Collections.unmodifiableMap(android);
+    }
+
+    public void setAndroid(Map<String, String> android) {
+        this.android = android;
     }
 
     public Map<String, HtmlContainerElement> getContainerElements() {
@@ -39,6 +57,6 @@ public final class GUIElement {
     }
 
     public void setContainerElements(Map<String, HtmlContainerElement> containerElements) {
-        this.containerElements = new HashMap<String, HtmlContainerElement>(containerElements);
+        this.containerElements = new HashMap<>(containerElements);
     }
 }

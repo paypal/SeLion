@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -76,7 +76,7 @@ public class SessionSharingTestWithConfigurationMethods {
     }
 
     @Test(priority = 0)
-    public void testSessionSharing_part1() {
+    public void testSessionSharingStep0() {
         assertEquals(getSessionId().toString(), sessionId.toString());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
         assertTrue(Grid.driver().getTitle().contains("Sample Unit Test Page"),
@@ -84,7 +84,7 @@ public class SessionSharingTestWithConfigurationMethods {
     }
 
     @Test(priority = 1)
-    public void testSessionSharing_part2() throws Exception {
+    public void testSessionSharingStep1() throws Exception {
         assertEquals(getSessionId().toString(), sessionId.toString());
         assertTrue(Grid.driver().getCapabilities().getBrowserName().contains("chrome"),
                 "Should be using chrome browser.");

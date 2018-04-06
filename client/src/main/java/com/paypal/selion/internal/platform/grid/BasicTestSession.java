@@ -28,7 +28,7 @@ public class BasicTestSession extends AbstractTestSession {
     private static final SimpleLogger logger = SeLionLogger.getLogger();
 
     @Override
-    public void startSesion() {
+    public void startSession() {
         logger.entering();
         setStarted(true);
         logger.exiting();
@@ -53,7 +53,6 @@ public class BasicTestSession extends AbstractTestSession {
         logger.entering();
         Grid.getThreadLocalWebDriver().set(null);
         Grid.getThreadLocalTestSession().set(null);
-        Grid.getThreadLocalException().set(null);
         setStarted(false);
         logger.exiting();
     }

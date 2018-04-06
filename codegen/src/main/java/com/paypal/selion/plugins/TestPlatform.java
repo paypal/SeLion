@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,14 +15,33 @@
 
 package com.paypal.selion.plugins;
 
+/**
+ * Represents the platform types code generation can be performed for. Also maps each platform type to a velocity
+ * template.
+ */
 public enum TestPlatform {
 
-    IOS("ios", "MobileTemplate.vm"), WEB("web", "Class.vm"), ANDROID("android", "MobileTemplate.vm");
+    /**
+     * Maps to the iOS velocity template
+     */
+    IOS("ios", "MobileTemplate.vm"),
+    /**
+     * Maps to the Web velocity template
+     */
+    WEB("web", "Class.vm"),
+    /**
+     * Maps to the Android velocity template
+     */
+    ANDROID("android", "MobileTemplate.vm"),
+    /**
+     * Maps to the common mobile velocity template
+     */
+    MOBILE("mobile", "CommonMobileTemplate.vm");
 
     private String platformName;
     private String defFileName;
 
-    private TestPlatform(String platformName, String defFileName) {
+    TestPlatform(String platformName, String defFileName) {
         this.platformName = platformName;
         this.defFileName = defFileName;
     }

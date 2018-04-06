@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,7 +15,6 @@
 
 package com.paypal.selion.grid;
 
-import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -26,14 +25,11 @@ import static org.testng.Assert.fail;
 public class ThreadedLauncherTest {
     private Thread thread;
     private RunnableLauncher launcher;
-    private String host;
-    private int port;
 
     @BeforeClass
     public void beforeClass() {
-        host = new NetworkUtils().getIpOfLoopBackIp4();
-        port = PortProber.findFreePort();
-        launcher = new ThreadedLauncher(new String[] { "-host", host, "-port", String.valueOf(port) });
+        int port = PortProber.findFreePort();
+        launcher = new ThreadedLauncher(new String[] { "-port", String.valueOf(port) });
 
         thread = new Thread(launcher);
     }

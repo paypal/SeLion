@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang.StringUtils;
 
+import com.beust.jcommander.JCommander;
 import com.google.common.annotations.Beta;
 import com.google.gson.JsonParser;
 import com.paypal.selion.logging.SeLionGridLogger;
@@ -44,12 +45,12 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
         setType(InstanceType.SELENDROID);
     }
 
-    public static final void main(String[] args) {
+    public static void main(String[] args) {
         new SelendroidJarSpawner(args).run();
     }
 
     @Override
-    public final void run() {
+    public void run() {
         mainClass = ConfigParser.parse()
                 .getString("selendroidMainClass", "io.selendroid.standalone.SelendroidLauncher");
         defaultArgs = ConfigParser.parse().getJsonObject("selendroidDefaultArgs",
@@ -63,7 +64,7 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
     }
 
     @Override
-    final void startProcess(boolean squelch) throws IOException {
+    void startProcess(boolean squelch) throws IOException {
         setCommandLine(createJavaCommandForChildProcess());
         super.startProcess(squelch);
     }
@@ -93,4 +94,31 @@ public final class SelendroidJarSpawner extends MobileProcessLauncher {
         return cmdLine;
     }
 
+    void printUsageInfo() {
+        StringBuilder usage = new StringBuilder();
+        usage.append(SEPARATOR);
+        usage.append("To use SeLion Grid with Selendroid");
+        usage.append(SEPARATOR);
+
+        usage.append("Usage: java [system properties] \\\n");
+        usage.append("            -cp SeLion-Grid.jar \\\n");
+        usage.append("            com.paypal.selion.grid.SelendroidJarSpawner \\\n");
+        usage.append("            [options] [driver options] \n");
+
+        new JCommander(new ProcessLauncherConfiguration()).usage(usage);
+        final int start = usage.indexOf("Usage: <main class> [options]");
+        final int length = "Usage: <main class> [options]".length();
+        usage.replace(start, start + length, "");
+
+        usage.append("  Driver Options: \n");
+        usage.append("    Any valid Selendroid dash option(s). \n");
+        usage.append("\n");
+        usage.append("  System Properties: \n");
+        usage.append("    -DselionHome=<folderPath>: \n");
+        usage.append("       Path of SeLion home directory. Defaults to <user.home>/.selion2/ \n");
+        usage.append("    -D[property]=[value]: \n");
+        usage.append("       Any other System Property you wish to pass to the JVM \n");
+
+        System.out.print(usage.toString());
+    }
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -23,6 +23,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import com.paypal.selion.configuration.Config;
+import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.internal.platform.grid.BrowserFlavors;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventFiringCommandExecutor;
@@ -33,7 +35,7 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * This factory class is responsible for providing the framework with a {@link RemoteWebDriver} instance based on the
  * browser type.
- * 
+ *
  */
 public final class WebDriverFactory {
 
@@ -44,8 +46,7 @@ public final class WebDriverFactory {
     }
 
     /**
-     * @param browser
-     *            - enum that represents the browser flavor for which capabilities are being requested.
+     * @param browser enum that represents the browser flavor for which capabilities are being requested.
      * @return A {@link RemoteWebDriver} instance based on the browser type
      */
     public static RemoteWebDriver createInstance(BrowserFlavors browser) {
@@ -84,7 +85,9 @@ public final class WebDriverFactory {
         logger.log(Level.FINE, "Spawning a browser with the following capabilities: "
                 + DriverFactoryHelper.showCapabilities(capability));
         driver = createDriverInstance(DriverFactoryHelper.getURL(), capability);
-        DriverFactoryHelper.printDebugInfoForUser(driver);
+        if (Config.getBoolConfigProperty(ConfigProperty.PRINT_DEBUG_INFO)) {
+            DriverFactoryHelper.printDebugInfoForUser(driver);
+        }
         return driver;
     }
 

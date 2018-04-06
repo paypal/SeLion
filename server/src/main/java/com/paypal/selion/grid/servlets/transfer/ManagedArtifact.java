@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -26,6 +26,9 @@ public interface ManagedArtifact {
     String ARTIFACT_FILE_NAME = "fileName";
     String ARTIFACT_FOLDER_NAME = "folderName";
 
+    /**
+     * Provides access to and/or represents the HTTP request parameters used by the @{link {@link ManagedArtifact}}
+     */
     interface RequestParameters {
         /**
          * Returns the input parameters that this artifact uses. Implementations <b>must</b> include

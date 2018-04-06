@@ -24,6 +24,7 @@ client/ios-driver.log
 
 # Generated files
 gen/
+out/
 
 # Gradle files
 .gradle/

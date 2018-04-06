@@ -1,0 +1,6 @@
+{
+  "authenticationKey": "c2F1Y2Utc3VwZXItdXNlcjphY2Nlc3Mta2V5",
+  "sauceURL": "http://sauce",
+  "sauceRetries": "0",
+  "sauceTimeout": "4000"
+}

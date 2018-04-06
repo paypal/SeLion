@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -18,14 +18,12 @@ package com.paypal.selion.pojos;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 
-import com.paypal.selion.grid.RunnableLauncher;
-
 import static com.paypal.selion.SeLionConstants.*;
 
 /**
- * A Class which contains String constants used throughout SeLion Grid
+ * A Class which contains String constants used throughout SeLion Grid.
  * 
- * Patterns & conventions used in naming the constants for this class 
+ * Patterns & conventions used in naming the constants for this class.
  * </br> 
  * </br> - Anything that is a *DIR* ends with a trailing separator. File system dirs are platform specific  ('\' Windows, 
  * '/' Unix). CLASSPATH resource dirs will always be '/'. 
@@ -44,7 +42,7 @@ public class SeLionGridConstants {
     /**
      * Path prefix to pages along with the Grid API endpoint
      */
-    private static final String GRID_PAGES_URL_PATH_PREFIX = "/grid/resources/pages/";
+    private static final String GRID_PAGES_URL_PATH_PREFIX = "/grid/resources/com/paypal/selion/html/";
 
     /**
      * Relative directory for config files
@@ -105,6 +103,11 @@ public class SeLionGridConstants {
     public static final String HUB_SAUCE_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + "hubSauceConfig.json";
 
     /**
+     * Resource path to the default nodeSauceConfig.json file
+     */
+    public static final String NODE_SAUCE_CONFIG_FILE_RESOURCE = "/" + CONFIG_DIR + "nodeSauceConfig.json";
+
+    /**
      * Installed/Extracted path to the hubConfig.json file
      */
     public static final String HUB_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
@@ -115,6 +118,12 @@ public class SeLionGridConstants {
      */
     public static final String HUB_SAUCE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "hubSauceConfig.json");
+
+    /**
+     * Installed/Extracted path to the nodeSauceConfig.json file
+     */
+    public static final String NODE_SAUCE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
+            + "nodeSauceConfig.json");
 
     /**
      * Resource path to the default sauceConfig.json file
@@ -148,41 +157,6 @@ public class SeLionGridConstants {
      */
     public static final String NODE_CONFIG_FILE = FilenameUtils.separatorsToSystem(SELION_HOME_DIR + CONFIG_DIR
             + "nodeConfig.json");
-
-    /**
-     * Dash argument for specifying an alternative Selion Grid json config file
-     */
-    public static final String SELION_CONFIG_ARG = "-selionConfig";
-
-    /**
-     * Dash argument for specifying an alternative Selenium hub json config file
-     */
-    public static final String HUB_CONFIG_ARG = "-hubConfig";
-
-    /**
-     * Dash argument for specifying the SeLion Grid hub type &lt;sauce&gt;
-     */
-    public static final String TYPE_ARG = "-type";
-
-    /**
-     * Dash argument for specifying the Selenium role &lt;hub|node&gt;
-     */
-    public static final String ROLE_ARG = "-role";
-
-    /**
-     * Dash argument for specifying an alternative Selenium node json config file
-     */
-    public static final String NODE_CONFIG_ARG = "-nodeConfig";
-
-    /**
-     * Dash argument for displaying the help text
-     */
-    public static final String HELP_ARG = "-help";
-
-    /**
-     * Dash argument for disabling continuous restart nature of any {@link RunnableLauncher} which spawns a new process
-     */
-    public static final String SELION_NOCONTINUOUS_ARG = "-noContinuousRestart";
 
     private SeLionGridConstants() {
         // Restricting Object creation

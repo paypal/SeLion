@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -35,7 +35,7 @@ public final class PageFactory {
 
     /**
      * Creates a instance of a {@link Page}.
-     * 
+     *
      * @param in
      *            input stream of the Yaml File
      * @return an instance of the Page object
@@ -48,6 +48,7 @@ public final class PageFactory {
 
         TypeDescription typeDesc = new TypeDescription(Page.class);
         typeDesc.putListPropertyType("pageValidators", String.class);
+        typeDesc.putListPropertyType("pageLoadingValidators", String.class);
         typeDesc.putMapPropertyType("elements", String.class, GUIElement.class);
         constructor.addTypeDescription(typeDesc);
 

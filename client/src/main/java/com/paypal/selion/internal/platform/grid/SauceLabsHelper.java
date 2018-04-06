@@ -37,7 +37,6 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  */
 public class SauceLabsHelper {
     private static final String ALGORITHM = "HmacMD5";
-    private String jobURL;
     private final String userName;
     private final String apiKey;
     private final SimpleLogger logger = SeLionLogger.getLogger();
@@ -69,7 +68,7 @@ public class SauceLabsHelper {
             logger.exiting();
             return;
         }
-        Reporter.log(String.format("<b>SauceLabs Job URL available <a href='%s' target='_blank'>here</a></b>", url));
+        Reporter.log(String.format("<b>Sauce Labs job URL available <a href='%s' target='_blank'>here</a></b>", url));
         logger.exiting();
     }
 
@@ -119,7 +118,7 @@ public class SauceLabsHelper {
             logger.exiting();
             return null;
         }
-        jobURL = String.format("https://saucelabs.com/jobs/%s?auth=%s", sessionid, encodedToken);
+        String jobURL = String.format("https://saucelabs.com/jobs/%s?auth=%s", sessionid, encodedToken);
 
         logger.exiting(jobURL);
         return jobURL;

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -30,17 +30,17 @@ class ConfigMethodInfo extends MethodInfo {
      * Instantiate ConfigMethodInfo object with suite, test, packages, class name and result details
      * 
      * @param suite
-     *            - name of the suite
+     *            name of the suite
      * @param test
-     *            - name of the test
+     *            name of the test
      * @param packages
-     *            - name of the package without class name
+     *            name of the package without class name
      * @param classname
-     *            - name of the class without package name
+     *            name of the class without package name
      * @param type
-     *            - The type of the method.
+     *            The type of the method.
      * @param result
-     *            - ITestResult of the config method which need to be reported
+     *            ITestResult of the config method which need to be reported
      */
     public ConfigMethodInfo(String suite, String test, String packages, String classname, String type,
             ITestResult result) {

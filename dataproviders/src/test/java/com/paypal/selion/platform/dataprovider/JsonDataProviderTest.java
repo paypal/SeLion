@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,16 +15,12 @@
 
 package com.paypal.selion.platform.dataprovider;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.testng.annotations.Test;
 
@@ -34,6 +30,8 @@ import com.paypal.selion.platform.dataprovider.filter.SimpleIndexInclusionFilter
 import com.paypal.selion.platform.dataprovider.impl.FileSystemResource;
 import com.paypal.selion.platform.dataprovider.impl.InputStreamResource;
 import com.paypal.selion.platform.dataprovider.pojos.yaml.USER;
+
+import static org.testng.Assert.*;
 
 public class JsonDataProviderTest {
     private static String jsonPojoArrayDataFile = "src/test/resources/PojoArrayData.json";
@@ -159,6 +157,9 @@ public class JsonDataProviderTest {
                 assertTrue(userData.getAreaCode()[1].getAreaCode().equals("area8"));
                 break;
             }
+            default: {
+                fail("Unexpected condition.");
+            }
             }
         }
     }
@@ -230,7 +231,7 @@ public class JsonDataProviderTest {
 
     @Test(groups = "unit")
     public void testGetDataByKeys() throws IOException {
-        DataResource resource = new FileSystemResource(jsonRawDataFile, HashMap[].class);
+        DataResource resource = new FileSystemResource(jsonRawDataFile, Map[].class);
         SeLionDataProvider dataProvider = DataProviderFactory.getDataProvider(resource);
         String[] keys = {"test1", "test2"};
         Object[][] dataObjects = dataProvider.getDataByKeys(keys );

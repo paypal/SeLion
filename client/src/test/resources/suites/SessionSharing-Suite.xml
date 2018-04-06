@@ -1,0 +1,30 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="7" verbose="1" name="SessionSharing Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="classes" data-provider-thread-count="50" annotations="JDK">
+
+    <listeners>
+        <listener class-name="com.paypal.selion.reports.runtime.DebugListener" />
+    </listeners>
+
+    <!-- SELENIUM CONFIGURATION -->
+    <parameter name="browser" value="*chrome" />
+
+    <test verbose="2" name="Session-Sharing-Suite" annotations="JDK">
+        <groups>
+            <run>
+                <include name="functional" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.platform.grid.SessionSharingTest" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingTestWithConfigurationMethods" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingTestWithDataProvider" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingTestWithDataProviderMixedIn" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingConflictingPrioritiesTest" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingNoPrioritiesTest" />
+            <class name="com.paypal.selion.platform.grid.SessionSharingUnclearPrioritiesTest" />
+        </classes>
+    </test>
+
+</suite>
+

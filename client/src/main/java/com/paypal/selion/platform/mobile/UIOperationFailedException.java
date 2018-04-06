@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -19,6 +19,7 @@ import org.openqa.selenium.WebDriverException;
 
 import com.paypal.selion.SeLionBuildInfo;
 import com.paypal.selion.SeLionBuildInfo.SeLionBuildProperty;
+import com.paypal.selion.SeLionConstants;
 
 /**
  * <code>UIOperationFailedException</code> represents exceptional cases that occur while interacting with mobile
@@ -50,7 +51,7 @@ public class UIOperationFailedException extends WebDriverException {
 
     @Override
     public String getSupportUrl() {
-        return "https://github.com/paypal/SeLion";
+        return SeLionConstants.SELION_PROJECT_GITHUB_URL;
     }
 
     protected String getSeLionBuildInformation() {

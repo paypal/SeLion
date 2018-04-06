@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -47,7 +47,7 @@ import com.paypal.selion.logger.SeLionLogger;
  * 
  * If the current &lt;test&gt; name can not be determined, then defaults to the global configuration that is available
  * via {@link Config#getConfigProperty(com.paypal.selion.configuration.Config.ConfigProperty)}/
- * {@link Config#setConfigProperty(com.paypal.selion.configuration.Config.ConfigProperty, String)}.
+ * {@link Config#setConfigProperty(com.paypal.selion.configuration.Config.ConfigProperty, Object)}.
  * 
  */
 @ThreadSafe

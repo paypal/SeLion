@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -32,7 +32,7 @@ public class SessionSharingTest {
     private static SessionId sessionId;
 
     @Test(priority = 1)
-    public void testSessionSharing_part1() {
+    public void testSessionSharingStep1() {
         Grid.open(TestServerUtils.getTestEditableURL());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
         sessionId = getSessionId();
@@ -43,7 +43,7 @@ public class SessionSharingTest {
     }
 
     @Test(priority = 2)
-    public void testSessionSharing_part2() throws IOException {
+    public void testSessionSharingStep2() throws IOException {
         // should already be on test Page
         assertEquals(getSessionId().toString(), sessionId.toString());
         SeLionReporter.log("Editable Test Page (" + getSessionId() + ")", true, true);
@@ -52,10 +52,15 @@ public class SessionSharingTest {
     }
 
     @Test(priority = 3)
-    public void testSessionSharing_part3() throws Exception {
+    public void testSessionSharingStep3() throws Exception {
         assertEquals(getSessionId().toString(), sessionId.toString());
         assertTrue(Grid.driver().getCapabilities().getBrowserName().contains("chrome"),
                 "Should be using chrome browser.");
+    }
+
+    @Test(enabled = false, priority = 4)
+    public void testSessionsSharingDisabled() throws Exception {
+        fail("This test should not have been invoked.");
     }
 
 }

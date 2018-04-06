@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -31,32 +31,32 @@ public interface SeLionIOSBridgeDriver {
     /**
      * Constant representing one finger
      */
-    static final String ONE_FINGER = "1";
+    String ONE_FINGER = "1";
 
     /**
      * Constant representing two fingers
      */
-    static final String TWO_FINGERS = "2";
+    String TWO_FINGERS = "2";
 
     /**
      * Constant representing single tap
      */
-    static final String SINGLE_TAP = "1";
+    String SINGLE_TAP = "1";
 
     /**
      * Constant representing double tap
      */
-    static final String DOUBLE_TAP = "2";
+    String DOUBLE_TAP = "2";
 
     /**
      * Constant representing tap gesture
      */
-    static final String TAP = "0";
+    String TAP = "0";
 
     /**
      * Constant representing touch and hold gesture
      */
-    static final String TOUCH_AND_HOLD = "1";
+    String TOUCH_AND_HOLD = "1";
 
     /**
      * Finds the {@link WebElement} using the underlying {@link RemoteWebDriver} implementation.
@@ -138,7 +138,7 @@ public interface SeLionIOSBridgeDriver {
      *            {@link WebElement} instance.
      * @return Label of the {@link WebElement}
      */
-    public String getLabel(WebElement webElement);
+    String getLabel(WebElement webElement);
 
     /**
      * Returns a string containing the name attribute of the {@link WebElement}.
@@ -147,7 +147,7 @@ public interface SeLionIOSBridgeDriver {
      *            {@link WebElement} instance.
      * @return Name of the {@link WebElement}
      */
-    public String getName(WebElement webElement);
+    String getName(WebElement webElement);
 
     /**
      * Returns a string containing the value attribute of the {@link WebElement}.
@@ -156,6 +156,6 @@ public interface SeLionIOSBridgeDriver {
      *            {@link WebElement} instance.
      * @return Value of the {@link WebElement}
      */
-    public String getValue(WebElement webElement);
+    String getValue(WebElement webElement);
 
 }

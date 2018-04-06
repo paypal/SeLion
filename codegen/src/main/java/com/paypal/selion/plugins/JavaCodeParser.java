@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -48,15 +48,15 @@ public class JavaCodeParser {
      */
     JavaCodeParser(File file) {
         this.file = file;
-        fields = new ArrayList<FieldDeclaration>();
-        methods = new ArrayList<MethodDeclaration>();
-        imports = new ArrayList<ImportDeclaration>();
+        fields = new ArrayList<>();
+        methods = new ArrayList<>();
+        imports = new ArrayList<>();
 
     }
 
     /**
      * This method get all the import statement from the java compilation unit and return as a List
-     * 
+     *
      * @return List of {@link ImportDeclaration}
      * @throws IOException
      * @throws ParseException
@@ -70,7 +70,7 @@ public class JavaCodeParser {
 
     /**
      * This method get all the fields from the java compilation unit and return as a List
-     * 
+     *
      * @return List of {@link FieldDeclaration}
      * @throws IOException
      * @throws ParseException
@@ -84,7 +84,7 @@ public class JavaCodeParser {
 
     /**
      * This method get all the method details from the java compilation unit and return as a List
-     * 
+     *
      * @return List of {@link MethodDeclaration}
      * @throws IOException
      * @throws ParseException

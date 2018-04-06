@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.SessionId;
 import com.paypal.selion.annotations.MobileTest;
 import com.paypal.selion.annotations.WebTest;
 import com.paypal.selion.configuration.Config.ConfigProperty;
+import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.internal.platform.grid.AbstractTestSession;
 import com.paypal.selion.internal.platform.grid.MobileTestSession;
@@ -51,6 +52,7 @@ public final class Grid {
     private static SimpleLogger logger = SeLionLogger.getLogger();
     private static ThreadLocal<RemoteWebDriver> threadLocalWebDriver = new ThreadLocal<RemoteWebDriver>();
     private static ThreadLocal<AbstractTestSession> threadTestSession = new ThreadLocal<AbstractTestSession>();
+    @Deprecated
     private static ThreadLocal<Exception> threadLocalException = new ThreadLocal<Exception>();
 
     static {
@@ -69,6 +71,10 @@ public final class Grid {
         return threadTestSession;
     }
 
+    @Deprecated
+    /**
+     * @deprecated in SeLion 1.2.0. Do not use. No alternative
+     */
     public static ThreadLocal<Exception> getThreadLocalException() {
         return threadLocalException;
     }
@@ -92,19 +98,13 @@ public final class Grid {
      *         {@link WebTest} flow.
      */
     public static RemoteWebDriver driver() {
-        //Need to throw an RuntimeException if already caught on SeleniumGridListener.beforeInvocation()
-        Exception exception = threadLocalException.get();
-        if (exception != null) {
-            if (exception instanceof RuntimeException) {
-                throw (RuntimeException) exception;
-            }
-            // convert the checked exception into a runtime exception.
-            throw new RuntimeException(exception.getMessage(), exception);
-        }
-
         AbstractTestSession testSession = getTestSession();
+        if (testSession == null) {
+            throw new IllegalStateException("Test session not initialized. Make sure the SeLion SeleniumGridListener is "
+                    + "enabled and you have annotated your class/method with @MobileTest/@WebTest.");
+        }
         if (!testSession.isStarted()) {
-            testSession.startSesion();
+            testSession.startSession();
         }
         RemoteWebDriver rwd = threadLocalWebDriver.get();
         if (rwd == null) {
@@ -192,12 +192,19 @@ public final class Grid {
      * @param session
      *            An object of type {@link SessionId} which represents the current session for a user.
      * @return An array of string wherein the first element represents the remote node's name and the second element
-     *         represents its port.
+     *         represents its port. May return <code>null</code> on error.
      */
     public static RemoteNodeInformation getRemoteNodeInfo(String hostName, int port, SessionId session) {
         logger.entering(new Object[] { hostName, port, session });
         RemoteNodeInformation node = null;
         String errorMsg = "Failed to acquire remote webdriver node and port info. Root cause: ";
+
+        // go ahead and abort if this is a known grid where know we won't be able to extract the proxy info via the hub
+        // api
+        if (Config.getBoolConfigProperty(ConfigProperty.SELENIUM_USE_SAUCELAB_GRID)) {
+            logger.exiting(node);
+            return node;
+        }
 
         try {
             HttpHost host = new HttpHost(hostName, port);

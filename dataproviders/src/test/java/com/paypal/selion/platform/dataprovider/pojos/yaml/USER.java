@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,11 +15,12 @@
 
 package com.paypal.selion.platform.dataprovider.pojos.yaml;
 
+import java.util.Arrays;
+
 public class USER {
 
     /*
-     * Data structure. Please note that the order is very important here. If this order is mismatched with the
-     * excel-sheet column, then the data may not be read correctly, or even fail to read.
+     * Data structure.
      * 
      * This is the starting point of our data.
      */
@@ -97,7 +98,7 @@ public class USER {
     }
 
     public AREA_CODE[] getAreaCode() {
-        return areaCode;
+        return (areaCode == null) ? null : Arrays.copyOf(areaCode, areaCode.length);
     }
 
     public void setAreaCode(AREA_CODE[] areaCode) {
@@ -118,10 +119,6 @@ public class USER {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public boolean isIsbooleanGood() {
-        return isbooleanGood;
     }
 
     public void setIsbooleanGood(boolean isbooleanGood) {

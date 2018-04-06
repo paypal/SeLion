@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2015 PayPal                                                                                          |
+|  Copyright (C) 2015-2016 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -23,22 +23,17 @@ import org.openqa.selenium.net.PortProber;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.selion.grid.ProcessLauncherOptions.ProcessLauncherOptionsImpl;
-
-
 @Test(singleThreaded = true, groups = { "android-only", "downloads-dependencies" })
 public class SelendroidJarSpawnerTest {
     private Thread thread;
     private RunnableLauncher spawner;
-    private String host;
-    private int port;
 
     @BeforeClass
     public void beforeClass() {
-        host = new NetworkUtils().getIpOfLoopBackIp4();
-        port = PortProber.findFreePort();
+        String host = new NetworkUtils().getIpOfLoopBackIp4();
+        int port = PortProber.findFreePort();
         spawner = new SelendroidJarSpawner(new String[] { "-host", host, "-port", String.valueOf(port) },
-                new ProcessLauncherOptionsImpl().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false)
+                new ProcessLauncherConfiguration().setContinuouslyRestart(false).setIncludeJavaSystemProperties(false)
                         .setIncludeParentProcessClassPath(false));
         thread = new Thread(spawner);
     }

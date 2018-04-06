@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
- |  Copyright (C) 2014-15 PayPal                                                                                       |
+|  Copyright (C) 2014-2017 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -17,6 +17,7 @@ package com.paypal.selion.platform.utilities;
 
 import java.util.Arrays;
 
+import com.paypal.selion.platform.mobile.elements.MobileElement;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -70,6 +71,16 @@ public final class WebDriverWaitUtils {
     /**
      * Waits until element is cickable.
      *
+     * @param element
+     *            element to be cickable
+     */
+    public static void waitUntilElementIsClickable(final MobileElement element) {
+        waitUntilElementIsClickable(element.getLocator());
+    }
+
+    /**
+     * Waits until element is cickable.
+     *
      * @param elementLocator
      *            identifier of element to be cickable
      */
@@ -79,6 +90,16 @@ public final class WebDriverWaitUtils {
         ExpectedCondition<WebElement> condition = ExpectedConditions.elementToBeClickable(by);
         waitForCondition(condition);
         logger.exiting();
+    }
+
+    /**
+     * Waits until element is either invisible or not present on the DOM.
+     *
+     * @param element
+     *            element to be found
+     */
+    public static void waitUntilElementIsInvisible(final MobileElement element) {
+        waitUntilElementIsInvisible(element.getLocator());
     }
 
     /**
@@ -96,9 +117,20 @@ public final class WebDriverWaitUtils {
     }
 
     /**
-     * Waits until element element is present on the DOM of a page. This does not necessarily mean that the element is
+     * Waits until element is present on the DOM of a page. This does not necessarily mean that the element is
      * visible.
-     * 
+     *
+     * @param element
+     *            element to be found
+     */
+    public static void waitUntilElementIsPresent(final MobileElement element) {
+        waitUntilElementIsPresent(element.getLocator());
+    }
+
+    /**
+     * Waits until element is present on the DOM of a page. This does not necessarily mean that the element is
+     * visible.
+     *
      * @param elementLocator
      *            identifier of element to be found
      */
@@ -108,6 +140,17 @@ public final class WebDriverWaitUtils {
         ExpectedCondition<WebElement> condition = ExpectedConditions.presenceOfElementLocated(by);
         waitForCondition(condition);
         logger.exiting();
+    }
+
+    /**
+     * Waits until element is present on the DOM of a page and visible. Visibility means that the element is not only
+     * displayed but also has a height and width that is greater than 0.
+     *
+     * @param element
+     *            element to be visible
+     */
+    public static void waitUntilElementIsVisible(final MobileElement element) {
+        waitUntilElementIsVisible(element.getLocator());
     }
 
     /**
@@ -127,7 +170,7 @@ public final class WebDriverWaitUtils {
 
     /**
      * Waits until the current page's title contains a case-sensitive substring of the given title.
-     * 
+     *
      * @param pageTitle
      *            title of page expected to appear
      */
@@ -165,7 +208,7 @@ public final class WebDriverWaitUtils {
      *
      * @param locators
      *            an array of strings that represents the list of elements to check.
-     * 
+     *
      */
     public static void waitUntilAllElementsArePresent(final String... locators) {
         logger.entering(new Object[] { Arrays.toString(locators) });
@@ -179,18 +222,39 @@ public final class WebDriverWaitUtils {
     /**
      * Waits until all <code>pageValidators</code> for a given object pass. The {@link WebPage} instance must express
      * something that validates the page or calling this will cause a wait timeout.
-     * 
+     *
      * @param pageObject
      *            a {@link WebPage} instance.
      */
     public static void waitUntilPageIsValidated(WebPage pageObject) {
         logger.entering(pageObject);
         Preconditions.checkArgument(pageObject != null, "Please provide a valid instance of WebPage.");
-        final WebPage w = (WebPage) pageObject;
+        final WebPage w = pageObject;
         ExpectedCondition<Boolean> conditionToCheck = new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
                 w.validatePage();
+                return true;
+            }
+        };
+        waitForConditionIgnoring(conditionToCheck, PageValidationException.class);
+        logger.exiting();
+    }
+
+    /**
+     * Waits until all <code>pageLoadingValidators</code> for a given object pass. If the {@link WebPage} does not
+     * express any criteria for loading state this method will return <code>true</code> immediately
+     * @param pageObject
+     *            a {@link WebPage} instance.
+     */
+    public static void waitUntilPageIsLoaded(WebPage pageObject) {
+        logger.entering(pageObject);
+        Preconditions.checkArgument(pageObject != null, "Please provide a valid instance of WebPage.");
+        final WebPage w = pageObject;
+        ExpectedCondition<Boolean> conditionToCheck = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                w.checkIfLoaded();
                 return true;
             }
         };
