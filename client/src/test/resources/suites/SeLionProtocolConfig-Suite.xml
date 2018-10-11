@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="100" verbose="1" name="SeLion Protocol Config Test Suite" skipfailedinvocationcounts="false" junit="false"
+    parallel="false" data-provider-thread-count="50" annotations="JDK">
+    
+    <parameter name="protocol" value="https" />
+    
+    <listeners>
+    	<listener class-name="com.paypal.selion.reports.runtime.DebugListener" />
+    </listeners>
+    
+  	
+    <test verbose="2" name="Test1" annotations="JDK">
+        <groups>
+            <run>
+                <include name="protocol" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.paypal.selion.configuration.ProtocolConfigTest" />
+        </classes>
+    </test>
+</suite>
+
