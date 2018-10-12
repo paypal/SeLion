@@ -39,14 +39,14 @@ public class ProtocolConfigTest {
     }
 
     @Test(groups = { "protocol" }, priority = 3)
-    public void testInitProtocalConfig_Negativ() {
+    public void testInitProtocalConfigNegativ() {
     	Assert.assertFalse(Config.getConfigProperty(ConfigProperty.SELENIUM_PROTOCOL).contentEquals("http"),
     			"Negativ-TC: PROTOCOL should match the suite-file. (https) is set in suite file -> not (http)");
     	
     }
 
     @Test(groups = { "protocol" }, priority = 4)
-    public void testInitProtocalConfig_ChangeOption() {
+    public void testInitProtocalConfigChangeOption() {
     	Assert.assertEquals(Config.getConfigProperty(ConfigProperty.SELENIUM_PROTOCOL), "https",
                 "PROTOCOL should be (https)");
         Map<ConfigProperty, String> initValues = new HashMap<ConfigProperty, String>();
