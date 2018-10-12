@@ -11,16 +11,16 @@
     "name": "chromedriver",
     "roles": [ "node", "standalone" ],
     "windows": {
-      "url": "https://chromedriver.storage.googleapis.com/2.33/chromedriver_win32.zip",
-      "checksum": "718df64a6e2b2efde50b26ac22fde229"
+      "url": "https://chromedriver.storage.googleapis.com/2.42/chromedriver_win32.zip",
+      "checksum": "28d91b31311146250e7ef1afbcd6d026"
     },
     "linux": {
-      "url": "https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip",
-      "checksum": "6dc329fb8ecdff6a9f74eea053434662"
+      "url": "https://chromedriver.storage.googleapis.com/2.42/chromedriver_linux64.zip",
+      "checksum": "acfcc29fb03df9e913ef4c360a121ad1"
     },
     "mac": {
-      "url": "https://chromedriver.storage.googleapis.com/2.33/chromedriver_mac64.zip",
-      "checksum": "3d520b8ede8e9deb8c9a2efe2aec5f35"
+      "url": "https://chromedriver.storage.googleapis.com/2.42/chromedriver_mac64.zip",
+      "checksum": "3fc0e4a97cbf2c8c2a9b824d95e25351"
     }
   },
   {
