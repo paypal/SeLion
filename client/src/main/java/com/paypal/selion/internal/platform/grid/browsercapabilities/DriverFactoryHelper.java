@@ -151,6 +151,7 @@ final class DriverFactoryHelper {
 
         URL url = null;
         String hostToRun = Config.getConfigProperty(ConfigProperty.SELENIUM_HOST);
+        String protocol = Config.getConfigProperty(ConfigProperty.SELENIUM_PROTOCOL);
 
         boolean runLocally = Boolean.parseBoolean(Config.getConfigProperty(ConfigProperty.SELENIUM_RUN_LOCALLY));
         String port = Config.getConfigProperty(ConfigProperty.SELENIUM_PORT);
@@ -165,7 +166,7 @@ final class DriverFactoryHelper {
                         + "via the TestNG suite file parameter : <parameter name=\"seleniumhost\" value=\"\" />";
                 throw new IllegalStateException(errMsg);
             }
-            url = new URL("http://" + hostToRun + ":" + port + "/wd/hub");
+            url = new URL(protocol + "://" + hostToRun + ":" + port + "/wd/hub");
         } catch (MalformedURLException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }

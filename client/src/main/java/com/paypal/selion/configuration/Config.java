@@ -388,6 +388,13 @@ public final class Config {
          * Automatically take screen shots.<br>
          */
         AUTO_SCREEN_SHOT("autoScreenShot", "true", true),
+        
+        /**
+         * Protocol might be http or https. Used when
+         * {@link ConfigProperty#SELENIUM_RUN_LOCALLY} is <b>false</b>.<br>
+         * Default is set to <b>"http"</b>
+         */
+        SELENIUM_PROTOCOL("protocol", "http", true),
 
         /**
          * Selenium host might be localhost or another location where a Selenium server is running. Used when
