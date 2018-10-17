@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2018 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -39,9 +39,9 @@ public class ProtocolConfigTest {
     }
 
     @Test(groups = { "protocol" }, priority = 3)
-    public void testInitProtocalConfigNegativ() {
+    public void testInitProtocalConfigNegative() {
     	Assert.assertFalse(Config.getConfigProperty(ConfigProperty.SELENIUM_PROTOCOL).contentEquals("http"),
-    			"Negativ-TC: PROTOCOL should match the suite-file. (https) is set in suite file -> not (http)");
+    			"Negative-TC: PROTOCOL should match the suite-file. (https) is set in suite file -> not (http)");
     	
     }
 
